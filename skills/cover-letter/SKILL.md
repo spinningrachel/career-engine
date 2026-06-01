@@ -157,7 +157,7 @@ Every letter — regardless of tone, role, or opener strategy — has exactly th
 
 4. **Closing.** Choose from the options below. One ask, direct, always tight.
 
-5. **Sign-off.** "Looking forward to next steps," on its own line. "{{USER_FULL_NAME}}" on the next line. No variation unless writing directly to a named hiring manager.
+5. **Sign-off.** "Looking forward to next steps," on its own line. "{{USER_FIRST_NAME}} Cheyfitz" on the next line. No variation unless writing directly to a named hiring manager.
 
 **Word count:** 230–290 words total, excluding greeting and sign-off.
 
@@ -429,4 +429,95 @@ Run before writing the first sentence.
 **Manufactured opener — forbidden.** A hook that sounds like a genuine reaction but is actually a constructed reveal: "I read about [Company] and already have my first question." / "Before I write another word, I want to ask one thing." These announce that a clever move is coming — which signals exactly the opposite of genuine engagement. If the reaction is genuine, state it directly. If it isn't, write `[RACHEL TO FILL IN]`. Do not set up a reveal.
 
 **Fallback:** If no genuine specific reaction exists in the reference material, write `[RACHEL TO FILL IN]` and flag it. Do not manufacture a reaction.
+
+---
+
+## Mandatory Revision Pass
+
+After producing a first draft, enter revision mode. You are now a writing editor, not a letter writer. Your only job is to identify and remove AI writing patterns. Run this process before submitting to the gatekeeper — it is not optional and does not depend on whether you believe the draft is already strong.
+
+### Step 1 — Voice calibration
+
+Before starting the revision, confirm the voice you're editing toward. Open 2–3 delivered letters from `references/delivered-letters/` that are most similar in domain or seniority level. Note these six dimensions:
+
+1. **Sentence length** — short and punchy? Long and flowing? Mixed?
+2. **Word choice level** — casual? somewhere between?
+3. **Paragraph openers** — jumps right in? Sets context first?
+4. **Punctuation habits** — parenthetical asides? No dashes at all?
+5. **Transitions** — explicit connectors, or just starts the next point?
+6. **Verbal tics** — any recurring phrases or patterns?
+
+Match these patterns in your revision. Don't just remove AI tells — replace them with patterns from the delivered letters. If the samples use short sentences, don't produce long ones in their place. If they don't use semicolons, don't introduce them.
+
+When no domain-similar delivered letters are available, match the voice described in `references/framework.md` §Voice and tone.
+
+### Step 2 — Audit: scan for AI writing patterns
+
+Read the draft and mark every instance of the following. A letter that feels clean can still fail this audit.
+
+**Em dashes — zero. Hard ban, no exceptions.**
+The final rewrite contains no em dashes (—). This is not "use sparingly." It is zero. Replace each one with: a period (start a new sentence), a comma (tight aside), a colon (introducing an explanation), or restructure the sentence. Before returning any output, search for `—`. Any hit means the draft is not done.
+
+**Rule of three/four — max once per letter, and only when the tricolon genuinely earns its place.**
+Test: does the parallel structure land harder than two items or a single strong claim would? If two items say the same thing, use two. Most of the time they do. One tricolon maximum per letter.
+- Fail: "The hook that makes someone stop scrolling, the offer architecture that converts, the brand story that turns a first purchase into a second" — three abstract noun phrases pretending to be depth.
+- Fail: Two tricolons in the same letter.
+
+**-ing phrases appended after a main clause — max once per letter.**
+"contributing to," "highlighting," "showcasing," "ensuring," "reflecting" tacked onto the end of a sentence to add consequence or interpretation. Maximum one per letter. The permitted one must express a real result, not commentary.
+- Fail: "I ran the campaign, showcasing domain expertise."
+- OK: "I ran the campaign, cutting partner onboarding time by 35%." (Real outcome.)
+
+**False range ("from X to Y") — ban.**
+"From cybersecurity to consumer brands." "Everything from messaging to competitive analysis." X and Y are not endpoints on a meaningful scale. Replace with specific named things.
+
+**AI vocabulary — ban every instance.**
+*crucial, pivotal, vibrant, showcase/showcasing, tapestry (figurative), underscore (verb), landscape (abstract noun), testament, enduring, foster/fostering, garner, interplay, intricate/intricacies, foundational, transformative, robust, seamless, comprehensive.*
+These words appear far more in AI-generated text. Remove all of them.
+
+**Copula avoidance — ban.**
+"Serves as," "stands as," "marks," "represents" where "is" works fine. Use "is." Also ban substituting elaborate constructions for simple copulas: "functions as a testament to the enduring nature of" → "is."
+
+**Heavy noun phrase as subject — ban.**
+A complex or abstract noun phrase as the grammatical subject, especially one that makes the sentence feel composed rather than spoken.
+- Fail: "The mechanics are transferable."
+- Fail: "The desire to apply them to consumer brands has been there the whole time."
+- Fix: "These mechanics transfer." / "I have always wanted to apply them to consumer brands."
+
+**Elegant variation (synonym cycling) — ban.**
+AI cycles synonyms to avoid repetition. Pick the right word and repeat it. Do not rotate synonyms — it signals the AI's repetition-avoidance code.
+- Fail: "The protagonist faces many challenges. The main character must overcome obstacles. The central figure eventually triumphs."
+- Fix: "The protagonist faces many challenges but eventually triumphs and returns home."
+
+**Filler phrases — cut without replacement.**
+- "in order to" → "to"
+- "at this point in time" → "now"
+- "it is important to note that" → cut; start with the claim
+- "due to the fact that" → "because"
+- "has the ability to" → "can"
+
+**Passive voice — rewrite in active almost always.**
+Find the passive construction. Ask: who did the action? Put them as the subject.
+- Fail: "The company was acquired by Camtek."
+- Fix: "Camtek acquired the company."
+
+### Step 3 — Audit question (mandatory)
+
+Before rewriting, write out the answer to: **"What makes this draft so obviously AI-generated?"** Name 2–3 specific instances from the scan above. This forces genuine scrutiny rather than surface-level pattern matching. Do not skip this step.
+
+### Step 4 — Rewrite
+
+Produce the revised draft. It must:
+- Contain the same number of paragraphs as the original
+- Cover everything the original covered (no facts or proof points dropped)
+- Preserve all meaning, specifics, and Q&A content
+- Match the voice calibrated in Step 1
+
+### Step 5 — Final scan before handing to gatekeeper
+
+- Zero em dashes. Search for `—`. Any hit = not done.
+- No more than one tricolon.
+- No more than one -ing appendage.
+- No AI vocabulary words (scan the list above).
+- At least one short sentence used deliberately for conviction or rhythm.
 

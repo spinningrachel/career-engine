@@ -111,7 +111,7 @@ Load all of these before writing a single word.
 
 | File | What it contains |
 |---|---|
-| `{{ICLOUD_DELIVERED_LETTERS_PATH}}` | **Mandatory — read before writing a single word.** Glob this directory to see all delivered companies. Read the cover letters from the most domain-similar or role-similar folders. These are {{USER_FIRST_NAME}}'s actual sent letters — the best available voice anchors. Prioritise over all worked examples. Configured during setup (`/cv-campaign:setup`). |
+| `/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/final-pdfs-delivered` | **Mandatory — read before writing a single word.** Glob this directory to see all delivered companies. Read the cover letters from the most domain-similar or role-similar folders. These are {{USER_FIRST_NAME}}'s actual sent letters — the best available voice anchors. Prioritise over all worked examples. |
 | `references/who-rachel-is.md` | Source of truth for {{USER_FIRST_NAME}}'s background. Section 1: fabrication rule — read first. Section 6: approved CV summaries. Section 7: role facts. Section 9: testimonials (freelance/consulting letters). Section 10: portfolio and delivered letters archive. |
 | `references/framework.md` | **Primary letter-writing material — not background.** Professional philosophy, methodology, voice, and domain narratives. §Professional methodology and POV: research-first methodology, PLG framework, documentation philosophy, compliance GTM, fast-learning argument, AI operating model — each sufficient to anchor a letter's strategic argument. §Domain depth: per-vertical narratives for fit and adaptability framing. §Voice and tone: voice samples and tone calibration. Load alongside who-rachel-is.md for every letter. See Ethos as Strategy below. |
 | `references/qa-bank.md` | **Load before generating any Q&A questions.** {{USER_FIRST_NAME}}'s reusable answers indexed by topic — buyer patterns, domain experience, methodology, personal voice. If an answer exists here, use it directly and do not ask {{USER_FIRST_NAME}} again. Only send questions to Notion Q&A that have no answer in the bank. |
@@ -230,9 +230,13 @@ All structure rules, opening paragraph rules, voice guidance, forbidden patterns
 ### Pre-Submission Self-Check
 
 ---
-**─── MANDATORY — NON-NEGOTIABLE ───**
+**─── MANDATORY — NON-NEGOTIABLE — TWO STEPS, IN ORDER ───**
 
-Load `references/cover-letter-self-check.md` → Option 1 and run every item before returning output.
+**Step A — Revision pass (always runs, regardless of draft quality):**
+Load `skills/cover-letter/SKILL.md` → **Mandatory Revision Pass** section. Run all five steps: voice calibration from delivered letters, audit for AI patterns, the "what makes this obviously AI-generated?" audit question, rewrite, final scan. This pass runs before the gatekeeper sees the letter. A draft that feels strong still runs this pass.
+
+**Step B — Rules checklist (after revision pass):**
+Load `references/cover-letter-self-check.md` → Option 1 and run every item.
 
 ---
 
@@ -263,9 +267,13 @@ Load `references/cover-letter-self-check.md` → Option 1 and run every item bef
 ### Pre-Submission Self-Check
 
 ---
-**─── MANDATORY — NON-NEGOTIABLE ───**
+**─── MANDATORY — NON-NEGOTIABLE — TWO STEPS, IN ORDER ───**
 
-Load `references/cover-letter-self-check.md` → Option 1 and run every item before returning output.
+**Step A — Revision pass (always runs, regardless of draft quality):**
+Load `skills/cover-letter/SKILL.md` → **Mandatory Revision Pass** section. Run all five steps: voice calibration from delivered letters, audit for AI patterns, the "what makes this obviously AI-generated?" audit question, rewrite, final scan. This pass runs before the gatekeeper sees the letter. A draft that feels strong still runs this pass.
+
+**Step B — Rules checklist (after revision pass):**
+Load `references/cover-letter-self-check.md` → Option 1 and run every item.
 
 ---
 
