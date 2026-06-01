@@ -54,7 +54,7 @@ Sentence structure covers where the sentence starts. Clause architecture covers 
 
 **Wh-clause stacking — a hard failure:** Stacking whether-clauses or wh-clauses as coordinated objects inside a single predicate is the most common clause architecture failure in generated letters. Example: *"...determines whether a developer integrates in two days or two weeks, whether they trust the product before they've seen results, and whether they come back to self-serve or open a support ticket."* Rachel's version uses a rhetorical question + short-predicate answer, or antithesis with short predicates. Break any sentence with two or more stacked wh-clause complements into separate sentences.
 
-**Noun clause or long noun phrase as subject — a hard failure:** Starting a sentence with "What you need is..." or a long noun phrase with an embedded relative clause. These bury "I" and front-load complexity in the subject position before the verb even appears. Rewrite: put "I" or a proper noun first, then the verb, then the complexity.
+**Noun clause or long noun phrase as subject — a hard failure:** Starting a sentence with "What you need is..." or a long noun phrase with an embedded relative clause. These bury "I" and front-load complexity in the subject position before the verb even appears. Rewrite: put "I" or a proper noun first, then the verb, then the complexity. This applies with particular force to the first sentence of the letter — "The part of this role that caught my attention," "The thing about this position that stood out," "What drew me to this opportunity" are all hard failures. They assume shared context the reader does not have, read as generic form-letter language, and fail at the level of basic professional writing.
 - **Fail (named pattern):** "The blend of experience I bring to this role is exactly what you need." / "The depth I've developed in cybersecurity is practitioner-native." The subject is a heavy noun phrase with an embedded relative clause — same failure regardless of whether the relative clause uses "that," "which," or "who."
 - **Fix:** "I bring [specific thing]. I've built [specific thing]." Subject = I, verb follows immediately.
 
@@ -101,6 +101,22 @@ Write in **first person**. Second person is occasionally acceptable. Avoid passi
 - **Fail:** "This integration sharpened my positioning instincts." / "The project drove partner growth."
 - **Fix:** "Working on this integration sharpened my positioning instincts." / "Through the project, I drove partner growth."
 - Test: replace the subject with Rachel's name. If the sentence still makes sense, use Rachel. If the inanimate thing is genuinely the agent (a tool reports, a model generates, a dashboard shows), the verb is acceptable.
+
+**The company must be named in the first paragraph.** "This role," "this position," "this opportunity," "this company" without a name are context-less — the reader is reviewing many applications and has no shared frame of reference with the writer. Use the company name. It should appear in the first paragraph, ideally in the first two sentences.
+
+**Do not open with strategy analysis.** This includes market observations and industry framing — but also expert-claim openers the agent constructs from its own reading of the role: "I know this buyer," "I understand this buying motion," "This is a problem I've solved before," "This is the kind of mandate I'm looking for." These are the agent speaking as Rachel, not Rachel speaking. If she didn't write it in her Q&A or page body, it cannot be the opener. Write `[RACHEL TO FILL IN]` instead.
+
+**Opener failure pattern — banned:** Using a setup phrase ("The thing that caught my attention was..." / "When I read the posting..." / "What drew me to this role was...") and then staying in the meta-level — narrating Rachel's reading experience, quoting a phrase from the posting, or launching into a methodology case study — instead of pivoting immediately to a value claim. The setup phrase is fine. What comes next is the test. The rule: any opener setup must pivot to "and that's the work I do" or equivalent within one sentence. If the next sentence is still describing what Rachel noticed, what the posting said, or how she approached VL, it has failed.
+
+**Methodology narration in the opener — banned:** Do not narrate methodology steps as a case study ("customer interviews across five verticals, competitive analysis, longitudinal PMF assessment, and findings that drove a pivot..."). This belongs in the proof paragraphs, where it earns its weight. In the opener, name the HOW in one concise clause — then trust the body to prove it.
+
+**The preferred opener pattern:** Name the company (or the posting) → make an observation about what they need → immediately pivot to the value claim. Then: brief HOW in one clause → domain connection thread → warm confident close.
+
+**Contrast:**
+- ❌ "The thing that caught my attention in this posting was the phrase 'not just execute against an existing strategy.' At Visual Layer, I was hired specifically to do the research work that would make positioning possible — customer interviews across five verticals, competitive analysis, longitudinal PMF assessment..."
+- ✅ "Reading the Lemonade posting, it was clear you're looking for a strategic builder — and that's the work I do. I turn complex products into clear narratives that land with the right audiences without losing integrity, even under regulatory scrutiny or with skeptical buyers. I get there by immersing myself in the product, learning directly from customers, and running the research myself."
+
+The second version lands a claim. The first one describes a reading experience.
 
 ---
 
@@ -338,6 +354,24 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 
 **Example:**
 > I've spent fifteen years being the one in the room who actually understands what makes a product technically different — at Snyk before AppSec was a category, at Visual Layer, at Coro. Most marketers don't get there, even for products that don't look technical on the surface. That gap is what this role is trying to close.
+
+---
+
+**11. Value claim opener** *[label: the direct pitch]*
+
+**When:** The best, most natural opener. Use whenever the role allows a confident, direct statement of what Rachel does and why this company is the right fit for it. Especially strong for strategic/senior roles, regulated-industry companies, and roles where Rachel's positioning/research edge is the core credential.
+
+**The move:** Name the company and the posting (one clause) → observe what they need → pivot immediately to the value claim ("that's the work I do") → state HOW in one concise clause → thread the domain connection (why this company is the natural next chapter, not just a job) → close with a warm, confident one-liner.
+
+**The rule:** Rachel is the subject by the second sentence at the latest. The company observation is the setup; Rachel's claim is the payload. Do not narrate methodology — name it in a clause.
+
+**Template:**
+> Reading the [Company] posting, it was clear you're looking for [what they need] — and that's the work I do. [Value proposition in one sentence — what Rachel does, what integrity/outcome it produces.] I get there by [HOW in a brief, non-exhaustive clause]. [Domain connection — why this company is the natural next step, grounded in a specific, named thread from Rachel's background.] And I'm confident the team at [Company] won't be sorry.
+
+**Example:** [Lemonade letter — Rachel's own]
+> Reading the Lemonade posting, it was clear you're looking for a strategic builder — and that's the work I do. I turn complex products into clear narratives that land with the right audiences without losing integrity, even under regulatory scrutiny or with skeptical buyers. I get there by immersing myself in the product, learning directly from customers, and running the research myself. After years in regulated, trust-dependent categories — cyber insurance at Coro, fleet insurance at Lytx — where full disclosure and human-in-the-loop accountability are the buying criteria, Lemonade feels to me like the natural next chapter in my career. And I'm confident the team at Lemonade won't be sorry.
+
+**What makes this work:** The company is named twice. The value claim arrives in sentence two. The methodology is named in a clause, not narrated as a case study. The domain connection is specific and earned (insurance → insurance). The close is warm and confident, not a permission-ask.
 
 ---
 
