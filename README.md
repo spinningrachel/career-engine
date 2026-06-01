@@ -67,7 +67,7 @@ The pipeline uses eight agents in sequence. Each agent receives structured input
 
 ### How a run works
 
-When you run `/cv-campaign`, the orchestrator fetches all roles with Status = `Interested` from your job tracking database, passes them to the employment coach, builds a priority-ordered queue of up to five roles, and routes each one through the full pipeline. At the end of the run, DOCX files are in your output folder, file paths are posted back to Notion, and you receive a brief summary in chat.
+Roles move through three phases before a CV is delivered. First, run Intake on roles with Status = `Hold` — this researches each company, writes strategic properties to Notion, and generates Q&A intake questions for each role. You then answer those questions in the Notion page body and change Status to `Interested`. At that point, running `/cv-campaign` fetches the `Interested` roles, builds a priority-ordered queue of up to five, and routes each one through the full CV and cover letter pipeline. The letter-writer uses your Q&A answers and the coach's research to produce letters grounded in your specific angle on the role. At the end of the run, DOCX files are in your output folder, file paths are posted back to Notion, and you receive a brief summary in chat.
 
 ---
 
@@ -376,9 +376,19 @@ Trigger it with the `--edit` flag or by saying "edit my CVs" in chat. The pipeli
 
 ### Intake
 
-The Intake pipeline runs market intelligence on roles you're researching but haven't committed to applying for. It operates on roles with Status = `Hold`, researches each company (competitive landscape, funding, hiring manager, culture signals), writes coach properties to Notion, and updates Status to `Researched`. No CVs are produced.
+The Intake pipeline runs market intelligence on roles you're researching but haven't committed to applying for. It operates on roles with Status = `Hold`, researches each company (competitive landscape, funding, hiring manager, culture signals), writes coach properties to Notion, generates Q&A intake questions for each role, and updates Status to `Researched`. No CVs are produced.
 
-Trigger it with the coach command or natural language:
+**Intake is a mandatory prerequisite for CV Campaign.** The letter-writer needs two inputs that only exist after Intake runs: the strategic properties the coach writes (Role emphasis, Keywords, Strategy, Gap handling) and the Q&A answers you provide in the Notion page body after Intake generates the questions. Without these, the letter-writer has no basis for your specific angle on the role and no company context — it falls back to generic framing, which produces generic letters.
+
+The correct sequence for any role is:
+
+1. Add the role to your database with Status = `Hold`
+2. Run Intake — the coach researches the company and writes Q&A questions to the Notion row
+3. Open the Notion row and answer the Q&A questions in the Page Body field
+4. Change Status to `Interested`
+5. Run CV Campaign — the letter-writer uses your answers and the coach's research
+
+Trigger Intake with the coach command or natural language:
 
 ```
 Research my Hold roles.
@@ -387,15 +397,16 @@ Run market intelligence.
 
 ### Status and pipeline routing
 
-Status in your job tracking database determines which pipeline processes a role.
+Status determines which pipeline processes a role and encodes where it sits in the sequence. The full lifecycle runs Hold → Researched → Interested → CV Ready for Review → Applied.
 
-| Status | Processed by | What happens |
-|---|---|---|
-| `Hold` | Intake | Company research; strategic properties written; Status → `Researched` |
-| `Interested` | CV Campaign | Full CV + cover letter pipeline; Status → `CV Ready for Review` |
-| `Needs editing` | CV Edit | Existing outputs improved; Status → `CV Ready for Review` |
-| `CV Ready for Review` | — | Awaiting your review; pipeline does not process these |
-| `Applied` | — | Complete; pipeline does not process these |
+| Status | Set by | Processed by | What happens |
+|---|---|---|---|
+| `Hold` | You | Intake | Company research; Q&A questions generated; coach properties written; Status → `Researched` |
+| `Researched` | Intake | — | Awaiting your Q&A answers and decision to apply |
+| `Interested` | You | CV Campaign | Full CV + cover letter pipeline; Status → `CV Ready for Review` |
+| `CV Ready for Review` | CV Campaign | — | Awaiting your review of the output |
+| `Needs editing` | You | CV Edit | Existing outputs improved; Status → `CV Ready for Review` |
+| `Applied` | You | — | Complete |
 
 ---
 
