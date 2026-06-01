@@ -59,7 +59,6 @@ Load the following skills in order before doing anything. Do not spawn any sub-a
 2. `cv-pipeline-orchestrator` — queue cap, queue selection logic, Role Type and Priority Definitions, Notion property ownership, Steps 8–9 (LinkedIn updates file, run-level revision log), Post-Run Validation, State File and crash recovery
 3. `cv-campaign-intake` — Steps 0 through 0.10: fetch roles, run employment coach, build queue, warm-up role selection
 4. `cv-campaign-role-steps` — Step 0.10 and Steps 1 through 7d: CV draft, gatekeeper, recruiter review, HM review, CV revision, cover letter draft through final gatekeeper, DOCX export, Notion writeback, reviewer feedback file
-5. `cv-reframe-pipeline` — Steps R1 through R3: reframe track for founding tech-writer roles
 6. `cv-campaign-export` — DOCX production protocol, pandoc commands, template styles, page count verification
 
 **`--edit` flag:**
@@ -95,7 +94,7 @@ Load `01-candidate-rules.md` and `cover-letter` skill. Ask {{USER_FIRST_NAME}} f
 ## Rules
 
 - Load all required skills before spawning any sub-agent.
-- Route each role by the pipeline {{USER_FIRST_NAME}} specified in chat: `Standard` (default) → cv pipeline; `Reframe only` → reframe pipeline.
+- Route each role by the pipeline {{USER_FIRST_NAME}} specified in chat: `Standard` (default) → cv pipeline.
 - Do not pause mid-run to ask scope questions. The employment coach caps the run — that cap is final.
 - If a single role fails, log the failure and continue to the next role.
 - All DOCX output goes to {{USER_FIRST_NAME}}'s iCloud folder, not to a session scratchpad.

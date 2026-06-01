@@ -35,7 +35,7 @@ Do not write CVs. Do not trigger any other pipeline. Research, priority scoring,
 **First — fetch the database schema.** Run `notion-fetch` on the Job Applications database before anything else:
 
 ```
-notion-fetch id="3465ef1aa63480a283cfdf847cb47404"
+notion-fetch id="{{NOTION_DATABASE_ID}}"
 ```
 
 Extract the SQLite `CREATE TABLE` block. This is your **schema reference** for this run — the authoritative list of valid option values for every select field. Keep it in context.
@@ -62,7 +62,7 @@ Do not proceed to Step 3 without this context.
 Use `notion-query-database-view` with this exact view URL:
 
 ```
-https://www.notion.so/3465ef1aa63480a283cfdf847cb47404?v=35e5ef1aa63480ff9b4e000cbcd67aec
+https://www.notion.so/{{NOTION_DATABASE_ID}}?v=35e5ef1aa63480ff9b4e000cbcd67aec
 ```
 
 This view is pre-configured to return only `Hold` roles where Landscape is empty, sorted by creation date ascending. Do not construct your own filter — use the view directly. Do not fetch the full database.

@@ -131,7 +131,7 @@ Read the following from Notion for this role:
 
 ### Step 5 — Cover letter (draft)
 
-**Before spawning letter-writer:** Read `02-candidate-background.md` (Role Facts) for {{USER_FIRST_NAME}}'s role facts — key career milestones, scale signals, and function-building track record. Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
+**Before spawning letter-writer:** Read `02-candidate-background.md` (Role Facts) for {{USER_FIRST_NAME}}'s role facts — VL exit details, Coro scale, and function-building track record. Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
 
 **Before spawning, pass the following for this role:**
 - **Q&A property**, **Page body content**, and **`Additional Letter Writer Details`** — use the values retrieved in Pre-Step 5. Do not re-read from Notion.
@@ -264,7 +264,7 @@ cp /tmp/he-<cl_filename>.md "<output_dir>/"
 Convert using the Hebrew DOCX production protocol from `cv-campaign-export`:
 
 ```bash
-HE_TEMPLATES="/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized"
+HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
 
 # Hebrew CV — concatenate with Hebrew footer, then convert
 cat /tmp/he-<cv_filename>.md \
@@ -330,7 +330,7 @@ Create the file on the first role; append on subsequent ones. Use the `/tmp→iC
       "company": "<company>",
       "company_dir": "<company_dir>",
       "title": "<title>",
-      "track": "<cv | reframe | now>",
+      "track": "<cv | now>",
       "status": "completed",
       "cv_path": "<company_dir>/<cv_filename>.docx",
       "cover_letter_path": "<company_dir>/<coverletter_filename>.docx",
@@ -351,10 +351,9 @@ Create the file on the first role; append on subsequent ones. Use the `/tmp→iC
 ```
 
 **Field notes:**
-- `track` — `cv` for Standard pipeline, `reframe` for Reframe only, `now` for --now mode
+- `track` — `cv` for Standard pipeline, `now` for --now mode
 - `notion_page_id` — `null` for --now mode roles that were never in Notion
 - `company_dir` — the kebab-case company directory name (same as used for the subdirectory)
-- `feedback_path` — omit for Reframe only pipeline (no feedback file produced)
 - `hm_cv_verdict` / `hm_cl_verdict` — record both verdicts separately; omit `hm_cl_verdict` if the cover letter loop did not complete
 - `date_first_advertised` / `remote_compatibility` — from the coach's research output; write `null` if not available (e.g., content-exists roles where coach skipped fetching)
 - All paths are relative to the campaign folder (e.g., `nuvoton/cv-{{USER_LAST_NAME}}-pmm-nuvoton-may2026.docx`). Hebrew files are not listed separately — they are in the same `company_dir` and accessible via the Draft Directory URL.

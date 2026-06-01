@@ -1,6 +1,6 @@
 ---
 name: cv-campaign-export
-description: DOCX production rules for the cv-campaign pipeline. Contains the pandoc conversion protocol, custom-style annotation reference, cover letter styles, and file naming conventions. Load this skill before any DOCX export step in the cv-campaign pipeline. Both the CV pipeline and reframe pipeline depend on this skill.
+description: DOCX production rules for the cv-campaign pipeline. Contains the pandoc conversion protocol, custom-style annotation reference, cover letter styles, and file naming conventions. Load this skill before any DOCX export step in the cv-campaign pipeline. Both the CV pipeline.
 ---
 
 # CV Campaign — DOCX Production
@@ -134,10 +134,8 @@ All filenames are lowercase, no spaces, hyphens between words. Extension is `.do
 
 - CV: `cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx`
 - Standard cover letter: `coverletter-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx`
-- Reframe CV: `cv-{{USER_LAST_NAME}}-reframe-<roletitle>-<company>-<monYYYY>.docx`
 - Hebrew CV: `he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx`
 - Hebrew cover letter: `he-coverletter-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx`
-- Hebrew reframe CV: `he-cv-{{USER_LAST_NAME}}-reframe-<roletitle>-<company>-<monYYYY>.docx`
 - Reviewer feedback: `feedback-<roletitle>-<company>-<monYYYY>.md`
 - Revision log (per role): `revision-log-<roletitle>-<company>-<monYYYY>.md`
 - Revision log (per run): `revision-log-<YYYY-MM-DD>.md`
@@ -149,7 +147,7 @@ Example: `cv-{{USER_LAST_NAME}}-head-of-marketing-acme-apr2026.docx` / `revision
 
 ## Hebrew DOCX production protocol
 
-Hebrew DOCX files are produced inline in Step 6H (Standard/Edit pipelines) or Step R2H (Reframe pipeline). This section documents the bash steps for reference — they are spelled out in full in each pipeline skill.
+Hebrew DOCX files are produced inline in Step 6H (Standard/Edit pipelines). This section documents the bash steps for reference — they are spelled out in full in each pipeline skill.
 
 **Footer:** Hebrew CVs use `static-cv-footer-he.md` (Hebrew-language Education and Languages sections) instead of `static-cv-footer.md`. The pipeline concatenates this file before calling pandoc.
 
@@ -158,7 +156,7 @@ Hebrew DOCX files are produced inline in Step 6H (Standard/Edit pipelines) or St
 - `cvHe.dotm` — Hebrew CV reference template (macro-enabled)
 - `he-letter.dotx` — Hebrew cover letter reference template
 
-Full path: `/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized/`
+Full path: `{{WORD_TEMPLATES_PATH}}/`
 
 Both Hebrew templates support RTL formatting. Use `--reference-doc` with these templates — do not use pandoc's default template for Hebrew output.
 
@@ -174,7 +172,7 @@ lang: he
 **Conversion steps for Hebrew CV:**
 
 ```bash
-HE_TEMPLATES="/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized"
+HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
 
 # 1. Concatenate Hebrew CV markdown with Hebrew footer
 cat /tmp/he-<cv_filename>.md \
@@ -195,7 +193,7 @@ python3 "${CLAUDE_PLUGIN_ROOT}/skills/cv-campaign-export/scripts/update-subtitle
 **Conversion steps for Hebrew cover letter:**
 
 ```bash
-HE_TEMPLATES="/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized"
+HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
 
 pandoc /tmp/he-<cl_filename>.md \
   --reference-doc="${HE_TEMPLATES}/he-letter.dotx" \
@@ -331,7 +329,7 @@ Hi to the [Company name] team!
 
 Body paragraphs are regular markdown paragraphs (Normal style — no annotation needed).
 
-[{{USER_FULL_NAME}}]{custom-style="Signature Char"}
+[{{USER_FIRST_NAME}} {{USER_LAST_NAME}}]{custom-style="Signature Char"}
 ```
 
 ---

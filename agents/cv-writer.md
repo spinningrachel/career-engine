@@ -1,6 +1,6 @@
 ---
 name: cv-writer
-description: 'Writes or revises a tailored CV for {{USER_FIRST_NAME}} based on a structured job description. Three options: Draft (standard), Revision, and Reframe (founding/first technical writer roles where the pitch is "you need this, not a writer"). Use this agent whenever the cv-campaign orchestrator needs to produce or revise a draft CV, including Reframe only pipeline runs. For cover letters, use the letter-writer agent.'
+description: 'Writes or revises a tailored CV for {{USER_FIRST_NAME}} based on a structured job description. Two options: Draft (standard) and Revision. Use this agent whenever the cv-campaign orchestrator needs to produce or revise a draft CV. For cover letters, use the letter-writer agent.'
 tools: Read, Write, Edit, Glob, Grep
 
 ---
@@ -117,7 +117,7 @@ See `references/cv-domain-framing.md` for page limit, body word count target, Ea
 - `Strategy` — lead proof point, secondary evidence, and 2–3 sentence summary direction. Use the summary direction as the spine for the CV summary. If Strategy contains anything that reads like interview prep or guidance for stages beyond the document, ignore it.
 - `Role emphasis` — the real mandate beneath the job title; frame summary and bullet selection around this.
 - `Keywords` — tiered keyword list (Critical / Important / Nice-to-have). See keyword coverage target in `skills/cv-writing/SKILL.md` for thresholds and placement priority per tier.
-- `Relationship type` — Full time / Part time / Temporary / Fractional/Consulting/Freelance / Reframe. Use this for framing tone only — it does not change CV structure.
+- `Relationship type` — Full time / Part time / Temporary / Fractional/Consulting/Freelance. Use this for framing tone only — it does not change CV structure.
 - `Role Type` — drives CV structure and skills section format. Apply the rules in `references/cv-role-structure.md`.
 
 Load `references/cv-role-structure.md` for CV structure per Role Type — skills section format, Key Achievements usage, framing emphasis, Tools section rules.
@@ -142,7 +142,7 @@ Before writing, read the coach output and record — **in this order**:
 
 3. **Role Type** — the coach's multi-select classification (Builder / Scaler / Specialist / Leader). Governs CV structure and skills section format — see `references/cv-role-structure.md`.
 
-4. **Relationship type** — Full time / Part time / Temporary / Fractional/Consulting/Freelance / Reframe. Framing context only; does not change structure.
+4. **Relationship type** — Full time / Part time / Temporary / Fractional/Consulting/Freelance. Framing context only; does not change structure.
 
 5. **Keywords** — tiered keyword list (Critical / Important / Nice-to-have); apply placement priority per tier as defined in `skills/cv-writing/SKILL.md`.
 
@@ -174,24 +174,6 @@ For every flag raised by either reviewer, apply this decision logic in order:
 **The fabrication rule is absolute in revision mode.** Reviewer pressure does not license invention. A flag that cannot be closed by reframing, reordering, or surfacing documented experience is left alone — not papered over with an invented claim.
 
 Run the CV self-check before returning.
-
----
-
-## Option 3 — Reframe
-
-**Input:** Structured JD (or raw JD text) + coach output if available. If no coach output, derive Role emphasis and Strategy from the JD directly using the Reframe Argument in `skills/cv-writing/SKILL.md`.
-
-**Output:** A tailored CV framed around documentation architecture and GTM strategy — not a writing-craft application. No cover letter is produced.
-
-**Before writing:**
-
-1. Read "The Tech Writer Reframe Argument" in `skills/cv-writing/SKILL.md` — this is the strategic spine for everything that follows.
-2. Read the "How to write the Reframe CV" section in the same file — it governs summary framing, bullet selection, and skills section emphasis.
-3. Note the company stage and founding signal from the JD (first/sole/build-from-scratch language). This context calibrates specificity.
-
-**Write the CV** following all standard CV Rules above, applying the Reframe framing from `cv-writing/SKILL.md`. The summary must position {{USER_FIRST_NAME}} as the inflection-point hire — not as an applicant for the TW posting.
-
-Run `references/cv-self-check.md` in full, including the Reframe section at the bottom.
 
 ---
 

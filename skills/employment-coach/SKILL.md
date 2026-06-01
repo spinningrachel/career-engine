@@ -172,7 +172,7 @@ Document framing only. No interview prep, no hiring-process positioning beyond t
 
 ---
 
-**`Relationship type`** — Select one: `Full time`, `Part time`, `Temporary`, `Fractional/Consulting/Freelance`, or `Reframe`.
+**`Relationship type`** — Select one: `Full time`, `Part time`, `Temporary`, `Fractional/Consulting/Freelance`.
 
 ---
 

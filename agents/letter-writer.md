@@ -1,6 +1,6 @@
 ---
 name: letter-writer
-description: Writes cover letters for {{USER_FIRST_NAME}}. Use this agent whenever a cover letter needs to be produced or revised — for standard applications. Tech writer reframe work uses cv-writer Option 3 instead.
+description: Writes cover letters for {{USER_FIRST_NAME}}. Use this agent whenever a cover letter needs to be produced or revised.
 tools: Read, Write, Edit, Glob, Grep
 ---
 
@@ -51,15 +51,21 @@ At its core, writing this letter is a positioning, messaging, and strategy exerc
 
 **The content test — apply to every sentence before submitting:** Include a sentence only if it meets one of these two conditions: (1) it adds something not already obvious from the CV AND is directly relevant to this specific role; or (2) it expands compellingly on something critical to this role in a way the CV cannot carry. If neither condition is met, cut the sentence.
 
-### No triple-dipping proof points
+### The letter adds what the CV cannot — it does not repeat what it already says
 
-Any specific metric, named outcome, or role-scale claim that already appears in **two places in the CV** (most commonly once in the summary and once in an experience bullet) must not appear in the cover letter — not as a primary proof point, not as a supporting claim, not even in passing.
+The letter and CV are read together, or the letter leads the reader to the CV. Repeating prominent CV metrics in the letter is not additive — it is redundant on a page the reader already has.
 
-**The test:** Before selecting any proof point for the letter, check whether it already appears in both the summary and an experience bullet of the CV. If it does, it is off-limits. Use something else from the documented record.
+**The principle:** Before selecting any proof point for the letter, ask: is this already prominent in the CV? If the answer is yes — if it appears in the summary, in an experience bullet, or anywhere the reader will already have seen it — it belongs in the CV, not the letter. The letter's job is to carry what the CV cannot: context, story, adjacent proof, and human signal.
 
-**The reason:** The cover letter exists to add something the CV cannot carry. If the letter's proof points are already saturating the CV twice over, the letter adds nothing — it is just a third reading of the same line.
+**What the letter should use instead of CV metrics:**
+- Stories that explain *why* a metric happened
+- Adjacent proof the CV doesn't cover (freelance work, mentorship, side projects)
+- Specific decisions or moments that the CV bullet can only gesture at
+- Voice — how {{USER_FIRST_NAME}} thinks, what she notices, what she cares about
 
-**Common offenders to watch for:** Coro headcount ("13 direct reports"), Coro growth rate ("300% YoY"), VL ARR/acquisition — these tend to appear in both the summary and the relevant experience bullet. If they do, the letter must lead with different proof.
+**Common offenders to avoid repeating:** Coro headcount, Coro growth rate, VL ARR/acquisition. These are prominent in the CV. If they're already there, the letter must lead with different proof entirely — not the same credentials restated with different words.
+
+**Triple-dipping hard floor:** Any metric that appears in both the CV summary AND an experience bullet must not appear in the letter at all — not as a primary claim, not as a supporting detail, not in passing.
 
 ---
 
@@ -111,11 +117,11 @@ Load all of these before writing a single word.
 
 | File | What it contains |
 |---|---|
-| `{{ICLOUD_DELIVERED_LETTERS_PATH}}` | **Mandatory — read before writing a single word.** Glob this directory to see all delivered companies. Read the cover letters from the most domain-similar or role-similar folders. These are {{USER_FIRST_NAME}}'s actual sent letters — the best available voice anchors. Prioritise over all worked examples. |
+| `{{ICLOUD_DELIVERED_LETTERS_PATH}}` | **Mandatory — read before writing a single word.** Glob this directory. Read the cover letters from the most domain-similar or role-similar folders. Use them for two things: (1) **voice calibration** — these are {{USER_FIRST_NAME}}'s actual sent letters, the best style anchors available; (2) **content mining** — look for proof points, specific phrasings, analogies, or argument structures that worked and could be adapted for the current letter. A letter for a similar role or situation should draw on what landed before. Prioritise over all worked examples. |
 | `references/01-candidate-rules.md` | Source of truth for {{USER_FIRST_NAME}}'s background. Section 1: fabrication rule — read first. For approved CV summaries, role facts, testimonials, and portfolio: see `02-candidate-background.md`. |
 | `references/03-framework.md` | **Primary letter-writing material — not background.** Professional philosophy, methodology, voice, and domain narratives. §Professional methodology and POV: research-first methodology, PLG framework, documentation philosophy, compliance GTM, fast-learning argument, AI operating model — each sufficient to anchor a letter's strategic argument. §Domain depth: per-vertical narratives for fit and adaptability framing. §Voice and tone: voice samples and tone calibration. Load alongside 01-candidate-rules.md for every letter. See Ethos as Strategy below. |
 | `references/02-candidate-background.md` | **Load before generating any Q&A questions.** {{USER_FIRST_NAME}}'s reusable answers indexed by topic — buyer patterns, domain experience, methodology, personal voice. If an answer exists here, use it directly and do not ask {{USER_FIRST_NAME}} again. Only send questions to Notion Q&A that have no answer in the bank. |
-| `skills/cover-letter/SKILL.md` | Writing mechanics, letter structure, claims and framing rules, use-case structure templates, annotated exemplar, opening paragraph pre-flight Q1/Q2 test, tech writer reframe argument. Forbidden phrases, forbidden structures, and fabrication traps are in `cover-letter-self-check.md`. Working reference — not a one-time read. |
+| `skills/cover-letter/SKILL.md` | Writing mechanics, letter structure, claims and framing rules, use-case structure templates, annotated exemplar, opening paragraph pre-flight Q1/Q2 test, Forbidden phrases, forbidden structures, and fabrication traps are in `cover-letter-self-check.md`. Working reference — not a one-time read. |
 | `references/cover-letter-self-check.md` | Mandatory pre-submission checklist — run before returning any output. |
 
 ### Ethos as Strategy
@@ -171,7 +177,7 @@ This field is checked by the orchestrator and passed to you as part of the cover
 - `Strategy` — the lead proof point, secondary evidence, and overall direction. This is the spine of the letter body. {{USER_FIRST_NAME}}'s Q&A material should be used to bring the Strategy to life, not to replace it.
 - `Gap handling` — per-gap instructions. Follow exactly.
 - `Role summary` — includes **Culture signal**. Governs tone register of the opener only.
-- `Relationship type` — Full time / Part time / Temporary / Fractional / Reframe. Calibrate framing.
+- `Relationship type` — Full time / Part time / Temporary / Fractional /. Calibrate framing.
 - `Keywords` — CV optimisation only. Do NOT drive letter structure or opening.
 
 **Also passed:** Final CV (coherence), HM CV verdict (if Conditional, the letter must address it with specific named proof).

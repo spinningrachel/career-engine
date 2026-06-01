@@ -16,7 +16,7 @@ Most job search tools give you one agent and a template. A few things that are d
 
 What makes these reliable is the structure underneath. Three reference files — candidate rules, candidate background, and positioning framework — are read by every agent before writing anything. They accumulate as you run the pipeline. The longer you use it, the less it invents and the more it knows.
 
-**Built and maintained by [Rachel Cheyfitz](https://www.linkedin.com/in/rachelcheyfitz).** Open-sourced so other job seekers can run the same pipeline with their own background, voice, and job-tracking setup.
+**Built and maintained by [{{USER_FIRST_NAME}} {{USER_LAST_NAME}}](https://www.linkedin.com/in/rachel{{USER_LAST_NAME}}).** Open-sourced so other job seekers can run the same pipeline with their own background, voice, and job-tracking setup.
 
 ---
 
@@ -356,7 +356,6 @@ Two variants exist within this pipeline:
 | Variant | How to trigger | Outputs |
 |---|---|---|
 | **Standard** | `/cv-campaign` (no flags) | CV + cover letter + reviewer feedback per role |
-| **Reframe only** | Specify "reframe only" in chat | CV only — no cover letter produced |
 
 The `--now` flag runs the Standard variant against a single role without a job tracking database. Pass a URL or paste a JD directly. No Notion writeback occurs.
 
@@ -446,7 +445,7 @@ The following properties must exist with these exact names. The pipeline writes 
 | `Keywords` | Text | Coach | 8–15 tiered JD terms: `Critical: ... \| Important: ... \| Nice-to-have: ...` |
 | `Strategy` | Text | Coach | Lead proof point + secondary evidence + 2–3 sentence framing direction |
 | `Role Type` | Multi-select | Coach | CV structure driver. Values: `Builder`, `Scaler`, `Specialist`, `Leader` |
-| `Relationship type` | Select | Coach | Engagement framing. Values: `Full time`, `Part time`, `Temporary`, `Fractional/Consulting/Freelance`, `Reframe` |
+| `Relationship type` | Select | Coach | Engagement framing. Values: `Full time`, `Part time`, `Temporary`, `Fractional/Consulting/Freelance` |
 | `Gap handling` | Text | Coach (you may override) | One line per gap: how to handle it. You can edit this before triggering the CV pipeline — your version takes precedence. |
 | `Role summary` | Text | Coach | 2-sentence role fit summary plus culture signal |
 | `Hiring Manager` | Text | Coach | Hiring manager name and title |
@@ -487,7 +486,6 @@ Files use a consistent slug format: `<roletitle>-<company>-<monYYYY>`. Role titl
 |---|---|
 | CV | `cv-<lastname>-<slug>.docx` |
 | Cover letter | `coverletter-<lastname>-<slug>.docx` |
-| Reframe CV | `cv-<lastname>-reframe-<slug>.docx` |
 | Hebrew CV | `he-cv-<lastname>-<slug>.docx` |
 | Hebrew cover letter | `he-coverletter-<lastname>-<slug>.docx` |
 | Reviewer feedback | `feedback-<slug>.md` |
@@ -556,7 +554,7 @@ Eight agents handle all reasoning and writing. The orchestrator spawns them as s
 
 **employment-coach** — The pipeline's research and prioritization engine. Fetches JDs, researches companies, assigns priorities, and writes strategic properties. Two modes: Pipeline (full analysis + Notion writeback) and Direct coaching (conversational, no writeback). Sole owner of Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, and Gap handling.
 
-**cv-writer** — Writes and revises CVs. Three options: Draft, Revision, and Reframe (for roles where the pitch is "you need this function, not a writer"). CV structure is driven by Role Type. The fabrication rule is absolute — claims that can't be grounded in documented experience are left out, not invented.
+**cv-writer** — Writes and revises CVs. Two options: Draft and Revision. CV structure is driven by Role Type. The fabrication rule is absolute — claims that can't be grounded in documented experience are left out, not invented.
 
 **letter-writer** — Writes and revises cover letters and generates Q&A interview questions during the research pipeline. Receives page body content, Q&A answers, Strategy, and Gap handling from the orchestrator. Voice and structure rules in `skills/cover-letter/SKILL.md` hold regardless of reviewer feedback.
 
@@ -579,7 +577,6 @@ Skills contain the detailed procedures each agent follows. They are loaded by th
 | `cv-pipeline-orchestrator` | Orchestrator | Full campaign coordination, Steps 0–9b |
 | `cv-campaign-intake` | Orchestrator | Steps 0–0.9: Notion fetch, coach invocation, queue building |
 | `cv-campaign-role-steps` | Orchestrator | Steps 1–7d: per-role CV and cover letter pipeline |
-| `cv-reframe-pipeline` | Orchestrator | Steps R1–R3: reframe track |
 | `cv-campaign-export` | Orchestrator | DOCX conversion commands, file naming, copy protocol |
 | `cv-edit-pipeline` | Orchestrator | Editing pipeline for Needs editing roles |
 | `coach` | Coach command | Standalone research pipeline for Hold roles |

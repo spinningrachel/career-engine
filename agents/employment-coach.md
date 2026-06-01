@@ -103,7 +103,7 @@ The orchestrator provides per role:
 - Full Notion row content (including `JD Body` if already populated)
 - `has-priority` or `blank-priority` flag
 - All properties already set: existing priority, Coach Notes, Landscape, Role emphasis, JD proof, Keywords, Strategy, Gap handling
-- Which pipeline {{USER_FIRST_NAME}} is running (Standard or Reframe only)
+- Which pipeline {{USER_FIRST_NAME}} is running (Standard)
 
 Before generating output for any role, read the existing Notion row properties. If `Role emphasis`, `JD proof`, `Strategy`, or `Gap handling` are already set and still look correct, carry them forward and note that you did so. **If `Gap handling` is set, {{USER_FIRST_NAME}} may have edited it — treat the Notion value as authoritative.**
 

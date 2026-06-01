@@ -22,7 +22,7 @@ This skill covers Steps 0 through 0.9 of the cv-campaign pipeline. All of these 
 **First — fetch the database schema.** Run `notion-fetch` on the Job Applications database before doing anything else:
 
 ```
-notion-fetch id="3465ef1aa63480a283cfdf847cb47404"
+notion-fetch id="{{NOTION_DATABASE_ID}}"
 ```
 
 Extract the SQLite `CREATE TABLE` block from the response. This is your **schema reference** for the entire run — the authoritative list of property names and valid select option values. Keep it in context.
@@ -36,7 +36,7 @@ Extract the SQLite `CREATE TABLE` block from the response. This is your **schema
 **Then — fetch roles.** Use `notion-query-database-view` with this exact view URL:
 
 ```
-https://www.notion.so/3465ef1aa63480a283cfdf847cb47404?v=35e5ef1aa63480ff9b4e000cbcd67aec
+https://www.notion.so/{{NOTION_DATABASE_ID}}?v=35e5ef1aa63480ff9b4e000cbcd67aec
 ```
 
 This view returns `Hold` roles. Do not construct your own filter — use the view directly. Do not fetch the full database. Verify that returned rows have Status = `Hold` before processing — skip any row with a different status.
@@ -59,7 +59,7 @@ For each matching entry, capture the full row payload including:
 - Position title (use inferred value if Position field is empty, per the rules above)
 - Job URL
 - Every other property set on the row (notes, tags, source, and any existing priority value) — pass these through verbatim; do not interpret them yet
-- In orchestrator mode only: the pipeline {{USER_FIRST_NAME}} is running (Standard or Reframe only) — from her chat command, not from a Notion property. Default is `Standard` unless {{USER_FIRST_NAME}} specifies otherwise. Not applicable in standalone intake mode.
+- In orchestrator mode only: the pipeline {{USER_FIRST_NAME}} is running (Standard) — from her chat command, not from a Notion property. Default is `Standard` unless {{USER_FIRST_NAME}} specifies otherwise. Not applicable in standalone intake mode.
 
 Report the count to {{USER_FIRST_NAME}}: "Found N roles in Hold status. Sending to the employment coach." If the count is 0, stop and report that. Do not wait for a response — proceed immediately to the next step.
 

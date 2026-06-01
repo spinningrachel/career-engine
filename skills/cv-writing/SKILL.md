@@ -185,21 +185,3 @@ Adopted, Applied, Deployed, Employed, Executed, Exerted, Handled, Implemented, M
 Analyzed, Developed, Directed, Authored, Prepared, Implemented, Collaborated, Liaised, Assessed, Created, Improved, Designed, Defined, Guided, Revamped, Proposed, Advised, Conducted, Arranged, Budgeted, Composed, Conceived, Controlled, Eliminated, Investigated, Operated, Organized, Planned, Processed, Produced, Redesigned, Reduced, Refined, Resolved, Revised, Scheduled, Simplified, Solved, Streamlined, Transformed, Devised, Established, Generated, Initiated, Introduced, Launched, Led, Pioneered, Started, Consolidated, Converted, Decreased, Expanded, Increased, Innovated, Reorganized, Restructured, Saved, Unified, Accelerated, Achieved, Completed, Convinced, Discovered, Mastered, Revitalized, Spearheaded, Upgraded
 
 ---
-
-## Reframe CV
-
-### The Argument
-
-{{USER_FIRST_NAME}} is not a technical writer who also does strategy. She is a product marketer and documentation architect who has spent her career at the exact inflection point where a company realizes its documentation is either an asset or a liability — and it becomes an asset on her watch. A founding technical writer will write what exists. They will not tell the company what the documentation should accomplish, where it should live, how it should be maintained, what the market needs to understand, or how to build a system that works after the writer leaves. {{USER_FIRST_NAME}} does all of that. When the company eventually needs a full-time writer, they will have something worth handing off.
-
-This argument governs every CV produced for a Reframe role. It is not in the summary — it is the lens through which bullet selection and framing are made.
-
-### How to write the Reframe CV
-
-**Summary:** Do not frame {{USER_FIRST_NAME}} as an applicant for the technical writer role. Frame her as the person the company needs when it reaches the inflection point — "you don't need a writer, you need this." Use the standard summary template but anchor it in documentation architecture and GTM strategy, not writing as a craft. The summary should make it clear that {{USER_FIRST_NAME}} builds the infrastructure, not just the content.
-
-**Bullet selection:** Choose bullets that show breadth the company cannot get from a solo writer: GTM strategy, product marketing, developer portals that cut onboarding time, compliance content that enabled sales, knowledge systems that served multiple functions. Prioritize Lytx, VL, and Coro over earlier roles for this framing. The approved bullets from `02-candidate-background.md` (Role Facts) are the starting point — select for breadth and strategic impact, not writing craft.
-
-**Skills section:** Lean toward strategy and system-building skills (GTM, documentation architecture, product marketing, knowledge infrastructure). Writing tools belong but do not lead.
-
-**Self-check:** Run `references/cv-self-check.md` in full, then run the Reframe section at the bottom of that file.

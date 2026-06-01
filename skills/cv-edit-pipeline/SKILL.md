@@ -39,7 +39,7 @@ Then confirm:
 
 ## Step E0 — Fetch roles for editing
 
-Query the Job Applications database (ID: `3465ef1aa63480a283cfdf847cb47404`). Filter for entries where:
+Query the Job Applications database (ID: `{{NOTION_DATABASE_ID}}`). Filter for entries where:
 - Status is `Needs editing`
 
 For each matching entry, capture the full row payload including:
@@ -47,7 +47,7 @@ For each matching entry, capture the full row payload including:
 - Company name
 - Position title
 - Job URL
-- Pipeline (Standard or Reframe only — from {{USER_FIRST_NAME}}'s chat command)
+- Pipeline (Standard — from {{USER_FIRST_NAME}}'s chat command)
 - All existing property values — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Additional Letter Writer Details`, `CV File Name`, `Letter File Name`, `Note`, and any other populated fields
 - Any reviewer feedback or notes already on the row
 
@@ -267,7 +267,7 @@ cat > /tmp/he-<cl_filename>.md << 'MARKDOWN_EOF'
 <Hebrew cover letter markdown from agent>
 MARKDOWN_EOF
 
-HE_TEMPLATES="/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized"
+HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
 
 # Hebrew CV — concatenate with Hebrew footer, then convert
 cat /tmp/he-<cv_filename>.md \
@@ -309,30 +309,6 @@ Do not overwrite coach-owned properties again here — those were already update
 
 Do not write anything to the `Note` field unless the agent has genuinely additional context that the structured properties cannot carry.
 
-### Pipeline `Reframe only`
-
-**Step ER1 — Reframe CV writer**
-
-Spawn `cv-writer` with `option=revision`, passing the structured JD, the existing reframe CV text (if available), and any notes on the row. The cv-writer improves the existing CV — it does not start from scratch unless the strategic positioning changed significantly.
-
-**Step ER2 — Reframe DOCX**
-
-Export the updated reframe CV using the `/tmp` to iCloud output folder copy protocol. Overwrite the existing file.
-
-**Step ER2H — Hebrew reframe CV (conditional)**
-
-**Only runs if `Languages` includes `Hebrew`.** Spawn `hebrew-localization` with the reframe CV markdown, the structured JD from Step E0.5, and the role title. Pass `null` for the English cover letter input — CV only.
-
-Convert the Hebrew CV using the Hebrew DOCX production protocol from `cv-campaign-export`. Overwrite any existing Hebrew file. RTL adjustment in Word required before sending.
-
-**Step ER3 — Reframe writeback and state update**
-
-1. Write the Draft Directory URL to the `Draft Directory` URL property:
-   ```
-   Draft Directory: https://anchorpoint.app/link?p=projects%2F83fe790c-6170-462d-a560-ad639af051c6%2F<date-folder>%2F<company_dir>%2F
-   ```
-2. Update Status to `CV Ready for Review`.
-3. Append this role to the editing run's `state.json` with `status: "completed"`.
 
 ## State file (crash-recovery resilience)
 

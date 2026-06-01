@@ -63,12 +63,3 @@ Run every item in order before returning output. The gatekeeper runs the same ch
 ## Body word count
 
 - [ ] Body word count (summary + experience bullets only, excluding banners/titles/dates/skills blocks) is 800 words or fewer — if over, cut the least-relevant bullets from lowest-priority roles before returning
-
-## Reframe (run only for Option 3 — Reframe CVs)
-
-- [ ] Summary does not frame {{USER_FIRST_NAME}} as an applicant for the technical writer role — it positions her as the inflection-point hire
-- [ ] Summary references documentation architecture or GTM strategy — not writing craft
-- [ ] No bullet leads with a writing deliverable as the primary achievement — strategic or infrastructure outcomes lead
-- [ ] Bullets selected for breadth (GTM, documentation architecture, product marketing, knowledge infrastructure, onboarding reduction) — not writing volume
-- [ ] Skills section leads with strategy and system-building skills, not writing tools
-- [ ] The framing is consistent throughout — there is no point in the CV where {{USER_FIRST_NAME}} looks like a technical writer applying for a technical writer role

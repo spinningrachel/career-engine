@@ -1,6 +1,6 @@
 ---
 name: cover-letter-self-check
-description: Mandatory pre-submission self-check for standard cover letters. Run every item in order before returning any cover letter output. Tech writer reframe CVs use cv-self-check.md instead.
+description: Mandatory pre-submission self-check for standard cover letters. Run every item in order before returning any cover letter output.
 ---
 
 # Cover Letter Pre-Submission Self-Check
@@ -18,13 +18,13 @@ Run every item in order before returning output. The gatekeeper runs the same ch
 
 ### Structure
 - [ ] Greeting is exactly "Hi to the [company name] team!" or "Hi to [Name]!" — never "Dear Hiring Manager"
-- [ ] Sign-off is exactly "Looking forward to next steps," on one line, then "{{USER_FULL_NAME}}" on the next — nothing else after the name
+- [ ] Sign-off is exactly "Looking forward to next steps," on one line, then "{{USER_FIRST_NAME}} {{USER_LAST_NAME}}" on the next — nothing else after the name
 - [ ] Word count is 230–290 words, not counting greeting or sign-off, counted explicitly
 - [ ] The role title appears at least once in the letter body — anywhere the flow allows, but it must be there, using the exact job description phrasing
 - [ ] Every proof paragraph does exactly one thing — nothing restates a CV bullet
 - [ ] Closing follows the function-builder or capability statement pattern — direct ask
 - [ ] **White space:** No paragraph runs more than 4 lines. If any does, split it. The close is its own paragraph.
-- [ ] **Bullets (if used):** Is this a transferability/pivot letter OR a multi-mandate role requiring visible range? If neither: remove the list and make the case in prose. If yes: parallel form, 2–5 words each, no periods, colon-introduced, positioned between proof paragraphs and close. No JD mirroring. No CV language.
+- [ ] **Bullets (if used):** Is this a transferability/pivot letter OR a multi-mandate role requiring visible range? If neither: remove the list and make the case in prose. If yes: parallel form, 2–5 words each, no periods, colon-introduced, positioned between proof paragraphs and close. No CV language. JD mirroring is permitted and appropriate here — the point is to show the skills map.
 
 ### Opening
 - [ ] **Source check — do this first:** Does the opener express the angle and content {{USER_FIRST_NAME}} provided in her page body or Q&A? The substance — what she said she wants to communicate, her key phrases, her specific angle on this role — must be present. The opener must not express a different framing derived from the agent's own reading of the JD. Check specifically: (a) are her key phrases and ideas present? (b) does any sentence express something she did not write and did not ask for? If yes to (b), remove it.
@@ -39,16 +39,20 @@ Run every item in order before returning output. The gatekeeper runs the same ch
 - [ ] No fit claims in opening or closing: "this role has my name on it," "I'm the perfect candidate," "I was made for this role" — all banned
 - [ ] The letter does not restate the CV — it adds context the CV cannot carry
 - [ ] **Content test — apply to every sentence in the body:** Does this sentence add something not already obvious from the CV AND directly relevant to this specific role? Or does it expand compellingly on something critical to this role beyond what the CV carries? If neither — cut it.
-- [ ] At least one key career exit signal is present — your most significant recent role outcome — woven into the letter naturally.
+- [ ] At least one VL EXIT signal is present somewhere in the letter body: "Visual Layer," "ARR from $1M to $3M," "acquisition," "Camtek," "seed" + "exit," or "$7M" — woven into the flow where it fits, not inserted as a standalone boilerplate sentence
 - [ ] ATS keywords from the JD appear naturally — not keyword-stuffed
 - [ ] **Keywords audit:** No major keyword appears 3+ times in the letter. If it does, swap instances for synonyms or restructure.
 - [ ] **No restatement with different adjectives:** Check every adjacent sentence pair — is the second sentence saying the same thing as the first with different words? If yes, cut the weaker one.
-- [ ] **No triple-used proof points:** Any metric appearing in both the CV summary AND an experience bullet must not also appear in this letter.
+- [ ] **No triple-used proof points:** Identify any specific metric or named outcome that appears in both the CV summary AND an experience bullet (common: Coro headcount, Coro YoY growth, VL ARR/acquisition). Confirm none of those appear in this letter — not as the lead claim, not as a supporting detail, not at all. If the summary and a Coro bullet both say "300% YoY" or "13 direct reports," the letter must use different proof.
 
 **Fabrication traps:**
-- [ ] No claims about scope, attribution, or seniority that are not documented in `01-candidate-rules.md` or `02-candidate-background.md`
-- [ ] No consulting/freelance engagements described as full function ownership — fractional is always fractional
-
+- [ ] No demand-gen lift metrics at Coro ("300% lift in lead generation") — never a legitimate claim
+- [ ] No RISC scoring applied to VL events — RISC was never deployed
+- [ ] Analyst relations at Coro: "oversaw" only — she did not run or personally lead it
+- [ ] No cybersecurity framing applied to Visual Layer — VL is computer vision
+- [ ] No Contentabl engagements with invented dates, numbers, or deliverables
+- [ ] No Contentabl claims of full PMM ownership of client companies — Contentabl work is fractional consulting (scoped deliverables), never full function ownership. CORRECT: "delivered battlecards for Pentera" / "wrote positioning for XM Cyber." WRONG: "owned PMM at Pentera" / "led marketing at XM Cyber."
+- [ ] No leadership-team claims for roles where she was not on the leadership team
 - [ ] No specific numeric claim not traceable to the reference files
 
 ### Forbidden structures

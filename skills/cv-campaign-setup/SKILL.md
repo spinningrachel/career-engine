@@ -287,7 +287,7 @@ Set up data validation (dropdown lists) on the following columns in my Google Sh
 - Column "Status": allow only these exact values: Hold, Interested, CV Ready for Review, Applied, Researched, Needs editing
 - Column "Priority": allow only these exact values: Highest, First, Second, Third, Fourth, Fifth
 - Column "Role Type": allow multiple selections from: Builder, Scaler, Specialist, Leader
-- Column "Relationship type": allow only these exact values: Full time, Part time, Temporary, Fractional/Consulting/Freelance, Reframe
+- Column "Relationship type": allow only these exact values: Full time, Part time, Temporary, Fractional/Consulting/Freelance
 - Column "Manager role confirmed": allow only these exact values: Yes, No; this is only a hypothesis
 - Column "Languages": allow multiple selections from: English, Hebrew
 
@@ -317,7 +317,7 @@ Select column values (must match exactly):
 - Status: Hold | Interested | CV Ready for Review | Applied | Researched | Needs editing
 - Priority: Highest | First | Second | Third | Fourth | Fifth
 - Role Type (multi-select): Builder | Scaler | Specialist | Leader
-- Relationship type: Full time | Part time | Temporary | Fractional/Consulting/Freelance | Reframe
+- Relationship type: Full time | Part time | Temporary | Fractional/Consulting/Freelance
 - Manager role confirmed: Yes | No; this is only a hypothesis
 - Languages (multi-select): English | Hebrew
 ```

@@ -1,6 +1,6 @@
 ---
 name: cv-pipeline-orchestrator
-description: Run {{USER_FIRST_NAME}}'s CV campaign pipeline against her Notion Job Applications database. Trigger whenever {{USER_FIRST_NAME}} says "run CV campaign", "process the CV queue", "run the CV pipeline", or any variant referencing a batch of tailored CVs or cover letters or tech-writer reframe pitches. Fetches all queued roles from Notion, passes them to the employment coach (which fetches JDs and produces strategic properties), builds the processing queue, and routes each role to the pipeline {{USER_FIRST_NAME}} specifies in chat.
+description: Run {{USER_FIRST_NAME}}'s CV campaign pipeline against her Notion Job Applications database. Trigger whenever {{USER_FIRST_NAME}} says "run CV campaign", "process the CV queue", "run the CV pipeline", or any variant referencing a batch of tailored CVs or cover letters. Fetches all queued roles from Notion, passes them to the employment coach (which fetches JDs and produces strategic properties), builds the processing queue, and routes each role to the pipeline {{USER_FIRST_NAME}} specifies in chat.
 ---
 
 # CV Campaign Orchestrator
@@ -33,12 +33,12 @@ The only valid output destination is:
 ```bash
 OUTPUT_DIR="{{ICLOUD_OUTPUT_PATH}}/cv-campaign-$(date +%Y-%m-%d)"
 mkdir -p "$OUTPUT_DIR"
-# Verify — if this path does not contain "{{ICLOUD_OUTPUT_PATH}}", stop immediately
-echo "$OUTPUT_DIR" | grep -q "{{ICLOUD_OUTPUT_PATH}}" || { echo "ERROR: Output dir is not iCloud. Aborting."; exit 1; }
+# Verify — if this path does not contain "Mobile Documents", stop immediately
+echo "$OUTPUT_DIR" | grep -q "Mobile Documents" || { echo "ERROR: Output dir is not iCloud. Aborting."; exit 1; }
 echo "Output dir confirmed: $OUTPUT_DIR"
 ```
 
-If this check fails or the path does not contain "{{ICLOUD_OUTPUT_PATH}}", **stop the run immediately** and report the error to {{USER_FIRST_NAME}}. Do not proceed and do not fall back to any other path. Do not use `./outputs/`, relative paths, or any path containing "local-agent-mode-sessions" or "Application Support".
+If this check fails or the path does not contain "Mobile Documents", **stop the run immediately** and report the error to {{USER_FIRST_NAME}}. Do not proceed and do not fall back to any other path. Do not use `./outputs/`, relative paths, or any path containing "local-agent-mode-sessions" or "Application Support".
 
 **Three to five files per role, one file per run.**
 
@@ -65,7 +65,7 @@ This rule governs every agent that touches cover letter content:
 
 ## Configuration
 
-**Job Applications database:** Notion database ID `3465ef1aa63480a283cfdf847cb47404`. Source of job descriptions and destination for per-role updates.
+**Job Applications database:** Notion database ID `{{NOTION_DATABASE_ID}}`. Source of job descriptions and destination for per-role updates.
 
 **Output folder:** `{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/`
 
@@ -91,9 +91,8 @@ Load these skills in order before doing anything else. Do not begin processing u
 
 1. `cv-campaign-intake` — Steps 0 through 0.9c: Notion fetch, JD fetching, coach invocation, priority writeback, queue building, Q&A questions
 2. `cv-campaign-role-steps` — Steps 1 through 7: per-role CV writing, gatekeeper checks, reviews, cover letter (letter-writer), HM cover letter review, DOCX export (including Step 6H Hebrew), Notion writeback
-3. `cv-reframe-pipeline` — Steps R1 through R3: Reframe only pipeline; cv-writer produces a tailored CV — no cover letter produced
-4. `cv-edit-pipeline` — Steps E0 through E10: editing pipeline for `Needs editing` roles; starts from existing Notion row content, not from scratch
-5. `cv-campaign-export` — DOCX template styles, pandoc commands, file naming, `/tmp → iCloud output folder` copy protocol, page count verification
+3. `cv-edit-pipeline` — Steps E0 through E10: editing pipeline for `Needs editing` roles; starts from existing Notion row content, not from scratch
+4. `cv-campaign-export` — DOCX template styles, pandoc commands, file naming, `/tmp → iCloud output folder` copy protocol, page count verification
 
 ## Notion Property Ownership
 
@@ -174,14 +173,13 @@ Roles with `Priority` already set are always selected into the queue before unsc
 
 Run the queue pipeline first (`cv-campaign-intake`). When the processing queue is built and {{USER_FIRST_NAME}} has been briefed, run the per-role pipeline for each role in queue order.
 
-**View URL override for cv-campaign-intake:** When `cv-campaign-intake` runs as part of this pipeline, it must query `Interested` roles, not `Hold`. Override the view URL in Step 0 to: `https://www.notion.so/3465ef1aa63480a283cfdf847cb47404?v=35e5ef1aa6348032abdb000ca4cf71ac`. The intake skill's default view returns Hold roles — the orchestrator specifies this override explicitly. Queue selection order also differs in orchestrator mode: scored roles first (ordered 1 → 6), then unscored (per the skill's orchestrator-mode rules in Step 0.7).
+**View URL override for cv-campaign-intake:** When `cv-campaign-intake` runs as part of this pipeline, it must query `Interested` roles, not `Hold`. Override the view URL in Step 0 to: `https://www.notion.so/{{NOTION_DATABASE_ID}}?v=35e5ef1aa6348032abdb000ca4cf71ac`. The intake skill's default view returns Hold roles — the orchestrator specifies this override explicitly. Queue selection order also differs in orchestrator mode: scored roles first (ordered 1 → 6), then unscored (per the skill's orchestrator-mode rules in Step 0.7).
 
 **Pipeline is determined by {{USER_FIRST_NAME}}'s chat command**, not by a Notion property she sets per-role. All `Interested` roles default to the standard cv pipeline unless {{USER_FIRST_NAME}} specifies otherwise in chat. {{USER_FIRST_NAME}} can request a different pipeline for specific roles at run time.
 
 | Pipeline | What runs | Deliverables |
 |---|---|---|
 | `Standard` (default) | cv pipeline — Steps 1 through 8 | CV DOCX + cover letter DOCX + feedback MD |
-| `Reframe only` | reframe pipeline — Steps R1 through R3 | CV DOCX; no cover letter produced |
 | `--now` | fast track — see below | CV DOCX + cover letter DOCX + feedback MD |
 | `Needs editing` | cv-edit-pipeline (separate skill) — Steps E0 through E10 | Updated CV DOCX + updated cover letter DOCX; starts from existing Notion outputs, not from scratch. Trigger when {{USER_FIRST_NAME}} says "edit CVs" or similar, or when roles have Status = Needs editing. |
 

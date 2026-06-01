@@ -9,7 +9,6 @@ The authoritative source for cover letter mechanics, structure, and use-case pat
 
 **Note:** `cv-writing` skill does NOT apply to cover letters. Cover letters are held to different, looser standards on tone.
 
-**Note:** Tech writer reframe work uses `cv-writer` Option 3 and `skills/cv-writing/SKILL.md` — not this skill.
 
 **Prohibited content:** Fabrication traps, forbidden phrases, and forbidden structures are checklist items in `references/cover-letter-self-check.md` → Option 1.
 
@@ -19,7 +18,10 @@ The authoritative source for cover letter mechanics, structure, and use-case pat
 
 ## Writing Mechanics
 
-**Before writing:** Open 2–3 delivered letters from `references/delivered-letters/` for similar domain or seniority. Note their sentence patterns. Your draft must mirror them.
+**Before writing:** Open 2–3 delivered letters from `references/delivered-letters/` for similar domain, seniority, or situation (e.g. transferability letter, founding-marketer role, regulated-industry buyer). Read them for two purposes:
+
+1. **Voice calibration** — note sentence patterns, paragraph openers, rhythm, punctuation habits. Your draft must mirror them.
+2. **Content mining** — look for proof points, specific phrasings, analogies, or framings that worked and could be relevant to the current letter. A B2C transferability letter should check what content landed in other B2C or pivot letters. A cybersecurity letter should mine prior cybersecurity letters for proof structure. If a past letter handled a similar situation well, draw from it — that content is already approved.
 
 **Write one sentence at a time. Before writing the next sentence, check the one you just wrote against both tables below. If it violates a DON'T or misses a DO: rewrite it before continuing. Do not draft the full letter and then check. The check is sentence by sentence, during drafting.**
 
@@ -70,7 +72,7 @@ The authoritative source for cover letter mechanics, structure, and use-case pat
 | Expert-claim opener (agent-constructed, not from {{USER_FIRST_NAME}}'s Q&A) | "I know this buyer." / "ZyG is where I'd do that." | Use only content {{USER_FIRST_NAME}} wrote in her Q&A or page body. |
 | Pronoun pointing at abstraction | "ZyG is where I'd do that." | Name what "that" refers to, or drop the sentence. |
 | Methodology narration in opener | "customer interviews across five verticals, competitive analysis, longitudinal PMF assessment..." | Name the HOW in one clause. Save the proof for the body. |
-| Strategy analysis opener | "I know this buying motion." / "This is the kind of mandate I'm looking for." | If {{USER_FIRST_NAME}} didn't write it, write [{{USER_FIRST_NAME}} TO FILL IN] instead. |
+| Strategy analysis opener | "I know this buying motion." / "This is the kind of mandate I'm looking for." | If {{USER_FIRST_NAME}} didn't write it, write [RACHEL TO FILL IN] instead. |
 
 ---
 
@@ -117,8 +119,9 @@ A bullet list is appropriate in exactly two situations:
 **Do not use bullets when:**
 - The letter is a direct domain match — prose makes a stronger case than a list
 - You haven't already made the narrative case in the proof paragraphs — bullets without proof are just a CV in list form
-- You're mirroring the JD's requirements back — that's JD-dimension mirroring, which is banned
 - You're lifting language from an existing CV bullet — letter language is fresh
+
+**JD mirroring exception — bullets only:** The general ban on JD-dimension mirroring does not apply to transferability bullet lists. When the purpose of the list is to show that your skills map to what the role requires, using the JD's own language is the signal, not the failure. The bullets should reflect the JD's vocabulary deliberately — that's what makes the transferability argument land.
 
 **Bullet format:** Short — 2–5 words each. No periods. Parallel grammatical form. Introduced by a complete sentence ending in a colon. The list sits between the proof paragraphs and the close.
 
@@ -126,7 +129,7 @@ A bullet list is appropriate in exactly two situations:
 
 1. **Greeting.** Always "Hi to the [Company] team!" — or "Hi to [Name]!" if writing directly to a named person. Never "Dear Hiring Manager."
 
-2. **Opener paragraph.** Choose from the Use-Case Structures below. {{USER_FIRST_NAME}}'s reaction or observation comes first. Her background enters in service of that, not as the subject. If no documented reaction exists in `01-candidate-rules.md` or the Q&A bank, write `[{{USER_FIRST_NAME}} TO FILL IN]` — do not manufacture enthusiasm.
+2. **Opener paragraph.** Choose from the Use-Case Structures below. {{USER_FIRST_NAME}}'s reaction or observation comes first. Her background enters in service of that, not as the subject. If no documented reaction exists in `01-candidate-rules.md` or the Q&A bank, write `[RACHEL TO FILL IN]` — do not manufacture enthusiasm.
 
 3. **Proof paragraph(s) — one job each.** One to three paragraphs, each doing exactly one thing: a pattern of experience across companies, a specific story that adds something the CV doesn't say, or documented product/company familiarity.
 
@@ -140,7 +143,7 @@ A bullet list is appropriate in exactly two situations:
 
 4. **Closing.** Choose from the options below. One ask, direct, always tight.
 
-5. **Sign-off.** "Looking forward to next steps," on its own line. "{{USER_FULL_NAME}}" on the next line. No variation unless writing directly to a named hiring manager.
+5. **Sign-off.** "Looking forward to next steps," on its own line. "{{USER_FIRST_NAME}} {{USER_LAST_NAME}}" on the next line. No variation unless writing directly to a named hiring manager.
 
 **Word count:** 230–290 words total, excluding greeting and sign-off.
 
@@ -171,7 +174,9 @@ These rules apply to every claim and every framing decision in the letter body.
 
 **"I am drawn to [Company]'s approach/commitment to..."** — permitted when genuine. One clause, move to proof immediately. Never as a standalone paragraph.
 
-**JD-dimension mirroring — forbidden.** Never write as though addressing a JD section, requirement, or dimension by name. "I can also speak to the OEM engagement dimension directly" → "I also have broad experience working with OEMs." The letter must feel like {{USER_FIRST_NAME}} is naturally describing her own experience — not reading from the JD and checking boxes.
+**JD-dimension mirroring — forbidden in prose.** Never write as though addressing a JD section, requirement, or dimension by name. "I can also speak to the OEM engagement dimension directly" → "I also have broad experience working with OEMs." The letter must feel like {{USER_FIRST_NAME}} is naturally describing her own experience — not reading from the JD and checking boxes.
+
+**Exception — transferability bullet lists only.** When a bullet list is used to demonstrate skill transferability, using the JD's vocabulary in the bullets is correct and deliberate. The whole point is to show the mapping. This exception applies only to the bullet list itself, not to prose anywhere in the letter.
 
 **Role labeling with colon — forbidden.** "My role was on the PMM side: developing..." → "In that PMM role, I developed..." or "In my role as a PMM, I developed..." Never use the label-colon-description construction to introduce what you did in a role.
 
@@ -409,9 +414,9 @@ Run before writing the first sentence.
 
 **Opener structure:** Sentence 1 → the reaction, belief, or hook. Sentence 2 → the credential. Rest → optional expansion, including HM-connected framing if it fits naturally.
 
-**Manufactured opener — forbidden.** A hook that sounds like a genuine reaction but is actually a constructed reveal: "I read about [Company] and already have my first question." / "Before I write another word, I want to ask one thing." These announce that a clever move is coming — which signals exactly the opposite of genuine engagement. If the reaction is genuine, state it directly. If it isn't, write `[{{USER_FIRST_NAME}} TO FILL IN]`. Do not set up a reveal.
+**Manufactured opener — forbidden.** A hook that sounds like a genuine reaction but is actually a constructed reveal: "I read about [Company] and already have my first question." / "Before I write another word, I want to ask one thing." These announce that a clever move is coming — which signals exactly the opposite of genuine engagement. If the reaction is genuine, state it directly. If it isn't, write `[RACHEL TO FILL IN]`. Do not set up a reveal.
 
-**Fallback:** If no genuine specific reaction exists in the reference material, write `[{{USER_FIRST_NAME}} TO FILL IN]` and flag it. Do not manufacture a reaction.
+**Fallback:** If no genuine specific reaction exists in the reference material, write `[RACHEL TO FILL IN]` and flag it. Do not manufacture a reaction.
 
 ---
 
@@ -431,6 +436,8 @@ Before starting the revision, confirm the voice you're editing toward. Open 2–
 6. **Verbal tics** — any recurring phrases or patterns?
 
 Match these patterns in your revision. Don't just remove AI tells — replace them with patterns from the delivered letters. If the samples use short sentences, don't produce long ones in their place. If they don't use semicolons, don't introduce them.
+
+Also check for **content to lift**: if the delivered letters contain a proof point, analogy, or phrasing that is directly relevant to the current letter's argument, use it. Approved content from past letters is already validated — drawing from it is not repetition, it is efficiency.
 
 When no domain-similar delivered letters are available, match the voice described in `references/03-framework.md` §Voice and tone.
 
