@@ -1,12 +1,13 @@
 ---
 name: cv-campaign-setup
 description: >
-  First-run setup wizard for the cv-campaign plugin. Triggered when the user
-  runs /cv-campaign:setup, says "set up the plugin", "configure the plugin",
-  "initialize my profile", "I just installed this", or any variant asking to
-  get the plugin ready to use. Walks the user through populating all reference
-  files, configuring job tracking and output paths, and generating the required
-  permissions. Run once; re-run any time to update a section.
+  Onboarding wizard for the cv-campaign plugin. Triggered when the user
+  runs /cv-campaign:setup, says "set up the plugin", "start onboarding",
+  "configure the plugin", "initialize my profile", "I just installed this",
+  or any variant asking to get the plugin ready to use.
+  Collects existing career materials, synthesizes framework.md, conducts
+  a targeted interview to fill gaps, then configures job tracking and
+  output paths. Run once; re-run any phase any time to update it.
 allowed-tools:
   - Read
   - Write
@@ -18,132 +19,228 @@ allowed-tools:
   - WebFetch
 ---
 
-# cv-campaign Setup Wizard
+# cv-campaign Onboarding
 
-This skill configures the plugin for a new user. It replaces `{{...}}` placeholders across three reference files with the user's real data, configures job tracking and output paths, and generates the permissions block for `~/.claude/settings.json`.
+This skill sets up the plugin for a new user. It builds the three reference files that all pipeline agents read before writing anything:
 
-**Run order matters.** Complete Phase 1 before Phase 2. Phases 3–5 can be deferred and completed in a later session — the plugin can run a limited pipeline with only Phases 1–2 done.
+- `01-candidate-rules.md` — fabrication guards, attribution rules, framing constraints, contact details
+- `02-candidate-background.md` — role facts, approved content, portfolio, Q&A answers
+- `03-framework.md` — positioning, voice, methodology, domain narratives
 
----
+**How onboarding works:** You send your existing career materials. The agent reads them and synthesizes `03-framework.md`. You review it and respond — with feedback or approval. That response triggers a targeted interview that fills gaps and captures what the materials didn't fully show. Integration (Notion, output path) comes after.
 
-## Pre-flight — scan the current state
-
-Before asking any questions, read these three files and identify which `{{...}}` placeholders are still unfilled:
-
-```
-${CLAUDE_PLUGIN_ROOT}/references/01-candidate-rules.md
-${CLAUDE_PLUGIN_ROOT}/references/03-framework.md
-${CLAUDE_PLUGIN_ROOT}/references/02-candidate-background.md
-```
-
-Report to the user:
-- Which phases are complete (no placeholders remaining in that phase's sections)
-- Which phases are incomplete (placeholders still present)
-- Whether the integration is configured (iCloud/output path set, job tracking set)
-
-If resuming a partial setup, skip completed phases and go directly to the first incomplete one.
+**Run order matters.** Phase 1 (identity) → Phase 2 (content submission) → Phase 3 (synthesis) → Phase 4 (review and interview) → Phase 5 (integration) → Phase 6 (permissions). Phases 5–6 can be deferred — the pipeline can run with Phases 1–4 complete.
 
 ---
 
-## Phase 1 — Identity and contact (required)
+## Pre-flight — check current state
 
-**Purpose:** Powers the CV signature, agent instructions, and file naming across every pipeline run. Nothing works correctly without this.
+Before doing anything, scan the three reference files for unfilled `{{...}}` placeholders:
 
-Ask the following. Use the placeholder name as the question prompt — "What is your `{{USER_FULL_NAME}}`?" reads naturally enough.
+```bash
+grep -r "{{USER_" ${CLAUDE_PLUGIN_ROOT}/references/
+```
 
-| Placeholder | Question |
+- If all three files are fully configured: ask the user which phase they want to revisit.
+- If partially complete: report which phases are done and which need work, then go to the first incomplete phase.
+- If nothing is configured: start at Phase 1.
+
+---
+
+## Phase 1 — Identity and contact
+
+**Purpose:** Powers the CV signature, agent instructions, and file naming. Nothing works correctly without this. Takes 2 minutes.
+
+Ask for the following. Use the placeholder name as the prompt — "What's your `{{USER_FULL_NAME}}`?" reads naturally enough.
+
+| Placeholder | What it's for |
 |---|---|
-| `{{USER_FULL_NAME}}` | Full name as it will appear on CVs and cover letters |
-| `{{USER_FIRST_NAME}}` | First name only (used throughout agent instructions) |
-| `{{USER_LAST_NAME}}` | Last name only (used in file naming: `cv-{{USER_LAST_NAME}}-...`) |
+| `{{USER_FULL_NAME}}` | Full name as it appears on CVs and cover letters |
+| `{{USER_FIRST_NAME}}` | First name only — used throughout agent instructions |
+| `{{USER_LAST_NAME}}` | Last name only — used in output file naming |
 | `{{USER_EMAIL}}` | Email address |
 | `{{USER_PHONE}}` | Phone number |
-| `{{USER_LINKEDIN}}` | LinkedIn URL (full URL, not just username) |
+| `{{USER_LINKEDIN}}` | Full LinkedIn URL |
 | `{{USER_WEBSITE}}` | Personal website or portfolio domain |
-| `{{USER_PORTFOLIO_URL}}` | Full portfolio URL if different from website |
 | `{{USER_LOCATION}}` | City, Country |
-| `{{USER_CITIZENSHIP}}` | Citizenship / right to work (e.g., "US/Israeli citizenship", "EU citizen") |
+| `{{USER_CITIZENSHIP}}` | Citizenship or right to work |
 
-After collecting all answers, write them into `01-candidate-rules.md` Section 8 (Reference Details — Contact and Portfolio) by replacing each placeholder with the user's response.
+Write answers into `01-candidate-rules.md` Section 8. Write `{{USER_FIRST_NAME}}`, `{{USER_FULL_NAME}}`, and `{{USER_LAST_NAME}}` into every occurrence across all three reference files.
 
-Also write `{{USER_FIRST_NAME}}`, `{{USER_FULL_NAME}}`, and `{{USER_LAST_NAME}}` into every other occurrence across all three reference files. These appear throughout agent instructions and must be consistent.
-
-Confirm: "Phase 1 complete. Your identity and contact details are set across all reference files."
+Confirm: "Done. Let's move to your career materials."
 
 ---
 
-## Phase 2 — Career history (required for CV pipeline)
+## Phase 2 — Content submission
 
-**Purpose:** Every CV bullet, proof point, and strategic property the agents produce must trace to this data. Without it, agents will fabricate.
+**Purpose:** The agent builds your positioning framework and career profile from materials you already have — rather than asking you to describe everything from scratch.
 
-Work through `02-candidate-background.md` (Role Facts) systematically. For each role slot:
+Tell the user:
 
-1. Ask: "Let's add your most recent role. What company, title, and dates?"
-2. Ask for: reporting structure, team size, key metrics, 2–3 bullet-point achievements
-3. Confirm the scope framing: was this a founding/solo role, a team leadership role, or a specialist IC role?
-4. Ask: "Do you have any consulting or fractional work to include?"
+> "Send me whatever you have from the list below. The more you share, the better the output. I'll read everything and build your positioning framework from it. I will **not store your files** — I'll use them to synthesize your reference files and then they're gone. The only exception is cover letters: if you tell me they're good representations of your voice, I'll keep those in your delivered-letters folder as voice calibration anchors for future runs."
 
-Continue until the user has entered at least **two full-time roles** — the minimum for the pipeline to produce credible output.
+List of useful content and what each feeds:
 
-For each role, populate the structured template in Section 7:
+| Content | What it feeds | Notes |
+|---|---|---|
+| Current CV(s) | `02-candidate-background.md` — role facts (company, dates, titles, metrics, scope) | Used for facts only. Your old CV bullet language is **not** treated as approved bullets — those emerge from pipeline iterations. |
+| Approved sent cover letters | `delivered-letters/` folder — voice calibration | Only kept if you confirm they're good representations of your voice. Ask explicitly before storing. |
+| LinkedIn export or profile text | `03-framework.md` — testimonials, voice samples, domain context | Not stored. |
+| Performance reviews or peer feedback | `03-framework.md` — peer-attributed qualities, testimonials | Not stored. |
+| Portfolio pieces or writing samples | `02-candidate-background.md` Section 10 — portfolio | Not stored after synthesis. |
+| Old job descriptions you were hired for | `01-candidate-rules.md` — attribution rules, scope framing | Used to understand what was personal contribution vs. company-level. Not stored. |
+
+Ask the user to send files. Wait for submission before proceeding.
+
+---
+
+## Phase 3 — Review and synthesize
+
+**Purpose:** Read everything submitted and build `03-framework.md`. This is the agent's primary synthesis task — do it carefully.
+
+### Cover letters — ask before storing
+
+Before reading anything, ask:
+
+> "You shared cover letters. Are these good representations of your voice — the kind of letters you'd be happy to send today? If yes, I'll keep them in your delivered-letters folder so future pipeline runs can use them for voice calibration. If no, I'll read them for context and then they're gone."
+
+- If yes: copy approved cover letters to `${CLAUDE_PLUGIN_ROOT}/references/delivered-letters/`
+- If no: read them for context only, do not store
+
+### Read all submitted content carefully
+
+Read every file. For each piece of content, note:
+- Career history: companies, titles, dates, metrics, scope, what was built
+- Voice: how the user writes, sentence patterns, vocabulary level, what they emphasise
+- Positioning: what they claim as their core value, how they frame their work
+- Domain depth: which verticals and sub-categories they have documented experience in
+- Differentiators: what appears repeatedly as distinctive about their background
+- Testimonials: any third-party quotes about their work
+- Portfolio: specific work samples with descriptions and links
+
+### Build `03-framework.md`
+
+Fill in every section of `03-framework.md` from what the materials show. Where the materials provide clear evidence, write confident content. Where they are thin or unclear, write a best-effort draft and mark it `[REVIEW — limited evidence]` so the user knows to check it in Phase 4.
+
+**Section-by-section guidance:**
+
+**Category and market frame** — infer from the companies worked at, industries served, seniority of roles held. What professional category does the evidence point to?
+
+**Voice and tone** — extract from cover letters (if approved) and LinkedIn writing. Note actual sentence patterns, vocabulary, what the user emphasises, how formal or informal. Pull 4–6 direct quotes for Voice samples. Use only documented quotes — never fabricate them.
+
+**Core positioning statement** — synthesise from the career arc. Who hires this person, for what, and why them over alternatives? Draft from the evidence; mark as draft.
+
+**Value pillars** — identify 2–3 recurring patterns of impact across the career. For each: what they do, what the proof is. Use specific companies and metrics from the CV.
+
+**Professional methodology and POV** — extract from how the user describes their approach in cover letters, LinkedIn, or anywhere they explain how they work. If thin, leave placeholders.
+
+**Domain depth** — map the career history to verticals. For each vertical: companies, what was done, what the proof point is.
+
+**Proof points bank** — extract specific metrics and outcomes. Company → outcome → attribution (personal vs. company-level).
+
+**ICP and target opportunities** — infer from the career stage, company sizes, and domains worked in. Draft; will be refined in the interview.
+
+**Messaging** — draft based on the positioning. Leave as draft; will be refined.
+
+**Taglines, elevator pitches, differentiators, competitive frame, anti-positioning** — draft from the synthesis. Mark all as `[DRAFT — confirm in interview]`.
+
+Write the completed `03-framework.md` to the references folder.
+
+---
+
+## Phase 4 — Framework review and interview
+
+### Share framework.md
+
+Present `03-framework.md` to the user and say:
+
+> "Here's your positioning framework, built from what you sent me. Review it — especially the sections marked `[REVIEW]` or `[DRAFT]`. When you're ready, tell me what needs changing or say it looks right. Either way, I'll follow up with a few questions to fill gaps and check things your materials didn't fully capture.
+>
+> **A note on your files:** I've used your submitted content to build this but have not stored it. [If cover letters were kept: "Your approved cover letters are in your delivered-letters folder."] Everything else has been read and synthesised — the original files are not in the plugin."
+
+Wait for the user's response. Whether they give feedback or say it's fine, proceed to the interview.
+
+### Update framework from feedback
+
+If the user gave feedback, apply it to `03-framework.md` before proceeding.
+
+### Interview — gap-filling and enrichment
+
+The interview has two purposes: fill gaps the materials left, and surface things the user didn't think to volunteer.
+
+**Run the interview as a natural conversation, not a form.** Ask 2–3 questions at a time, grouped by theme. Do not read out all questions at once. Adjust based on what the materials already covered — skip questions where you already have strong evidence.
+
+**Track what's missing from each section of `03-framework.md` and `02-candidate-background.md`. Ask about the most important gaps first.**
+
+Core areas to cover:
+
+**Positioning and voice (if not clear from materials)**
+- How would you describe what you do in one sentence — to a technical founder, not a recruiter?
+- What's the problem you exist to solve that most people in your field don't solve as well?
+- What would colleagues say about you that you'd never say about yourself?
+
+**Career facts (for `02-candidate-background.md`)**
+- For each major role: confirm title, dates, direct reports, key metrics, what you specifically built or changed
+- Attribution check: for any significant outcome, ask "was that company-level or something you drove specifically?" — this shapes attribution rules in `01-candidate-rules.md`
+- Consulting/fractional work: any client engagements not in the CV?
+
+**Scope and framing (for `01-candidate-rules.md`)**
+- Were there any outcomes in your CV that were team-delivered or company-level that you want to make sure agents don't overclaim? (e.g., "300% YoY growth" as a company metric vs. a marketing attribution)
+- Any roles where the title understates the scope, or overstates it?
+- Any engagement that was fractional/consulting that needs specific scope framing?
+
+**Differentiators and positioning (for `03-framework.md`)**
+- What's the one thing that makes your background genuinely unusual — that you'd have a hard time finding in another candidate?
+- What have you worked on that most people in your field haven't touched?
+
+**Target search (for `01-candidate-rules.md` Section 2)**
+- What roles are you targeting — title, seniority, function?
+- What company stage and size? Any strong preferences or hard nos?
+- Geographic constraints or preferences?
+
+**Enrichment probing — things users often don't volunteer**
+
+Ask about these specifically if they haven't come up naturally:
+
+- **Testimonials:** "Do you have any LinkedIn recommendations or client feedback we should add? Third-party quotes carry different weight than self-description."
+- **Published work:** "Have you published articles, research papers, or significant public writing — even ghostwritten?"
+- **Community and teaching:** "Are you active in any professional communities, do any mentoring, or hold any formal advisory roles?"
+- **Voice samples:** "Is there anything you've said in an interview, recording, or conversation that captures how you think about your work? Even a rough quote is useful."
+- **Anti-positioning:** "Is there anything you've been mistakenly credited for, or a claim that would be easy to make but isn't accurate? Better to document it now."
+
+### After the interview — update reference files
+
+**Update `03-framework.md`:** Apply all interview answers to the relevant sections. Remove all `[REVIEW]` and `[DRAFT]` markers from sections that are now fully confirmed.
+
+**Populate `02-candidate-background.md`:**
+
+For each role confirmed in the interview, write into Section 7:
 ```
-### {{USER_COMPANY_X}} ({{USER_COMPANY_X_DATES}})
+### [Company] ([dates])
 - Title: [answer]
 - Reporting: [answer]
 - Team: [answer]
 - Key metrics: [answer]
+- What was built: [summary from CV + interview]
+
 Approved CV bullets:
-- [bullet 1]
-- [bullet 2]
+[LEAVE EMPTY — approved bullets are populated through pipeline iterations, not setup]
 ```
 
-Also ask:
-- Education: degree(s) and institution(s) → write into Section 8
-- Languages → write into Section 8
-- Core skills summary → write into Section 8
+**Important:** Do not populate approved bullets from the user's old CV. Old CV bullet language is raw material, not approved language. The approved bullets section starts empty for every company and fills in as the user runs the pipeline and locks bullets they're happy with.
 
-**Attribution rules — ask before writing:**
-For each role, ask: "Are there any outcomes from this role that belong to the company rather than to you personally?" Examples: company-level ARR growth, team-delivered outputs the user managed but didn't execute. Write these as attribution rules in Section 1.
+Populate Section 10 (portfolio) from any portfolio materials submitted.
+Populate Section 9 (testimonials) from LinkedIn recommendations or peer feedback confirmed in the interview.
 
-Confirm: "Phase 2 complete. Role facts for N roles are set. Agents will draw from these and will not fabricate beyond them."
+**Update `01-candidate-rules.md`:**
 
----
+Write attribution rules into Section 1 for any outcomes confirmed as company-level rather than personal contribution. Write framing rules for any scope limitations confirmed in the interview. Write the target role information into Section 2.
 
-## Phase 3 — Positioning and voice (recommended before first run)
-
-**Purpose:** The `03-framework.md` file powers every cover letter opener, strategic argument, and voice calibration. Skipping it means generic output.
-
-Work through `03-framework.md` in order. For each section, read the placeholder aloud and ask the user to fill it in. Group related placeholders:
-
-**Category and market frame (10 min)**
-- What professional category do you compete in? What's your target company profile?
-- How would you describe your market context in 2–3 sentences?
-- What is your positioning in one sentence — the 10-word version?
-
-**Core positioning statement (15 min)**
-- Walk the user through: who hires you → for what → the how → what makes you different → your three commercial anchors
-- Draft the positioning statement together, then ask for approval
-
-**Value pillars (20 min)**
-- Three pillars: ask for the name, the claim, and the three proof points (company + outcome) for each
-
-**Voice samples (10 min)**
-- Ask: "Can you give me 3–5 direct quotes from how you talk about your work? Recordings, interviews, anything you've said in your own words."
-- If none available: "Describe what energizes you professionally, in one or two sentences, the way you'd say it to a colleague."
-
-**Domain depth (15 min)**
-- What are your top 2–3 verticals? For each: companies, what you did, and the proof point you'd use in a letter.
-
-**ICP and elevator pitch (10 min)**
-- Who are the companies you're targeting? What's your 15-second and 60-second pitch?
-
-Write each answer into its corresponding section of `03-framework.md`.
-
-Confirm: "Phase 3 complete. Positioning, voice, and domain depth are configured. Cover letters will now draw from your actual profile."
+Confirm: "Your positioning framework, career background, and candidate rules are now configured. Let's set up your job tracking and output folder."
 
 ---
 
-## Phase 4 — Job tracking integration (required to run the full pipeline)
+## Phase 5 — Job tracking and output
 
 **Purpose:** The pipeline reads roles from a job tracking source and writes results back. This phase configures where that source lives.
 
@@ -155,14 +252,13 @@ Ask: "How do you want to track your job applications?"
    - If yes: "Paste your database ID (the 32-character string from your Notion URL)."
    - If no: "Open the link, click 'Duplicate', then come back with the database ID."
 3. Write the database ID into every `{{NOTION_DATABASE_ID}}` placeholder across all skill files.
-4. Ask for the view ID if they have a filtered view they want to use → write to `{{NOTION_VIEW_ID}}`.
+4. Ask for the view ID if they have a filtered view → write to `{{NOTION_VIEW_ID}}`.
 
 **Option B — CSV / Google Sheets**
 1. Ask: "Where will your CSV or spreadsheet live? Provide the file path or Google Sheets URL."
-2. Explain the required column schema (the pipeline expects these column names):
-   - `Job URL`, `Company`, `Position`, `Status`, `Priority`, `JD Body`, `Notes`
-3. Write the path/URL to the plugin config in `.claude/settings.json` under `job_tracking.source`.
-4. Note: Notion writeback (posting file paths back to rows) is not available in CSV mode — outputs are delivered to the output folder only.
+2. Required columns: `Job URL`, `Company`, `Position`, `Status`, `Priority`, `JD Body`, `Notes`
+3. Write the path/URL to `.claude/settings.json` under `job_tracking.source`.
+4. Note: Notion writeback is not available in CSV mode — outputs go to the output folder only.
 
 **Output folder**
 Ask: "Where do you want your DOCX files saved?"
@@ -171,24 +267,22 @@ Ask: "Where do you want your DOCX files saved?"
 
 Write the path to every `{{ICLOUD_OUTPUT_PATH}}` placeholder across all skill files.
 
-Ask: "Do you have a folder of approved, sent cover letters you want the pipeline to use as voice anchors? If so, where is it?"
-- If yes: write the path to every `{{ICLOUD_DELIVERED_LETTERS_PATH}}` placeholder across all skill files.
-- If no: write the output folder path as the default (agents will find nothing there initially and skip) — or remove the reference entirely by writing a note: "No delivered letters configured yet."
+If cover letters were NOT kept during Phase 3, ask: "Do you have an existing folder of approved sent cover letters for voice calibration? If so, where is it?" Write the path to `{{ICLOUD_DELIVERED_LETTERS_PATH}}` if provided.
 
 **CV template**
 Ask: "Do you want to use the included CV template (`cv-template-default.dotx`) or provide your own `.dotx` file?"
 - If own file: ask for the path → write to `{{CV_TEMPLATE_FILE}}` placeholders
 - If default: write `${CLAUDE_PLUGIN_ROOT}/references/cv-template-default.dotx` to all `{{CV_TEMPLATE_FILE}}` placeholders
 
-Confirm: "Phase 4 complete. Job tracking, output folder, and CV template are configured."
+Confirm: "Phase 5 complete. Job tracking, output folder, and CV template are configured."
 
 ---
 
-## Phase 5 — Permissions (required for autonomous pipeline runs)
+## Phase 6 — Permissions
 
 **Purpose:** Without pre-approved permissions, Claude Code will pause mid-pipeline for approvals on every bash command and MCP call.
 
-Read the current MCP tool IDs from `.claude/settings.json` in the plugin directory. Generate the exact allow-list block for the user's `~/.claude/settings.json`:
+Read the current MCP tool IDs from `.claude/settings.json`. Generate the exact allow-list block for the user's `~/.claude/settings.json`:
 
 ```json
 "permissions": {
@@ -207,46 +301,36 @@ Read the current MCP tool IDs from `.claude/settings.json` in the plugin directo
 }
 ```
 
-Fill in the actual MCP tool IDs from the plugin's `.mcp.json` or settings. Present the block to the user and say:
+Fill in the actual MCP tool IDs from the plugin's `.mcp.json` or settings. Present the block and say:
 
-"Add this to your `~/.claude/settings.json` under the `permissions` key. If a `permissions` block already exists, merge the `allow` arrays."
+"Add this to your `~/.claude/settings.json` under the `permissions` key. If a permissions block already exists, merge the allow arrays."
 
-Ask: "Have you added the permissions block? (You can do this now and come back, or skip for now and add it before your first run.)"
+Ask: "Have you added the permissions block? You can do this now and come back, or skip and add it before your first run."
 
-Confirm: "Phase 5 complete. The pipeline will run without approval prompts."
-
----
-
-## Phase 6 — Q&A bank seed (optional, improves first-run letter quality)
-
-**Purpose:** The Q&A bank lets the letter-writer use your real answers instead of asking the same intake questions repeatedly. Seeding it now means your first letters will use your voice from the start.
-
-Show the user the question list from `02-candidate-background.md`. Ask them to answer 3–5 questions that feel most natural — particularly:
-- The one that defines their professional approach ("the problem you exist to solve")
-- Their answer to domain unfamiliarity / fast learning
-- Their geographic preferences for remote work
-
-Write their answers into `02-candidate-background.md`, replacing the `{{USER_ANSWER_...}}` placeholders.
-
-Confirm: "Phase 6 complete. The letter-writer will use your answers directly."
+Confirm: "Phase 6 complete. The pipeline will run without approval prompts."
 
 ---
 
 ## Verification
 
-Run after Phases 1–4 are complete.
+Run after Phases 1–5 are complete.
 
-1. **Placeholder scan:** Run `grep -r "{{USER_" ${CLAUDE_PLUGIN_ROOT}/references/ | grep -v "{{USER_ANSWER_"` — report any required identity/contact/career placeholders that are still unfilled
-2. **Integration check:** Confirm the output folder exists (`ls` the path). Confirm the CV template file exists at its configured path.
+1. **Placeholder scan:** `grep -r "{{USER_" ${CLAUDE_PLUGIN_ROOT}/references/ | grep -v "{{USER_ANSWER_"` — report any identity or contact placeholders still unfilled
+2. **Integration check:** Confirm the output folder exists. Confirm the CV template file exists at its configured path.
 3. **Dependency check:** Run `pandoc --version` and `python3 -c "import docx"` — report if either is missing with install instructions (`brew install pandoc` / `pip3 install python-docx`)
-4. **Summary:** Report which phases are complete and which are outstanding
+4. **Framework check:** Confirm `03-framework.md` has no sections still marked `[REVIEW]` or `[DRAFT]`
+5. **Summary:** Report which phases are complete and which are outstanding
 
-If all four required phases are complete and dependencies are installed, confirm:
+If Phases 1–5 are complete and dependencies are installed:
 
-"Setup complete. You're ready to run `/cv-campaign`. If you haven't added the permissions block yet (Phase 5), do that before your first run to avoid mid-pipeline approval prompts."
+"Onboarding complete. You're ready to run `/cv-campaign`. Before your first run: add roles to your Notion database (or CSV), set their Status to `Interested`, and run `/cv-campaign`. The pipeline will pick them up automatically."
 
 ---
 
-## Style note
+## Style notes
 
-During the interview, maintain a direct and efficient tone. Ask one group of related questions at a time. Don't ask follow-up questions about answers that are already sufficiently clear. If the user says "skip" or "later" for any section, move on immediately and note it as outstanding in the verification summary.
+- Direct and efficient. One theme of questions at a time.
+- If the user says "skip" or "later" for anything, move on immediately and note it as outstanding.
+- When building `03-framework.md`, be confident where the evidence is clear. Use `[DRAFT]` only where you are genuinely uncertain.
+- Never fabricate voice samples, testimonials, or proof points. If the materials don't contain them, leave the placeholder.
+- The interview is a conversation, not a form. Adjust based on what you already know from the materials.
