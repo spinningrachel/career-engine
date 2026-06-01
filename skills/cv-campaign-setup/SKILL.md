@@ -425,7 +425,7 @@ Run after Phases 1–5 are complete.
 
 1. **Placeholder scan:** `grep -r "{{USER_" ${CLAUDE_PLUGIN_ROOT}/references/ | grep -v "{{USER_ANSWER_"` — report any identity or contact placeholders still unfilled
 2. **Integration check:** Confirm the output folder exists. Confirm the CV template file exists at its configured path.
-3. **Dependency check:** Run `pandoc --version` and `python3 -c "import docx"` — report if either is missing with install instructions (`brew install pandoc` / `pip3 install python-docx`)
+3. **Dependency check:** Run `pandoc --version` and `python3 -c "import docx"`. If either is missing, ask the user: "pandoc [or python-docx] is not installed. Want me to install it for you?" If yes, run `brew install pandoc` (macOS) or `pip3 install python-docx` as appropriate using Bash. If the user is on Linux or Windows, ask them to confirm their system so you can use the right package manager command.
 4. **Framework check:** Confirm `03-framework.md` has no sections still marked `[REVIEW]` or `[DRAFT]`
 5. **Summary:** Report which phases are complete and which are outstanding
 

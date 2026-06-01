@@ -17,7 +17,7 @@ Most job search tools give you one agent and a template. A few things that are d
 - **Fabrication-proof** — nothing goes on the page that isn't traceable to your documented background. Reviewer pressure cannot override this
 - **Error handling and crash recovery** — failed roles are logged and skipped; the run continues. State is written after every role so a crashed run can resume without starting over
 - **Notion integration** *(optional)* — reads your pipeline from Notion, writes CV file paths and coach properties back to each row when the run completes. CSV and Google Sheets are also supported
-- **Hebrew localization** — native Israeli professional Hebrew CVs and cover letters produced as a pipeline step, not an afterthought
+- **Hebrew localization** *(Alpha)* — native Israeli professional Hebrew CVs and cover letters produced as a pipeline step. Enriched options and RTL configuration documentation coming soon
 
 What makes these reliable is the structure underneath. Three reference files — candidate rules, candidate background, and positioning framework — are read by every agent before writing anything. They accumulate as you run the pipeline. The longer you use it, the less it invents and the more it knows.
 
@@ -40,7 +40,8 @@ What makes these reliable is the structure underneath. Three reference files —
 11. [How approved bullets work](#how-approved-bullets-work)
 12. [Configuration](#configuration)
 13. [Troubleshooting](#troubleshooting)
-14. [Future plans](#future-plans)
+14. [Roadmap](#roadmap)
+15. [Support this project](#support-this-project)
 
 ---
 
@@ -86,6 +87,8 @@ Before installing the plugin, the following tools and services must be in place.
 | python-docx | `pip3 install python-docx` | Updates the role-specific subtitle in the CV header |
 
 pandoc and python-docx are only required if you want formatted DOCX output. The pipeline always produces markdown files — these can be copied into Google Docs, pasted into Notion, or opened in any text editor without pandoc installed. See [CV template and output format](#cv-template-and-output-format) for alternatives.
+
+**Non-technical users:** The setup agent can install pandoc on your behalf. During onboarding, tell the agent you want it to handle the installation and it will run `brew install pandoc` (macOS) for you. If you're on Linux or Windows, ask the agent to find the correct install command for your system.
 
 **MCP servers — connect in Claude Code before running setup:**
 
@@ -318,11 +321,19 @@ The cover letter loop mirrors the CV loop:
 5. **letter-writer (revision)** — produces the final cover letter; mandatory revision pass runs before the gatekeeper sees it
 6. **gatekeeper (cover-letter)** — final check; loops until PASS
 
+**What happens if you skipped Q&A or Intake:**
+
+If you skipped Intake entirely (no company research, no Q&A questions generated), the letter-writer has no strategic properties (Role emphasis, Keywords, Strategy) and no Q&A answers to draw from. It produces a letter based on the JD, your reference files, and general framing — valid, but generic. The letter won't reflect your specific angle on the role or the company-specific research the coach produces. Running Intake before CV Campaign is strongly recommended for any role you genuinely want.
+
+If Intake ran but you didn't answer the Q&A questions in the Notion page body, the letter-writer proceeds without your specific angle for that role. It uses the coach's Strategy field and your reference files, which produces a reasonable letter but one that won't capture what drew you to this specific opportunity. Filling in the Q&A and Page Body fields before running CV Campaign produces noticeably better letters.
+
+To skip the cover letter entirely for a run, say "no letter" in your chat command when triggering CV Campaign.
+
 ### Step 6 — DOCX export
 
 The orchestrator runs pandoc to convert the CV and cover letter markdown to DOCX using the `.dotx` reference templates. `update-subtitle.py` updates the role-specific subtitle in the CV header. Both files are copied from `/tmp` to the output folder and verified as nonzero.
 
-If the role's `Languages` property includes `Hebrew`, the Hebrew localization agent runs after the English export and produces two additional DOCX files in the same company subdirectory.
+If the role's `Languages` property includes `Hebrew`, the Hebrew localization agent runs after the English export and produces two additional DOCX files in the same company subdirectory. *(Alpha — RTL configuration requires manual Word setup; full documentation coming.)*
 
 ### Steps 7a–7d — Writeback and logging
 
@@ -560,7 +571,7 @@ Eight agents handle all reasoning and writing. The orchestrator spawns them as s
 
 **gatekeeper** — Quality gate for both CVs and cover letters. CV option checks ATS compliance (keyword coverage thresholds and section headings) plus 13 content rules. Cover letter option checks 13 voice and structure rules. Returns PASS or a specific violation list. Loops silently with the writing agent until PASS. Does not rewrite; only checks.
 
-**hebrew-localization** — Produces native Israeli professional Hebrew versions of the CV and cover letter. Runs after the English DOCX export when the role's Languages property includes Hebrew. Localization follows the Israeli tech professional register — hybrid Hebrew-English, direct, not formal.
+**hebrew-localization** *(Alpha)* — Produces native Israeli professional Hebrew versions of the CV and cover letter. Runs after the English DOCX export when the role's Languages property includes Hebrew. Localization follows the Israeli tech professional register — hybrid Hebrew-English, direct, not formal. RTL layout requires manual Word setup; full configuration instructions coming.
 
 **pmm-positioning-expert** — Analyzes competitive positioning for a company during standalone research runs. Does not run in the main campaign pipeline.
 
@@ -719,12 +730,36 @@ The run either crashed before completing or the state file write failed. Run `/c
 
 ---
 
-## Future plans
+## Roadmap
 
-The pipeline currently focuses on the document production phase of a job search. A few directions under consideration:
+### Confirmed features — better documentation coming
+
+**Crash recovery and run resumption.** The CV Campaign pipeline writes `state.json` to the output folder after every role completes. If a run crashes or is interrupted, set the affected role's Status back to `Interested` and re-run — the pipeline picks up from where it left off. You can inspect the state file at any time with `/career-engine --status`.
+
+**CV type handling.** The pipeline handles different CV types (specialist, senior, founding marketer, leadership, etc.) through the Role Type system. The employment coach assigns a Role Type to every role — `Builder`, `Scaler`, `Specialist`, or `Leader` — and the cv-writer uses it to determine the CV's structure, what sections to include, and how to frame bullets. You don't need to specify a CV type manually. Full Role Type documentation in the job tracking database section.
+
+**Onboarding pause and resume.** The onboarding interview can be paused and continued in a later session. Run `/career-engine:setup --phase 4` to resume the framework interview. The `[DRAFT]` and `[REVIEW]` markers in `03-framework.md` track what's been confirmed and what still needs work.
+
+### Documentation coming
+
+**Word template details.** The included `cv-template-default.dotx` contains the custom styles the pipeline uses for DOCX export, and the header section where your personal details live. Full documentation of all styles, macros, and configuration options — including why Word produces better output than Google Docs for this use case — is in progress.
+
+**RTL and Hebrew setup.** *(Alpha)* Hebrew localization is live but right-to-left layout in Word requires manual configuration. Instructions for RTL setup, font configuration, and Word document direction settings are coming. Until then, ask the pipeline agent to walk you through the steps.
+
+**Hebrew enrichment.** *(Alpha)* The Hebrew localization agent currently produces a functional native Hebrew register. Richer localization options — including more cultural calibration, additional term handling, and cover letter adaptation — are in progress.
+
+### Planned features
 
 **Deeper research on the hiring side.** The employment coach already identifies the hiring manager and researches the company. Future iterations would go further: tracking relationships and connections at the target company, surfacing relevant mutual contacts, monitoring for new hires or departures on the team, and improving the quality of company intelligence over time as more context accumulates per employer.
 
 **Job search assistance.** Expanding upstream from the application itself: surfacing relevant roles based on your profile and target criteria, tracking application status and follow-up timing, and building a searchable record of every company researched and every role applied for across multiple job search campaigns.
 
-If either of these directions is relevant to work you want to contribute, open an issue.
+If any of these directions is relevant to work you want to contribute, open an issue.
+
+---
+
+## Support this project
+
+If career-engine has been useful, you can support its development here:
+
+**[☕ Buy me a coffee → ko-fi.com/cheyfitz](https://ko-fi.com/cheyfitz)**
