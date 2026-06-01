@@ -65,7 +65,7 @@ This rule governs every agent that touches cover letter content:
 
 ## Configuration
 
-**Job Applications database:** Notion database ID `{{NOTION_DATABASE_ID}}`. Source of job descriptions and destination for per-role updates.
+**Job Applications database:** Notion database ID `3465ef1aa63480a283cfdf847cb47404`. Source of job descriptions and destination for per-role updates.
 
 **Output folder:** `{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/`
 
@@ -173,7 +173,7 @@ Roles with `Priority` already set are always selected into the queue before unsc
 
 Run the queue pipeline first (`cv-campaign-intake`). When the processing queue is built and {{USER_FIRST_NAME}} has been briefed, run the per-role pipeline for each role in queue order.
 
-**View URL override for cv-campaign-intake:** When `cv-campaign-intake` runs as part of this pipeline, it must query `Interested` roles, not `Hold`. Override the view URL in Step 0 to: `https://www.notion.so/{{NOTION_DATABASE_ID}}?v=35e5ef1aa6348032abdb000ca4cf71ac`. The intake skill's default view returns Hold roles — the orchestrator specifies this override explicitly. Queue selection order also differs in orchestrator mode: scored roles first (ordered 1 → 6), then unscored (per the skill's orchestrator-mode rules in Step 0.7).
+**View URL override for cv-campaign-intake:** When `cv-campaign-intake` runs as part of this pipeline, it must query `Interested` roles, not `Hold`. Override the view URL in Step 0 to: `https://www.notion.so/3465ef1aa63480a283cfdf847cb47404?v=35e5ef1aa6348032abdb000ca4cf71ac`. The intake skill's default view returns Hold roles — the orchestrator specifies this override explicitly. Queue selection order also differs in orchestrator mode: scored roles first (ordered 1 → 6), then unscored (per the skill's orchestrator-mode rules in Step 0.7).
 
 **Pipeline is determined by {{USER_FIRST_NAME}}'s chat command**, not by a Notion property she sets per-role. All `Interested` roles default to the standard cv pipeline unless {{USER_FIRST_NAME}} specifies otherwise in chat. {{USER_FIRST_NAME}} can request a different pipeline for specific roles at run time.
 
@@ -597,9 +597,45 @@ Run after Step 9a (Q&A bank promotion). For every role completed this run that p
 
 ---
 
+## Step 9c — Run metrics
+
+Run after Step 9b. Write a `run-metrics-<YYYY-MM-DD>.json` file to the campaign output folder. This file records structural metrics for the run. Actual token counts are appended by a Stop hook configured during setup — the hook writes to this same file when the session ends.
+
+```bash
+cat > "<output_dir>/run-metrics-$(date +%Y-%m-%d).json" << 'JSON_EOF'
+{
+  "run_date": "<YYYY-MM-DD>",
+  "pipeline": "<Standard|Edit|Intake>",
+  "roles_processed": <N>,
+  "roles_per_company": [
+    {"company": "<name>", "track": "<cv|now>", "hebrew": <true|false>}
+  ],
+  "agents_invoked": {
+    "employment_coach": <N>,
+    "cv_writer_draft": <N>,
+    "cv_writer_revision": <N>,
+    "gatekeeper_cv": <N>,
+    "recruiter_reviewer_cv": <N>,
+    "hm_reviewer_cv": <N>,
+    "letter_writer_draft": <N>,
+    "letter_writer_revision": <N>,
+    "gatekeeper_cl": <N>,
+    "recruiter_reviewer_cl": <N>,
+    "hm_reviewer_cl": <N>,
+    "hebrew_localization": <N>
+  },
+  "token_counts": "pending — written by Stop hook at session end"
+}
+JSON_EOF
+```
+
+Fill all values from the run state. Set each agent count from the actual invocations this run. Leave `token_counts` as the literal string `"pending — written by Stop hook at session end"` — the hook replaces this value when the session closes.
+
+---
+
 ## Final Chat Delivery
 
-After Step 9b completes (or the user responds), deliver a single confirmation line in chat:
+After Step 9c completes, deliver a single confirmation line in chat:
 
 `All N roles completed. Files are in your iCloud job-search folder and Notion rows are updated.`
 

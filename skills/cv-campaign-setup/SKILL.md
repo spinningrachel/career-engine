@@ -371,6 +371,27 @@ Fill in the actual MCP tool IDs from the plugin's `.mcp.json` or settings. Prese
 
 Ask: "Have you added the permissions block? You can do this now and come back, or skip and add it before your first run."
 
+**Token usage tracking (optional but recommended):**
+
+The pipeline can track actual token consumption per run. Each run writes a `run-metrics-<date>.json` file to your output folder with structural metrics (roles processed, agents invoked). A Stop hook captures the real token counts when the session closes and writes them into the same file.
+
+To enable it, add a `hooks` block alongside `permissions` in your `~/.claude/settings.json`:
+
+```json
+"hooks": {
+  "Stop": [{
+    "hooks": [{
+      "type": "command",
+      "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/log-token-usage.sh"
+    }]
+  }]
+}
+```
+
+Replace `${CLAUDE_PLUGIN_ROOT}` with the actual path to your plugin installation (shown in Claude Code's plugin settings). After a few runs, check the `run-metrics-*.json` files in your output folder to see token consumption by pipeline type, role count, and agent breakdown.
+
+Ask: "Do you want to enable token usage tracking? I can generate the exact hook block for your configuration."
+
 Confirm: "Phase 6 complete. The pipeline will run without approval prompts."
 
 ---
