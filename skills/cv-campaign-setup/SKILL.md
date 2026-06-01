@@ -31,19 +31,29 @@ This skill sets up the plugin for a new user. It builds the three reference file
 
 **Run order matters.** Phase 1 (identity) → Phase 2 (content submission) → Phase 3 (synthesis) → Phase 4 (review and interview) → Phase 5 (integration) → Phase 6 (permissions). Phases 5–6 can be deferred — the pipeline can run with Phases 1–4 complete.
 
+**Onboarding can be paused and resumed.** The Phase 4 interview in particular can take time. If the user needs to stop, they can resume later by running `/career-engine:setup --phase 4`. The state of `03-framework.md` is preserved between sessions — sections already confirmed have no `[DRAFT]` or `[REVIEW]` markers; sections still needing work do. The pre-flight check uses this to report progress accurately.
+
 ---
 
 ## Pre-flight — check current state
 
-Before doing anything, scan the three reference files for unfilled `{{...}}` placeholders:
+Before doing anything, assess what has been completed:
 
-```bash
-grep -r "{{USER_" ${CLAUDE_PLUGIN_ROOT}/references/
-```
+1. Scan for unfilled identity placeholders:
+   ```bash
+   grep -r "{{USER_" ${CLAUDE_PLUGIN_ROOT}/references/
+   ```
 
-- If all three files are fully configured: ask the user which phase they want to revisit.
-- If partially complete: report which phases are done and which need work, then go to the first incomplete phase.
-- If nothing is configured: start at Phase 1.
+2. Check `03-framework.md` for `[DRAFT]` or `[REVIEW]` markers — these indicate sections the interview hasn't confirmed yet.
+
+3. Check whether the output folder and database have been configured (Phase 5).
+
+Report to the user:
+- Which phases are complete
+- Which phases are incomplete or partially done (including how many `[DRAFT]`/`[REVIEW]` sections remain in `03-framework.md`)
+- Whether the integration is configured
+
+If resuming a partial setup, skip completed phases and go directly to the first incomplete one. If the user says they want to continue a previous interview session, load `03-framework.md`, identify remaining `[DRAFT]`/`[REVIEW]` sections, and pick up the interview from there.
 
 ---
 
@@ -173,6 +183,19 @@ The interview has two purposes: fill gaps the materials left, and surface things
 **Track what's missing from each section of `03-framework.md` and `02-candidate-background.md`. Ask about the most important gaps first.**
 
 Core areas to cover:
+
+**Voice, tone, and writing preferences (always ask — even if materials were provided)**
+
+These questions cannot be reliably inferred from a CV. They shape how every letter sounds and how agents calibrate register. Ask all of them.
+
+- How do you want to come across in a cover letter — formal and structured, or warm and direct? Or somewhere specific between those?
+- Short punchy sentences, or longer flowing ones? Or does it depend on the audience?
+- Is there anything that drives you absolutely crazy in AI-generated writing — phrases, structures, tones you'd never use?
+- How do you talk about your work when you're explaining it to someone you respect, not selling yourself? (A quote or example if they have one.)
+- Are there any words or phrases you genuinely use and want preserved — not polished away?
+- How do you want to sound to a technical founder vs. a senior recruiter vs. a VP of Sales? Are those registers the same for you, or different?
+
+Write the answers into `03-framework.md` §Voice and tone and §Voice samples. If the user provides actual quotes or phrases, capture them verbatim.
 
 **Positioning and voice (if not clear from materials)**
 - How would you describe what you do in one sentence — to a technical founder, not a recruiter?

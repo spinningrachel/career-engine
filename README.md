@@ -420,7 +420,9 @@ Status drives what the pipeline does with a role. The values and their meanings 
 
 ### Required properties
 
-The following properties must exist with these exact names. The pipeline writes to them by name — renaming any column breaks the integration without an error.
+The following properties must exist with these exact names. The pipeline writes to them by name — renaming any column breaks the integration without an error. **Onboarding (`/career-engine:setup --phase 5`) configures your database connection and guides you through setting these up**, including providing the Notion template and the column schema for Google Sheets.
+
+You can add as many additional custom properties as you want — for your own notes, tracking, or workflow purposes. The pipeline ignores columns it doesn't recognize. The only constraint is that the required properties below must be present and not renamed.
 
 | Property | Type | Set by | Purpose |
 |---|---|---|---|
