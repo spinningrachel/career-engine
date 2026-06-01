@@ -345,29 +345,57 @@ The orchestrator delivers a single summary in chat covering any validation issue
 
 ## Pipelines and modes
 
-The pipeline has two independent dimensions that combine to determine what runs.
+The plugin has three pipelines, each serving a distinct phase of the job search. Which one runs depends on how you trigger it and what Status the roles carry in your job tracking database.
 
-### Pipelines
+### CV Campaign
 
-Pipeline is specified in your chat command, not in a Notion property. All `Interested` roles default to Standard unless you specify otherwise.
+The CV Campaign pipeline produces tailored CVs and cover letters. It runs against roles with Status = `Interested`, processes up to five per run in priority order, and writes results back to Notion when each role completes.
 
-| Pipeline | How to trigger | Outputs |
+Two variants exist within this pipeline:
+
+| Variant | How to trigger | Outputs |
 |---|---|---|
 | **Standard** | `/cv-campaign` (no flags) | CV + cover letter + reviewer feedback per role |
-| **Reframe only** | Specify "reframe only" in chat | CV only — no cover letter |
-| **Now** | `/cv-campaign --now <url>` | CV + cover letter, no Notion required |
+| **Reframe only** | Specify "reframe only" in chat | CV only — no cover letter produced |
 
-### Modes
+The `--now` flag runs the Standard variant against a single role without a job tracking database. Pass a URL or paste a JD directly. No Notion writeback occurs.
 
-Mode is determined by the role's Status in Notion.
+```
+/cv-campaign --now https://jobs.example.com/head-of-marketing
+```
 
-| Status | Triggered by | Mode | What runs |
-|---|---|---|---|
-| `Interested` | `/cv-campaign` | From scratch | Full pipeline; all steps run fresh |
-| `Needs editing` | `/cv-campaign --edit` | Edit | Editing pipeline; starts from existing Notion content |
-| `Hold` | Coach command | Research only | Company research; no CV produced; Status → `Researched` |
+### CV Edit
 
-Any pipeline can run in either mode. A Standard role with `Needs editing` runs the editing pipeline against the existing CV.
+The CV Edit pipeline improves existing outputs for roles you've flagged for revision. It never starts from scratch — it reads the existing CV text, cover letter text, and coach properties from the Notion row, runs the employment coach to verify and update its strategic properties, then routes the role through the appropriate writing agents to improve what's there.
+
+Trigger it with the `--edit` flag or by saying "edit my CVs" in chat. The pipeline processes all roles with Status = `Needs editing`.
+
+```
+/cv-campaign --edit
+```
+
+### Intake
+
+The Intake pipeline runs market intelligence on roles you're researching but haven't committed to applying for. It operates on roles with Status = `Hold`, researches each company (competitive landscape, funding, hiring manager, culture signals), writes coach properties to Notion, and updates Status to `Researched`. No CVs are produced.
+
+Trigger it with the coach command or natural language:
+
+```
+Research my Hold roles.
+Run market intelligence.
+```
+
+### Status and pipeline routing
+
+Status in your job tracking database determines which pipeline processes a role.
+
+| Status | Processed by | What happens |
+|---|---|---|
+| `Hold` | Intake | Company research; strategic properties written; Status → `Researched` |
+| `Interested` | CV Campaign | Full CV + cover letter pipeline; Status → `CV Ready for Review` |
+| `Needs editing` | CV Edit | Existing outputs improved; Status → `CV Ready for Review` |
+| `CV Ready for Review` | — | Awaiting your review; pipeline does not process these |
+| `Applied` | — | Complete; pipeline does not process these |
 
 ---
 
