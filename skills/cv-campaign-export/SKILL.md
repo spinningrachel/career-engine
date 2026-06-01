@@ -16,7 +16,7 @@ This skill governs all DOCX production in the cv-campaign pipeline. Load it befo
 cv-writer outputs **styled markdown** using pandoc's `custom-style` div and span syntax. The pipeline converts it to `.docx` at Step 6 using pandoc with the `.dotx` reference templates. A short post-processing script then updates the role-specific Subtitle in the CV document header.
 
 **Templates (in `./references/`):**
-- `{{CV_TEMPLATE_FILE}}` — CV reference template. Contains all custom styles, {{USER_FIRST_NAME}}'s name and contact info in the document header, and correct formatting throughout.
+- `rachel-{{USER_LAST_NAME}}.dotx` — CV reference template. Contains all custom styles, {{USER_FIRST_NAME}}'s name and contact info in the document header, and correct formatting throughout.
 - `cover-letter-template.dotx` — Cover letter reference template. Contains header and styles.
 
 Neither template should be read into context. Use them only as pandoc `--reference-doc` arguments.
@@ -36,7 +36,7 @@ Run these steps in sequence. All bash commands run directly — no agent spawn n
 
 **Plugin dir:** the directory containing `agents/`, `skills/`, and `references/` — typically the plugin root.
 
-**Output dir:** `{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/`
+**Output dir:** `/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-<YYYY-MM-DD>/`
 
 **Company directory:** Each role's files go in a subdirectory named after the hiring company. The subdirectory name is derived from the Company property: lowercase, spaces replaced with hyphens, non-alphanumeric-or-hyphen characters stripped, consecutive hyphens collapsed. If the result is empty or the company is unknown, use `unknown-company`.
 
@@ -158,7 +158,7 @@ Hebrew DOCX files are produced inline in Step 6H (Standard/Edit pipelines) or St
 - `cvHe.dotm` — Hebrew CV reference template (macro-enabled)
 - `he-letter.dotx` — Hebrew cover letter reference template
 
-Full path: `{{WORD_TEMPLATES_PATH}}/`
+Full path: `/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized/`
 
 Both Hebrew templates support RTL formatting. Use `--reference-doc` with these templates — do not use pandoc's default template for Hebrew output.
 
@@ -174,7 +174,7 @@ lang: he
 **Conversion steps for Hebrew CV:**
 
 ```bash
-HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
+HE_TEMPLATES="/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized"
 
 # 1. Concatenate Hebrew CV markdown with Hebrew footer
 cat /tmp/he-<cv_filename>.md \
@@ -195,7 +195,7 @@ python3 "${CLAUDE_PLUGIN_ROOT}/skills/cv-campaign-export/scripts/update-subtitle
 **Conversion steps for Hebrew cover letter:**
 
 ```bash
-HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
+HE_TEMPLATES="/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized"
 
 pandoc /tmp/he-<cl_filename>.md \
   --reference-doc="${HE_TEMPLATES}/he-letter.dotx" \
@@ -203,7 +203,7 @@ pandoc /tmp/he-<cl_filename>.md \
 ```
 
 All files save to the role's company subdirectory:
-`{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/<company_dir>/`
+`/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-<YYYY-MM-DD>/<company_dir>/`
 
 ---
 

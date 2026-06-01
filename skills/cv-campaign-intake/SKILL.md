@@ -22,7 +22,7 @@ This skill covers Steps 0 through 0.9 of the cv-campaign pipeline. All of these 
 **First — fetch the database schema.** Run `notion-fetch` on the Job Applications database before doing anything else:
 
 ```
-notion-fetch id="{{NOTION_DATABASE_ID}}"
+notion-fetch id="3465ef1aa63480a283cfdf847cb47404"
 ```
 
 Extract the SQLite `CREATE TABLE` block from the response. This is your **schema reference** for the entire run — the authoritative list of property names and valid select option values. Keep it in context.
@@ -36,12 +36,12 @@ Extract the SQLite `CREATE TABLE` block from the response. This is your **schema
 **Then — fetch roles.** Use `notion-query-database-view` with this exact view URL:
 
 ```
-https://www.notion.so/{{NOTION_DATABASE_ID}}?v={{NOTION_VIEW_ID}}
+https://www.notion.so/3465ef1aa63480a283cfdf847cb47404?v=35e5ef1aa63480ff9b4e000cbcd67aec
 ```
 
 This view returns `Hold` roles. Do not construct your own filter — use the view directly. Do not fetch the full database. Verify that returned rows have Status = `Hold` before processing — skip any row with a different status.
 
-**When loaded by the cv-campaign orchestrator:** use the Interested view instead — `v={{NOTION_VIEW_ID}}`. The orchestrator specifies this override in its Pipeline Flow instructions. All other steps in this skill apply unchanged.
+**When loaded by the cv-campaign orchestrator:** use the Interested view instead — `v=35e5ef1aa6348032abdb000ca4cf71ac`. The orchestrator specifies this override in its Pipeline Flow instructions. All other steps in this skill apply unchanged.
 
 Skip any entry where neither a Job URL nor job description details in the RTF body of the record are populated.
 

@@ -76,7 +76,7 @@ Confirm: "Phase 1 complete. Your identity and contact details are set across all
 
 **Purpose:** Every CV bullet, proof point, and strategic property the agents produce must trace to this data. Without it, agents will fabricate.
 
-Work through `who-rachel-is.md` Section 7 (Role Facts) systematically. For each role slot:
+Work through `qa-bank.md` (Role Facts) systematically. For each role slot:
 
 1. Ask: "Let's add your most recent role. What company, title, and dates?"
 2. Ask for: reporting structure, team size, key metrics, 2–3 bullet-point achievements

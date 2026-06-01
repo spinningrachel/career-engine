@@ -12,9 +12,9 @@ description: CV writing reference for {{USER_FIRST_NAME}}'s job search pipeline.
 | File | Purpose | When to load |
 |---|---|---|
 | `references/cv-example.pdf` | Approved full CV (HoneyBook application, May 2026) | Always — calibrate layout, bullet density, summary length, and quality standard against this. Do not copy content. |
-| `references/{{CV_TEMPLATE_FILE}}` | The Word template used for DOCX export | Reference when formatting output or checking style annotations |
-| `who-rachel-is.md` Section 10 | Portfolio — work samples with direct PDF links | When the role signals that demonstrated output would strengthen the application |
-| `who-rachel-is.md` Section 9 | Testimonials — client endorsements | For freelance, consulting, or fractional roles where third-party validation is relevant |
+| `references/rachel-{{USER_LAST_NAME}}.dotx` | The Word template used for DOCX export | Reference when formatting output or checking style annotations |
+| `qa-bank.md` (Portfolio) | Portfolio — work samples with direct PDF links | When the role signals that demonstrated output would strengthen the application |
+| `qa-bank.md` (Testimonials) | Testimonials — client endorsements | For freelance, consulting, or fractional roles where third-party validation is relevant |
 
 ---
 
@@ -62,7 +62,7 @@ ATS systems identify sections by heading name. Non-standard names cause misclass
 
 ## Bullet Writing Formula
 
-Use this when writing a new bullet — i.e., when no approved bullet in `who-rachel-is.md` Section 7 maps to a JD requirement. The approved bullets are always the first choice; this formula governs new composition only.
+Use this when writing a new bullet — i.e., when no approved bullet in `qa-bank.md` (Role Facts) maps to a JD requirement. The approved bullets are always the first choice; this formula governs new composition only.
 
 ### The XYZ formula
 
@@ -198,7 +198,7 @@ This argument governs every CV produced for a Reframe role. It is not in the sum
 
 **Summary:** Do not frame {{USER_FIRST_NAME}} as an applicant for the technical writer role. Frame her as the person the company needs when it reaches the inflection point — "you don't need a writer, you need this." Use the standard summary template but anchor it in documentation architecture and GTM strategy, not writing as a craft. The summary should make it clear that {{USER_FIRST_NAME}} builds the infrastructure, not just the content.
 
-**Bullet selection:** Choose bullets that show breadth the company cannot get from a solo writer: GTM strategy, product marketing, developer portals that cut onboarding time, compliance content that enabled sales, knowledge systems that served multiple functions. Prioritize Lytx, VL, and Coro over earlier roles for this framing. The approved bullets from `who-rachel-is.md` Section 7 are the starting point — select for breadth and strategic impact, not writing craft.
+**Bullet selection:** Choose bullets that show breadth the company cannot get from a solo writer: GTM strategy, product marketing, developer portals that cut onboarding time, compliance content that enabled sales, knowledge systems that served multiple functions. Prioritize Lytx, VL, and Coro over earlier roles for this framing. The approved bullets from `qa-bank.md` (Role Facts) are the starting point — select for breadth and strategic impact, not writing craft.
 
 **Skills section:** Lean toward strategy and system-building skills (GTM, documentation architecture, product marketing, knowledge infrastructure). Writing tools belong but do not lead.
 

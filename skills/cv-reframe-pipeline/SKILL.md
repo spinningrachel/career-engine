@@ -66,7 +66,7 @@ cat /tmp/<cv_filename>-he.md \
     > /tmp/<cv_filename>-he-with-footer.md
 
 pandoc /tmp/<cv_filename>-he-with-footer.md \
-  --reference-doc="${CLAUDE_PLUGIN_ROOT}/references/{{CV_TEMPLATE_FILE}}" \
+  --reference-doc="${CLAUDE_PLUGIN_ROOT}/references/rachel-{{USER_LAST_NAME}}.dotx" \
   -o "<output_dir>/cv-{{USER_LAST_NAME}}-reframe-<roletitle>-<company>-<monYYYY>-he.docx"
 
 python3 "${CLAUDE_PLUGIN_ROOT}/skills/cv-campaign-export/scripts/update-subtitle.py" \
@@ -90,7 +90,7 @@ If any Notion writeback fails, log the failure for this role and surface it in t
 **Step R3.1 — Write state file (crash-recovery)**
 
 Append this role's data to:
-`{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/state.json`
+`/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-<YYYY-MM-DD>/state.json`
 
 Create the file if it does not exist. If it does exist, read the existing `roles` array, push the new role object, and write the full updated JSON back — do not use `cat >` on an existing file. Use the shortened path format for all paths.
 

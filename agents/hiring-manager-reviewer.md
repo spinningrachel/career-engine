@@ -14,7 +14,7 @@ Load all of these before reviewing.
 
 | File | What it contains |
 |---|---|
-| `references/who-rachel-is.md` | Source of truth for {{USER_FIRST_NAME}}'s background. Section 1: fabrication rule and JD guardrails. Section 7: role facts and approved bullets. Use to distinguish real gaps from framing gaps — a claim that looks thin may be documented here. Do not use it to suggest experience {{USER_FIRST_NAME}} does not have; only to assess whether a concern is closeable through reframing. |
+| `references/who-rachel-is.md` | Source of truth for {{USER_FIRST_NAME}}'s background. Section 1: fabrication rule and JD guardrails. `qa-bank.md`: role facts and approved bullets. Use to distinguish real gaps from framing gaps — a claim that looks thin may be documented here. Do not use it to suggest experience {{USER_FIRST_NAME}} does not have; only to assess whether a concern is closeable through reframing. |
 | `skills/cv-writing/SKILL.md` | The same rules cv-writer used — load to vet output against the same standard. |
 
 **Hard exclusions:** Do not surface red flags from the JD (company concerns, culture signals, etc.) — {{USER_FIRST_NAME}} has already decided to apply. Do not produce a standalone list of skills {{USER_FIRST_NAME}} should acquire. Gaps in Part 2 must be evidence-based and tied to a specific JD requirement. Any gap that cannot be closed through reframing will be left unaddressed by cv-writer — not fabricated.

@@ -62,15 +62,15 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 - Lightrun appears somewhere in the CV — either as a standalone entry in `## CONSULTING` or as a bullet within Contentabl — FAIL if absent entirely
 - Firebolt appears somewhere in the CV — either as a standalone entry in `## CONSULTING` or as a bullet within Contentabl — FAIL if absent entirely
 - The "Earlier:" line appears as the final entry inside `## EXPERIENCE`, before the `## CONSULTING` section header — FAIL if Earlier appears after CONSULTING
-- Coro target market matches `who-rachel-is.md` Section 7
-- No app/tool names inside bullets: HubSpot, Salesforce, Salesloft, Moosend, Webflow, Mintlify, Chameleon, HeyReach, ZoomInfo, Chorus.ai, Notion, Jira, Slack — approved Section 7 bullets are exempt
+- Coro target market matches `qa-bank.md` (Role Facts)
+- No app/tool names inside bullets: HubSpot, Salesforce, Salesloft, Moosend, Webflow, Mintlify, Chameleon, HeyReach, ZoomInfo, Chorus.ai, Notion, Jira, Slack — approved bullets from `qa-bank.md` are exempt
 - Every named role has a RoleOverview immediately below its RoleTitle — count must match (Earlier: exempt)
 
 **Structure**
 - No years on the Earlier line (Education/Languages are script-injected — skip them)
 - No header or label between the SUMMARY banner and the summary text
 - No opening verb appears 3+ times — common offenders: Built, Led, Developed, Created, Managed, Drove, Owned
-- No 4+ word verbatim JD phrases in new bullets; standard terms like "go-to-market" are fine; approved Section 7 bullets exempt; quote both phrases when flagging
+- No 4+ word verbatim JD phrases in new bullets; standard terms like "go-to-market" are fine; approved bullets from `qa-bank.md` exempt; quote both phrases when flagging
 
 ---
 

@@ -89,7 +89,7 @@ The close must ask for something. Not permission to be considered — a conversa
 
 ## Standalone Invocation
 
-**Pipeline users: skip to Start Here.** If called directly without orchestrator context: read `who-rachel-is.md` Section 6 for approved CV summaries and Section 7 for role facts; derive framing from the JD; proceed without a final CV.
+**Pipeline users: skip to Start Here.** If called directly without orchestrator context: read `qa-bank.md` (Approved CV Summaries) for approved CV summaries and Section 7 for role facts; derive framing from the JD; proceed without a final CV.
 
 ---
 
@@ -111,8 +111,8 @@ Load all of these before writing a single word.
 
 | File | What it contains |
 |---|---|
-| `{{ICLOUD_DELIVERED_LETTERS_PATH}}` | **Mandatory — read before writing a single word.** Glob this directory to see all delivered companies. Read the cover letters from the most domain-similar or role-similar folders. These are {{USER_FIRST_NAME}}'s actual sent letters — the best available voice anchors. Prioritise over all worked examples. |
-| `references/who-rachel-is.md` | Source of truth for {{USER_FIRST_NAME}}'s background. Section 1: fabrication rule — read first. Section 6: approved CV summaries. Section 7: role facts. Section 9: testimonials (freelance/consulting letters). Section 10: portfolio and delivered letters archive. |
+| `/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/final-pdfs-delivered` | **Mandatory — read before writing a single word.** Glob this directory to see all delivered companies. Read the cover letters from the most domain-similar or role-similar folders. These are {{USER_FIRST_NAME}}'s actual sent letters — the best available voice anchors. Prioritise over all worked examples. |
+| `references/who-rachel-is.md` | Source of truth for {{USER_FIRST_NAME}}'s background. Section 1: fabrication rule — read first. `qa-bank.md`: approved CV summaries. `qa-bank.md`: role facts. `qa-bank.md`: testimonials (freelance/consulting letters). `qa-bank.md`: portfolio and delivered letters archive. |
 | `references/framework.md` | **Primary letter-writing material — not background.** Professional philosophy, methodology, voice, and domain narratives. §Professional methodology and POV: research-first methodology, PLG framework, documentation philosophy, compliance GTM, fast-learning argument, AI operating model — each sufficient to anchor a letter's strategic argument. §Domain depth: per-vertical narratives for fit and adaptability framing. §Voice and tone: voice samples and tone calibration. Load alongside who-rachel-is.md for every letter. See Ethos as Strategy below. |
 | `references/qa-bank.md` | **Load before generating any Q&A questions.** {{USER_FIRST_NAME}}'s reusable answers indexed by topic — buyer patterns, domain experience, methodology, personal voice. If an answer exists here, use it directly and do not ask {{USER_FIRST_NAME}} again. Only send questions to Notion Q&A that have no answer in the bank. |
 | `skills/cover-letter/SKILL.md` | Writing mechanics, letter structure, claims and framing rules, use-case structure templates, annotated exemplar, opening paragraph pre-flight Q1/Q2 test, tech writer reframe argument. Forbidden phrases, forbidden structures, and fabrication traps are in `cover-letter-self-check.md`. Working reference — not a one-time read. |
@@ -124,7 +124,7 @@ Load all of these before writing a single word.
 
 The frameworks documented there — research-first methodology, PLG diagnostic, compliance-driven GTM, fast-learning argument, documentation philosophy, AI systems-building, drumbeat marketing — each contain enough substantive conviction and proof to anchor an entire cover letter. This is {{USER_FIRST_NAME}}'s professional ethos. Ethos = strategy. These are not flavor notes added after credentials are established. They are the strategic argument itself, expressed as operating philosophy.
 
-**For senior roles especially:** Hiring managers evaluating Director, Head, or VP candidates are not primarily looking for credential lists — they are evaluating whether the candidate thinks at the right altitude. A letter that leads with how {{USER_FIRST_NAME}} approaches the function (methodology, conviction, diagnostic discipline) signals seniority more clearly than a letter that stacks company names and outcomes. When a role is senior, look to `framework.md` §Professional methodology and POV before looking to `who-rachel-is.md` Section 7.
+**For senior roles especially:** Hiring managers evaluating Director, Head, or VP candidates are not primarily looking for credential lists — they are evaluating whether the candidate thinks at the right altitude. A letter that leads with how {{USER_FIRST_NAME}} approaches the function (methodology, conviction, diagnostic discipline) signals seniority more clearly than a letter that stacks company names and outcomes. When a role is senior, look to `framework.md` §Professional methodology and POV before looking to `qa-bank.md` (Role Facts).
 
 **For roles with gaps — primarily demand gen:** When the coach's gap handling flags demand gen as the primary gap, the strategic response is not to apologize or work around it. It is to choose between two postures, or combine them:
 
@@ -200,8 +200,8 @@ Jump directly to the relevant section. Read only the one you will execute.
 
 ### Before writing
 
-1. **Background facts** — draw VL exit details and Coro scale from `who-rachel-is.md` Section 7. Use these facts woven into sentences doing a specific job for this letter — never as standalone credential paragraphs.
-2. **Delivered letters archive** — check Section 10 for previously sent letters. Read any for similar domains or company types. These are the best voice anchors available — prioritise over worked examples.
+1. **Background facts** — draw VL exit details and Coro scale from `qa-bank.md` (Role Facts). Use these facts woven into sentences doing a specific job for this letter — never as standalone credential paragraphs.
+2. **Delivered letters archive** — check `qa-bank.md` for previously sent letters. Read any for similar domains or company types. These are the best voice anchors available — prioritise over worked examples.
 3. **Worked examples** — read all four in `cover-letter/SKILL.md` before writing.
 4. **Self-characterization** — if the JD has a "you'll thrive here if" section, extract 2–3 traits with real {{USER_FIRST_NAME}} proof and weave into the letter body.
 5. **Four Differentiators selection** — read the Four Differentiators in `who-rachel-is.md` Section 2 (Builder, Leader, Learner, Data-Driven). Identify which 1–3 are genuinely relevant to this role's mandate. The letter body foregrounds those; the others are absent or reduced to a single clause. Do not list all four. Selection is based on what this specific role is asking for — not {{USER_FIRST_NAME}}'s preference.

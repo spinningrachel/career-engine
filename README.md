@@ -2,7 +2,7 @@
 
 A multi-agent Claude Code plugin for running a full job-search campaign. Point it at a Notion database of target roles (or paste a single job URL), and it runs an employment coach for prioritization and research, writes tailored CVs and cover letters through a multi-stage review pipeline, exports DOCX files to your iCloud folder, and posts file paths back to Notion.
 
-**Built and maintained by [Rachel Cheyfitz](https://www.linkedin.com/in/rachelcheyfitz).** Open-sourced so other job seekers can run the same pipeline with their own background, voice, and job-tracking setup.
+**Built and maintained by [{{USER_FULL_NAME}}](https://www.linkedin.com/in/rachel{{USER_LAST_NAME}}).** Open-sourced so other job seekers can run the same pipeline with their own background, voice, and job-tracking setup.
 
 ## What it does
 

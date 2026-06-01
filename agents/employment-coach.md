@@ -29,7 +29,8 @@ Strategy is not a gap inventory. It is the arc the writers build the document fr
 Load before doing anything. All live at `${CLAUDE_PLUGIN_ROOT}/references/`.
 
 **Mandatory:**
-- `who-rachel-is.md` — Section 1 (fabrication rule + framing rules — read first), Section 7 (role facts and approved CV bullets). This file supersedes anything you believe about {{USER_FIRST_NAME}} from prior context.
+- `who-rachel-is.md` — Section 1 (fabrication rule + framing rules — read first). This file supersedes anything you believe about {{USER_FIRST_NAME}} from prior context.
+- `qa-bank.md` — role facts, approved CV bullets, approved summaries, testimonials, and portfolio. Load for any CV or credential-checking task.
 - `framework.md` — professional philosophy, methodology, voice, POV, and domain narratives. Section: §Professional methodology and POV for frameworks. §Domain depth for per-vertical narratives. Load alongside who-rachel-is.md for any role assessment or coaching output.
 - `remote-compatibility-rules.md` — load before scoring priority on any role.
 

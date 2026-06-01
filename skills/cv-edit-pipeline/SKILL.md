@@ -16,7 +16,7 @@ The key difference from the main pipeline: **agents are not starting from scratc
 **Outputs go to the iCloud output folder — never to a session scratchpad.**
 
 The only valid output destination is:
-`{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/`
+`/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-<YYYY-MM-DD>/`
 
 Do not create a local output directory inside a session path (`local_*/outputs/` or similar). Files written there do not sync and are not findable.
 
@@ -24,7 +24,7 @@ Before starting, run this path verification:
 
 ```bash
 # Verify iCloud output root exists — if not, stop immediately
-ls "{{ICLOUD_OUTPUT_PATH}}/" 2>/dev/null \
+ls "/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/" 2>/dev/null \
   && echo "iCloud output path confirmed." \
   || { echo "ERROR: iCloud output root not found. Aborting."; exit 1; }
 ```
@@ -39,7 +39,7 @@ Then confirm:
 
 ## Step E0 — Fetch roles for editing
 
-Query the Job Applications database (ID: `{{NOTION_DATABASE_ID}}`). Filter for entries where:
+Query the Job Applications database (ID: `3465ef1aa63480a283cfdf847cb47404`). Filter for entries where:
 - Status is `Needs editing`
 
 For each matching entry, capture the full row payload including:
@@ -267,7 +267,7 @@ cat > /tmp/he-<cl_filename>.md << 'MARKDOWN_EOF'
 <Hebrew cover letter markdown from agent>
 MARKDOWN_EOF
 
-HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
+HE_TEMPLATES="/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized"
 
 # Hebrew CV — concatenate with Hebrew footer, then convert
 cat /tmp/he-<cv_filename>.md \
@@ -337,7 +337,7 @@ Convert the Hebrew CV using the Hebrew DOCX production protocol from `cv-campaig
 ## State file (crash-recovery resilience)
 
 After each role completes, append its data to:
-`{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/state.json`
+`/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-<YYYY-MM-DD>/state.json`
 
 Use the same format as the main pipeline (see cv-campaign-role-steps Step 7b). The `session_date` field must reflect today's date.
 

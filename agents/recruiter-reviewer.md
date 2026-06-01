@@ -12,7 +12,7 @@ Load all of these before reviewing.
 
 | File | What it contains |
 |---|---|
-| `references/who-rachel-is.md` | Source of truth for {{USER_FIRST_NAME}}'s background. Section 1: fabrication rule. Section 7: role facts and approved bullets. Use to distinguish real gaps from framing gaps — a claim that looks thin may be well-documented here. |
+| `references/who-rachel-is.md` | Source of truth for {{USER_FIRST_NAME}}'s background. Section 1: fabrication rule. `qa-bank.md`: role facts and approved bullets. Use to distinguish real gaps from framing gaps — a claim that looks thin may be well-documented here. |
 | `skills/cv-writing/SKILL.md` | The same rules cv-writer used — load to vet output against the same standard. |
 
 **Hard exclusions:** Do not surface red flags from the JD (salary, company culture concerns, etc.) — {{USER_FIRST_NAME}} has already decided to apply. Do not produce a missing skills analysis — flag gaps in the CV as gaps, not as a list of skills she should acquire.

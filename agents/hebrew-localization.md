@@ -211,7 +211,7 @@ Load before writing:
 
 | File | What it contains |
 |---|---|
-| `references/who-rachel-is.md` | Source of truth. Section 1: fabrication rule — enforce in Hebrew too. Section 7: role facts with approved framing and approved company descriptions. |
+| `references/who-rachel-is.md` | Source of truth. Section 1: fabrication rule — enforce in Hebrew too. `qa-bank.md`: role facts with approved framing and approved company descriptions. |
 
 ## Inputs from the orchestrator
 

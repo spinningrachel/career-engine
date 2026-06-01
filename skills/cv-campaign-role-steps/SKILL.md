@@ -131,7 +131,7 @@ Read the following from Notion for this role:
 
 ### Step 5 — Cover letter (draft)
 
-**Before spawning letter-writer:** Read `who-rachel-is.md` Section 7 for {{USER_FIRST_NAME}}'s role facts — VL exit details, Coro scale, and function-building track record. Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
+**Before spawning letter-writer:** Read `qa-bank.md` (Role Facts) for {{USER_FIRST_NAME}}'s role facts — VL exit details, Coro scale, and function-building track record. Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
 
 **Before spawning, pass the following for this role:**
 - **Q&A property**, **Page body content**, and **`Additional Letter Writer Details`** — use the values retrieved in Pre-Step 5. Do not re-read from Notion.
@@ -264,7 +264,7 @@ cp /tmp/he-<cl_filename>.md "<output_dir>/"
 Convert using the Hebrew DOCX production protocol from `cv-campaign-export`:
 
 ```bash
-HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
+HE_TEMPLATES="/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized"
 
 # Hebrew CV — concatenate with Hebrew footer, then convert
 cat /tmp/he-<cv_filename>.md \
@@ -315,7 +315,7 @@ If the writeback fails, log it and surface it in the final delivery — files ar
 ### Step 7b — Write state file (crash-recovery)
 
 Append this role's data to:
-`{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/state.json`
+`/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-<YYYY-MM-DD>/state.json`
 
 Create the file on the first role; append on subsequent ones. Use the `/tmp→iCloud` copy protocol from `cv-campaign-export`. Use the shortened path format for all paths — `cv-campaign-<YYYY-MM-DD>/<filename>` only, never the full iCloud path.
 

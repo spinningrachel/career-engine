@@ -26,19 +26,19 @@ The orchestrator uses Bash to write files (markdown, DOCX, state.json, feedback)
 **Outputs go to {{USER_FIRST_NAME}}'s iCloud folder — never to a session scratchpad.**
 
 The only valid output destination is:
-`{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/`
+`/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-<YYYY-MM-DD>/`
 
 **Mandatory path verification — run this before processing the first role:**
 
 ```bash
-OUTPUT_DIR="{{ICLOUD_OUTPUT_PATH}}/cv-campaign-$(date +%Y-%m-%d)"
+OUTPUT_DIR="/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-$(date +%Y-%m-%d)"
 mkdir -p "$OUTPUT_DIR"
-# Verify — output root must exist (was confirmed during setup)
-ls "{{ICLOUD_OUTPUT_PATH}}" || { echo "ERROR: Output path not found. Run /cv-campaign:setup to configure. Aborting."; exit 1; }
+# Verify — if this path does not contain "Mobile Documents", stop immediately
+echo "$OUTPUT_DIR" | grep -q "Mobile Documents" || { echo "ERROR: Output dir is not iCloud. Aborting."; exit 1; }
 echo "Output dir confirmed: $OUTPUT_DIR"
 ```
 
-If this check fails, **stop the run immediately** and report the error to {{USER_FIRST_NAME}}. The output path is configured during setup (`/cv-campaign:setup`). Do not fall back to any other path. Do not use `./outputs/`, relative paths, or any path containing "local-agent-mode-sessions" or "Application Support".
+If this check fails or the path does not contain "Mobile Documents", **stop the run immediately** and report the error to {{USER_FIRST_NAME}}. Do not proceed and do not fall back to any other path. Do not use `./outputs/`, relative paths, or any path containing "local-agent-mode-sessions" or "Application Support".
 
 **Three to five files per role, one file per run.**
 
@@ -65,9 +65,9 @@ This rule governs every agent that touches cover letter content:
 
 ## Configuration
 
-**Job Applications database:** Notion database ID `{{NOTION_DATABASE_ID}}`. Source of job descriptions and destination for per-role updates.
+**Job Applications database:** Notion database ID `3465ef1aa63480a283cfdf847cb47404`. Source of job descriptions and destination for per-role updates.
 
-**Output folder:** `{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/`
+**Output folder:** `/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-<YYYY-MM-DD>/`
 
 Each role's files go in a subdirectory inside the campaign folder named after the hiring company (see company directory naming convention in `cv-campaign-export`). After all files for a role are produced and verified, the orchestrator writes the file directory URL to the `Draft Directory` URL property on the Notion row. All English and Hebrew files for the role are accessible from that directory URL.
 
@@ -174,7 +174,7 @@ Roles with `Priority` already set are always selected into the queue before unsc
 
 Run the queue pipeline first (`cv-campaign-intake`). When the processing queue is built and {{USER_FIRST_NAME}} has been briefed, run the per-role pipeline for each role in queue order.
 
-**View URL override for cv-campaign-intake:** When `cv-campaign-intake` runs as part of this pipeline, it must query `Interested` roles, not `Hold`. Override the view URL in Step 0 to: `https://www.notion.so/{{NOTION_DATABASE_ID}}?v={{NOTION_VIEW_ID}}`. The intake skill's default view returns Hold roles — the orchestrator specifies this override explicitly. Queue selection order also differs in orchestrator mode: scored roles first (ordered 1 → 6), then unscored (per the skill's orchestrator-mode rules in Step 0.7).
+**View URL override for cv-campaign-intake:** When `cv-campaign-intake` runs as part of this pipeline, it must query `Interested` roles, not `Hold`. Override the view URL in Step 0 to: `https://www.notion.so/3465ef1aa63480a283cfdf847cb47404?v=35e5ef1aa6348032abdb000ca4cf71ac`. The intake skill's default view returns Hold roles — the orchestrator specifies this override explicitly. Queue selection order also differs in orchestrator mode: scored roles first (ordered 1 → 6), then unscored (per the skill's orchestrator-mode rules in Step 0.7).
 
 **Pipeline is determined by {{USER_FIRST_NAME}}'s chat command**, not by a Notion property she sets per-role. All `Interested` roles default to the standard cv pipeline unless {{USER_FIRST_NAME}} specifies otherwise in chat. {{USER_FIRST_NAME}} can request a different pipeline for specific roles at run time.
 
@@ -228,7 +228,7 @@ Run `cv-campaign-role-steps` Steps 1 through 7d exactly as in the standard pipel
 - Step 7d (feedback file) — write as normal.
 
 **Output folder:** same as all other runs:
-`{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/`
+`/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-<YYYY-MM-DD>/`
 
 Create the folder if it does not exist (same as normal).
 
@@ -258,7 +258,7 @@ For each CV being validated:
 3. **Tagline:** Confirm the subtitle under {{USER_FIRST_NAME}}'s name is the exact role title from the JD — not a generic descriptor like "Product Marketing & GTM Leader" or "Product Marketing & GTM Leader | Visual AI". It must be the job title {{USER_FIRST_NAME}} applied for (e.g., "Head of Marketing"). Flag if absent, if it is a generic tagline, or if it differs from the JD role title.
 4. **Repetition:** Flag any opening action verb appearing more than twice. Flag any phrase appearing verbatim in more than one bullet.
 5. **Fabrication:** For every metric and specific claim in the Experience section, identify the reference file line that supports it. Flag any metric or claim that cannot be traced — especially numbers, event names, tool names, client names, and responsibilities.
-6. **JD language:** Flag any bullet that uses JD phrasing verbatim to describe something {{USER_FIRST_NAME}} did, where that language does not appear in the references. **Exemption:** skip this check for any bullet that matches a bullet in `who-rachel-is.md` Section 7 exactly or with only minor role-specific adaptation — approved bullets predate the JD and cannot have been lifted from it.
+6. **JD language:** Flag any bullet that uses JD phrasing verbatim to describe something {{USER_FIRST_NAME}} did, where that language does not appear in the references. **Exemption:** skip this check for any bullet that matches a bullet in `qa-bank.md` (Role Facts) exactly or with only minor role-specific adaptation — approved bullets predate the JD and cannot have been lifted from it.
 
 If flags found: append them to the matching role's revision log file (`revision-log-<roletitle>-<company>-<monYYYY>.md`) under a `## CV Validation Issues` section.
 If no flags: append a single line to the revision log: `CV validation passed.`
@@ -302,7 +302,7 @@ Read-only. No agents. No Notion. Just reads the filesystem.
 **Step S1 — Find the most recent run folder**
 
 ```bash
-ls -1d "{{ICLOUD_OUTPUT_PATH}}/cv-campaign-"* | sort | tail -1
+ls -1d "/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-"* | sort | tail -1
 ```
 
 If no campaign folder exists, report: "No campaign runs found."
