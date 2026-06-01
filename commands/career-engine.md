@@ -1,5 +1,5 @@
 ---
-description: "Run {{USER_FIRST_NAME}}'s CV campaign pipeline: fetch queued roles from Notion, generate tailored CVs and cover letters through a multi-agent review pipeline, and deliver DOCX files to iCloud."
+description: "Run the career-engine pipeline. Main entry point for all campaign commands."
 argument-hint: "[--edit | --coach-skills | --coach | --now <url> | --check | --review | --write-letter]"
 allowed-tools:
   # Core tools

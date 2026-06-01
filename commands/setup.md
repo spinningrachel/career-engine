@@ -1,5 +1,5 @@
 ---
-description: "First-run setup wizard for cv-campaign. Populates your profile, configures job tracking and output paths, and generates required permissions."
+description: "First-run setup wizard for career-engine. Populates your profile, configures job tracking and output paths, and generates required permissions."
 argument-hint: "[--phase <1-6> | --verify]"
 allowed-tools:
   - Read

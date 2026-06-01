@@ -1,11 +1,11 @@
-# cv-campaign
+# career-engine
 
 > **⚠️ UNDER CONSTRUCTION — EXPERIMENT AT YOUR OWN RISK**
 > This plugin is actively developed and not yet stable. Expect rough edges, incomplete features, and breaking changes between versions. Back up your reference files before updating.
 
 Job searching at scale breaks down fast. Every application takes hours to tailor, each session starts from scratch, and most AI tools make it worse: they write confidently about experience you don't have.
 
-The cv-campaign plugin runs a full multi-agent pipeline. It pulls your target roles from Notion, researches each company, drafts and reviews tailored CVs and cover letters, exports formatted Word files to your output folder, and writes results back to Notion. No supervision required.
+The career-engine plugin runs a full multi-agent pipeline. It pulls your target roles from Notion, researches each company, drafts and reviews tailored CVs and cover letters, exports formatted Word files to your output folder, and writes results back to Notion. No supervision required.
 
 One rule runs through every agent: nothing goes on the page that isn't traceable to your documented background. The system gets sharper the more you run it. Every correction feeds back into the files every agent reads before writing anything.
 
@@ -102,7 +102,7 @@ pandoc and python-docx are only required if you want formatted DOCX output. The 
 Onboarding is a one-time process that builds your three reference files from existing materials you provide. Run it after installing the plugin.
 
 ```
-/cv-campaign:setup
+/career-engine:setup
 ```
 
 The onboarding agent walks through six phases:
@@ -119,13 +119,13 @@ Phases 5 and 6 can be deferred. The pipeline runs with only phases 1–4 complet
 To re-run a specific phase later:
 
 ```
-/cv-campaign:setup --phase 4
+/career-engine:setup --phase 4
 ```
 
 To check what's been configured and what's missing:
 
 ```
-/cv-campaign:setup --verify
+/career-engine:setup --verify
 ```
 
 ### Job tracking options
@@ -206,7 +206,7 @@ Run the pipeline, no letters.
 The `--now` mode skips the job tracking database entirely. Pass a URL or paste a JD directly. No Notion writeback occurs — results go to your output folder only.
 
 ```
-/cv-campaign --now https://jobs.example.com/head-of-marketing
+/career-engine --now https://jobs.example.com/head-of-marketing
 I just found this role, write my CV: [paste JD]
 ```
 
@@ -234,8 +234,8 @@ Process the Needs editing queue.
 Direct coaching runs conversationally and does not write to Notion.
 
 ```
-/cv-campaign --coach Should I apply to this Axonius role?
-/cv-campaign --coach What's my strongest angle for Head of PMM at a Series B?
+/career-engine --coach Should I apply to this Axonius role?
+/career-engine --coach What's my strongest angle for Head of PMM at a Series B?
 ```
 
 ### Quality checks
@@ -243,8 +243,8 @@ Direct coaching runs conversationally and does not write to Notion.
 These commands run a single gatekeeper or reviewer pass on content you paste — useful for auditing an existing document.
 
 ```
-/cv-campaign --check [paste CV or cover letter + JD]
-/cv-campaign --review [paste CV or cover letter + JD]
+/career-engine --check [paste CV or cover letter + JD]
+/career-engine --review [paste CV or cover letter + JD]
 ```
 
 ### Cover letter only
@@ -252,7 +252,7 @@ These commands run a single gatekeeper or reviewer pass on content you paste —
 Writes a cover letter without running the full pipeline.
 
 ```
-/cv-campaign --write-letter [URL or paste JD]
+/career-engine --write-letter [URL or paste JD]
 ```
 
 ### Status check
@@ -260,7 +260,7 @@ Writes a cover letter without running the full pipeline.
 Reads `state.json` from the most recent run and reports which roles completed, which files were produced, and whether any steps failed. No agents run.
 
 ```
-/cv-campaign --status
+/career-engine --status
 ```
 
 ---
@@ -373,7 +373,7 @@ The CV Campaign pipeline produces tailored CVs and cover letters. It runs agains
 The `--now` flag runs the pipeline against a single role without a job tracking database. Pass a URL or paste a JD directly. No database writeback occurs.
 
 ```
-/cv-campaign --now https://jobs.example.com/head-of-marketing
+/career-engine --now https://jobs.example.com/head-of-marketing
 ```
 
 ### CV Edit
@@ -383,7 +383,7 @@ The CV Edit pipeline improves existing outputs for roles you've flagged for revi
 Trigger it with the `--edit` flag or by saying "edit my CVs" in chat. The pipeline processes all roles with Status = `Needs editing`.
 
 ```
-/cv-campaign --edit
+/career-engine --edit
 ```
 
 ### Status and pipeline routing
@@ -470,7 +470,7 @@ The `Note` field belongs to you. Agents must **never** write to this field to su
 
 All files from a run land in a campaign folder named by date: `<output_folder>/cv-campaign-<YYYY-MM-DD>/`. Each role gets its own subdirectory named after the company in kebab-case.
 
-`<output_folder>` is the path you configure during onboarding (`/cv-campaign:setup --phase 5`). It can be any local directory — iCloud, Dropbox, a standard folder, or anything else your filesystem allows. The placeholder `{{OUTPUT_FOLDER}}` in plugin files is replaced with your actual path during setup.
+`<output_folder>` is the path you configure during onboarding (`/career-engine:setup --phase 5`). It can be any local directory — iCloud, Dropbox, a standard folder, or anything else your filesystem allows. The placeholder `{{OUTPUT_FOLDER}}` in plugin files is replaced with your actual path during setup.
 
 ### File naming conventions
 
@@ -533,14 +533,14 @@ All pipeline invocations go through the `cv-campaign` command, which routes to t
 
 | Command | Behavior |
 |---|---|
-| `/cv-campaign` | Full campaign against Interested roles |
-| `/cv-campaign --edit` | Editing pipeline for Needs editing roles |
-| `/cv-campaign --now <url>` | Single role, no Notion |
-| `/cv-campaign --coach <question>` | Direct coaching, conversational |
-| `/cv-campaign --check` | Gatekeeper pass on pasted content |
-| `/cv-campaign --review` | Recruiter + HM review on pasted content |
-| `/cv-campaign --write-letter` | Cover letter only, no pipeline |
-| `/cv-campaign --status` | Read state.json, no agents |
+| `/career-engine` | Full campaign against Interested roles |
+| `/career-engine --edit` | Editing pipeline for Needs editing roles |
+| `/career-engine --now <url>` | Single role, no Notion |
+| `/career-engine --coach <question>` | Direct coaching, conversational |
+| `/career-engine --check` | Gatekeeper pass on pasted content |
+| `/career-engine --review` | Recruiter + HM review on pasted content |
+| `/career-engine --write-letter` | Cover letter only, no pipeline |
+| `/career-engine --status` | Read state.json, no agents |
 
 ### Agents
 
@@ -605,7 +605,7 @@ The pipeline runs bash commands and MCP tool calls throughout. Without pre-appro
 }
 ```
 
-Replace `<notion-tool-id>` and `<desktop-commander-id>` with the actual IDs from your Claude Code MCP configuration. The setup agent generates this block with your specific IDs — run `/cv-campaign:setup --phase 6` to get it.
+Replace `<notion-tool-id>` and `<desktop-commander-id>` with the actual IDs from your Claude Code MCP configuration. The setup agent generates this block with your specific IDs — run `/career-engine:setup --phase 6` to get it.
 
 If a `permissions` block already exists in your settings, merge the `allow` arrays rather than replacing them.
 
@@ -617,7 +617,7 @@ The pipeline always produces two outputs per role: a markdown file and (if pando
 
 The plugin ships with `references/cv-template-default.dotx`, a Word template with custom styles for pandoc DOCX export. The template controls fonts, heading sizes, color scheme, and the header layout. Microsoft Word is not required to use the DOCX — any application that opens `.docx` files works, including LibreOffice (free) and Google Docs.
 
-To use your own template instead, provide the path during setup (`/cv-campaign:setup --phase 5`). Your template must define the same custom style names — see `skills/cv-campaign-export/SKILL.md` for the full style reference.
+To use your own template instead, provide the path during setup (`/career-engine:setup --phase 5`). Your template must define the same custom style names — see `skills/cv-campaign-export/SKILL.md` for the full style reference.
 
 **Markdown output (no dependencies)**
 
@@ -630,7 +630,7 @@ The markdown files are saved to your output folder alongside the DOCX files (or 
 
 **Output folder**
 
-The output folder is configured during onboarding — it is not assumed to be iCloud. Any local path works: an iCloud folder, Dropbox, a standard local directory, or anywhere your filesystem allows. Configure it during setup (`/cv-campaign:setup --phase 5`) or update it at any time by re-running that phase.
+The output folder is configured during onboarding — it is not assumed to be iCloud. Any local path works: an iCloud folder, Dropbox, a standard local directory, or anywhere your filesystem allows. Configure it during setup (`/career-engine:setup --phase 5`) or update it at any time by re-running that phase.
 
 ### Token usage tracking
 
@@ -681,11 +681,11 @@ This section covers the most common failures and how to resolve them.
 
 ### Pipeline stops mid-run with an approval prompt
 
-The permissions block in `~/.claude/settings.json` is incomplete or missing. Run `/cv-campaign:setup --phase 6` to regenerate the exact block for your configuration, then add it to your settings.
+The permissions block in `~/.claude/settings.json` is incomplete or missing. Run `/career-engine:setup --phase 6` to regenerate the exact block for your configuration, then add it to your settings.
 
 ### "Output path not found" error
 
-The output folder path configured during setup doesn't exist or isn't accessible. Verify the path exists by running `ls` against it in your terminal. If you've moved the folder or want to change your output location, re-run setup phase 5: `/cv-campaign:setup --phase 5`.
+The output folder path configured during setup doesn't exist or isn't accessible. Verify the path exists by running `ls` against it in your terminal. If you've moved the folder or want to change your output location, re-run setup phase 5: `/career-engine:setup --phase 5`.
 
 ### DOCX files are unstyled (no formatting)
 
@@ -701,7 +701,7 @@ The employment coach drops roles whose JD isn't accessible. Common causes: the p
 
 ### Notion properties aren't updating
 
-The Notion MCP connection may have expired or the database ID is wrong. Verify the Notion MCP is connected in your Claude Code settings and the database ID in your configuration matches your actual Notion database. Re-run `/cv-campaign:setup --phase 5` if you need to reconfigure the connection.
+The Notion MCP connection may have expired or the database ID is wrong. Verify the Notion MCP is connected in your Claude Code settings and the database ID in your configuration matches your actual Notion database. Re-run `/career-engine:setup --phase 5` if you need to reconfigure the connection.
 
 ### "Gatekeeper loop exceeded" or run stalls in a loop
 
@@ -713,7 +713,7 @@ The letter-writer draws voice from two sources: your Q&A page body in Notion and
 
 ### State.json is missing after a run
 
-The run either crashed before completing or the state file write failed. Run `/cv-campaign --status` — if no state file is found, it will report that. Check the iCloud output folder directly for the campaign date folder. Partial runs can be resumed by setting the affected role's Status back to `Interested` and re-running.
+The run either crashed before completing or the state file write failed. Run `/career-engine --status` — if no state file is found, it will report that. Check the iCloud output folder directly for the campaign date folder. Partial runs can be resumed by setting the affected role's Status back to `Interested` and re-running.
 
 ---
 
