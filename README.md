@@ -32,13 +32,13 @@ A multi-agent Claude Code plugin for running a full job-search campaign. Point i
 
 The setup agent will walk you through:
 
-1. **Your profile** — populate `references/who-i-am.md` and `references/framework.md` with your background, voice, and positioning
+1. **Your profile** — populate `references/who-i-am.md` and `references/03-framework.md` with your background, voice, and positioning
 2. **Job tracking** — connect your Notion database (use the [Notion template](https://certain-espadrille-82d.notion.site/d8606ae1fb9282f4872381cd819c1abd?v=d2006ae1fb928355a14388715d96a782) for the expected schema) or set up a CSV/spreadsheet alternative
 3. **Output folder** — configure your iCloud (or local) output path
 4. **CV template** — use the included `cv-template-default.dotx` or provide your own `.dotx` file with custom styles
 5. **Permissions** — add the required bash and MCP permissions to your Claude Code settings
 
-You can also populate the reference files manually — see `references/who-i-am.md` and `references/framework.md` for the template structure with instructions at every `{{placeholder}}`.
+You can also populate the reference files manually — see `references/who-i-am.md` and `references/03-framework.md` for the template structure with instructions at every `{{placeholder}}`.
 
 ## Pipeline overview
 
@@ -249,7 +249,7 @@ The employment coach owns `Role emphasis`, `JD proof`, `Keywords`, and `Strategy
 
 ## Dependencies
 
-- **Reference files** in `references/`. All agents that write CV or cover letter content MUST read from this folder before producing any output. `candidate-rules.md` is the primary reference file and is mandatory for every writing task.
+- **Reference files** in `references/`. All agents that write CV or cover letter content MUST read from this folder before producing any output. `01-candidate-rules.md` is the primary reference file and is mandatory for every writing task.
 - **Notion** — read/write access to both databases. Configured in `.mcp.json`.
 - **iCloud** — local filesystem storage for DOCX outputs. Files are saved via `cp` to the iCloud path, which syncs automatically. No MCP configuration needed — iCloud is a local folder, not a network service.
 - **Job search MCPs** — Indeed, Dice, ZipRecruiter. Available to the employment coach. Configured in `.mcp.json`.

@@ -1,6 +1,6 @@
 # Who {{USER_FIRST_NAME}} Is
 
-**Configuration reference — load first.** Rules, guards, operational framing, and contact details. Approved career content (role facts, approved bullets, testimonials, portfolio, CV summaries) is in `references/candidate-background.md`. Professional philosophy, methodology, and domain narratives are in `references/framework.md`.
+**Configuration reference — load first.** Rules, guards, operational framing, and contact details. Approved career content (role facts, approved bullets, testimonials, portfolio, CV summaries) is in `references/02-candidate-background.md`. Professional philosophy, methodology, and domain narratives are in `references/03-framework.md`.
 
 ---
 
@@ -8,8 +8,8 @@
 
 1. [Rules](#section-1--rules) — Attribution rules, fabrication guards, framing rules, JD term guardrails. Read before doing anything.
 2. [Identity and Framing](#section-2--identity-and-framing) — Operational identity, target roles, community, framing guidance.
-3. [Professional Frameworks and Philosophy](#section-3--professional-frameworks-and-philosophy) — Extracted to `framework.md`.
-4. [Domain Depth and Verticals](#section-4--domain-depth-and-verticals) — Extracted to `framework.md`.
+3. [Professional Frameworks and Philosophy](#section-3--professional-frameworks-and-philosophy) — Extracted to `03-framework.md`.
+4. [Domain Depth and Verticals](#section-4--domain-depth-and-verticals) — Extracted to `03-framework.md`.
 5. [Voice and Source Material](#section-5--voice-and-source-material) — Tone calibration, consulting positioning, published articles.
 6. [Reference Details](#section-8--reference-details) — Education, languages, contact, skills, tools.
 
@@ -147,7 +147,7 @@ Used by the employment coach to score roles. Apply these criteria in order — d
 | API testing, Postman, validate-by-doing | Core documentation methodology across every API documentation engagement. {{USER_FIRST_NAME}} tests endpoints directly using Postman (and equivalent tools), validates actual behavior vs. spec, documents edge cases, and files PRs/tickets for bugs found during documentation work. This is the standard process, not an exceptional one. |
 | SDK documentation | Documented. Experience started at Lytx/Surfsight (partner developer portal, SDK documentation for the Surfsight integration ecosystem) and continued across subsequent roles and clients. |
 | Webhook documentation | Covered by the API documentation methodology — webhooks are a standard component of any API documentation suite and are not a separate capability to flag. |
-| Developer community content (blog posts, tutorials, code examples, guides) | Substantial documented output. Snyk was the primary context: developer-facing content for a B2D audience at scale — tutorials, integration guides, security reports, community content. Supplemented by developer-facing content across Contentabl clients. Portfolio (Section 10) is the primary evidence surface — it is referenced and linked from `candidate-rules.md`. Do not flag as a gap. |
+| Developer community content (blog posts, tutorials, code examples, guides) | Substantial documented output. Snyk was the primary context: developer-facing content for a B2D audience at scale — tutorials, integration guides, security reports, community content. Supplemented by developer-facing content across Contentabl clients. Portfolio (Section 10) is the primary evidence surface — it is referenced and linked from `01-candidate-rules.md`. Do not flag as a gap. |
 | Automated workflows, workflow automation, Zapier, Make | Fully fluent — builds multi-step automation pipelines for documentation, research, and content workflows. Built automations since before the AI era (Slackbot at Coro, Zapier, multi-step process automation). Now integrates AI-assisted tooling (Claude pipelines, MCP servers) into documentation workflows. |
 | Kubernetes, K8s, container orchestration, cloud-native | Practitioner-level exposure across multiple Contentabl clients: Portshift (K8SHIELD framework, Kubernetes attack vectors), Alcide (Kubernetes-native security), Ionir (Kubernetes storage), plus VL architecture documentation (K8s deployment components). Spun up pods herself as part of validate-by-doing documentation methodology. Not a gap. |
 | Git, GitHub, version control, pull requests | Daily production use across documentation and development workflow. Files PRs as standard output of documentation work. |
@@ -174,7 +174,7 @@ Used by the employment coach to score roles. Apply these criteria in order — d
 
 ## Section 2 — Identity and Framing
 
-→ For {{USER_FIRST_NAME}}'s professional identity narrative, positioning philosophy, and voice, see `references/framework.md` (§Category and market frame, §Core positioning statement, §Voice and tone).
+→ For {{USER_FIRST_NAME}}'s professional identity narrative, positioning philosophy, and voice, see `references/03-framework.md` (§Category and market frame, §Core positioning statement, §Voice and tone).
 
 ### Operational Identity
 
@@ -320,19 +320,19 @@ Use this framing when the JD signals: community marketing, developer marketing, 
 
 ## Section 3 — Professional Frameworks and Philosophy
 
-→ Extracted to `references/framework.md` (§Professional methodology and POV). Load that file for research-first methodology, PLG framework, compliance GTM, documentation philosophy, AI operating model, team building, mentorship, crisis comms, and all POV positions.
+→ Extracted to `references/03-framework.md` (§Professional methodology and POV). Load that file for research-first methodology, PLG framework, compliance GTM, documentation philosophy, AI operating model, team building, mentorship, crisis comms, and all POV positions.
 
 ---
 
 ## Section 4 — Domain Depth and Verticals
 
-→ Extracted to `references/framework.md` (§Domain depth). Load that file for per-vertical narratives, the Fast Learning Argument, and the adaptability framing.
+→ Extracted to `references/03-framework.md` (§Domain depth). Load that file for per-vertical narratives, the Fast Learning Argument, and the adaptability framing.
 
 ---
 
 ## Section 5 — Voice and Source Material
 
-Raw proof points, published articles, and tone calibration. For {{USER_FIRST_NAME}}'s professional POV and voice samples, see `references/framework.md` (§Voice and tone, §Professional methodology and POV).
+Raw proof points, published articles, and tone calibration. For {{USER_FIRST_NAME}}'s professional POV and voice samples, see `references/03-framework.md` (§Voice and tone, §Professional methodology and POV).
 
 Cross-references: [Section 2: Drumbeat Marketing and Community](#drumbeat-marketing) | [Section 6: Approved CV Summaries](#section-6--approved-cv-summaries)
 
@@ -351,7 +351,7 @@ Axero's published case study on Coro documents outcomes from {{USER_FIRST_NAME}}
 
 ### Philosophy and Professional POV
 
-→ Extracted to `references/framework.md` (§Professional methodology and POV, §Voice and tone).
+→ Extracted to `references/03-framework.md` (§Professional methodology and POV, §Voice and tone).
 
 ### Published Articles
 
@@ -367,7 +367,7 @@ Axero's published case study on Coro documents outcomes from {{USER_FIRST_NAME}}
 
 ### Sharebird Q&A — Professional POV
 
-→ Extracted to `references/framework.md` (§Professional methodology and POV → Documented POV positions).
+→ Extracted to `references/03-framework.md` (§Professional methodology and POV → Documented POV positions).
 
 ### Tone Range Reference
 
@@ -382,7 +382,7 @@ Her voice is consistent in one dimension across all contexts: specific over vagu
 
 ### Interview Quotes — Direct Voice Calibration
 
-→ Extracted to `references/framework.md` (§Voice and tone → Voice samples).
+→ Extracted to `references/03-framework.md` (§Voice and tone → Voice samples).
 
 ### Consulting/Fractional Positioning
 

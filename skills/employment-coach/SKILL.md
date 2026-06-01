@@ -38,12 +38,12 @@ Minimum 5 competitors, maximum 10:
 IC vs. team lead, reporting chain if findable, what the key JD phrases mean for *this* company specifically. "Head of Marketing" at a 10-person stealth startup = founding marketer + category creator. The same title at a 300-person company = something different. Translate the JD into what the person will actually spend their time doing.
 
 **6. Fit/gap for {{USER_FIRST_NAME}}**
-Draw ONLY from `candidate-background.md` (Role Facts) (Role Facts per company) and `framework.md` §Domain depth (per-vertical narratives). These are the only authoritative sources. Do not infer, extrapolate, or invent.
+Draw ONLY from `02-candidate-background.md` (Role Facts) (Role Facts per company) and `03-framework.md` §Domain depth (per-vertical narratives). These are the only authoritative sources. Do not infer, extrapolate, or invent.
 
-- **Strongest credential:** The single most relevant, specific thing {{USER_FIRST_NAME}} has done that maps to what this role needs. Must name a real company from Section 7 and a documented outcome. If you cannot find a direct credential in Section 7 or `framework.md` §Domain depth, write "No direct credential documented for this requirement" — never invent one.
-- **Gap to prep:** One honest, specific gap or angle to prepare for, traceable to what the JD requires vs. what is documented. If there is a hard disqualifier (e.g., US residency required, domain not documented in `framework.md` §Domain depth), flag it clearly.
+- **Strongest credential:** The single most relevant, specific thing {{USER_FIRST_NAME}} has done that maps to what this role needs. Must name a real company from Section 7 and a documented outcome. If you cannot find a direct credential in Section 7 or `03-framework.md` §Domain depth, write "No direct credential documented for this requirement" — never invent one.
+- **Gap to prep:** One honest, specific gap or angle to prepare for, traceable to what the JD requires vs. what is documented. If there is a hard disqualifier (e.g., US residency required, domain not documented in `03-framework.md` §Domain depth), flag it clearly.
 
-**Anti-fabrication rule:** If the strongest credential you can name is not traceable to a named company and documented outcome in `candidate-background.md` (Role Facts), do not write it. This rule is absolute.
+**Anti-fabrication rule:** If the strongest credential you can name is not traceable to a named company and documented outcome in `02-candidate-background.md` (Role Facts), do not write it. This rule is absolute.
 
 **7. Company and org dynamics**
 How does this company actually operate beyond what the JD says? Check: founder/leadership LinkedIn tone, company blog, Glassdoor reviews, team size signals. What do they promote vs. what they claim? 2–3 specific, sourced observations — not JD paraphrase. This feeds the strategy's cultural framing and the Landscape.
@@ -90,7 +90,7 @@ Did you scan LinkedIn for ALL marketing team members at this company, not just t
 
 ### Part 0 — Priority scoring (all roles)
 
-Score every role in the queue using the Priority Framework in `candidate-rules.md` Section 1. There is no longer a distinction between pre-scored and unscored roles — the coach always produces a priority for every role it processes.
+Score every role in the queue using the Priority Framework in `01-candidate-rules.md` Section 1. There is no longer a distinction between pre-scored and unscored roles — the coach always produces a priority for every role it processes.
 
 **Step 1 — Open Application check (run this before everything else):**
 Is this role an open application, unsolicited application, or speculative application — i.e., {{USER_FIRST_NAME}} is applying without a specific open listing? If yes: the priority is `Fifth`. Stop. Do not apply domain fit or any other criterion. Write `Fifth` and the reason: "Open application — hard floor override." This is non-negotiable regardless of domain fit, seniority match, company stage, or any other factor.
@@ -110,7 +110,7 @@ Also factor in advertised date: a very recent role with strong fit may be more u
 
 **Base CV recommendation:** Which shared CV sections (summary framing, key achievements intro) should be drafted once before branching per role. If 3 or more roles share the same Role Type or seniority level, name the sections to draft once.
 
-**Structural framing — address proactively in Strategy:** Certain features of {{USER_FIRST_NAME}}'s background consistently confuse evaluators. Strategy should preempt these rather than leaving cv-writer to handle them ad-hoc. Structural framing triggers, known title ambiguities, tenure patterns, and career arc guidance are in `candidate-rules.md` Section 1.
+**Structural framing — address proactively in Strategy:** Certain features of {{USER_FIRST_NAME}}'s background consistently confuse evaluators. Strategy should preempt these rather than leaving cv-writer to handle them ad-hoc. Structural framing triggers, known title ambiguities, tenure patterns, and career arc guidance are in `01-candidate-rules.md` Section 1.
 
 **Per-role focus:** One line per role — primary emphasis and secondary emphasis for that specific CV.
 
@@ -160,7 +160,7 @@ When pointing to prior experience as analogous to the target company's context, 
 
 Document framing only. No interview prep, no hiring-process positioning beyond the document stage.
 
-**Strategy field — what to write and what to omit:** Contains the three sentences of framing direction only. No {{USER_FIRST_NAME}} references by name, no credential names, no proof language, no company names from her background. The cv-writer and letter-writer read this and apply it — they read {{USER_FIRST_NAME}}'s background separately from `candidate-rules.md`. Mixing her credentials into Strategy creates duplication, not guidance.
+**Strategy field — what to write and what to omit:** Contains the three sentences of framing direction only. No {{USER_FIRST_NAME}} references by name, no credential names, no proof language, no company names from her background. The cv-writer and letter-writer read this and apply it — they read {{USER_FIRST_NAME}}'s background separately from `01-candidate-rules.md`. Mixing her credentials into Strategy creates duplication, not guidance.
 
 ---
 

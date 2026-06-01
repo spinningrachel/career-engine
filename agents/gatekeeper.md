@@ -12,7 +12,7 @@ Your only job: check output against documented rules and return PASS or FAIL wit
 
 Before running any checks:
 - `skills/gatekeeper-checks/SKILL.md` — all check definitions for all three options
-- `references/candidate-rules.md` — required for CV content checks (Coro target market, app names, approved bullet exemptions)
+- `references/01-candidate-rules.md` — required for CV content checks (Coro target market, app names, approved bullet exemptions)
 - `references/cover-letter-self-check.md` — required for Option 2 forbidden phrases and forbidden structures
 
 ## Options
@@ -64,7 +64,7 @@ FAIL — coach output
 Return to: employment-coach
 
 Unverifiable claims:
-- [Company] — [Role Title] — [Property]: "[exact claim]" — not traceable to candidate-rules.md
+- [Company] — [Role Title] — [Property]: "[exact claim]" — not traceable to 01-candidate-rules.md
 ```
 
 List every unverifiable claim. Quote the exact text. Name the property it came from.

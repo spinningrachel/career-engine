@@ -31,9 +31,9 @@ This skill configures the plugin for a new user. It replaces `{{...}}` placehold
 Before asking any questions, read these three files and identify which `{{...}}` placeholders are still unfilled:
 
 ```
-${CLAUDE_PLUGIN_ROOT}/references/candidate-rules.md
-${CLAUDE_PLUGIN_ROOT}/references/framework.md
-${CLAUDE_PLUGIN_ROOT}/references/candidate-background.md
+${CLAUDE_PLUGIN_ROOT}/references/01-candidate-rules.md
+${CLAUDE_PLUGIN_ROOT}/references/03-framework.md
+${CLAUDE_PLUGIN_ROOT}/references/02-candidate-background.md
 ```
 
 Report to the user:
@@ -64,7 +64,7 @@ Ask the following. Use the placeholder name as the question prompt — "What is 
 | `{{USER_LOCATION}}` | City, Country |
 | `{{USER_CITIZENSHIP}}` | Citizenship / right to work (e.g., "US/Israeli citizenship", "EU citizen") |
 
-After collecting all answers, write them into `candidate-rules.md` Section 8 (Reference Details — Contact and Portfolio) by replacing each placeholder with the user's response.
+After collecting all answers, write them into `01-candidate-rules.md` Section 8 (Reference Details — Contact and Portfolio) by replacing each placeholder with the user's response.
 
 Also write `{{USER_FIRST_NAME}}`, `{{USER_FULL_NAME}}`, and `{{USER_LAST_NAME}}` into every other occurrence across all three reference files. These appear throughout agent instructions and must be consistent.
 
@@ -76,7 +76,7 @@ Confirm: "Phase 1 complete. Your identity and contact details are set across all
 
 **Purpose:** Every CV bullet, proof point, and strategic property the agents produce must trace to this data. Without it, agents will fabricate.
 
-Work through `candidate-background.md` (Role Facts) systematically. For each role slot:
+Work through `02-candidate-background.md` (Role Facts) systematically. For each role slot:
 
 1. Ask: "Let's add your most recent role. What company, title, and dates?"
 2. Ask for: reporting structure, team size, key metrics, 2–3 bullet-point achievements
@@ -111,9 +111,9 @@ Confirm: "Phase 2 complete. Role facts for N roles are set. Agents will draw fro
 
 ## Phase 3 — Positioning and voice (recommended before first run)
 
-**Purpose:** The framework.md file powers every cover letter opener, strategic argument, and voice calibration. Skipping it means generic output.
+**Purpose:** The `03-framework.md` file powers every cover letter opener, strategic argument, and voice calibration. Skipping it means generic output.
 
-Work through `framework.md` in order. For each section, read the placeholder aloud and ask the user to fill it in. Group related placeholders:
+Work through `03-framework.md` in order. For each section, read the placeholder aloud and ask the user to fill it in. Group related placeholders:
 
 **Category and market frame (10 min)**
 - What professional category do you compete in? What's your target company profile?
@@ -137,7 +137,7 @@ Work through `framework.md` in order. For each section, read the placeholder alo
 **ICP and elevator pitch (10 min)**
 - Who are the companies you're targeting? What's your 15-second and 60-second pitch?
 
-Write each answer into its corresponding section of `framework.md`.
+Write each answer into its corresponding section of `03-framework.md`.
 
 Confirm: "Phase 3 complete. Positioning, voice, and domain depth are configured. Cover letters will now draw from your actual profile."
 
@@ -221,12 +221,12 @@ Confirm: "Phase 5 complete. The pipeline will run without approval prompts."
 
 **Purpose:** The Q&A bank lets the letter-writer use your real answers instead of asking the same intake questions repeatedly. Seeding it now means your first letters will use your voice from the start.
 
-Show the user the question list from `candidate-background.md`. Ask them to answer 3–5 questions that feel most natural — particularly:
+Show the user the question list from `02-candidate-background.md`. Ask them to answer 3–5 questions that feel most natural — particularly:
 - The one that defines their professional approach ("the problem you exist to solve")
 - Their answer to domain unfamiliarity / fast learning
 - Their geographic preferences for remote work
 
-Write their answers into `candidate-background.md`, replacing the `{{USER_ANSWER_...}}` placeholders.
+Write their answers into `02-candidate-background.md`, replacing the `{{USER_ANSWER_...}}` placeholders.
 
 Confirm: "Phase 6 complete. The letter-writer will use your answers directly."
 

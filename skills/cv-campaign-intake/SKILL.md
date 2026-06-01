@@ -129,11 +129,11 @@ Hold the coach output in memory. Proceed immediately to Step 0.8.5.
 
 Spawn `gatekeeper` with `option=coach-output`, passing:
 - The full coach output for all roles (Role emphasis, Strategy, Gap handling, Role summary per role)
-- `candidate-rules.md` is already in memory — confirm it is loaded before spawning
+- `01-candidate-rules.md` is already in memory — confirm it is loaded before spawning
 
 **If PASS:** proceed to Step 0.9.
 
-**If FAIL:** the gatekeeper returns a list of specific unverifiable claims per role and per property. Return those claims to the employment coach with this instruction: "The following claims in your output cannot be traced to `candidate-rules.md`. Revise the affected properties to remove or correct them. Do not substitute alternative fabrications — if a claim cannot be grounded in the reference file, omit it." Spawn the coach with only the affected roles and properties.
+**If FAIL:** the gatekeeper returns a list of specific unverifiable claims per role and per property. Return those claims to the employment coach with this instruction: "The following claims in your output cannot be traced to `01-candidate-rules.md`. Revise the affected properties to remove or correct them. Do not substitute alternative fabrications — if a claim cannot be grounded in the reference file, omit it." Spawn the coach with only the affected roles and properties.
 
 **Cap: 2 revision passes.** If still failing after pass 2, strip the unverifiable claims from the affected properties (replace with `[UNVERIFIABLE — removed]`), log all removed claims in the run-level revision log under `## Coach Fact Check — Unverifiable Claims Removed`, flag for {{USER_FIRST_NAME}} in final delivery, and proceed to Step 0.9.
 
@@ -199,7 +199,7 @@ After all writes complete, confirm in chat: "Status updated to Researched for N 
 
 **Skip when running as a sub-step of the cv-campaign orchestrator.** The orchestrator handles Q&A bank promotion in its own Step 9a after all pipeline stages complete.
 
-This step captures any Q&A answers {{USER_FIRST_NAME}} has already written into Notion (from a prior intake run) and promotes them into `references/candidate-background.md` so the letter-writer never asks {{USER_FIRST_NAME}} the same question twice.
+This step captures any Q&A answers {{USER_FIRST_NAME}} has already written into Notion (from a prior intake run) and promotes them into `references/02-candidate-background.md` so the letter-writer never asks {{USER_FIRST_NAME}} the same question twice.
 
 For each role in the processing queue:
 
@@ -207,14 +207,14 @@ For each role in the processing queue:
 
 2. Parse Q&A content into question/answer pairs: split on blank lines or labelled question patterns (`Q:`, `Question:`, numbered items). Treat the first line of each block as the question and everything after as the answer. Skip any pair where the answer is missing or fewer than 10 characters. Skip any pair where the question contains the company name or role title verbatim — those are role-specific and not reusable.
 
-3. Read `references/candidate-background.md` and extract existing questions from the table. For each candidate pair, check for duplicates using keyword overlap: extract 4+ character words from both questions, exclude noise words (`what`, `have`, `your`, `does`, `with`, `that`, `this`, `from`, `been`, `are`, `you`, `the`, `and`, `for`, `any`, `how`, `do`), compute overlap ratio against the shorter set. If overlap ≥ 0.5, it's a duplicate — skip it.
+3. Read `references/02-candidate-background.md` and extract existing questions from the table. For each candidate pair, check for duplicates using keyword overlap: extract 4+ character words from both questions, exclude noise words (`what`, `have`, `your`, `does`, `with`, `that`, `this`, `from`, `been`, `are`, `you`, `the`, `and`, `for`, `any`, `how`, `do`), compute overlap ratio against the shorter set. If overlap ≥ 0.5, it's a duplicate — skip it.
 
-4. For each non-duplicate pair, append a new row to the candidate-background.md table:
+4. For each non-duplicate pair, append a new row to the 02-candidate-background.md table:
    ```
    | <question> | <answer> | Auto-promoted from Notion Q&A — <YYYY-MM-DD>. Review and edit if role-specific context should be stripped. |
    ```
    Write all new rows in a single append operation.
 
-5. Log in the chat summary: "Q&A bank: N new answers promoted to references/candidate-background.md." (Or: "No new Q&A answers to promote.")
+5. Log in the chat summary: "Q&A bank: N new answers promoted to references/02-candidate-background.md." (Or: "No new Q&A answers to promote.")
 
 Do not wait for {{USER_FIRST_NAME}} to respond. Intake is complete.

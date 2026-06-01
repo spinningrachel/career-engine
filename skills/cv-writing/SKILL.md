@@ -13,8 +13,8 @@ description: CV writing reference for {{USER_FIRST_NAME}}'s job search pipeline.
 |---|---|---|
 | `references/cv-example.pdf` | Approved full CV (HoneyBook application, May 2026) | Always — calibrate layout, bullet density, summary length, and quality standard against this. Do not copy content. |
 | `references/rachel-{{USER_LAST_NAME}}.dotx` | The Word template used for DOCX export | Reference when formatting output or checking style annotations |
-| `candidate-background.md` (Portfolio) | Portfolio — work samples with direct PDF links | When the role signals that demonstrated output would strengthen the application |
-| `candidate-background.md` (Testimonials) | Testimonials — client endorsements | For freelance, consulting, or fractional roles where third-party validation is relevant |
+| `02-candidate-background.md` (Portfolio) | Portfolio — work samples with direct PDF links | When the role signals that demonstrated output would strengthen the application |
+| `02-candidate-background.md` (Testimonials) | Testimonials — client endorsements | For freelance, consulting, or fractional roles where third-party validation is relevant |
 
 ---
 
@@ -62,7 +62,7 @@ ATS systems identify sections by heading name. Non-standard names cause misclass
 
 ## Bullet Writing Formula
 
-Use this when writing a new bullet — i.e., when no approved bullet in `candidate-background.md` (Role Facts) maps to a JD requirement. The approved bullets are always the first choice; this formula governs new composition only.
+Use this when writing a new bullet — i.e., when no approved bullet in `02-candidate-background.md` (Role Facts) maps to a JD requirement. The approved bullets are always the first choice; this formula governs new composition only.
 
 ### The XYZ formula
 
@@ -76,7 +76,7 @@ Not every bullet will have all three elements. Y is optional when the outcome is
 
 ### Weak → strong transformations
 
-These use {{USER_FIRST_NAME}}'s documented experience. Every claim in the strong version traces to `candidate-rules.md`.
+These use {{USER_FIRST_NAME}}'s documented experience. Every claim in the strong version traces to `01-candidate-rules.md`.
 
 | Weak (duty statement) | Strong (XYZ formula) |
 |---|---|
@@ -87,7 +87,7 @@ These use {{USER_FIRST_NAME}}'s documented experience. Every claim in the strong
 ### Rules for new bullet composition
 
 - **Lead with the outcome, not the action.** "Reduced partner onboarding by 35% by building a 300-page developer portal" > "Built a 300-page developer portal that reduced onboarding by 35%." Both are acceptable; outcome-first is stronger.
-- **Every metric must trace to `candidate-rules.md`.** If a number is not documented, do not write it. Write the named outcome without the number.
+- **Every metric must trace to `01-candidate-rules.md`.** If a number is not documented, do not write it. Write the named outcome without the number.
 - **One bullet, one job.** If a bullet is doing two things, split it or cut one.
 - **Third person, no "I".** "Led," not "I led."
 
@@ -118,7 +118,7 @@ These apply to all CV copy — bullets, summaries, and skills sections.
 
 ## Words and Phrases to Avoid
 
-These apply to CV bullets and summaries. For every generic claim removed, replace it with what {{USER_FIRST_NAME}} actually did — a specific role, outcome, or named result from `candidate-rules.md`. Never invent replacement metrics.
+These apply to CV bullets and summaries. For every generic claim removed, replace it with what {{USER_FIRST_NAME}} actually did — a specific role, outcome, or named result from `01-candidate-rules.md`. Never invent replacement metrics.
 
 Do not eliminate industry-specific terminology. "SEO" or "content strategy" are legitimate descriptors in the right context. The test: does the phrase describe something specific {{USER_FIRST_NAME}} did, or does it describe a generic ideal candidate?
 
@@ -198,7 +198,7 @@ This argument governs every CV produced for a Reframe role. It is not in the sum
 
 **Summary:** Do not frame {{USER_FIRST_NAME}} as an applicant for the technical writer role. Frame her as the person the company needs when it reaches the inflection point — "you don't need a writer, you need this." Use the standard summary template but anchor it in documentation architecture and GTM strategy, not writing as a craft. The summary should make it clear that {{USER_FIRST_NAME}} builds the infrastructure, not just the content.
 
-**Bullet selection:** Choose bullets that show breadth the company cannot get from a solo writer: GTM strategy, product marketing, developer portals that cut onboarding time, compliance content that enabled sales, knowledge systems that served multiple functions. Prioritize Lytx, VL, and Coro over earlier roles for this framing. The approved bullets from `candidate-background.md` (Role Facts) are the starting point — select for breadth and strategic impact, not writing craft.
+**Bullet selection:** Choose bullets that show breadth the company cannot get from a solo writer: GTM strategy, product marketing, developer portals that cut onboarding time, compliance content that enabled sales, knowledge systems that served multiple functions. Prioritize Lytx, VL, and Coro over earlier roles for this framing. The approved bullets from `02-candidate-background.md` (Role Facts) are the starting point — select for breadth and strategic impact, not writing craft.
 
 **Skills section:** Lean toward strategy and system-building skills (GTM, documentation architecture, product marketing, knowledge infrastructure). Writing tools belong but do not lead.
 

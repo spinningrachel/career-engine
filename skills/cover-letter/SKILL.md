@@ -13,7 +13,7 @@ The authoritative source for cover letter mechanics, structure, and use-case pat
 
 **Prohibited content:** Fabrication traps, forbidden phrases, and forbidden structures are checklist items in `references/cover-letter-self-check.md` → Option 1.
 
-**Voice profile:** {{USER_FIRST_NAME}}'s voice description is in `references/candidate-rules.md` Section 5.
+**Voice profile:** {{USER_FIRST_NAME}}'s voice description is in `references/01-candidate-rules.md` Section 5.
 
 ---
 
@@ -39,7 +39,7 @@ Before submitting, scan every sentence: if it opens with a gerund, a preposition
 - **Fix:** "Working on the project, I built a partner network across OEM channels." Or split: "The project expanded into OEM channels. I built the partner network."
 - Always check: can {{USER_FIRST_NAME}}'s name logically perform the gerund's action? If not, rewrite.
 
-**Approved exception — peer-attribution dependent clause openers.** When using Pattern B from the Peer-Attributed Qualities section of `candidate-rules.md` (a short attributed-quality clause as a setup before "I"), a dependent clause opener is permitted. The clause must be short (one attributed quality, no embedded subordinates), must be followed immediately by "I" as the subject, and must deliver specific named proof in that same sentence or the next. One use per letter. Example: *"Known for being proactive, I had the compliance hub ready before Sales finished their objection list."*
+**Approved exception — peer-attribution dependent clause openers.** When using Pattern B from the Peer-Attributed Qualities section of `01-candidate-rules.md` (a short attributed-quality clause as a setup before "I"), a dependent clause opener is permitted. The clause must be short (one attributed quality, no embedded subordinates), must be followed immediately by "I" as the subject, and must deliver specific named proof in that same sentence or the next. One use per letter. Example: *"Known for being proactive, I had the compliance hub ready before Sales finished their objection list."*
 
 ### Clause architecture
 
@@ -143,7 +143,7 @@ Every letter — regardless of tone, role, or opener strategy — has exactly th
 
 1. **Greeting.** Always "Hi to the [Company] team!" — or "Hi to [Name]!" if writing directly to a named person. Never "Dear Hiring Manager."
 
-2. **Opener paragraph.** Choose from the Use-Case Structures below. {{USER_FIRST_NAME}}'s reaction or observation comes first. Her background enters in service of that, not as the subject. If no documented reaction exists in `candidate-rules.md` or the Q&A bank, write `[RACHEL TO FILL IN]` — do not manufacture enthusiasm.
+2. **Opener paragraph.** Choose from the Use-Case Structures below. {{USER_FIRST_NAME}}'s reaction or observation comes first. Her background enters in service of that, not as the subject. If no documented reaction exists in `01-candidate-rules.md` or the Q&A bank, write `[RACHEL TO FILL IN]` — do not manufacture enthusiasm.
 
 3. **Proof paragraph(s) — one job each.** One to three paragraphs, each doing exactly one thing: a pattern of experience across companies, a specific story that adds something the CV doesn't say, or documented product/company familiarity.
 
@@ -178,7 +178,7 @@ The test for any close: does it name the outcome and ask for it directly? Or doe
 
 These rules apply to every claim and every framing decision in the letter body.
 
-**Managed-vs-executed:** When {{USER_FIRST_NAME}} managed a team or function, language credits her with management and ownership — not personal execution of every deliverable. "Oversaw analyst relations" not "ran analyst relations." "Managed the AR owner" not "led analyst relations personally." If in doubt, check `candidate-rules.md` Section 1 for the approved phrasing.
+**Managed-vs-executed:** When {{USER_FIRST_NAME}} managed a team or function, language credits her with management and ownership — not personal execution of every deliverable. "Oversaw analyst relations" not "ran analyst relations." "Managed the AR owner" not "led analyst relations personally." If in doubt, check `01-candidate-rules.md` Section 1 for the approved phrasing.
 
 **Demand-gen framing:** When a JD signals demand-gen ownership, do not frame the absence of a standalone pipeline attribution number as a gap or limitation in the letter. Surface the builder evidence instead: outbound infrastructure at VL, content production, G-CMO Early Stage Marketing training. For seed/early Series A build roles this is a match, not a gap.
 
@@ -449,7 +449,7 @@ Before starting the revision, confirm the voice you're editing toward. Open 2–
 
 Match these patterns in your revision. Don't just remove AI tells — replace them with patterns from the delivered letters. If the samples use short sentences, don't produce long ones in their place. If they don't use semicolons, don't introduce them.
 
-When no domain-similar delivered letters are available, match the voice described in `references/framework.md` §Voice and tone.
+When no domain-similar delivered letters are available, match the voice described in `references/03-framework.md` §Voice and tone.
 
 ### Step 2 — Audit: scan for AI writing patterns
 

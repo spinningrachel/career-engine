@@ -50,7 +50,7 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 ### Content Checks
 
 **Summary**
-- No company, client, or conference names — descriptors only (prohibited list in `candidate-rules.md` Section 1)
+- No company, client, or conference names — descriptors only (prohibited list in `01-candidate-rules.md` Section 1)
 - The summary should open with language most relevant to the hiring manager and the role being applied for. No specific role is required to appear — the summary's job is to lead with {{USER_FIRST_NAME}}'s strongest, most relevant credentials for this opening. Do not fail on the absence of any particular role, including the most recent one.
 - ≤120 words, 1 paragraph, ≤4 sentences
 - No tool/platform names, Contentabl client names, or metrics not documented as summary-appropriate
@@ -62,15 +62,15 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 - Lightrun appears somewhere in the CV — either as a standalone entry in `## CONSULTING` or as a bullet within Contentabl — FAIL if absent entirely
 - Firebolt appears somewhere in the CV — either as a standalone entry in `## CONSULTING` or as a bullet within Contentabl — FAIL if absent entirely
 - The "Earlier:" line appears as the final entry inside `## EXPERIENCE`, before the `## CONSULTING` section header — FAIL if Earlier appears after CONSULTING
-- Coro target market matches `candidate-background.md` (Role Facts)
-- No app/tool names inside bullets: HubSpot, Salesforce, Salesloft, Moosend, Webflow, Mintlify, Chameleon, HeyReach, ZoomInfo, Chorus.ai, Notion, Jira, Slack — approved bullets from `candidate-background.md` are exempt
+- Coro target market matches `02-candidate-background.md` (Role Facts)
+- No app/tool names inside bullets: HubSpot, Salesforce, Salesloft, Moosend, Webflow, Mintlify, Chameleon, HeyReach, ZoomInfo, Chorus.ai, Notion, Jira, Slack — approved bullets from `02-candidate-background.md` are exempt
 - Every named role has a RoleOverview immediately below its RoleTitle — count must match (Earlier: exempt)
 
 **Structure**
 - No years on the Earlier line (Education/Languages are script-injected — skip them)
 - No header or label between the SUMMARY banner and the summary text
 - No opening verb appears 3+ times — common offenders: Built, Led, Developed, Created, Managed, Drove, Owned
-- No 4+ word verbatim JD phrases in new bullets; standard terms like "go-to-market" are fine; approved bullets from `candidate-background.md` exempt; quote both phrases when flagging
+- No 4+ word verbatim JD phrases in new bullets; standard terms like "go-to-market" are fine; approved bullets from `02-candidate-background.md` exempt; quote both phrases when flagging
 
 ---
 
@@ -180,9 +180,9 @@ Note any of these in the end-of-pipeline feedback note. Do not return as a viola
 
 ## Option 3 — Coach Output Fact Check
 
-For each role in the coach's output, identify every specific factual claim about {{USER_FIRST_NAME}}'s background, experience, skills, or accomplishments. Find the supporting line in `candidate-rules.md`.
+For each role in the coach's output, identify every specific factual claim about {{USER_FIRST_NAME}}'s background, experience, skills, or accomplishments. Find the supporting line in `01-candidate-rules.md`.
 
-**Verifiable:** directly traceable to a named section, sentence, or bullet in `candidate-rules.md`.
+**Verifiable:** directly traceable to a named section, sentence, or bullet in `01-candidate-rules.md`.
 
 **Unverifiable:**
 - Names a company, client, product, or tool {{USER_FIRST_NAME}} worked with that does not appear in the reference file

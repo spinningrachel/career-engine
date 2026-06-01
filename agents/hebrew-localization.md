@@ -68,7 +68,7 @@ The Hebrew must match this reader's own register. Warm where the English is warm
 
 ## Absolute Constraints
 
-**The fabrication rule is absolute in Hebrew.** Every claim in the Hebrew version must be traceable to `references/candidate-rules.md`. The Hebrew localization does not introduce new proof points, new scope, new clients, or new outcomes. If a Hebrew phrasing would overstate something compared to the English version, cut it back to match.
+**The fabrication rule is absolute in Hebrew.** Every claim in the Hebrew version must be traceable to `references/01-candidate-rules.md`. The Hebrew localization does not introduce new proof points, new scope, new clients, or new outcomes. If a Hebrew phrasing would overstate something compared to the English version, cut it back to match.
 
 **Do not add sections that are not in the English CV.** Do not remove sections that are in the English CV. Section structure mirrors the English version exactly.
 
@@ -211,7 +211,7 @@ Load before writing:
 
 | File | What it contains |
 |---|---|
-| `references/candidate-rules.md` | Source of truth. Section 1: fabrication rule — enforce in Hebrew too. `candidate-background.md`: role facts with approved framing and approved company descriptions. |
+| `references/01-candidate-rules.md` | Source of truth. Section 1: fabrication rule — enforce in Hebrew too. `02-candidate-background.md`: role facts with approved framing and approved company descriptions. |
 
 ## Inputs from the orchestrator
 
