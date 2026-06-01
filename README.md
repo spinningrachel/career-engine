@@ -1,8 +1,22 @@
 # cv-campaign
 
-A multi-agent Claude Code plugin for running a full job-search campaign. Point it at a Notion database of target roles (or paste a single job URL), and it runs an employment coach for prioritization and research, writes tailored CVs and cover letters through a multi-stage review pipeline, exports DOCX files to your iCloud folder, and posts file paths back to Notion.
+Job searching at scale breaks down fast. Every application takes hours to tailor, each session starts from scratch, and most AI tools make it worse: they write confidently about experience you don't have.
 
-**Built and maintained by [{{USER_FULL_NAME}}](https://www.linkedin.com/in/rachel{{USER_LAST_NAME}}).** Open-sourced so other job seekers can run the same pipeline with their own background, voice, and job-tracking setup.
+The cv-campaign plugin runs a full multi-agent pipeline. It pulls your target roles from Notion, researches each company, drafts and reviews tailored CVs and cover letters, exports formatted Word files to your output folder, and writes results back to Notion. No supervision required.
+
+One rule runs through every agent: nothing goes on the page that isn't traceable to your documented background. The system gets sharper the more you run it. Every correction feeds back into the files every agent reads before writing anything.
+
+Most job search tools give you one agent and a template. A few things that are different here:
+
+- **Multi-agent review loop** — cv-writer, gatekeeper, recruiter reviewer, and hiring manager reviewer all run before anything is delivered
+- **Employment coach with prioritization** — researches each company, scores your role queue, and writes strategic framing before a single bullet is drafted
+- **Mandatory revision pass** — every letter runs a voice calibration and AI-pattern audit before the gatekeeper sees it. Not optional, not conditional
+- **Notion integration** — reads your pipeline from Notion, writes CV file paths and coach properties back to each row when the run completes
+- **Hebrew localization** — native Israeli professional Hebrew CVs and cover letters produced as a pipeline step, not an afterthought
+
+What makes these reliable is the structure underneath. Three reference files — candidate rules, candidate background, and positioning framework — are read by every agent before writing anything. They accumulate as you run the pipeline. The longer you use it, the less it invents and the more it knows.
+
+**Built and maintained by [Rachel Cheyfitz](https://www.linkedin.com/in/rachelcheyfitz).** Open-sourced so other job seekers can run the same pipeline with their own background, voice, and job-tracking setup.
 
 ## What it does
 

@@ -178,7 +178,7 @@ Used by the employment coach to score roles. Apply these criteria in order — d
 
 ### Operational Identity
 
-{{USER_FIRST_NAME}} {{USER_LAST_NAME}} is a hybrid product marketer and technical writer with 25+ years of experience, the last 15 in B2B SaaS and deep tech. She has spent her career at the intersection of go-to-market strategy and documentation infrastructure — setting strategic direction for positioning while writing the precise technical content that makes that positioning credible. Most companies hire two people for this. She covers both.
+{{USER_FULL_NAME}} is a hybrid product marketer and technical writer with 25+ years of experience, the last 15 in B2B SaaS and deep tech. She has spent her career at the intersection of go-to-market strategy and documentation infrastructure — setting strategic direction for positioning while writing the precise technical content that makes that positioning credible. Most companies hire two people for this. She covers both.
 
 She most recently built and **led the full marketing function** at Visual Layer, a seed-stage computer vision and ML platform, from first hire through the company's successful acquisition by Camtek (Nasdaq: CAMT) in April 2026. Founding marketer. Owned everything, managed office admin in relation to events (conferences, meetups, etc.). Managed external vendors.
 
@@ -345,7 +345,7 @@ Axero's published case study on Coro documents outcomes from {{USER_FIRST_NAME}}
 - **70% higher satisfaction and engagement**
 
 {{USER_FIRST_NAME}} is quoted directly in the case study:
-> "Great staff that cares about us. Super flexible product. Feedback is taken seriously. Pricing is fair and negotiable. Excellent for sharing relevant information with teams via personalization and segmentation. Equally excellent security-wise." — {{USER_FIRST_NAME}} {{USER_LAST_NAME}}, Director of Product Marketing
+> "Great staff that cares about us. Super flexible product. Feedback is taken seriously. Pricing is fair and negotiable. Excellent for sharing relevant information with teams via personalization and segmentation. Equally excellent security-wise." — {{USER_FULL_NAME}}, Director of Product Marketing
 
 **Framing rule:** These are Axero's reported metrics. When citing: "Implemented Axero intranet; Axero's published case study documents 40% improvement in sales performance, 60% reduction in onboarding costs." → Role facts in Section 7 (Coro).
 
