@@ -78,12 +78,14 @@ The plugin has three pipelines. A complete job search uses all three in sequence
 
 Before installing the plugin, the following tools and services must be in place.
 
-**CLI tools — install both before the first run:**
+**CLI tools — required for DOCX export:**
 
 | Tool | Install command | Purpose |
 |---|---|---|
 | pandoc | `brew install pandoc` | Converts CV and cover letter markdown to DOCX |
 | python-docx | `pip3 install python-docx` | Updates the role-specific subtitle in the CV header |
+
+pandoc and python-docx are only required if you want formatted DOCX output. The pipeline always produces markdown files — these can be copied into Google Docs, pasted into Notion, or opened in any text editor without pandoc installed. See [CV template and output format](#cv-template-and-output-format) for alternatives.
 
 **MCP servers — connect in Claude Code before running setup:**
 
@@ -109,7 +111,7 @@ The onboarding agent walks through six phases:
 2. **Content submission** — you send your existing career materials (CVs, cover letters, LinkedIn export, portfolio, old JDs). The agent reads everything and builds `03-framework.md` from it. Files are not stored — only the synthesized output is kept. Cover letters are the exception: if you confirm they represent your voice well, the agent keeps them in `references/delivered-letters/` for future voice calibration.
 3. **Framework synthesis** — the agent drafts `03-framework.md` from your submitted content: positioning, voice, domain depth, methodology, value pillars, ICP.
 4. **Review and interview** — the agent shares the draft framework for your review. Whether you give feedback or approve, a targeted interview follows: gap-filling from what the materials left unclear, plus probing for things you didn't volunteer (testimonials, published work, community involvement, anti-positioning).
-5. **Integration** — you choose your job tracking method (Notion, Google Sheets, or other) and configure your output folder, CV template, and delivered letters folder.
+5. **Integration** — you choose your job tracking method (Notion, Google Sheets, or other), configure your output folder (any local path — iCloud, Dropbox, a local directory), CV template, and delivered letters folder.
 6. **Permissions** — the agent generates the exact permissions block for your `~/.claude/settings.json`. Without it, Claude Code will pause mid-run for approval on every bash command.
 
 Phases 5 and 6 can be deferred. The pipeline runs with only phases 1–4 complete, though Notion integration is required for the full batch flow.
@@ -605,11 +607,63 @@ Replace `<notion-tool-id>` and `<desktop-commander-id>` with the actual IDs from
 
 If a `permissions` block already exists in your settings, merge the `allow` arrays rather than replacing them.
 
-### CV template
+### CV template and output format
 
-The plugin ships with `references/cv-template-default.dotx`, a Word template with all required custom styles for pandoc DOCX export. The template controls fonts, heading sizes, color scheme, and the header/footer layout.
+The pipeline always produces two outputs per role: a markdown file and (if pandoc is installed) a DOCX file. The markdown is the canonical output — the DOCX is a formatted version of it.
 
-To use your own template instead, provide the path during setup (`/cv-campaign:setup --phase 5`). Your template must define the same custom style names as the default template — see `skills/cv-campaign-export/SKILL.md` for the full style reference. If the styles are missing or named differently, pandoc produces unstyled output.
+**DOCX export (default, requires pandoc)**
+
+The plugin ships with `references/cv-template-default.dotx`, a Word template with custom styles for pandoc DOCX export. The template controls fonts, heading sizes, color scheme, and the header layout. Microsoft Word is not required to use the DOCX — any application that opens `.docx` files works, including LibreOffice (free) and Google Docs.
+
+To use your own template instead, provide the path during setup (`/cv-campaign:setup --phase 5`). Your template must define the same custom style names — see `skills/cv-campaign-export/SKILL.md` for the full style reference.
+
+**Markdown output (no dependencies)**
+
+If you don't install pandoc, the pipeline still produces a complete markdown file for every CV and cover letter. You can:
+- Paste it directly into Google Docs and apply your own formatting
+- Post it as a Notion page using the Notion MCP
+- Open it in any text editor or markdown viewer
+
+The markdown files are saved to your output folder alongside the DOCX files (or instead of them if pandoc isn't installed).
+
+**Output folder**
+
+The output folder is configured during onboarding — it is not assumed to be iCloud. Any local path works: an iCloud folder, Dropbox, a standard local directory, or anywhere your filesystem allows. Configure it during setup (`/cv-campaign:setup --phase 5`) or update it at any time by re-running that phase.
+
+### Token usage tracking
+
+The pipeline tracks token consumption per run. After a few runs you'll have enough data to understand what a single CV costs vs. a full five-role batch, and what the editing pipeline costs compared to starting from scratch.
+
+**How it works**
+
+At the end of every run, the orchestrator writes a `run-metrics-<date>.json` file to your output folder. It records: pipeline type, roles processed, and invocation counts for every agent type. A Stop hook — configured separately — captures the actual token counts from the Claude Code session and writes them into the same file when the session closes.
+
+**Enabling the Stop hook**
+
+Add the following `hooks` block to your `~/.claude/settings.json` alongside the `permissions` block:
+
+```json
+"hooks": {
+  "Stop": [{
+    "hooks": [{
+      "type": "command",
+      "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/log-token-usage.sh"
+    }]
+  }]
+}
+```
+
+Replace `${CLAUDE_PLUGIN_ROOT}` with the actual installation path shown in your Claude Code plugin settings.
+
+**Reading the output**
+
+After each run, check `run-metrics-<date>.json` in your output folder. The file includes:
+- `pipeline` — Standard, Edit, or Intake
+- `roles_processed` — company names, track type, whether Hebrew was produced
+- `agents_invoked` — counts per agent (employment_coach, cv_writer_draft, gatekeeper_cv, etc.)
+- `token_counts` — input tokens, output tokens, cache read tokens, cost in USD (written by the Stop hook)
+
+Without the hook, `token_counts` stays as `"pending"` and the structural metrics are still recorded.
 
 ### Delivered letters
 
@@ -627,9 +681,9 @@ This section covers the most common failures and how to resolve them.
 
 The permissions block in `~/.claude/settings.json` is incomplete or missing. Run `/cv-campaign:setup --phase 6` to regenerate the exact block for your configuration, then add it to your settings.
 
-### "iCloud output path not found" error
+### "Output path not found" error
 
-The output folder path configured during setup doesn't exist or isn't accessible. Verify the path exists with `ls "{{ICLOUD_OUTPUT_PATH}}"`. If you've moved your iCloud folder or changed your output path preference, re-run setup phase 5: `/cv-campaign:setup --phase 5`.
+The output folder path configured during setup doesn't exist or isn't accessible. Verify the path exists by running `ls` against it in your terminal. If you've moved the folder or want to change your output location, re-run setup phase 5: `/cv-campaign:setup --phase 5`.
 
 ### DOCX files are unstyled (no formatting)
 
