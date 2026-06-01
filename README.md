@@ -1,5 +1,7 @@
 # career-engine
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A1L720MCOG)
+
 > **⚠️ UNDER CONSTRUCTION — EXPERIMENT AT YOUR OWN RISK**
 > This plugin is actively developed and not yet stable. Expect rough edges, incomplete features, and breaking changes between versions. Back up your reference files before updating.
 
