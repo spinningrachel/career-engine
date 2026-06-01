@@ -14,12 +14,14 @@ Most job search tools give you one agent and a template. A few things that are d
 - **Multi-agent review loop** — cv-writer, gatekeeper, recruiter reviewer, and hiring manager reviewer all run before anything is delivered
 - **Employment coach with prioritization** — researches each company, scores your role queue, and writes strategic framing before a single bullet is drafted
 - **Mandatory revision pass** — every letter runs a voice calibration and AI-pattern audit before the gatekeeper sees it. Not optional, not conditional
-- **Notion integration** — reads your pipeline from Notion, writes CV file paths and coach properties back to each row when the run completes
+- **Fabrication-proof** — nothing goes on the page that isn't traceable to your documented background. Reviewer pressure cannot override this
+- **Error handling and crash recovery** — failed roles are logged and skipped; the run continues. State is written after every role so a crashed run can resume without starting over
+- **Notion integration** *(optional)* — reads your pipeline from Notion, writes CV file paths and coach properties back to each row when the run completes. CSV and Google Sheets are also supported
 - **Hebrew localization** — native Israeli professional Hebrew CVs and cover letters produced as a pipeline step, not an afterthought
 
 What makes these reliable is the structure underneath. Three reference files — candidate rules, candidate background, and positioning framework — are read by every agent before writing anything. They accumulate as you run the pipeline. The longer you use it, the less it invents and the more it knows.
 
-**Built and maintained by [{{USER_FIRST_NAME}} {{USER_LAST_NAME}}](https://www.linkedin.com/in/rachel{{USER_LAST_NAME}}).** Open-sourced so other job seekers can run the same pipeline with their own background, voice, and job-tracking setup.
+**Built and maintained by [Rachel Cheyfitz](https://www.linkedin.com/in/rachelcheyfitz).** Open-sourced so other job seekers can run the same pipeline with their own background, voice, and job-tracking setup.
 
 ---
 
@@ -30,14 +32,15 @@ What makes these reliable is the structure underneath. Three reference files —
 3. [Onboarding](#onboarding)
 4. [Your three reference files](#your-three-reference-files)
 5. [Running the pipeline](#running-the-pipeline)
-6. [Pipeline walkthrough](#pipeline-walkthrough)
-7. [Pipelines and modes](#pipelines-and-modes)
-8. [Job tracking database](#job-tracking-database)
-9. [Output files](#output-files)
-10. [How approved bullets work](#how-approved-bullets-work)
-11. [Agents and skills](#agents-and-skills)
+6. [Agents and skills](#agents-and-skills)
+7. [Pipeline walkthrough](#pipeline-walkthrough)
+8. [Pipelines and modes](#pipelines-and-modes)
+9. [Job tracking database](#job-tracking-database)
+10. [Output files](#output-files)
+11. [How approved bullets work](#how-approved-bullets-work)
 12. [Configuration](#configuration)
 13. [Troubleshooting](#troubleshooting)
+14. [Future plans](#future-plans)
 
 ---
 
@@ -55,22 +58,19 @@ Three files in `references/` govern everything every agent produces.
 
 **`03-framework.md`** contains your positioning: professional category, voice samples, core positioning statement, value pillars, methodology, domain depth, ICP, messaging by audience, taglines, differentiators, and elevator pitches. The letter-writer and employment coach draw from this file for cover letter strategy and career framing. It's what makes the letters sound like you rather than a generic candidate.
 
-### The agents
-
-The pipeline uses eight agents in sequence. Each agent receives structured inputs from the previous step and returns structured outputs to the next.
-
-- **employment-coach** — researches the company, scores the role, and writes strategic framing before writing starts
-- **cv-writer** — drafts and revises the CV using the coach's framing and your documented background
-- **letter-writer** — drafts and revises the cover letter using your Q&A content and coach strategy
-- **gatekeeper** — checks every CV and cover letter for fabrication, ATS compliance, and voice violations; loops until everything passes
-- **recruiter-reviewer** — reviews the CV and cover letter as a senior recruiter; returns tiered feedback
-- **hiring-manager-reviewer** — reviews the CV and cover letter as the hiring manager; returns a verdict
-- **hebrew-localization** — produces Hebrew versions of the CV and cover letter when the role's Languages property includes Hebrew
-- **pmm-positioning-expert** — runs during standalone research to analyze competitive positioning; does not run in the main campaign pipeline
-
 ### How a run works
 
-Roles move through three phases before a CV is delivered. First, run Intake on roles with Status = `Hold` — this researches each company, writes strategic properties to Notion, and generates Q&A intake questions for each role. You then answer those questions in the Notion page body and change Status to `Interested`. At that point, running `/cv-campaign` fetches the `Interested` roles, builds a priority-ordered queue of up to five, and routes each one through the full CV and cover letter pipeline. The letter-writer uses your Q&A answers and the coach's research to produce letters grounded in your specific angle on the role. At the end of the run, DOCX files are in your output folder, file paths are posted back to Notion, and you receive a brief summary in chat.
+The plugin has three pipelines. A complete job search uses all three in sequence. For full descriptions of each, see [Pipelines and modes](#pipelines-and-modes) and [Agents and skills](#agents-and-skills).
+
+**Intake → CV Campaign → CV Edit**
+
+1. Add a role to your job tracking database with Status = `Hold`
+2. Run **Intake**: the employment coach researches the company, writes strategic properties to your database, and generates Q&A intake questions tailored to the role
+3. Open the role in your database and answer the Q&A questions in the Page Body field
+4. Change Status to `Interested`
+5. Run **CV Campaign**: the pipeline fetches all `Interested` roles, builds a priority queue of up to five, and routes each one through the full CV and cover letter pipeline — employment coach → cv-writer → gatekeeper → recruiter reviewer → hiring manager reviewer → letter-writer → gatekeeper → DOCX export → writeback
+6. Review your documents. If anything needs improving, change Status to `Needs editing`
+7. Run **CV Edit**: the editing pipeline improves existing outputs without starting from scratch
 
 ---
 
@@ -190,12 +190,13 @@ The pipeline is triggered by natural language in Claude Code. The commands below
 
 ### Full campaign (batch mode)
 
-A full campaign fetches all roles with Status = `Interested` from your job tracking database, runs the employment coach on each, builds a priority queue, and produces CVs and cover letters for up to five roles per run.
+A full campaign fetches all roles with Status = `Interested` from your job tracking database, runs the employment coach on each, builds a priority queue, and produces a CV and cover letter for each role. The pipeline handles 1–5 roles per run. If you have more than five `Interested` roles, run it multiple times — the queue is rebuilt from whatever remains after each run. To produce a CV without a cover letter, specify "no letter" in your chat command.
 
 ```
 Run CV campaign.
 Process my CV queue.
 Run the pipeline.
+Run the pipeline, no letters.
 ```
 
 ### Single role, no Notion required
@@ -350,17 +351,24 @@ The orchestrator delivers a single summary in chat covering any validation issue
 
 The plugin has three pipelines, each serving a distinct phase of the job search. Which one runs depends on how you trigger it and what Status the roles carry in your job tracking database.
 
+### Intake
+
+The Intake pipeline runs market intelligence on roles you're researching but haven't committed to applying for. It operates on roles with Status = `Hold`, researches each company (competitive landscape, funding, hiring manager, culture signals), writes coach properties to your database, generates Q&A intake questions for each role, and updates Status to `Researched`. No CVs are produced.
+
+**Intake is a mandatory prerequisite for CV Campaign.** The letter-writer needs two inputs that only exist after Intake runs: the strategic properties the coach writes (Role emphasis, Keywords, Strategy, Gap handling) and the Q&A answers you provide in the page body after Intake generates the questions. Without these, the letter-writer falls back to generic framing.
+
+Trigger Intake with the coach command or natural language:
+
+```
+Research my Hold roles.
+Run market intelligence.
+```
+
 ### CV Campaign
 
-The CV Campaign pipeline produces tailored CVs and cover letters. It runs against roles with Status = `Interested`, processes up to five per run in priority order, and writes results back to Notion when each role completes.
+The CV Campaign pipeline produces tailored CVs and cover letters. It runs against roles with Status = `Interested`, processes up to five per run in priority order, and writes results back to your database when each role completes. To skip the cover letter for a specific run, say "no letter" in your chat command.
 
-Two variants exist within this pipeline:
-
-| Variant | How to trigger | Outputs |
-|---|---|---|
-| **Standard** | `/cv-campaign` (no flags) | CV + cover letter + reviewer feedback per role |
-
-The `--now` flag runs the Standard variant against a single role without a job tracking database. Pass a URL or paste a JD directly. No Notion writeback occurs.
+The `--now` flag runs the pipeline against a single role without a job tracking database. Pass a URL or paste a JD directly. No database writeback occurs.
 
 ```
 /cv-campaign --now https://jobs.example.com/head-of-marketing
@@ -368,33 +376,12 @@ The `--now` flag runs the Standard variant against a single role without a job t
 
 ### CV Edit
 
-The CV Edit pipeline improves existing outputs for roles you've flagged for revision. It never starts from scratch — it reads the existing CV text, cover letter text, and coach properties from the Notion row, runs the employment coach to verify and update its strategic properties, then routes the role through the appropriate writing agents to improve what's there.
+The CV Edit pipeline improves existing outputs for roles you've flagged for revision. It never starts from scratch — it reads the existing CV text, cover letter text, and coach properties from the database row, runs the employment coach to verify and update its strategic properties, then routes the role through the appropriate writing agents to improve what's there.
 
 Trigger it with the `--edit` flag or by saying "edit my CVs" in chat. The pipeline processes all roles with Status = `Needs editing`.
 
 ```
 /cv-campaign --edit
-```
-
-### Intake
-
-The Intake pipeline runs market intelligence on roles you're researching but haven't committed to applying for. It operates on roles with Status = `Hold`, researches each company (competitive landscape, funding, hiring manager, culture signals), writes coach properties to Notion, generates Q&A intake questions for each role, and updates Status to `Researched`. No CVs are produced.
-
-**Intake is a mandatory prerequisite for CV Campaign.** The letter-writer needs two inputs that only exist after Intake runs: the strategic properties the coach writes (Role emphasis, Keywords, Strategy, Gap handling) and the Q&A answers you provide in the Notion page body after Intake generates the questions. Without these, the letter-writer has no basis for your specific angle on the role and no company context — it falls back to generic framing, which produces generic letters.
-
-The correct sequence for any role is:
-
-1. Add the role to your database with Status = `Hold`
-2. Run Intake — the coach researches the company and writes Q&A questions to the Notion row
-3. Open the Notion row and answer the Q&A questions in the Page Body field
-4. Change Status to `Interested`
-5. Run CV Campaign — the letter-writer uses your answers and the coach's research
-
-Trigger Intake with the coach command or natural language:
-
-```
-Research my Hold roles.
-Run market intelligence.
 ```
 
 ### Status and pipeline routing
@@ -473,7 +460,7 @@ The employment coach owns `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `
 
 `JD proof` is a transparency field only. Its purpose is to let you verify that the coach's Role emphasis interpretation matches what the JD actually says. No writing agent reads it or uses it as input.
 
-The `Note` field belongs to you. Agents use it only for genuinely additional context that structured properties cannot carry — never to repeat content already in a structured field.
+The `Note` field belongs to you. Agents must **never** write to this field to summarize, repeat, or rephrase content already captured in a structured property — that is a hard violation of property write discipline, not a judgment call.
 
 ---
 
