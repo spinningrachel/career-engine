@@ -36,7 +36,7 @@ Run these steps in sequence. All bash commands run directly — no agent spawn n
 
 **Plugin dir:** the directory containing `agents/`, `skills/`, and `references/` — typically the plugin root.
 
-**Output dir:** `{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/`
+**Output dir:** `{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/`
 
 **Company directory:** Each role's files go in a subdirectory named after the hiring company. The subdirectory name is derived from the Company property: lowercase, spaces replaced with hyphens, non-alphanumeric-or-hyphen characters stripped, consecutive hyphens collapsed. If the result is empty or the company is unknown, use `unknown-company`.
 
@@ -201,7 +201,7 @@ pandoc /tmp/he-<cl_filename>.md \
 ```
 
 All files save to the role's company subdirectory:
-`{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/<company_dir>/`
+`{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/<company_dir>/`
 
 ---
 

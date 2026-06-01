@@ -468,7 +468,9 @@ The `Note` field belongs to you. Agents must **never** write to this field to su
 
 ## Output files
 
-All files from a run land in a campaign folder named by date: `{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/`. Each role gets its own subdirectory named after the company in kebab-case.
+All files from a run land in a campaign folder named by date: `<output_folder>/cv-campaign-<YYYY-MM-DD>/`. Each role gets its own subdirectory named after the company in kebab-case.
+
+`<output_folder>` is the path you configure during onboarding (`/cv-campaign:setup --phase 5`). It can be any local directory — iCloud, Dropbox, a standard folder, or anything else your filesystem allows. The placeholder `{{OUTPUT_FOLDER}}` in plugin files is replaced with your actual path during setup.
 
 ### File naming conventions
 

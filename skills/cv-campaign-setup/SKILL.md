@@ -329,7 +329,7 @@ Ask: "Where do you want your DOCX files saved?"
 - Default: iCloud — ask them to confirm their iCloud path or provide a custom subfolder name
 - Custom: any local absolute path
 
-Write the path to every `{{ICLOUD_OUTPUT_PATH}}` placeholder across all skill files.
+Write the path to every `{{OUTPUT_FOLDER}}` placeholder across all skill files.
 
 If cover letters were NOT kept during Phase 3, ask: "Do you have an existing folder of approved sent cover letters for voice calibration? If so, where is it?" Write the path to `{{ICLOUD_DELIVERED_LETTERS_PATH}}` if provided.
 

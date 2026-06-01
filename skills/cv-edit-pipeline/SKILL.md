@@ -16,7 +16,7 @@ The key difference from the main pipeline: **agents are not starting from scratc
 **Outputs go to the iCloud output folder — never to a session scratchpad.**
 
 The only valid output destination is:
-`{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/`
+`{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/`
 
 Do not create a local output directory inside a session path (`local_*/outputs/` or similar). Files written there do not sync and are not findable.
 
@@ -24,7 +24,7 @@ Before starting, run this path verification:
 
 ```bash
 # Verify iCloud output root exists — if not, stop immediately
-ls "{{ICLOUD_OUTPUT_PATH}}/" 2>/dev/null \
+ls "{{OUTPUT_FOLDER}}/" 2>/dev/null \
   && echo "iCloud output path confirmed." \
   || { echo "ERROR: iCloud output root not found. Aborting."; exit 1; }
 ```
@@ -313,7 +313,7 @@ Do not write anything to the `Note` field unless the agent has genuinely additio
 ## State file (crash-recovery resilience)
 
 After each role completes, append its data to:
-`{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/state.json`
+`{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/state.json`
 
 Use the same format as the main pipeline (see cv-campaign-role-steps Step 7b). The `session_date` field must reflect today's date.
 

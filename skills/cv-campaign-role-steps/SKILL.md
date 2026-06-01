@@ -315,7 +315,7 @@ If the writeback fails, log it and surface it in the final delivery — files ar
 ### Step 7b — Write state file (crash-recovery)
 
 Append this role's data to:
-`{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/state.json`
+`{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/state.json`
 
 Create the file on the first role; append on subsequent ones. Use the `/tmp→iCloud` copy protocol from `cv-campaign-export`. Use the shortened path format for all paths — `cv-campaign-<YYYY-MM-DD>/<filename>` only, never the full iCloud path.
 

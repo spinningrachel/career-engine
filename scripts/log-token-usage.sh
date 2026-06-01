@@ -57,9 +57,9 @@ except:
     print('unknown')
 " 2>/dev/null)
 
-# Find the most recent run-metrics file across all cv-campaign output folders
-# Look in the standard iCloud path first, then check if ICLOUD_OUTPUT_PATH is set
-SEARCH_BASE="${ICLOUD_OUTPUT_PATH:-$HOME/Library/Mobile Documents/com~apple~CloudDocs}"
+# Find the most recent run-metrics file in the configured output folder
+# OUTPUT_FOLDER is set during onboarding; falls back to home directory search
+SEARCH_BASE="${OUTPUT_FOLDER:-$HOME}"
 METRICS_FILE=$(find "$SEARCH_BASE" -name "run-metrics-*.json" -newer /tmp/.cv-campaign-last-hook 2>/dev/null | sort -r | head -1)
 
 # Update the last hook marker
