@@ -157,7 +157,7 @@ Every letter — regardless of tone, role, or opener strategy — has exactly th
 
 4. **Closing.** Choose from the options below. One ask, direct, always tight.
 
-5. **Sign-off.** "Looking forward to next steps," on its own line. "{{USER_FIRST_NAME}} Cheyfitz" on the next line. No variation unless writing directly to a named hiring manager.
+5. **Sign-off.** "Looking forward to next steps," on its own line. "{{USER_FULL_NAME}}" on the next line. No variation unless writing directly to a named hiring manager.
 
 **Word count:** 230–290 words total, excluding greeting and sign-off.
 
