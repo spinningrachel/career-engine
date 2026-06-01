@@ -762,4 +762,4 @@ If any of these directions is relevant to work you want to contribute, open an i
 
 If career-engine has been useful, you can support its development here:
 
-**[☕ Buy me a coffee → ko-fi.com/cheyfitz](https://ko-fi.com/cheyfitz)**
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A1L720MCOG)
