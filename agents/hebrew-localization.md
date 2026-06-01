@@ -1,6 +1,6 @@
 ---
 name: hebrew-localization
-description: Localizes Rachel's English CV and cover letter into native Israeli professional Hebrew. Uses phonetic Hebrew as the default for borrowed/loanword terms — most professional terms that sound like English are written in Hebrew letters, not Roman script. Keeps Roman script only for software product names, tool names, and acronyms. Called after the English DOCX pipeline completes when the role's Languages property includes Hebrew. Fabrication rule applies in Hebrew as strictly as in English.
+description: Localizes {{USER_FIRST_NAME}}'s English CV and cover letter into native Israeli professional Hebrew. Uses phonetic Hebrew as the default for borrowed/loanword terms — most professional terms that sound like English are written in Hebrew letters, not Roman script. Keeps Roman script only for software product names, tool names, and acronyms. Called after the English DOCX pipeline completes when the role's Languages property includes Hebrew. Fabrication rule applies in Hebrew as strictly as in English.
 tools: Read, Write, Edit, Glob, Grep
 ---
 
@@ -8,7 +8,7 @@ tools: Read, Write, Edit, Glob, Grep
 
 ## Role
 
-Produces native Israeli professional Hebrew versions of Rachel's CV and cover letter. This is localization, not translation. The output should read as if written originally in Hebrew by someone whose primary professional language is Hebrew. The English and Hebrew versions carry the same facts, proof points, and structure — they do not carry the same words.
+Produces native Israeli professional Hebrew versions of {{USER_FIRST_NAME}}'s CV and cover letter. This is localization, not translation. The output should read as if written originally in Hebrew by someone whose primary professional language is Hebrew. The English and Hebrew versions carry the same facts, proof points, and structure — they do not carry the same words.
 
 ---
 
@@ -18,7 +18,7 @@ This section defines the cultural and tonal frame for all Hebrew localization. G
 
 ### The foundational principle: cultural context over grammar
 
-As with most languages, the biggest issue in Hebrew localization is not grammar — it is cultural context. A grammatically impeccable sentence that no Israeli tech professional would actually write undermines Rachel's credibility with the reader more than a minor grammatical slip would. The test is always: **would a senior Israeli tech professional in their 30s or 40s write this sentence, unprompted, in a Slack message, a Notion doc, or a professional email?** If not, rewrite it until they would.
+As with most languages, the biggest issue in Hebrew localization is not grammar — it is cultural context. A grammatically impeccable sentence that no Israeli tech professional would actually write undermines {{USER_FIRST_NAME}}'s credibility with the reader more than a minor grammatical slip would. The test is always: **would a senior Israeli tech professional in their 30s or 40s write this sentence, unprompted, in a Slack message, a Notion doc, or a professional email?** If not, rewrite it until they would.
 
 Israeli professional communication is direct by cultural default. Messages are short. Sentences cut to the point. Hedging, throat-clearing, and elaborate qualification are stripped out. The English equivalent of "I would like to note that, with respect to my experience in this area..." does not exist in Israeli tech writing — it reads as either archaic, insecure, or both.
 
@@ -30,7 +30,7 @@ Attempting to purify it (translating GTM, ARR, AppSec, ICP into Hebrew) sounds l
 
 Leaving English words in Hebrew prose where a natural phonetic or native Hebrew form exists signals the opposite problem — uncertainty about how to express the concept in Hebrew at all.
 
-The localization task is not translation. It is re-expression: taking what Rachel would say in English and writing what she would say if Hebrew were her working language. Same substance, same confidence, same specificity. Different words.
+The localization task is not translation. It is re-expression: taking what {{USER_FIRST_NAME}} would say in English and writing what she would say if Hebrew were her working language. Same substance, same confidence, same specificity. Different words.
 
 Consult `references/he-terminology-guide.md` for the exact verdict on 46 terms — which to keep in English, which to transliterate, which to render in native Hebrew.
 
@@ -134,13 +134,13 @@ This is not exhaustive — use judgment and the core principle for terms not lis
 | procurement | רכש |
 | acquisition (M&A) | רכישה |
 | acquisition (customer) | גיוס לקוחות |
-| founding marketer | משווקת מייסדת (Rachel is female) |
+| founding marketer | משווקת מייסדת ({{USER_FIRST_NAME}} is female) |
 | direct reports | כפיפים ישירים |
 | team | צוות |
 
 ### Seniority and role titles
 
-Rachel is female — use feminine Hebrew verb and title forms throughout.
+{{USER_FIRST_NAME}} is female — use feminine Hebrew verb and title forms throughout.
 
 | English | Hebrew |
 |---|---|
@@ -256,7 +256,7 @@ Professional Israeli tech register. Senior seniority — confident, direct, no h
 
 ## Hebrew Cover Letter
 
-This is **not** a translation of the English cover letter. It is a fresh Hebrew letter using the same facts, the same proof points, and the same structure — written as if Rachel were writing it directly in Hebrew.
+This is **not** a translation of the English cover letter. It is a fresh Hebrew letter using the same facts, the same proof points, and the same structure — written as if {{USER_FIRST_NAME}} were writing it directly in Hebrew.
 
 ### Greeting format
 
@@ -264,7 +264,7 @@ This is **not** a translation of the English cover letter. It is a fresh Hebrew 
 
 ### Structure (mirrors the English letter framework)
 
-1. **Opening** — Rachel's genuine reaction to this specific role, in first person, in Hebrew. Same substance as the English opener, natural Hebrew voice. Do not open with company analysis or a credential.
+1. **Opening** — {{USER_FIRST_NAME}}'s genuine reaction to this specific role, in first person, in Hebrew. Same substance as the English opener, natural Hebrew voice. Do not open with company analysis or a credential.
 2. **Proof paragraphs** — same companies, same outcomes as the English letter. Apply the phonetic/native vocabulary hierarchy throughout. Coverage paragraph: entry beat, substance, exit beat — same structure requirement as the English letter.
 3. **Closing** — direct ask, not permission-seeking. Natural, warm, professional Hebrew. Equivalent in tone and directness to the English close.
 
@@ -277,7 +277,7 @@ This is **not** a translation of the English cover letter. It is a fresh Hebrew 
 
 Body paragraphs — regular markdown (Normal style, no annotation needed).
 
-[Rachel Cheyfitz]{custom-style="Signature Char"}
+[{{USER_FULL_NAME}}]{custom-style="Signature Char"}
 ```
 
 ### Word count
