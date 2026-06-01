@@ -242,23 +242,87 @@ Confirm: "Your positioning framework, career background, and candidate rules are
 
 ## Phase 5 — Job tracking and output
 
-**Purpose:** The pipeline reads roles from a job tracking source and writes results back. This phase configures where that source lives.
+**Purpose:** The pipeline reads roles from a job tracking source and writes results back. This phase sets up the database and configures where it lives.
 
-Ask: "How do you want to track your job applications?"
+Ask: "How do you want to track your job applications? Options: **Notion** (recommended — full pipeline integration with writeback), **Google Sheets**, or **another platform**."
 
-**Option A — Notion (recommended)**
-1. Provide the Notion template link: `https://certain-espadrille-82d.notion.site/d8606ae1fb9282f4872381cd819c1abd?v=d2006ae1fb928355a14388715d96a782`
-2. Ask: "Have you already duplicated this template to your Notion workspace?"
-   - If yes: "Paste your database ID (the 32-character string from your Notion URL)."
-   - If no: "Open the link, click 'Duplicate', then come back with the database ID."
-3. Write the database ID into every `{{NOTION_DATABASE_ID}}` placeholder across all skill files.
-4. Ask for the view ID if they have a filtered view → write to `{{NOTION_VIEW_ID}}`.
+---
 
-**Option B — CSV / Google Sheets**
-1. Ask: "Where will your CSV or spreadsheet live? Provide the file path or Google Sheets URL."
-2. Required columns: `Job URL`, `Company`, `Position`, `Status`, `Priority`, `JD Body`, `Notes`
-3. Write the path/URL to `.claude/settings.json` under `job_tracking.source`.
-4. Note: Notion writeback is not available in CSV mode — outputs go to the output folder only.
+### Option A — Notion
+
+1. Say: "Use this template — it has all the required columns and select values pre-configured:
+   **[Duplicate the Notion template →](https://certain-espadrille-82d.notion.site/d8606ae1fb9282f4872381cd819c1abd?v=d2006ae1fb928355a14388715d96a782)**
+   Click Duplicate, add it to your workspace, then come back."
+
+2. Once they confirm it's set up, ask:
+   - "Paste your database ID." (the 32-character string from the Notion URL — `notion.so/[workspace]/DATABASE_ID?v=...`)
+   - "Do you have a filtered view you want to use? If so, paste the view ID too." (the `v=...` part of the URL)
+
+3. Write the database ID to every `{{NOTION_DATABASE_ID}}` placeholder across all skill files.
+4. Write the view ID to every `{{NOTION_VIEW_ID}}` placeholder (or leave placeholder if not provided).
+
+5. Say: "**Important:** Do not rename the columns in your Notion database. The pipeline writes to them by exact name — renaming breaks the integration silently."
+
+---
+
+### Option B — Google Sheets
+
+1. Say: "I'll create a CSV file with all the required column headers. You'll upload it to Google Sheets to create your tracking sheet with the correct structure.
+   
+   **A note on column names: do not rename them.** The pipeline writes to these columns by exact name. Renaming any column will break the integration silently."
+
+2. Write a CSV file to `/tmp/cv-campaign-tracker.csv` containing only the header row with all required columns in order:
+
+```
+Company,Position,Job URL,Status,Priority,JD Body,Q&A,Page Body,Role emphasis,JD proof,Keywords,Strategy,Role Type,Relationship type,Gap handling,Role summary,Hiring Manager,Hiring manager's role,Manager role confirmed,Person who Advertised Role (if not Hiring Manager),No other Marketing roles employed by company,Landscape,Last Pipeline Run,Link to CV,Draft Directory,CV File Name,Letter File Name,Languages,Note
+```
+
+3. Tell the user: "Download this file and upload it to Google Sheets (File → Import → Upload). This creates your tracking sheet with all the required columns."
+
+4. Provide the following prompt for them to run in a Google Sheets agent or Claude to set up data validation on the select columns:
+
+```
+Set up data validation (dropdown lists) on the following columns in my Google Sheet named "cv-campaign-tracker":
+
+- Column "Status": allow only these exact values: Hold, Interested, CV Ready for Review, Applied, Researched, Needs editing
+- Column "Priority": allow only these exact values: Highest, First, Second, Third, Fourth, Fifth
+- Column "Role Type": allow multiple selections from: Builder, Scaler, Specialist, Leader
+- Column "Relationship type": allow only these exact values: Full time, Part time, Temporary, Fractional/Consulting/Freelance, Reframe
+- Column "Manager role confirmed": allow only these exact values: Yes, No; this is only a hypothesis
+- Column "Languages": allow multiple selections from: English, Hebrew
+
+These values must match exactly — they are hard-coded in the pipeline that reads this sheet.
+```
+
+5. Once the user has set up their sheet, ask: "Paste your Google Sheets URL." Write it to `.claude/settings.json` under `job_tracking.source`.
+
+6. Say: "Note: in Google Sheets mode, the pipeline reads your roles but does not write results back to the sheet. Outputs (DOCX files and coach properties) go to your output folder only."
+
+---
+
+### Option C — Other platform
+
+1. Say: "I'll give you the column schema and a prompt you can use to set up your database in [platform]."
+
+2. Provide the same CSV header row as Option B.
+
+3. Provide a prompt the user can adapt:
+
+```
+Create a database/table with the following columns. Do not rename them — they are referenced by exact name by an external pipeline.
+
+Columns: Company, Position, Job URL, Status, Priority, JD Body, Q&A, Page Body, Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, Gap handling, Role summary, Hiring Manager, Hiring manager's role, Manager role confirmed, Person who Advertised Role (if not Hiring Manager), No other Marketing roles employed by company, Landscape, Last Pipeline Run, Link to CV, Draft Directory, CV File Name, Letter File Name, Languages, Note
+
+Select column values (must match exactly):
+- Status: Hold | Interested | CV Ready for Review | Applied | Researched | Needs editing
+- Priority: Highest | First | Second | Third | Fourth | Fifth
+- Role Type (multi-select): Builder | Scaler | Specialist | Leader
+- Relationship type: Full time | Part time | Temporary | Fractional/Consulting/Freelance | Reframe
+- Manager role confirmed: Yes | No; this is only a hypothesis
+- Languages (multi-select): English | Hebrew
+```
+
+4. Once set up, ask for the access URL or connection details. Write to `.claude/settings.json` under `job_tracking.source`.
 
 **Output folder**
 Ask: "Where do you want your DOCX files saved?"
