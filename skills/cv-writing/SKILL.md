@@ -12,7 +12,7 @@ description: CV writing reference for {{USER_FIRST_NAME}}'s job search pipeline.
 | File | Purpose | When to load |
 |---|---|---|
 | `references/cv-example.pdf` | Approved full CV (HoneyBook application, May 2026) | Always — calibrate layout, bullet density, summary length, and quality standard against this. Do not copy content. |
-| `references/rachel-{{USER_LAST_NAME}}.dotx` | The Word template used for DOCX export | Reference when formatting output or checking style annotations |
+| `references/{{CV_TEMPLATE_FILE}}` | The Word template used for DOCX export | Reference when formatting output or checking style annotations |
 | `02-candidate-background.md` (Portfolio) | Portfolio — work samples with direct PDF links | When the role signals that demonstrated output would strengthen the application |
 | `02-candidate-background.md` (Testimonials) | Testimonials — client endorsements | For freelance, consulting, or fractional roles where third-party validation is relevant |
 
