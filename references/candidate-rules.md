@@ -1,6 +1,6 @@
 # Who {{USER_FIRST_NAME}} Is
 
-**Configuration reference — load first.** Rules, guards, operational framing, and contact details. Approved career content (role facts, approved bullets, testimonials, portfolio, CV summaries) is in `references/qa-bank.md`. Professional philosophy, methodology, and domain narratives are in `references/framework.md`.
+**Configuration reference — load first.** Rules, guards, operational framing, and contact details. Approved career content (role facts, approved bullets, testimonials, portfolio, CV summaries) is in `references/candidate-background.md`. Professional philosophy, methodology, and domain narratives are in `references/framework.md`.
 
 ---
 

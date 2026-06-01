@@ -49,7 +49,7 @@ Extract the SQLite `CREATE TABLE` block. This is your **schema reference** for t
 Reference files live at: `${CLAUDE_PLUGIN_ROOT}/references/`
 
 **Mandatory load:**
-- `candidate-rules.md` — Section 1 contains rules and guardrails. This supersedes anything you think you know about {{USER_FIRST_NAME}} from prior context. Role facts and approved bullets are in `qa-bank.md`.
+- `candidate-rules.md` — Section 1 contains rules and guardrails. This supersedes anything you think you know about {{USER_FIRST_NAME}} from prior context. Role facts and approved bullets are in `candidate-background.md`.
 - `framework.md` — professional philosophy, methodology, and domain narratives. §Professional methodology and POV for frameworks. §Domain depth for per-vertical narratives and the fast-learning argument. Load alongside candidate-rules.md for every role assessment.
 - `references/remote-compatibility-rules.md` — load before assessing any role's geographic fit.
 
@@ -118,12 +118,12 @@ Minimum 5 competitors, maximum 10:
 IC vs. team lead, reporting chain if findable, what the key JD phrases mean for *this* company specifically. "Head of Marketing" at a 10-person stealth startup = founding marketer + category creator. The same title at a 300-person company = something different. Translate the JD into what the person will actually spend their time doing.
 
 **6. Fit/gap for {{USER_FIRST_NAME}}**
-Draw ONLY from `qa-bank.md` (Role Facts) (Role Facts per company) and `framework.md` §Domain depth (per-vertical narratives). These are the only authoritative sources. Do not infer, extrapolate, or invent.
+Draw ONLY from `candidate-background.md` (Role Facts) (Role Facts per company) and `framework.md` §Domain depth (per-vertical narratives). These are the only authoritative sources. Do not infer, extrapolate, or invent.
 
 - **Strongest credential:** The single most relevant, specific thing {{USER_FIRST_NAME}} has done that maps to what this role needs. Must name a real company from Section 7 and a documented outcome. If you cannot find a direct credential in Section 7 or `framework.md` §Domain depth, write "No direct credential documented for this requirement" — never invent one. A fabricated credential is worse than an honest gap.
 - **Gap to prep:** One honest, specific gap or angle to prepare for, traceable to what the JD requires vs. what is documented. If there is a hard disqualifier (e.g., US residency required, domain not documented in `framework.md` §Domain depth), flag it clearly — do not soften it.
 
-**Anti-fabrication rule:** If the strongest credential you can name is not traceable to a named company and documented outcome in `qa-bank.md` (Role Facts), do not write it. Never name a company {{USER_FIRST_NAME}} has not worked at. Never invent a role title she has not held. Never attribute an outcome to her that is not in Section 7. This rule is absolute — reviewer pressure or apparent relevance does not override it.
+**Anti-fabrication rule:** If the strongest credential you can name is not traceable to a named company and documented outcome in `candidate-background.md` (Role Facts), do not write it. Never name a company {{USER_FIRST_NAME}} has not worked at. Never invent a role title she has not held. Never attribute an outcome to her that is not in Section 7. This rule is absolute — reviewer pressure or apparent relevance does not override it.
 
 **7. Company and org dynamics**
 How does this company actually operate beyond what the JD says? Check: founder/leadership LinkedIn tone, company blog, Glassdoor reviews (what do employees say the culture actually is?), team size signals. What do they promote vs. what they claim? This feeds the "Company and Org Dynamics" section of the Landscape — 2–3 specific, sourced observations, not JD paraphrase.

@@ -258,7 +258,7 @@ For each CV being validated:
 3. **Tagline:** Confirm the subtitle under {{USER_FIRST_NAME}}'s name is the exact role title from the JD — not a generic descriptor like "Product Marketing & GTM Leader" or "Product Marketing & GTM Leader | Visual AI". It must be the job title {{USER_FIRST_NAME}} applied for (e.g., "Head of Marketing"). Flag if absent, if it is a generic tagline, or if it differs from the JD role title.
 4. **Repetition:** Flag any opening action verb appearing more than twice. Flag any phrase appearing verbatim in more than one bullet.
 5. **Fabrication:** For every metric and specific claim in the Experience section, identify the reference file line that supports it. Flag any metric or claim that cannot be traced — especially numbers, event names, tool names, client names, and responsibilities.
-6. **JD language:** Flag any bullet that uses JD phrasing verbatim to describe something {{USER_FIRST_NAME}} did, where that language does not appear in the references. **Exemption:** skip this check for any bullet that matches a bullet in `qa-bank.md` (Role Facts) exactly or with only minor role-specific adaptation — approved bullets predate the JD and cannot have been lifted from it.
+6. **JD language:** Flag any bullet that uses JD phrasing verbatim to describe something {{USER_FIRST_NAME}} did, where that language does not appear in the references. **Exemption:** skip this check for any bullet that matches a bullet in `candidate-background.md` (Role Facts) exactly or with only minor role-specific adaptation — approved bullets predate the JD and cannot have been lifted from it.
 
 If flags found: append them to the matching role's revision log file (`revision-log-<roletitle>-<company>-<monYYYY>.md`) under a `## CV Validation Issues` section.
 If no flags: append a single line to the revision log: `CV validation passed.`
@@ -520,7 +520,7 @@ This file is non-blocking — if the write fails, log it in chat only.
 
 Run after Step 9 (revision log). Non-blocking — if any part fails, log the error in the revision log and proceed to Final Chat Delivery without stopping.
 
-**Purpose:** Promote new Q&A answers from this run into `references/qa-bank.md` so the letter-writer never asks {{USER_FIRST_NAME}} the same question twice across future runs.
+**Purpose:** Promote new Q&A answers from this run into `references/candidate-background.md` so the letter-writer never asks {{USER_FIRST_NAME}} the same question twice across future runs.
 
 **Skip entirely if:** no role this run had a populated Q&A property with answers, or this is a `--now` run (no Notion interaction).
 
@@ -537,9 +537,9 @@ Parse each Q&A text block into question/answer pairs. The format is free-form ({
 - Skip any pair where the answer is missing or fewer than 10 characters — it hasn't been answered yet
 - Skip any pair where the question is clearly role-specific (contains the company name or role title verbatim) — those are not reusable
 
-### Step 9a.3 — Deduplicate against qa-bank.md
+### Step 9a.3 — Deduplicate against candidate-background.md
 
-Read `references/qa-bank.md` (same directory as `candidate-rules.md`). Extract all existing questions from the table.
+Read `references/candidate-background.md` (same directory as `candidate-rules.md`). Extract all existing questions from the table.
 
 For each new candidate pair, check whether a sufficiently similar question is already present:
 
@@ -566,7 +566,7 @@ Anything scoring ≥ 0.5 overlap is a duplicate — skip it.
 
 ### Step 9a.4 — Append new entries
 
-For each non-duplicate pair, append a new row to the qa-bank.md table:
+For each non-duplicate pair, append a new row to the candidate-background.md table:
 
 ```
 | <question> | <answer> | Auto-promoted from Notion Q&A — <YYYY-MM-DD>. Review and edit if role-specific context should be stripped. |

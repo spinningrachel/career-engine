@@ -33,7 +33,7 @@ Before asking any questions, read these three files and identify which `{{...}}`
 ```
 ${CLAUDE_PLUGIN_ROOT}/references/candidate-rules.md
 ${CLAUDE_PLUGIN_ROOT}/references/framework.md
-${CLAUDE_PLUGIN_ROOT}/references/qa-bank.md
+${CLAUDE_PLUGIN_ROOT}/references/candidate-background.md
 ```
 
 Report to the user:
@@ -76,7 +76,7 @@ Confirm: "Phase 1 complete. Your identity and contact details are set across all
 
 **Purpose:** Every CV bullet, proof point, and strategic property the agents produce must trace to this data. Without it, agents will fabricate.
 
-Work through `qa-bank.md` (Role Facts) systematically. For each role slot:
+Work through `candidate-background.md` (Role Facts) systematically. For each role slot:
 
 1. Ask: "Let's add your most recent role. What company, title, and dates?"
 2. Ask for: reporting structure, team size, key metrics, 2–3 bullet-point achievements
@@ -221,12 +221,12 @@ Confirm: "Phase 5 complete. The pipeline will run without approval prompts."
 
 **Purpose:** The Q&A bank lets the letter-writer use your real answers instead of asking the same intake questions repeatedly. Seeding it now means your first letters will use your voice from the start.
 
-Show the user the question list from `qa-bank.md`. Ask them to answer 3–5 questions that feel most natural — particularly:
+Show the user the question list from `candidate-background.md`. Ask them to answer 3–5 questions that feel most natural — particularly:
 - The one that defines their professional approach ("the problem you exist to solve")
 - Their answer to domain unfamiliarity / fast learning
 - Their geographic preferences for remote work
 
-Write their answers into `qa-bank.md`, replacing the `{{USER_ANSWER_...}}` placeholders.
+Write their answers into `candidate-background.md`, replacing the `{{USER_ANSWER_...}}` placeholders.
 
 Confirm: "Phase 6 complete. The letter-writer will use your answers directly."
 

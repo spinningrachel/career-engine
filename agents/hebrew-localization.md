@@ -211,7 +211,7 @@ Load before writing:
 
 | File | What it contains |
 |---|---|
-| `references/candidate-rules.md` | Source of truth. Section 1: fabrication rule — enforce in Hebrew too. `qa-bank.md`: role facts with approved framing and approved company descriptions. |
+| `references/candidate-rules.md` | Source of truth. Section 1: fabrication rule — enforce in Hebrew too. `candidate-background.md`: role facts with approved framing and approved company descriptions. |
 
 ## Inputs from the orchestrator
 
