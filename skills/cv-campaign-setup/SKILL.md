@@ -31,7 +31,7 @@ This skill configures the plugin for a new user. It replaces `{{...}}` placehold
 Before asking any questions, read these three files and identify which `{{...}}` placeholders are still unfilled:
 
 ```
-${CLAUDE_PLUGIN_ROOT}/references/operating-rules.md
+${CLAUDE_PLUGIN_ROOT}/references/candidate-rules.md
 ${CLAUDE_PLUGIN_ROOT}/references/framework.md
 ${CLAUDE_PLUGIN_ROOT}/references/qa-bank.md
 ```
@@ -64,7 +64,7 @@ Ask the following. Use the placeholder name as the question prompt — "What is 
 | `{{USER_LOCATION}}` | City, Country |
 | `{{USER_CITIZENSHIP}}` | Citizenship / right to work (e.g., "US/Israeli citizenship", "EU citizen") |
 
-After collecting all answers, write them into `operating-rules.md` Section 8 (Reference Details — Contact and Portfolio) by replacing each placeholder with the user's response.
+After collecting all answers, write them into `candidate-rules.md` Section 8 (Reference Details — Contact and Portfolio) by replacing each placeholder with the user's response.
 
 Also write `{{USER_FIRST_NAME}}`, `{{USER_FULL_NAME}}`, and `{{USER_LAST_NAME}}` into every other occurrence across all three reference files. These appear throughout agent instructions and must be consistent.
 

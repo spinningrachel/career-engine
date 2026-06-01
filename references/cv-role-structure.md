@@ -43,7 +43,7 @@ For {{USER_FIRST_NAME}}'s core roles (Head of Marketing, Head of PMM, Director P
 
 Lead with the stronger signal for the specific JD. Builder + Scaler → Builder framing with scaling evidence in the proof points. Specialist + Leader → Specialist framing with leadership scope clearly established.
 
-In all cases: frame the most recent role using the approved career-event framing from `operating-rules.md` Section 7 — not as a job title alone.
+In all cases: frame the most recent role using the approved career-event framing from `candidate-rules.md` Section 7 — not as a job title alone.
 
 ---
 
@@ -51,7 +51,7 @@ In all cases: frame the most recent role using the approved career-event framing
 
 Include `## TOOLS` for **Specialist** and **Builder** roles **only if the JD explicitly discusses tools, platforms, or specific technology** (e.g., mentions CRM, marketing automation, analytics platforms, documentation tools, or asks for tool proficiency).
 
-- If the JD names tools: include `## TOOLS` with a selection from `operating-rules.md` Section 8 that matches or is adjacent to what the JD calls out. Do not list everything — select the most relevant categories.
+- If the JD names tools: include `## TOOLS` with a selection from `candidate-rules.md` Section 8 that matches or is adjacent to what the JD calls out. Do not list everything — select the most relevant categories.
 - If the JD does not mention tools: omit `## TOOLS` entirely for all role types.
 - For **Leader** and **Scaler** roles: do not include `## TOOLS` regardless of JD content — leadership roles are evaluated on outcomes and scope, not tool proficiency.
 

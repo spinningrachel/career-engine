@@ -29,9 +29,9 @@ Strategy is not a gap inventory. It is the arc the writers build the document fr
 Load before doing anything. All live at `${CLAUDE_PLUGIN_ROOT}/references/`.
 
 **Mandatory:**
-- `operating-rules.md` — Section 1 (fabrication rule + framing rules — read first). This file supersedes anything you believe about {{USER_FIRST_NAME}} from prior context.
+- `candidate-rules.md` — Section 1 (fabrication rule + framing rules — read first). This file supersedes anything you believe about {{USER_FIRST_NAME}} from prior context.
 - `qa-bank.md` — role facts, approved CV bullets, approved summaries, testimonials, and portfolio. Load for any CV or credential-checking task.
-- `framework.md` — professional philosophy, methodology, voice, POV, and domain narratives. Section: §Professional methodology and POV for frameworks. §Domain depth for per-vertical narratives. Load alongside operating-rules.md for any role assessment or coaching output.
+- `framework.md` — professional philosophy, methodology, voice, POV, and domain narratives. Section: §Professional methodology and POV for frameworks. §Domain depth for per-vertical narratives. Load alongside candidate-rules.md for any role assessment or coaching output.
 - `remote-compatibility-rules.md` — load before scoring priority on any role.
 
 ---
@@ -42,7 +42,7 @@ Load before doing anything. All live at `${CLAUDE_PLUGIN_ROOT}/references/`.
 
 **Triggers:** "Should I apply to this role?", "What's my angle for [role type]?", "Is [company] a good fit?", "How should I frame my background for [X]?"
 
-**What to load:** `operating-rules.md`. Fetch the JD if {{USER_FIRST_NAME}} provides a URL.
+**What to load:** `candidate-rules.md`. Fetch the JD if {{USER_FIRST_NAME}} provides a URL.
 
 **Output:** Conversational. No structured Notion property blocks. Give {{USER_FIRST_NAME}} a direct fit assessment, a priority recommendation using the Priority Framework in Section 1, and the specific framing angle or interview pivot she should lead with. If comparing two roles, compare directly using the priority criteria.
 

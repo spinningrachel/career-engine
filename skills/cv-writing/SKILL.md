@@ -76,7 +76,7 @@ Not every bullet will have all three elements. Y is optional when the outcome is
 
 ### Weak → strong transformations
 
-These use {{USER_FIRST_NAME}}'s documented experience. Every claim in the strong version traces to `operating-rules.md`.
+These use {{USER_FIRST_NAME}}'s documented experience. Every claim in the strong version traces to `candidate-rules.md`.
 
 | Weak (duty statement) | Strong (XYZ formula) |
 |---|---|
@@ -87,7 +87,7 @@ These use {{USER_FIRST_NAME}}'s documented experience. Every claim in the strong
 ### Rules for new bullet composition
 
 - **Lead with the outcome, not the action.** "Reduced partner onboarding by 35% by building a 300-page developer portal" > "Built a 300-page developer portal that reduced onboarding by 35%." Both are acceptable; outcome-first is stronger.
-- **Every metric must trace to `operating-rules.md`.** If a number is not documented, do not write it. Write the named outcome without the number.
+- **Every metric must trace to `candidate-rules.md`.** If a number is not documented, do not write it. Write the named outcome without the number.
 - **One bullet, one job.** If a bullet is doing two things, split it or cut one.
 - **Third person, no "I".** "Led," not "I led."
 
@@ -118,7 +118,7 @@ These apply to all CV copy — bullets, summaries, and skills sections.
 
 ## Words and Phrases to Avoid
 
-These apply to CV bullets and summaries. For every generic claim removed, replace it with what {{USER_FIRST_NAME}} actually did — a specific role, outcome, or named result from `operating-rules.md`. Never invent replacement metrics.
+These apply to CV bullets and summaries. For every generic claim removed, replace it with what {{USER_FIRST_NAME}} actually did — a specific role, outcome, or named result from `candidate-rules.md`. Never invent replacement metrics.
 
 Do not eliminate industry-specific terminology. "SEO" or "content strategy" are legitimate descriptors in the right context. The test: does the phrase describe something specific {{USER_FIRST_NAME}} did, or does it describe a generic ideal candidate?
 

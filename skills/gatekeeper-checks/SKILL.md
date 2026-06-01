@@ -50,7 +50,7 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 ### Content Checks
 
 **Summary**
-- No company, client, or conference names — descriptors only (prohibited list in `operating-rules.md` Section 1)
+- No company, client, or conference names — descriptors only (prohibited list in `candidate-rules.md` Section 1)
 - The summary should open with language most relevant to the hiring manager and the role being applied for. No specific role is required to appear — the summary's job is to lead with {{USER_FIRST_NAME}}'s strongest, most relevant credentials for this opening. Do not fail on the absence of any particular role, including the most recent one.
 - ≤120 words, 1 paragraph, ≤4 sentences
 - No tool/platform names, Contentabl client names, or metrics not documented as summary-appropriate
@@ -180,9 +180,9 @@ Note any of these in the end-of-pipeline feedback note. Do not return as a viola
 
 ## Option 3 — Coach Output Fact Check
 
-For each role in the coach's output, identify every specific factual claim about {{USER_FIRST_NAME}}'s background, experience, skills, or accomplishments. Find the supporting line in `operating-rules.md`.
+For each role in the coach's output, identify every specific factual claim about {{USER_FIRST_NAME}}'s background, experience, skills, or accomplishments. Find the supporting line in `candidate-rules.md`.
 
-**Verifiable:** directly traceable to a named section, sentence, or bullet in `operating-rules.md`.
+**Verifiable:** directly traceable to a named section, sentence, or bullet in `candidate-rules.md`.
 
 **Unverifiable:**
 - Names a company, client, product, or tool {{USER_FIRST_NAME}} worked with that does not appear in the reference file

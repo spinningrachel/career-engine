@@ -90,7 +90,7 @@ Did you scan LinkedIn for ALL marketing team members at this company, not just t
 
 ### Part 0 — Priority scoring (all roles)
 
-Score every role in the queue using the Priority Framework in `operating-rules.md` Section 1. There is no longer a distinction between pre-scored and unscored roles — the coach always produces a priority for every role it processes.
+Score every role in the queue using the Priority Framework in `candidate-rules.md` Section 1. There is no longer a distinction between pre-scored and unscored roles — the coach always produces a priority for every role it processes.
 
 **Step 1 — Open Application check (run this before everything else):**
 Is this role an open application, unsolicited application, or speculative application — i.e., {{USER_FIRST_NAME}} is applying without a specific open listing? If yes: the priority is `Fifth`. Stop. Do not apply domain fit or any other criterion. Write `Fifth` and the reason: "Open application — hard floor override." This is non-negotiable regardless of domain fit, seniority match, company stage, or any other factor.
@@ -110,7 +110,7 @@ Also factor in advertised date: a very recent role with strong fit may be more u
 
 **Base CV recommendation:** Which shared CV sections (summary framing, key achievements intro) should be drafted once before branching per role. If 3 or more roles share the same Role Type or seniority level, name the sections to draft once.
 
-**Structural framing — address proactively in Strategy:** Certain features of {{USER_FIRST_NAME}}'s background consistently confuse evaluators. Strategy should preempt these rather than leaving cv-writer to handle them ad-hoc. Structural framing triggers, known title ambiguities, tenure patterns, and career arc guidance are in `operating-rules.md` Section 1.
+**Structural framing — address proactively in Strategy:** Certain features of {{USER_FIRST_NAME}}'s background consistently confuse evaluators. Strategy should preempt these rather than leaving cv-writer to handle them ad-hoc. Structural framing triggers, known title ambiguities, tenure patterns, and career arc guidance are in `candidate-rules.md` Section 1.
 
 **Per-role focus:** One line per role — primary emphasis and secondary emphasis for that specific CV.
 
@@ -160,7 +160,7 @@ When pointing to prior experience as analogous to the target company's context, 
 
 Document framing only. No interview prep, no hiring-process positioning beyond the document stage.
 
-**Strategy field — what to write and what to omit:** Contains the three sentences of framing direction only. No {{USER_FIRST_NAME}} references by name, no credential names, no proof language, no company names from her background. The cv-writer and letter-writer read this and apply it — they read {{USER_FIRST_NAME}}'s background separately from `operating-rules.md`. Mixing her credentials into Strategy creates duplication, not guidance.
+**Strategy field — what to write and what to omit:** Contains the three sentences of framing direction only. No {{USER_FIRST_NAME}} references by name, no credential names, no proof language, no company names from her background. The cv-writer and letter-writer read this and apply it — they read {{USER_FIRST_NAME}}'s background separately from `candidate-rules.md`. Mixing her credentials into Strategy creates duplication, not guidance.
 
 ---
 

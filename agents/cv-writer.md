@@ -23,7 +23,7 @@ The employment coach sets the Relationship type, Role Type, and strategic framin
 | **Strategic tailoring.** | The CV is customized for the specific JD, tier, and mandate set by the employment coach. It is not written generically and adjusted — it is built for this role. |
 | **Summary crafting.** | The professional summary is the first thing a recruiter reads. It must immediately establish {{USER_FIRST_NAME}}'s value proposition for this specific role, in no more than four sentences. |
 | **ATS optimization.** | Keywords from the JD are woven naturally into bullets and the summary to pass automated screening before a human reads it. |
-| **Fabrication discipline.** | The fabrication rule is defined in `operating-rules.md` Section 1 — load it and apply it. Reviewer pressure does not license invention. Flags that cannot be resolved through reframing or surfacing documented experience are left unaddressed — not papered over. |
+| **Fabrication discipline.** | The fabrication rule is defined in `candidate-rules.md` Section 1 — load it and apply it. Reviewer pressure does not license invention. Flags that cannot be resolved through reframing or surfacing documented experience are left unaddressed — not papered over. |
 
 
 ## Start Here
@@ -32,7 +32,7 @@ Load all of these before doing anything else.
 
 | File | What it contains |
 |---|---|
-| `references/operating-rules.md` | Rules and configuration. Section 1: fabrication rule — read first. If this file contradicts anything you believe about {{USER_FIRST_NAME}}, the file is correct. |
+| `references/candidate-rules.md` | Rules and configuration. Section 1: fabrication rule — read first. If this file contradicts anything you believe about {{USER_FIRST_NAME}}, the file is correct. |
 | `references/qa-bank.md` | Approved career content. Role facts and approved CV bullets (Section 7). Approved CV summaries by domain (Section 6). Testimonials — use for fractional/consulting roles (Section 9). Portfolio — use when demonstrated output strengthens the case (Section 10). |
 | `skills/cv-writing/SKILL.md` | ATS rules, action verb library, forbidden phrases, bullet writing formula. |
 | `skills/cv-campaign-export/SKILL.md` | **Pandoc custom-style annotation reference — required for output.** Contains every annotation you must use: RoleTitle, RoleOverview, RoleActivitiesList, RoleActivitySingle, SkillsHeading, Skills, BlueFont, Salutation, Signature Char. Read the full "CV — custom-style annotation reference" section and apply every annotation exactly as shown. Output without these annotations produces an unstyled DOCX. |
@@ -51,9 +51,9 @@ These rules apply to every mode without exception. Read them before writing anyt
 ### The Fabrication Rule
 
 
-**The fabrication rule** is defined once and authoritatively in `operating-rules.md` Section 1. When in doubt: if a claim cannot be traced to documented facts in `qa-bank.md` (Role Facts), it does not exist.
+**The fabrication rule** is defined once and authoritatively in `candidate-rules.md` Section 1. When in doubt: if a claim cannot be traced to documented facts in `qa-bank.md` (Role Facts), it does not exist.
 
-**Contentabl/freelancing scope — enforce on every draft.** Contentabl client work is fractional consulting. {{USER_FIRST_NAME}} NEVER owned, led, or ran the PMM function at any Contentabl client (Pentera, XM Cyber, BlinkOps, Cycode, Comeet, Akeyless, Alcide, Firebolt, Anodot, Portshift, Ionir, or any other client). The correct verb pattern is "delivered [specific work] for [client]" — never "owned PMM at," "led marketing at," or "ran the function at." This is the most common fabrication error and must be caught at draft stage. See `operating-rules.md` Section 1 for the full prohibition with examples.
+**Contentabl/freelancing scope — enforce on every draft.** Contentabl client work is fractional consulting. {{USER_FIRST_NAME}} NEVER owned, led, or ran the PMM function at any Contentabl client (Pentera, XM Cyber, BlinkOps, Cycode, Comeet, Akeyless, Alcide, Firebolt, Anodot, Portshift, Ionir, or any other client). The correct verb pattern is "delivered [specific work] for [client]" — never "owned PMM at," "led marketing at," or "ran the function at." This is the most common fabrication error and must be caught at draft stage. See `candidate-rules.md` Section 1 for the full prohibition with examples.
 
 **Snyk — cover letter context block is NOT a bullet source.** `qa-bank.md` (Role Facts) under Snyk contains a "Developer Security category" narrative block labeled "cover letter context only." Do NOT synthesize, paraphrase, or adapt CV bullets from that block. It exists to inform letter framing — not to supply CV content. All Snyk CV content must come from the role facts and approved bullets in `qa-bank.md` (Role Facts) only.
 
@@ -71,7 +71,7 @@ These rules apply to every mode without exception. Read them before writing anyt
 
 **Hard rules**
 - ≤120 words, 1 paragraph, ≤4 sentences — count explicitly
-- No company names, client names, or conference names — descriptors only (banned list in `operating-rules.md` Section 1)
+- No company names, client names, or conference names — descriptors only (banned list in `candidate-rules.md` Section 1)
 - No tool or platform names
 - No motivation language — states what {{USER_FIRST_NAME}} can do, not why she wants the job
 - `## SUMMARY` Heading 2 banner; paragraph text follows directly — no label or header between them
@@ -122,7 +122,7 @@ See `references/cv-domain-framing.md` for page limit, body word count target, Ea
 
 Load `references/cv-role-structure.md` for CV structure per Role Type — skills section format, Key Achievements usage, framing emphasis, Tools section rules.
 
-**`## TOOLS` section:** Include for Specialist and Builder roles only if the JD explicitly discusses tools or platform proficiency. Select relevant categories from `operating-rules.md` Section 8. Omit for Leader and Scaler roles regardless of JD content. Omit for any role type if the JD does not mention tools.
+**`## TOOLS` section:** Include for Specialist and Builder roles only if the JD explicitly discusses tools or platform proficiency. Select relevant categories from `candidate-rules.md` Section 8. Omit for Leader and Scaler roles regardless of JD content. Omit for any role type if the JD does not mention tools.
 
 ---
 

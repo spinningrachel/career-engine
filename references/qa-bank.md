@@ -1,6 +1,6 @@
 ---
 name: career-content-bank
-description: Accumulated approved career content and reusable Q&A answers. Contains approved CV summaries, role facts with approved bullets, testimonials, portfolio, and the Q&A bank. Agents load this alongside operating-rules.md for any task requiring approved language, role facts, or intake answers.
+description: Accumulated approved career content and reusable Q&A answers. Contains approved CV summaries, role facts with approved bullets, testimonials, portfolio, and the Q&A bank. Agents load this alongside candidate-rules.md for any task requiring approved language, role facts, or intake answers.
 ---
 
 # Career Content Bank
