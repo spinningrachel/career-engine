@@ -271,7 +271,7 @@ For each cover letter being validated:
 2. **Greeting:** Confirm the letter opens with "Hi to the" — not "Dear" or any formal variant.
 3. **Word count:** Count body words (excluding greeting and sign-off). Flag if outside 230–290 words.
 4. **VL exit signal:** Confirm at least one of these appears naturally in the body: "Visual Layer", "ARR from $1M to $3M", "acquisition", "Camtek", "$7M". Flag if absent.
-5. **Sign-off:** Confirm the letter closes with "Looking forward to next steps," followed by "{{USER_FULL_NAME}}" and nothing else. Flag any additional text after the name.
+5. **Sign-off:** Confirm the letter closes with "Looking forward to next steps," followed by "{{USER_FIRST_NAME}} {{USER_LAST_NAME}}" and nothing else. Flag any additional text after the name.
 6. **Opening paragraph:** Confirm the first paragraph is {{USER_FIRST_NAME}}'s personal reaction to this specific role — first person, her response to the opportunity, before any credential or company description. This check cannot be waived by coach output or Strategy. Flag if the first paragraph: leads with company analysis; leads with a career credential; leads with an availability statement; OR has {{USER_FIRST_NAME}} as the grammatical subject of the first sentence but the sentence pivots immediately to a general market/industry observation rather than her reaction to THIS role (Pattern G2 — e.g. "I've spent six years in cybersecurity PMM, and the job — above everything else — is finding the right words for a market where half the vendors say the same thing."). Also flag if the very first sentence frames an industry challenge or market condition before {{USER_FIRST_NAME}} appears as a reacting subject (Pattern I).
 7. **Fabrication:** For every specific claim, number, or named outcome in the letter, identify the reference file line that supports it. Flag any claim that cannot be traced to `01-candidate-rules.md`.
 8. **Voice:** Flag any sentence that opens with a gerund, prepositional phrase, or dependent clause instead of {{USER_FIRST_NAME}} as subject. Flag any hollow phrase from the banned list in `skills/cover-letter/SKILL.md`.
@@ -585,9 +585,23 @@ Added N new entries. [Or: No new entries — all Q&A was already in the bank, un
 
 ---
 
+## Step 9b — Bullet Approval Prompt
+
+Run after Step 9a (Q&A bank promotion). For every role completed this run that produced a CV, ask once at the end of the full run — not per role:
+
+> "New bullets were written for: **[Company A]**, **[Company B]**, **[Company C]**. Which of these should I add to your approved list? Approved bullets will be reused verbatim in future CVs for the same company. Reply with company names, 'all', or 'none'."
+
+**If the user says 'all' or names specific companies:** For each approved company, append the bullets from the delivered CV into `references/02-candidate-background.md` under that company's role facts entry, under the heading `**Approved CV bullets:**`. If a bullets section already exists for that company, merge — do not duplicate bullets already present.
+
+**If the user says 'none' or does not respond:** Skip. Bullets remain as candidate status and will be rewritten fresh on the next run.
+
+**Important:** Do not add approved bullets from old CVs the user submitted during setup. Only bullets the pipeline itself produced are candidates for approval.
+
+---
+
 ## Final Chat Delivery
 
-After Step 9a completes, deliver a single confirmation line in chat:
+After Step 9b completes (or the user responds), deliver a single confirmation line in chat:
 
 `All N roles completed. Files are in your iCloud job-search folder and Notion rows are updated.`
 

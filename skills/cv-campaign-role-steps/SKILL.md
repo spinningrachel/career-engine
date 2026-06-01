@@ -454,3 +454,13 @@ cp /tmp/<feedback_filename>.md "<output_dir>/<company_dir>/<feedback_filename>.m
 ```
 
 Verify the file exists and is nonzero. If the write fails, log it in the final chat delivery — it is not a blocking error; the pipeline has already completed.
+
+### Step 7e — Note new bullets in role state
+
+After Step 7d, record in state.json that this role produced new (unapproved) bullets this run:
+
+```json
+"bullets_status": "new"
+```
+
+This flag is read by the orchestrator's Step 9b (bullet approval prompt) at the end of the full run. Roles where bullets were already approved in a prior run and no new bullets were written do not need this flag set.

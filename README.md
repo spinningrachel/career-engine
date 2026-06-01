@@ -346,6 +346,14 @@ Example: `cv-{{USER_LAST_NAME}}-head-of-marketing-acme-apr2026.docx` / `feedback
 **Check run status and file completeness:**
 > /cv-campaign --status
 
+## How approved bullets work
+
+When you first run the pipeline, there are no approved bullets — just raw role facts from your setup. The pipeline writes fresh bullets for each CV based on the job description and your background. After each run, the pipeline asks which companies you want to lock. Locked bullets are reused verbatim in future CVs for the same company, which is where consistency and quality compound.
+
+Don't expect the first run to be final. The system is designed to iterate. Review, flag what needs changing, run again. After a pass or two on a company, the bullets sharpen — then you lock them.
+
+**What setup does and does not do:** Setup extracts raw facts from your CV (company, dates, metrics, scope) but does not treat old CV language as approved bullets. Your old bullet phrasing is starting material, not finished product. Approved bullets are ones the pipeline wrote and you've seen and accepted.
+
 ## Execution rules
 
 - Roles are processed one at a time, in priority order, through the full pipeline. Parallel execution across roles is available if {{USER_FIRST_NAME}} requests it.
