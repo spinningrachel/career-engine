@@ -171,6 +171,10 @@ Ask: "Where do you want your DOCX files saved?"
 
 Write the path to every `{{ICLOUD_OUTPUT_PATH}}` placeholder across all skill files.
 
+Ask: "Do you have a folder of approved, sent cover letters you want the pipeline to use as voice anchors? If so, where is it?"
+- If yes: write the path to every `{{ICLOUD_DELIVERED_LETTERS_PATH}}` placeholder across all skill files.
+- If no: write the output folder path as the default (agents will find nothing there initially and skip) — or remove the reference entirely by writing a note: "No delivered letters configured yet."
+
 **CV template**
 Ask: "Do you want to use the included CV template (`cv-template-default.dotx`) or provide your own `.dotx` file?"
 - If own file: ask for the path → write to `{{CV_TEMPLATE_FILE}}` placeholders

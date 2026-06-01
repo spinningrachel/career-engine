@@ -33,12 +33,12 @@ The only valid output destination is:
 ```bash
 OUTPUT_DIR="{{ICLOUD_OUTPUT_PATH}}/cv-campaign-$(date +%Y-%m-%d)"
 mkdir -p "$OUTPUT_DIR"
-# Verify — if this path does not contain "Mobile Documents", stop immediately
-echo "$OUTPUT_DIR" | grep -q "Mobile Documents" || { echo "ERROR: Output dir is not iCloud. Aborting."; exit 1; }
+# Verify — output root must exist (was confirmed during setup)
+ls "{{ICLOUD_OUTPUT_PATH}}" || { echo "ERROR: Output path not found. Run /cv-campaign:setup to configure. Aborting."; exit 1; }
 echo "Output dir confirmed: $OUTPUT_DIR"
 ```
 
-If this check fails or the path does not contain "Mobile Documents", **stop the run immediately** and report the error to {{USER_FIRST_NAME}}. Do not proceed and do not fall back to any other path. Do not use `./outputs/`, relative paths, or any path containing "local-agent-mode-sessions" or "Application Support".
+If this check fails, **stop the run immediately** and report the error to {{USER_FIRST_NAME}}. The output path is configured during setup (`/cv-campaign:setup`). Do not fall back to any other path. Do not use `./outputs/`, relative paths, or any path containing "local-agent-mode-sessions" or "Application Support".
 
 **Three to five files per role, one file per run.**
 
