@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__ccd_session_mgmt__search_session_transcripts",
+      "Bash(pandoc *)",
+      "mcp__notionApi__API-retrieve-a-database",
+      "mcp__scheduled-tasks__list_scheduled_tasks",
+      "Bash(unzip *)",
+      "mcp__claude_ai_Notion__notion-fetch",
+      "mcp__ccd_session__mark_chapter",
+      "mcp__5cd94b8e-1498-421b-bc5d-1bbb07682cf7__notion-fetch",
+      "mcp__claude_ai_Notion__notion-query-database-view",
+      "mcp__5cd94b8e-1498-421b-bc5d-1bbb07682cf7__notion-query-database-view",
+      "Bash(claude plugin list *)",
+      "Bash(claude plugin validate *)",
+      "Bash(claude plugin marketplace list *)"
+    ]
+  }
+}

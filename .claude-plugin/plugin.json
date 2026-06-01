@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "cv-campaign",
+  "version": "1.0.0",
+  "description": "AI-powered job search campaign system: manage target roles, prioritize with an employment coach, generate tailored CVs and cover letters through a multi-agent review pipeline, and export DOCX files. Requires setup — run /cv-campaign:setup after installing.",
+  "author": {
+    "name": "Rachel Cheyfitz",
+    "email": "rachel@cheyfitz.me"
+  },
+  "license": "MIT",
+  "commands": ["./commands/"],
+  "skills": ["./skills/"],
+  "keywords": ["cv", "resume", "job-search", "multi-agent", "notion", "employment-coach", "cover-letter", "prioritization"]
+}

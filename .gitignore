@@ -1,0 +1,21 @@
+# Personal config — do not commit after filling in with your own data
+# (these files ship as templates; once you personalise them, keep them local)
+.claude/settings.local.md
+.claude/*.local.md
+
+# Delivered output files — personal application materials
+references/delivered-letters/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Temp / editor
+*.tmp
+*.bak
+*.swp
