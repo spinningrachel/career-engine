@@ -18,266 +18,545 @@ What makes these reliable is the structure underneath. Three reference files —
 
 **Built and maintained by [Rachel Cheyfitz](https://www.linkedin.com/in/rachelcheyfitz).** Open-sourced so other job seekers can run the same pipeline with their own background, voice, and job-tracking setup.
 
-## What it does
+---
 
-- **Employment coach** — researches each target role (funding, hiring manager, JD analysis), assigns a priority score, and writes strategic properties (role emphasis, keywords, gap handling)
-- **CV pipeline** — drafts a tailored CV, runs it through recruiter and hiring manager reviewers, revises, and exports DOCX via pandoc
-- **Cover letter pipeline** — writes a letter grounded in your Q&A intake and coach output, runs the same reviewer loop
-- **Gatekeeper** — quality gate at every stage: checks fabrication, ATS compliance, voice, and structure before anything is delivered
-- **Standalone modes** — `--now` for a single role without Notion, `--coach` for direct career advice, `--check` to audit any existing document
+## Contents
+
+1. [How it works](#how-it-works)
+2. [Prerequisites](#prerequisites)
+3. [Onboarding](#onboarding)
+4. [Your three reference files](#your-three-reference-files)
+5. [Running the pipeline](#running-the-pipeline)
+6. [Pipeline walkthrough](#pipeline-walkthrough)
+7. [Pipelines and modes](#pipelines-and-modes)
+8. [Job tracking database](#job-tracking-database)
+9. [Output files](#output-files)
+10. [How approved bullets work](#how-approved-bullets-work)
+11. [Agents and skills](#agents-and-skills)
+12. [Configuration](#configuration)
+13. [Troubleshooting](#troubleshooting)
+
+---
+
+## How it works
+
+The pipeline has two layers: a set of agents that do the writing and reviewing, and a set of reference files that every agent reads before it writes anything. The agents are fixed — they ship with the plugin and don't change. The reference files are yours — they start as templates and fill in as you use the system.
+
+### The reference files
+
+Three files in `references/` govern everything every agent produces.
+
+**`01-candidate-rules.md`** contains the rules that constrain agent behavior: fabrication guards, attribution rules (which outcomes belong to you vs. the company), framing constraints, JD term mappings, and your contact details and target roles. Every agent reads this first. If a claim can't be traced to this file or to `02-candidate-background.md`, it doesn't go on the page.
+
+**`02-candidate-background.md`** contains your career content: role facts (companies, dates, titles, metrics, what you built), approved CV bullets, approved CV summaries by domain, testimonials, portfolio, and the Q&A bank. Agents draw from this file for every bullet, every proof point, and every intake answer. The Q&A bank accumulates automatically — every answer you give to a pipeline question gets promoted here so the same question is never asked twice.
+
+**`03-framework.md`** contains your positioning: professional category, voice samples, core positioning statement, value pillars, methodology, domain depth, ICP, messaging by audience, taglines, differentiators, and elevator pitches. The letter-writer and employment coach draw from this file for cover letter strategy and career framing. It's what makes the letters sound like you rather than a generic candidate.
+
+### The agents
+
+The pipeline uses eight agents in sequence. Each agent receives structured inputs from the previous step and returns structured outputs to the next.
+
+- **employment-coach** — researches the company, scores the role, and writes strategic framing before writing starts
+- **cv-writer** — drafts and revises the CV using the coach's framing and your documented background
+- **letter-writer** — drafts and revises the cover letter using your Q&A content and coach strategy
+- **gatekeeper** — checks every CV and cover letter for fabrication, ATS compliance, and voice violations; loops until everything passes
+- **recruiter-reviewer** — reviews the CV and cover letter as a senior recruiter; returns tiered feedback
+- **hiring-manager-reviewer** — reviews the CV and cover letter as the hiring manager; returns a verdict
+- **hebrew-localization** — produces Hebrew versions of the CV and cover letter when the role's Languages property includes Hebrew
+- **pmm-positioning-expert** — runs during standalone research to analyze competitive positioning; does not run in the main campaign pipeline
+
+### How a run works
+
+When you run `/cv-campaign`, the orchestrator fetches all roles with Status = `Interested` from your job tracking database, passes them to the employment coach, builds a priority-ordered queue of up to five roles, and routes each one through the full pipeline. At the end of the run, DOCX files are in your output folder, file paths are posted back to Notion, and you receive a brief summary in chat.
+
+---
 
 ## Prerequisites
 
-| Tool | Install |
-|---|---|
-| **pandoc** | `brew install pandoc` |
-| **python-docx** | `pip3 install python-docx` |
-| **Notion MCP** | Connected and authenticated |
-| **Desktop Commander MCP** | Connected |
-| **Job search MCPs** | Indeed, Dice, ZipRecruiter (optional but recommended) |
+Before installing the plugin, the following tools and services must be in place.
 
-## Setup
+**CLI tools — install both before the first run:**
 
-**Run once after installing the plugin:**
+| Tool | Install command | Purpose |
+|---|---|---|
+| pandoc | `brew install pandoc` | Converts CV and cover letter markdown to DOCX |
+| python-docx | `pip3 install python-docx` | Updates the role-specific subtitle in the CV header |
+
+**MCP servers — connect in Claude Code before running setup:**
+
+| Server | Required | Purpose |
+|---|---|---|
+| Notion | Yes (for Notion tracking) | Reads job roles and writes results back |
+| Desktop Commander | Yes | File system operations for output folder management |
+| Indeed, Dice, ZipRecruiter | Recommended | JD fetching and job search; the coach uses these to research roles |
+
+---
+
+## Onboarding
+
+Onboarding is a one-time process that builds your three reference files from existing materials you provide. Run it after installing the plugin.
 
 ```
 /cv-campaign:setup
 ```
 
-The setup agent will walk you through:
+The onboarding agent walks through six phases:
 
-1. **Your profile** — populate `references/who-i-am.md` and `references/03-framework.md` with your background, voice, and positioning
-2. **Job tracking** — connect your Notion database (use the [Notion template](https://certain-espadrille-82d.notion.site/d8606ae1fb9282f4872381cd819c1abd?v=d2006ae1fb928355a14388715d96a782) for the expected schema) or set up a CSV/spreadsheet alternative
-3. **Output folder** — configure your iCloud (or local) output path
-4. **CV template** — use the included `cv-template-default.dotx` or provide your own `.dotx` file with custom styles
-5. **Permissions** — add the required bash and MCP permissions to your Claude Code settings
+1. **Identity** — your name, email, phone, LinkedIn, location, and citizenship. These power the CV signature, output file names, and all agent instructions.
+2. **Content submission** — you send your existing career materials (CVs, cover letters, LinkedIn export, portfolio, old JDs). The agent reads everything and builds `03-framework.md` from it. Files are not stored — only the synthesized output is kept. Cover letters are the exception: if you confirm they represent your voice well, the agent keeps them in `references/delivered-letters/` for future voice calibration.
+3. **Framework synthesis** — the agent drafts `03-framework.md` from your submitted content: positioning, voice, domain depth, methodology, value pillars, ICP.
+4. **Review and interview** — the agent shares the draft framework for your review. Whether you give feedback or approve, a targeted interview follows: gap-filling from what the materials left unclear, plus probing for things you didn't volunteer (testimonials, published work, community involvement, anti-positioning).
+5. **Integration** — you choose your job tracking method (Notion, Google Sheets, or other) and configure your output folder, CV template, and delivered letters folder.
+6. **Permissions** — the agent generates the exact permissions block for your `~/.claude/settings.json`. Without it, Claude Code will pause mid-run for approval on every bash command.
 
-You can also populate the reference files manually — see `references/who-i-am.md` and `references/03-framework.md` for the template structure with instructions at every `{{placeholder}}`.
+Phases 5 and 6 can be deferred. The pipeline runs with only phases 1–4 complete, though Notion integration is required for the full batch flow.
 
-## Pipeline overview
+To re-run a specific phase later:
 
 ```
-Notion Job Applications DB                     OR    --now <url or JD text>
-  (filter: Status = Interested)                            │ (skips Notion entirely)
-         │                                                 │
-         ▼                                                 ▼
-    employment-coach              → fetches JDs for all roles (parallel); drops inaccessible roles
-         │                        → structured JD + Date first advertised + Israel/Remote check
-         │                        → pre-flight check: drops roles with no accessible JD
-         │                        → researches: funding, recent news, hiring manager, culture signals
-         │                        → pedantic remote check: Remote(US) ≠ worldwide
-         │                        → priority (Highest/First–Fifth) per role
-         │                        → respects existing priorities, generates for blanks
-         │                        → owns Role emphasis, JD proof, Keywords, Strategy
-         │                        → practitioner roles: reporting line + founding/joining context explicit
-         │                        → confidence-tagged output: [HIGH] overwrites, [LOW] fills empty only
-         ▼
-    Notion priority writeback     → generated priorities + coach properties posted to each row
-         │                          (skipped entirely in --now mode)
-         ▼
-    Queue built (up to 5 roles, ordered by Final ({{USER_FIRST_NAME}}'s) Priority)
-    {{USER_FIRST_NAME}} briefed on coach output
-         │
-         ▼
-    FOR EACH ROLE IN QUEUE (in priority order):
-         │
-         ├─ IF Standard pipeline (or --now):
-         │     ├─ cv-writer (draft)           → DRAFT CV (Role Type-driven framing)
-         │     ├─ gatekeeper (content)        → ATS pre-check + 13 content checks — loops silently until PASS
-         │     ├─ recruiter-reviewer          → structured feedback
-         │     ├─ hiring-manager-reviewer     → structured feedback + verdict
-         │     ├─ cv-writer (revision)        → FINAL CV + CV CHANGES (included in feedback file)
-         │     ├─ gatekeeper (content)        → ATS pre-check + same 13 checks — loops silently until PASS
-         │     ├─ letter-writer (cover letter) → always produced; equally required as the CV
-         │     ├─ gatekeeper (cover letter)   → 13 voice/structure checks — loops silently until PASS
-         │     ├─ recruiter-reviewer (CL)     → cover letter screening-risk check
-         │     ├─ hiring-manager-reviewer (CL) → condition addressed / adds value / interview likelihood
-         │     ├─ letter-writer (revision)    → final cover letter incorporating both feedback sets
-         │     ├─ gatekeeper (cover letter)   → final voice/structure check — loops until PASS
-         │     ├─ DOCX export                 → CV DOCX + cover letter DOCX via pandoc + .dotx templates
-         │     │                               scripts/update-subtitle.py sets role tagline in CV header
-         │     │                               both files copied /tmp → iCloud output folder
-         │     ├─ Feedback file               → feedback-<role>-<company>-<mon>.md saved to iCloud folder
-         │     │                               verbatim output from all 4 reviewer invocations
-         │     └─ Notion writeback            → both iCloud file paths posted to Link to CV
-         │                                      + coach-owned properties written to row
-         │                                      (skipped in --now mode — no Notion row exists)
-         │
-         └─ IF Reframe only pipeline:
-               ├─ cv-writer (option=draft)    → tailored CV (no cover letter produced)
-               ├─ DOCX export                 → pandoc conversion, /tmp → iCloud output folder copy
-               └─ Notion writeback            → local iCloud file path posted to Link to CV
-
-    AFTER ALL ROLES:
-         │
-         ├─ LinkedIn updates file (orchestrator, inline)
-         │     aggregates Keywords across all roles → frequency map → high/medium signal terms
-         │     extracts first 2 sentences from each CV summary markdown
-         │     writes linkedin-updates-<date>.md to iCloud output folder
-         │
-         └─ final chat delivery (orchestrator)
-              → cross-run decisions
-              → technical/orchestration issues (failures logged during run, surfaced here)
-              → --now mode note: "This role is not in Notion — add manually if you applied"
-              → "All N roles completed" if nothing to flag
+/cv-campaign:setup --phase 4
 ```
 
-## Step-by-step reference
+To check what's been configured and what's missing:
 
-| Step | Actor | Summary |
-|---|---|---|
-| Preflight | Orchestrator (inline) | Confirm iCloud output folder exists, load all skills, confirm no mid-run scope pauses. |
-| 0 — Fetch roles | Orchestrator (inline, Notion) | Query Job Applications DB for `Interested` rows with a Job URL or JD body. Capture full row payload. Pipeline (Standard / Reframe only) is determined by {{USER_FIRST_NAME}}'s chat command — not a Notion property. *(Skipped in --now mode.)* |
-| 0.5 — Prepare JD content | Orchestrator (inline) | Check each role for existing JD Body content. Normalise page body → JD Body if needed. Pass job URLs and existing content to the coach. |
-| 0.6 — Check priorities | Orchestrator (inline) | Flag each role `has-priority` or `blank-priority` based on `Final ({{USER_FIRST_NAME}}'s) Priority`. *(Skipped in --now mode.)* |
-| 0.7 — Build queue | Orchestrator (inline) | Select up to 5 roles ordered by Final ({{USER_FIRST_NAME}}'s) Priority (Highest → Fifth). *(Skipped in --now mode — single role proceeds directly.)* |
-| 0.8 — Employment coach | `employment-coach` | Pre-flight check: skips roles where JD is inaccessible. Researches funding, news, hiring manager, culture signals, date first advertised, and remote compatibility per role. Assigns priorities to blank roles. Returns strategic properties ([HIGH]/[LOW] confidence tags for Notion writeback). |
-| 0.9 — Priority writeback + briefing | Orchestrator (inline, Notion) | Write coach properties to Notion (confidence-tagged: [HIGH] overwrites existing, [LOW] fills empty only). Brief {{USER_FIRST_NAME}}, then proceed. *(Skipped in --now mode.)* |
-| **Per-role pipeline (Standard / --now) — CV steps** | | |
-| 1 — Draft CV | `cv-writer` (option=draft) | Produce initial CV draft from structured JD using coach output (Role emphasis, Keywords, Strategy, Role Type, Relationship type). |
-| 1.5 — Gatekeeper (CV draft) | `gatekeeper` (option=content) | ATS pre-check (Critical ≥80% / Important ≥60% keyword coverage, section headings, no ATS-hostile formatting) + 13 content checks. Loops silently with cv-writer until PASS. Nice-to-have misses are advisory only. |
-| 2 — Recruiter review (CV) | `recruiter-reviewer` | Returns tiered feedback (Tier 1/2/3) on the CV draft. |
-| 3 — HM review (CV) | `hiring-manager-reviewer` (option=cv) | Returns structured feedback and verdict (Yes / Conditional / No). |
-| 4 — CV revision | `cv-writer` (option=revision) | Produces final CV plus revision log. Markdown saved to disk immediately after. |
-| 4.5 — Gatekeeper (CV final) | `gatekeeper` (option=content) | ATS pre-check + same 13 checks. Loops silently until PASS. |
-| **Per-role pipeline (Standard / --now) — Cover letter steps** | | |
-| 5 — Cover letter draft | `letter-writer` (option=cover-letter) | Draft produced using final CV, structured JD, page body content, Q&A, Strategy, Gap handling, Role summary. 230–290 words. |
-| 5.2 — Gatekeeper (CL draft) | `gatekeeper` (option=cover-letter) | 13 voice and structure checks. Loops silently with letter-writer until PASS. |
-| 5.3 — Recruiter review (CL) | `recruiter-reviewer` | Reviews cover letter for screening-risk issues only. Returns tiered feedback. |
-| 5.5 — HM review (CL) | `hiring-manager-reviewer` (option=cover-letter) | Three questions: condition addressed, adds something new, increases interview likelihood. Verdict: Proceed / Return. |
-| 5.7 — Cover letter revision | `letter-writer` (option=revision) | Consolidates recruiter and HM feedback. Returns final cover letter plus revision log. Markdown saved to disk immediately after. |
-| 5.8 — Gatekeeper (CL final) | `gatekeeper` (option=cover-letter) | Same 13 checks. Loops silently until PASS. |
-| **Per-role pipeline (Standard / --now) — Export and writeback** | | |
-| 6 — Produce DOCX | Orchestrator (inline, bash) | Convert CV markdown → CV DOCX (pandoc + {{CV_TEMPLATE_FILE}} + update-subtitle.py). Convert cover letter markdown → cover letter DOCX (pandoc + cover-letter-template.dotx). Copy both to iCloud output folder. Verify both files are nonzero. |
-| 7a — File path writeback | Orchestrator (inline, Notion) | Post shortened paths to `Link to CV` property. *(Skipped in --now mode — no Notion row exists.)* |
-| 7b — State file | Orchestrator (inline) | Append role record to `state.json`. Fields: `track`, `notion_page_id` (null in --now mode), `cv_path`, `cover_letter_path`, `feedback_path`, `hm_cv_verdict`, `hm_cl_verdict`, `role_emphasis`, `jd_proof`, `keywords`, `strategy`, `date_first_advertised`, `remote_compatibility`. Shortened paths only. |
-| 7c — Pipeline outputs to Notion | Orchestrator (inline, Notion) | Write coach-owned properties, pipeline-derived properties (`Hiring Manager`, `Last Pipeline Run`), update Status to `CV Ready for Review`. Respects confidence tags from coach. *(Skipped in --now mode.)* |
-| 7d — Reviewer feedback file | Orchestrator (inline) | Write `feedback-<role>-<company>-<mon>.md` to iCloud output folder. Contains verbatim output from all four reviewer invocations: Recruiter CV (Step 2), HM CV (Step 3), Recruiter CL (Step 5.3), HM CL (Step 5.5). Non-blocking — failure logged but does not stop the pipeline. |
-| **Reframe pipeline (Reframe only)** | | |
-| R1 — Reframe CV writer | `cv-writer` (option=draft) | Returns tailored CV draft. No cover letter produced. |
-| R2 — Reframe DOCX | Orchestrator (inline, bash) | Export reframe CV to `.docx` via pandoc. Copy to iCloud output folder. |
-| R3 — Reframe writeback | Orchestrator (inline, Notion) | Post the local iCloud file path to `Link to CV`. Update Status to `CV Ready for Review`. |
-| 8 — LinkedIn updates | Orchestrator (inline) | After all roles complete: aggregate all Keywords from all coach outputs; count cross-role frequency; extract first 1–2 sentences from each CV summary markdown; write `linkedin-updates-<date>.md` to iCloud output folder. High signal (3+ roles), medium signal (2 roles), omit single-role terms. Non-blocking — failure logged but does not stop delivery. |
-| Final delivery | Orchestrator (chat) | Brief summary covering validation issues, cross-run decisions, and technical failures only — or single confirmation line if none apply. --now mode appends a note to add the role to Notion if applied. |
+```
+/cv-campaign:setup --verify
+```
 
-## Components
+### Job tracking options
 
-### Command
-- **cv-campaign** — Entry-point slash command (`/cv-campaign`). Flags:
-  - *(none)* — full campaign against all Interested roles
-  - `--edit` — editing pipeline for Needs editing roles
-  - `--coach-skills` — market intelligence only; no CVs produced
-  - `--coach <question>` — direct coaching, conversational
-  - `--now <url or JD text>` — single-role fast track; skips Notion entirely
-  - `--status` — read state.json from the most recent run; no agents spawned
-  - `--check` — run gatekeeper on a pasted CV or cover letter; one pass, no loop
-  - `--review` — recruiter + HM review on a pasted document; one pass, no loop
-  - `--write-letter` — write a cover letter only; no full pipeline; no Notion
+The pipeline supports three job tracking configurations.
 
-### Skills (load order matters for the main campaign)
-1. **cv-pipeline-orchestrator** — Orchestrator. Triggers on "run CV campaign" and similar phrases. Loads all other skills before starting. Contains the `--now` mode flow (Steps N1–N5).
-2. **cv-campaign-intake** — Steps 0 through 0.10: Notion fetch, JD content check, employment coach invocation (which fetches JDs), priority writeback, Q&A question generation for pre-researched roles, queue building, warm-up role selection.
-3. **cv-campaign-role-steps** — Steps 1 through 7d: per-role CV writing and cover letter writing. CV loop: cv-writer draft → gatekeeper → recruiter review → HM review → cv-writer revision → gatekeeper. Cover letter loop: letter-writer draft → gatekeeper → recruiter review → HM review → letter-writer revision → gatekeeper. Then: DOCX export, Notion writeback, reviewer feedback file, revision log file.
-4. **cv-reframe-pipeline** — Steps R1 through R3: reframe track only.
-5. **cv-campaign-export** — Pandoc conversion commands, .dotx template references, script paths, file naming, and the `/tmp → iCloud output folder` copy protocol.
-6. **cv-edit-pipeline** — Editing pipeline for roles with Status = `Needs editing`. Runs coach verification first, then improves existing outputs without starting from scratch. Loaded by the `--edit` flag only.
-7. **coach-skills** — Standalone research pipeline. Loaded by the `coach.md` command (not the main campaign). Run with natural language ("research my roles", "run market intelligence", etc.). Researches companies behind Hold roles, spawns the employment coach for full strategic property generation, spawns letter-writer to generate Q&A questions, writes all results to Notion, and updates Status to Researched. This is the pipeline {{USER_FIRST_NAME}} runs before the full campaign to ensure the coach's advice and Q&A questions are ready before CV writing begins.
+**Notion (recommended)** gives full pipeline integration: the coach reads JDs, writes strategic properties, and the orchestrator posts file paths back to each row after the run.
 
-### Agents
-1. **employment-coach** — {{USER_FIRST_NAME}}'s career coach and the pipeline's research engine. Fetches JDs directly as its first step — if JD Body is already in Notion, uses it; if not, fetches the URL and preserves verbatim text before any analysis; drops inaccessible roles and logs them. Then: researches funding, news, hiring manager, culture signals, date first advertised, and remote compatibility; assigns priorities for blank-priority roles; returns confidence-tagged strategic properties. Two modes: Pipeline (full analysis + Notion writeback) and Direct coaching (conversational, no writeback). Sole owner of `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, and `Gap handling`.
-2. **cv-writer** — Writes and revises tailored CVs. Three options: Draft (Option 1), Revision (Option 2), Reframe (Option 3 — for founding/first TW roles where the pitch is "you need this, not a writer"). CV structure driven by Role Type (Builder / Scaler / Specialist / Leader). Fabrication rule is absolute — what can't be addressed through reframing or documented experience is left unaddressed. Cover letters are handled by letter-writer.
-3. **letter-writer** — Writes and revises cover letters, and generates Q&A interview questions during the research pipeline. Three options: Standard cover letter (Option 1), Cover letter revision (Option 1b), Interview questions (Option 2). Tech writer reframe work uses cv-writer Option 3 instead. Receives page body content, Q&A, Strategy, and Gap handling from the orchestrator prompt — does not read Notion directly. Structure and voice rules in `skills/cover-letter/SKILL.md` are non-negotiable regardless of reviewer feedback.
-4. **recruiter-reviewer** — Senior recruiter, Israeli tech and global startups. Returns tiered feedback (Tier 1/2/3) on CVs and cover letters. Flags everything accurately — cv-writer and letter-writer address what they can through reframing; what can't be addressed without fabrication is left unaddressed.
-5. **hiring-manager-reviewer** — Two options. CV review (option=cv): direct evidence, gaps, Yes/No/Conditional verdict. Cover letter review (option=cover-letter): three questions — condition addressed, adds something new, increases interview likelihood. Verdict: Proceed / Return. One revision pass maximum.
-6. **gatekeeper** — Quality gate. Two options: `content` (ATS pre-check + 13 content checks on every CV draft and revision) and `cover-letter` (13 voice and structure checks on every cover letter draft and revision). Returns PASS or a specific violation list. Loops silently until PASS. Never rewrites. Never judges quality. Checks rules only.
+To set up a Notion database, duplicate the template at the link below — it includes all required columns with the exact names and select values the pipeline expects:
 
-### Scripts (in `skills/cv-campaign-export/scripts/`)
-- **convert-cv.sh** — Runs pandoc to convert CV and cover letter markdown to DOCX using the `.dotx` reference templates.
-- **update-subtitle.py** — Updates the role-specific Subtitle in the CV DOCX header's first-page section.
+**[Duplicate the Notion template →](https://certain-espadrille-82d.notion.site/d8606ae1fb9282f4872381cd819c1abd?v=d2006ae1fb928355a14388715d96a782)**
 
-## Databases and services
+After duplicating, paste the database ID (the 32-character string from your Notion URL) when the setup agent asks for it.
 
-| Purpose | Identifier |
-|---|---|
-| Job Applications DB (input + per-role local iCloud file path posted to `Link to CV`) | `{{NOTION_DATABASE_ID}}` |
-| iCloud outputs folder per run | `{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/` |
+**Google Sheets** supports reading roles but not writeback — outputs go to your output folder only. During setup, the agent provides a CSV file with all required column headers to upload, and a prompt for setting up dropdown validation on select columns.
 
-### Required Notion properties on the Job Applications DB
+**Other platforms** receive the same CSV and a configuration prompt to adapt.
 
-The "Set by" column identifies who writes each property. Several properties are written by multiple actors at different points; "Set by" shows the authoritative writer for that property's strategic content.
+**Column names are hard-coded. Do not rename them.** The pipeline writes to these columns by exact name. Renaming any column breaks the integration without an error.
 
-| Property | Type | Set by | Purpose |
-|---|---|---|---|
-| `Status` | Select | {{USER_FIRST_NAME}} + Pipeline | Drives what the pipeline does with a role. Values and transitions defined authoritatively in cv-pipeline-orchestrator. Summary: `Hold` (being researched), `Interested` (queued for pipeline), `CV Ready for Review` (pipeline done), `Applied` (sent), `Researched` (market intelligence run). |
-| `Job URL` | URL | {{USER_FIRST_NAME}} | The posting |
-| `Priority` | Select: `Highest`, `First`, `Second`, `Third`, `Fourth`, `Fifth` | {{USER_FIRST_NAME}} / Coach | {{USER_FIRST_NAME}} sets manually; coach generates for blanks and writes back. Definitions in cv-pipeline-orchestrator. |
-| `Landscape` | Text | Coach-skills | Competitive landscape written during the Hold → Researched research run. Includes funding, recent news, and competitor list. Written only if currently empty. |
-| `Link to CV` | Text | Orchestrator | Local iCloud file paths posted after each role completes |
-| `Role emphasis` | Text | Employment coach | 1-2 sentences on the real mandate beneath the job title |
-| `JD proof` | Text | Employment coach | **For {{USER_FIRST_NAME}}'s reference only.** Verbatim quote from the JD that the coach used to justify its Role emphasis interpretation. {{USER_FIRST_NAME}} uses this to verify the coach isn't fabricating. Never read or used by any writing agent. |
-| `Keywords` | Text | Employment coach | 8–15 tiered terms from the JD. Format: `Critical: ... | Important: ... | Nice-to-have: ...` |
-| `Strategy` | Text | Employment coach | Lead proof point + secondary evidence + 2–3 sentence summary direction. CV/cover letter framing only — no interview prep. |
-| `Role Type` | Multi-select: `Builder`, `Scaler`, `Specialist`, `Leader` | Employment coach | Drives CV structure and skills section format. See cv-pipeline-orchestrator for definitions. |
-| `Relationship type` | Select: `Full time` / `Part time` / `Temporary` / `Fractional/Consulting/Freelance` / `Reframe` | Employment coach | What kind of engagement this document is pitching for. The one framing signal that materially changes how cv-writer and letter-writer approach the document. |
-| `Gap handling` | Text | Employment coach ({{USER_FIRST_NAME}} may override) | One line per material gap: what it is and how to handle it (surface X instead / letter addresses via angle / ignore). Writes `N/A` if no material gaps exist. {{USER_FIRST_NAME}} can edit before triggering the CV pipeline — her version takes precedence. |
-| `Role summary` | Text | Employment coach | 2-sentence max summary of the role and fit, followed by a bulleted list of why the role fits {{USER_FIRST_NAME}}'s background, and a culture signal. |
-| `Hiring Manager` | Text | Orchestrator | Hiring manager name and title from the coach's research |
-| `Hiring manager's role` | Text | Employment coach | Hiring manager's title + 1 sentence on what their org position implies for {{USER_FIRST_NAME}}'s seniority and accountability. Hypothesis flagged if not confirmed. |
-| `Manager role confirmed` | Select | Employment coach | `Yes` = confirmed from JD/LinkedIn/team page. `No; this is only a hypothesis` = inferred from company stage and comparable data. |
-| `Person who Advertised Role (if not Hiring Manager)` | Text | Employment coach | Name + title of the person who posted the role if different from the identified hiring manager. "Same as hiring manager" or "Not identifiable" if applicable. |
-| `No other Marketing roles employed by company` | Select | Employment coach | `No other marketers employed` = founding/sole marketer role confirmed. `There's already at least one ...` = other marketing roles exist. Critical for Builder vs. Scaler framing at early-stage companies. |
-| `Last Pipeline Run` | Date | Orchestrator | ISO date written at pipeline completion |
-| `Note` | Text | {{USER_FIRST_NAME}} / Agent (overflow only) | {{USER_FIRST_NAME}}'s own notes, or genuinely additional context that structured properties cannot carry |
+---
+
+## Your three reference files
+
+The three files in `references/` are the most important files in the plugin. Every agent loads one or more of them before writing anything. Understanding what lives where prevents confusion about why the pipeline produces what it produces.
+
+### `01-candidate-rules.md`
+
+This file contains agent operating rules and your identity configuration. It answers the question: *how must agents behave when writing about this candidate?*
+
+The rules section (Section 1) is the most important part. It contains:
+- **Attribution rules** — which outcomes belong to you personally vs. the company (e.g., company-level ARR growth is not a personal claim)
+- **Fabrication guards** — specific claims that would be easy to make but aren't accurate; these prevent agents from overclaiming scope or inventing experience
+- **Framing rules** — how to handle specific scenarios (consulting scope, seniority step-downs, title mismatches)
+- **JD term guardrails** — mappings that prevent agents from flagging documented experience as a gap because the JD uses different terminology
+
+The identity section (Section 8) contains your contact details, education, and tools list. This is what populates the CV header and signature.
+
+Section 1 is the first thing every agent reads. If something in this file contradicts what an agent believes about your background, this file is correct.
+
+### `02-candidate-background.md`
+
+This file is your career content bank. It answers the question: *what has this candidate actually done, and what language has been approved for describing it?*
+
+The role facts section (Section 7) contains per-company entries: title, dates, reporting structure, team size, key metrics, what was built, and approved CV bullets. Approved bullets are ones the pipeline has written and you have explicitly locked — they are reused verbatim in future CVs. New bullets start empty and fill in as you run the pipeline (see [How approved bullets work](#how-approved-bullets-work)).
+
+The file also contains approved CV summaries by domain (Section 6), testimonials (Section 9), portfolio with links (Section 10), and the Q&A bank (Section 5). The Q&A bank is auto-populated: every answer you give during a pipeline run gets promoted here so the letter-writer never asks the same question twice.
+
+### `03-framework.md`
+
+This file is your positioning framework. It answers the question: *how should this candidate be positioned, in what voice, and for what audience?*
+
+Sections include: professional category and market context, voice samples (direct quotes from how you talk about your work), core positioning statement, value pillars with proof, professional methodology, domain depth by vertical, ICP and target opportunities, messaging by hiring persona, taglines, elevator pitches, differentiators, competitive frame, and anti-positioning rules.
+
+The letter-writer and employment coach draw from this file for every cover letter opener and every strategic framing decision. The more complete and accurate it is, the more the output sounds like you.
+
+`03-framework.md` ships as a blank template. Onboarding builds it from your submitted materials and interview answers. You can edit it directly at any time — it is a living document.
+
+---
+
+## Running the pipeline
+
+The pipeline is triggered by natural language in Claude Code. The commands below show the supported phrases, but any reasonable variation works.
+
+### Full campaign (batch mode)
+
+A full campaign fetches all roles with Status = `Interested` from your job tracking database, runs the employment coach on each, builds a priority queue, and produces CVs and cover letters for up to five roles per run.
+
+```
+Run CV campaign.
+Process my CV queue.
+Run the pipeline.
+```
+
+### Single role, no Notion required
+
+The `--now` mode skips the job tracking database entirely. Pass a URL or paste a JD directly. No Notion writeback occurs — results go to your output folder only.
+
+```
+/cv-campaign --now https://jobs.example.com/head-of-marketing
+I just found this role, write my CV: [paste JD]
+```
+
+### Market intelligence (research only, no CVs)
+
+The coach-skills pipeline researches companies behind roles with Status = `Hold` and writes competitive intelligence back to Notion. No CVs are produced.
+
+```
+Research my Hold roles.
+Run market intelligence.
+Fill in the competitive landscape.
+```
+
+### Editing existing outputs
+
+When a role has Status = `Needs editing` in Notion, the editing pipeline improves existing outputs rather than starting from scratch.
+
+```
+Edit my CVs.
+Process the Needs editing queue.
+```
+
+### Standalone coaching
+
+Direct coaching runs conversationally and does not write to Notion.
+
+```
+/cv-campaign --coach Should I apply to this Axonius role?
+/cv-campaign --coach What's my strongest angle for Head of PMM at a Series B?
+```
+
+### Quality checks
+
+These commands run a single gatekeeper or reviewer pass on content you paste — useful for auditing an existing document.
+
+```
+/cv-campaign --check [paste CV or cover letter + JD]
+/cv-campaign --review [paste CV or cover letter + JD]
+```
+
+### Cover letter only
+
+Writes a cover letter without running the full pipeline.
+
+```
+/cv-campaign --write-letter [URL or paste JD]
+```
+
+### Status check
+
+Reads `state.json` from the most recent run and reports which roles completed, which files were produced, and whether any steps failed. No agents run.
+
+```
+/cv-campaign --status
+```
+
+---
+
+## Pipeline walkthrough
+
+This section describes every step in the Standard pipeline in execution order.
+
+### Before the run starts
+
+The orchestrator verifies the output folder exists, loads all required skills, and confirms no mid-run pauses are active.
+
+### Step 0 — Fetch and prepare roles
+
+The orchestrator queries the job tracking database for all rows with Status = `Interested`. For each row, it captures the full payload: company, position, Job URL, JD Body (if already populated), all coach properties, and any existing Q&A content. In `--now` mode, this step is skipped — a single role is passed directly.
+
+### Step 0.5 — JD content preparation
+
+For each role, the orchestrator checks whether a JD Body already exists. If it does, that content is used as the structured JD throughout the run. If it doesn't, the URL is passed to the employment coach to fetch.
+
+### Step 0.8 — Employment coach
+
+The employment coach is the pipeline's research engine. For each role it:
+
+- Fetches the JD from the URL if not already available; drops roles where the JD is inaccessible and logs them
+- Researches funding, recent news, hiring manager identity, culture signals, date first advertised, and remote compatibility
+- Assigns a priority score if the role has none, respecting existing priorities
+- Returns confidence-tagged strategic properties: `[HIGH]` overwrites existing Notion values, `[LOW]` fills only empty fields
+
+The coach writes six Notion properties per role: `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, and `Relationship type`. No other agent may write to these fields.
+
+### Step 0.9 — Priority writeback and briefing
+
+Coach properties are written to Notion. The orchestrator then presents the queue to you: role names, priorities, and a brief on each coach output. This is the last point before CV writing begins.
+
+### Steps 1–4.5 — CV loop
+
+For each role in the queue, the CV loop runs as follows:
+
+1. **cv-writer (draft)** — produces a full CV draft using the coach's Role Type framing, Keywords, and Strategy
+2. **gatekeeper (content)** — runs an ATS pre-check (keyword coverage thresholds) and 13 content checks; loops silently with cv-writer until everything passes
+3. **recruiter-reviewer** — reviews the CV as a senior recruiter and returns tiered feedback
+4. **hiring-manager-reviewer** — reviews the CV as the hiring manager and returns a verdict (Yes / Conditional / No) with specific feedback
+5. **cv-writer (revision)** — produces the final CV incorporating recruiter and HM feedback, plus a CV Changes section documenting what changed and why
+6. **gatekeeper (content)** — runs the same checks on the final CV; loops until PASS
+
+### Steps 5–5.8 — Cover letter loop
+
+The cover letter loop mirrors the CV loop:
+
+1. **letter-writer (draft)** — produces a cover letter using final CV content, JD, Q&A answers, Strategy, and Gap handling
+2. **gatekeeper (cover-letter)** — 13 voice and structure checks; loops silently with letter-writer until PASS
+3. **recruiter-reviewer** — reviews the cover letter for screening-risk issues
+4. **hiring-manager-reviewer** — evaluates whether the letter addresses the hiring manager's condition, adds something the CV doesn't, and increases interview likelihood
+5. **letter-writer (revision)** — produces the final cover letter; mandatory revision pass runs before the gatekeeper sees it
+6. **gatekeeper (cover-letter)** — final check; loops until PASS
+
+### Step 6 — DOCX export
+
+The orchestrator runs pandoc to convert the CV and cover letter markdown to DOCX using the `.dotx` reference templates. `update-subtitle.py` updates the role-specific subtitle in the CV header. Both files are copied from `/tmp` to the output folder and verified as nonzero.
+
+If the role's `Languages` property includes `Hebrew`, the Hebrew localization agent runs after the English export and produces two additional DOCX files in the same company subdirectory.
+
+### Steps 7a–7d — Writeback and logging
+
+After export, the orchestrator:
+
+- Posts the file paths to `Link to CV` in Notion
+- Writes coach-owned properties, hiring manager details, and `Last Pipeline Run` to the Notion row
+- Updates Status to `CV Ready for Review`
+- Writes a reviewer feedback file (`feedback-<role>-<company>-<mon>.md`) containing verbatim output from all four reviewer passes
+- Appends the role record to `state.json`
+
+### Steps 8–9b — Post-run processing
+
+After all roles complete:
+
+- **LinkedIn updates** — aggregates Keywords from all coach outputs, counts cross-role frequency, and writes a `linkedin-updates-<date>.md` file with high-signal (3+ roles) and medium-signal (2 roles) terms alongside extracted summary phrases
+- **Revision log** — writes a run-level revision log with cross-run decisions and any technical issues encountered
+- **Q&A promotion** — promotes new Q&A answers from this run into `02-candidate-background.md` so the letter-writer never asks the same question twice
+- **Bullet approval prompt** — asks which companies from this run you want to lock bullets for (see [How approved bullets work](#how-approved-bullets-work))
+
+### Final delivery
+
+The orchestrator delivers a single summary in chat covering any validation issues, cross-run decisions, and technical failures. If nothing needs reporting, the summary is one line: "All N roles completed."
+
+---
 
 ## Pipelines and modes
 
-The system has two independent dimensions: **pipeline** (what kind of output to produce, specified in {{USER_FIRST_NAME}}'s chat command) and **mode** (whether to produce it from scratch or improve existing output, determined by Status in Notion).
+The pipeline has two independent dimensions that combine to determine what runs.
 
-### Pipelines — specified by {{USER_FIRST_NAME}} in chat
+### Pipelines
 
-Pipeline is not a per-role Notion property. {{USER_FIRST_NAME}} tells the orchestrator which pipeline to run when she triggers a session. All `Interested` roles default to Standard unless {{USER_FIRST_NAME}} specifies otherwise.
+Pipeline is specified in your chat command, not in a Notion property. All `Interested` roles default to Standard unless you specify otherwise.
 
-| Pipeline | Outputs |
-|---|---|
-| `Standard` (default) | Tailored CV (DOCX) + cover letter (DOCX) + reviewer feedback file (MD) per role; one `linkedin-updates-<date>.md` per run |
-| `Reframe only` | Tailored CV (DOCX) only — no cover letter |
-| `--now <url>` | Same as Standard but skips Notion entirely; takes URL or pasted JD directly; no Notion writeback |
+| Pipeline | How to trigger | Outputs |
+|---|---|---|
+| **Standard** | `/cv-campaign` (no flags) | CV + cover letter + reviewer feedback per role |
+| **Reframe only** | Specify "reframe only" in chat | CV only — no cover letter |
+| **Now** | `/cv-campaign --now <url>` | CV + cover letter, no Notion required |
 
-### Which mode runs — determined by Status in Notion
+### Modes
+
+Mode is determined by the role's Status in Notion.
 
 | Status | Triggered by | Mode | What runs |
 |---|---|---|---|
-| `Interested` | `/cv-campaign` (no flag) | **From scratch** | Full pipeline — all steps run fresh regardless of prior history |
-| `Needs editing` | `/cv-campaign --edit` | **Edit** | Editing pipeline — starts from existing Notion outputs and improves them |
-| `Hold` | `coach.md` command | **Market intelligence** | Research-only run via `coach-skills` skill; no CV produced; Status updates to `Researched` on completion |
+| `Interested` | `/cv-campaign` | From scratch | Full pipeline; all steps run fresh |
+| `Needs editing` | `/cv-campaign --edit` | Edit | Editing pipeline; starts from existing Notion content |
+| `Hold` | Coach command | Research only | Company research; no CV produced; Status → `Researched` |
 
-Any pipeline can run in either mode. A Standard role with `Needs editing` runs the editing pipeline against the existing CV. A Reframe only role with `Needs editing` runs the reframe editing pipeline against the existing CV.
+Any pipeline can run in either mode. A Standard role with `Needs editing` runs the editing pipeline against the existing CV.
 
-## Property write discipline
+---
 
-Each property is written once, by its designated writer. Agents must not write the same information twice across different fields, and must not populate a field that belongs to a different writer. The `Note` field is {{USER_FIRST_NAME}}'s space and an agent overflow field only — it must never be used to repeat or reword content already captured in a structured property.
+## Job tracking database
 
-The employment coach owns `Role emphasis`, `JD proof`, `Keywords`, and `Strategy`. These are set once by the coach and must not be rewritten or second-guessed by other agents.
+The job tracking database is the input and output surface for every batch run. The pipeline reads roles from it, writes strategic properties back to it, and posts file paths to it after each role completes.
 
-**`JD proof` is a special case.** The coach populates it, but no writing agent reads it or uses it as input. Its sole purpose is to let {{USER_FIRST_NAME}} verify that the coach's Role emphasis interpretation is grounded in what the JD actually says — not fabricated. It is a transparency field, not a writing input.
+### Status values and transitions
 
-## Dependencies
+Status drives what the pipeline does with a role. The values and their meanings are fixed — do not use custom values.
 
-- **Reference files** in `references/`. All agents that write CV or cover letter content MUST read from this folder before producing any output. `01-candidate-rules.md` is the primary reference file and is mandatory for every writing task.
-- **Notion** — read/write access to both databases. Configured in `.mcp.json`.
-- **iCloud** — local filesystem storage for DOCX outputs. Files are saved via `cp` to the iCloud path, which syncs automatically. No MCP configuration needed — iCloud is a local folder, not a network service.
-- **Job search MCPs** — Indeed, Dice, ZipRecruiter. Available to the employment coach. Configured in `.mcp.json`.
-- **Desktop Commander** — file system operations. Configured in `.mcp.json`.
-- **pandoc** — CLI tool for markdown → DOCX conversion. Must be installed separately (`brew install pandoc`).
-- **python-docx** — Python library for subtitle update script. Must be installed separately (`pip3 install python-docx`).
+| Status | Meaning | Set by |
+|---|---|---|
+| `Hold` | Being researched; not yet ready to apply | You |
+| `Interested` | Ready to apply; queued for the CV pipeline | You |
+| `CV Ready for Review` | Pipeline completed; review your documents | Pipeline |
+| `Applied` | Application sent | You |
+| `Researched` | Market intelligence run complete | Coach-skills pipeline |
+| `Needs editing` | Documents need revision | You |
 
-See `CONNECTORS.md` for the full connector list and alternatives.
+### Required properties
 
-## Permissions
+The following properties must exist with these exact names. The pipeline writes to them by name — renaming any column breaks the integration without an error.
 
-The pipeline runs bash commands and MCP tool calls at every step. Without pre-approved permissions, Claude Code will pause mid-run for approvals.
+| Property | Type | Set by | Purpose |
+|---|---|---|---|
+| `Company` | Title/text | You | Company name |
+| `Position` | Text | You | Role title |
+| `Job URL` | URL | You | The job posting URL |
+| `Status` | Select | You + Pipeline | Controls pipeline behavior (see above) |
+| `Priority` | Select | You / Coach | Processing order. Values: `Highest`, `First`, `Second`, `Third`, `Fourth`, `Fifth` |
+| `JD Body` | Text | Coach | Full JD text; populated by the coach on first fetch |
+| `Q&A` | Text | Letter-writer | Interview questions generated for this role |
+| `Page Body` | Text | You | Your notes and intake answers for this role; the letter-writer reads this before drafting |
+| `Role emphasis` | Text | Coach | 1–2 sentences on the real mandate beneath the job title |
+| `JD proof` | Text | Coach | Verbatim JD quote supporting Role emphasis; for your verification only — no writing agent reads this |
+| `Keywords` | Text | Coach | 8–15 tiered JD terms: `Critical: ... \| Important: ... \| Nice-to-have: ...` |
+| `Strategy` | Text | Coach | Lead proof point + secondary evidence + 2–3 sentence framing direction |
+| `Role Type` | Multi-select | Coach | CV structure driver. Values: `Builder`, `Scaler`, `Specialist`, `Leader` |
+| `Relationship type` | Select | Coach | Engagement framing. Values: `Full time`, `Part time`, `Temporary`, `Fractional/Consulting/Freelance`, `Reframe` |
+| `Gap handling` | Text | Coach (you may override) | One line per gap: how to handle it. You can edit this before triggering the CV pipeline — your version takes precedence. |
+| `Role summary` | Text | Coach | 2-sentence role fit summary plus culture signal |
+| `Hiring Manager` | Text | Coach | Hiring manager name and title |
+| `Hiring manager's role` | Text | Coach | HM title + what their org position implies for your seniority and accountability |
+| `Manager role confirmed` | Select | Coach | `Yes` = confirmed. `No; this is only a hypothesis` = inferred. |
+| `Person who Advertised Role (if not Hiring Manager)` | Text | Coach | Name and title of the person who posted the role |
+| `No other Marketing roles employed by company` | Select | Coach | `No other marketers employed` or `There's already at least one...`. Drives Builder vs. Scaler framing. |
+| `Landscape` | Text | Coach-skills | Competitive landscape from research run |
+| `Last Pipeline Run` | Date | Orchestrator | ISO date of most recent completed run |
+| `Link to CV` | Text | Orchestrator | Local file paths posted after the run |
+| `Draft Directory` | URL | Orchestrator | Link to the output folder directory |
+| `CV File Name` | Text | Orchestrator | CV filename for this role |
+| `Letter File Name` | Text | Orchestrator | Cover letter filename for this role |
+| `Languages` | Multi-select | You | Output languages. Values: `English`, `Hebrew` |
+| `Note` | Text | You | Your personal notes. Agents do not write here. |
 
-**After setup, add these to your `~/.claude/settings.json` under `permissions.allow`:**
+### Property write discipline
+
+Each property has exactly one authoritative writer. Agents do not write to each other's properties, and they do not write the same information twice in different fields.
+
+The employment coach owns `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, and `Gap handling`. These are set once and not overwritten by other agents.
+
+`JD proof` is a transparency field only. Its purpose is to let you verify that the coach's Role emphasis interpretation matches what the JD actually says. No writing agent reads it or uses it as input.
+
+The `Note` field belongs to you. Agents use it only for genuinely additional context that structured properties cannot carry — never to repeat content already in a structured field.
+
+---
+
+## Output files
+
+All files from a run land in a campaign folder named by date: `{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/`. Each role gets its own subdirectory named after the company in kebab-case.
+
+### File naming conventions
+
+Files use a consistent slug format: `<roletitle>-<company>-<monYYYY>`. Role title and company are lowercased and hyphenated.
+
+| File type | Name pattern |
+|---|---|
+| CV | `cv-<lastname>-<slug>.docx` |
+| Cover letter | `coverletter-<lastname>-<slug>.docx` |
+| Reframe CV | `cv-<lastname>-reframe-<slug>.docx` |
+| Hebrew CV | `he-cv-<lastname>-<slug>.docx` |
+| Hebrew cover letter | `he-coverletter-<lastname>-<slug>.docx` |
+| Reviewer feedback | `feedback-<slug>.md` |
+| Revision log (per role) | `revision-log-<slug>.md` |
+| Revision log (per run) | `revision-log-<YYYY-MM-DD>.md` |
+| LinkedIn updates | `linkedin-updates-<YYYY-MM-DD>.md` |
+| State file | `state.json` |
+
+**Example:** A Head of Marketing role at Acme in April 2026 produces:
+- `cv-smith-head-of-marketing-acme-apr2026.docx`
+- `coverletter-smith-head-of-marketing-acme-apr2026.docx`
+- `feedback-head-of-marketing-acme-apr2026.md`
+
+### What each file contains
+
+**Reviewer feedback file** (`feedback-<slug>.md`) — verbatim output from all four reviewer passes in sequence: recruiter CV review, hiring manager CV review, recruiter cover letter review, hiring manager cover letter review. This is the primary file to read after a run.
+
+**Revision log (per role)** — what the cv-writer and letter-writer changed between draft and final, including gatekeeper violations caught and resolved.
+
+**Revision log (per run)** — cross-run decisions, orchestration issues, and any roles that failed or were dropped.
+
+**LinkedIn updates file** — high-frequency keywords across all roles processed in the run, with extracted summary phrases. Use this to refresh your LinkedIn headline and About section after a batch run.
+
+**State file** (`state.json`) — machine-readable record of every role processed, including file paths, Notion page IDs, verdicts, and coach properties. Used by `--status` and crash recovery.
+
+---
+
+## How approved bullets work
+
+When you first run the pipeline, there are no approved bullets — just raw role facts from your setup. The pipeline writes fresh bullets for each CV based on the job description and your documented background. After each run, the pipeline asks which companies you want to lock. Locked bullets are reused verbatim in future CVs for the same company, which is where consistency and quality compound.
+
+The first run is rarely final. The system is designed to iterate. Review the output, flag what needs changing with `--edit`, run again. After a pass or two on a company, the bullets sharpen — then you lock them.
+
+**What setup does and does not do:** Setup extracts raw facts from your CV (company, dates, metrics, scope) but does not treat old CV language as approved bullets. Your existing bullet phrasing is starting material, not finished product. Approved bullets are ones the pipeline wrote and you explicitly locked.
+
+### The approval prompt
+
+At the end of every run, the orchestrator asks:
+
+> "New bullets were written for: Company A, Company B. Which should I add to your approved list? Reply with company names, 'all', or 'none'."
+
+When you approve a company, the bullets from that run are written into `02-candidate-background.md` under that company's role entry. Future runs for the same company start from those bullets rather than generating from scratch.
+
+---
+
+## Agents and skills
+
+### Commands
+
+All pipeline invocations go through the `cv-campaign` command, which routes to the appropriate skill based on flags and chat context.
+
+| Command | Behavior |
+|---|---|
+| `/cv-campaign` | Full campaign against Interested roles |
+| `/cv-campaign --edit` | Editing pipeline for Needs editing roles |
+| `/cv-campaign --now <url>` | Single role, no Notion |
+| `/cv-campaign --coach <question>` | Direct coaching, conversational |
+| `/cv-campaign --check` | Gatekeeper pass on pasted content |
+| `/cv-campaign --review` | Recruiter + HM review on pasted content |
+| `/cv-campaign --write-letter` | Cover letter only, no pipeline |
+| `/cv-campaign --status` | Read state.json, no agents |
+
+### Agents
+
+Eight agents handle all reasoning and writing. The orchestrator spawns them as subagents — they return text only and do not write files directly.
+
+**employment-coach** — The pipeline's research and prioritization engine. Fetches JDs, researches companies, assigns priorities, and writes strategic properties. Two modes: Pipeline (full analysis + Notion writeback) and Direct coaching (conversational, no writeback). Sole owner of Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, and Gap handling.
+
+**cv-writer** — Writes and revises CVs. Three options: Draft, Revision, and Reframe (for roles where the pitch is "you need this function, not a writer"). CV structure is driven by Role Type. The fabrication rule is absolute — claims that can't be grounded in documented experience are left out, not invented.
+
+**letter-writer** — Writes and revises cover letters and generates Q&A interview questions during the research pipeline. Receives page body content, Q&A answers, Strategy, and Gap handling from the orchestrator. Voice and structure rules in `skills/cover-letter/SKILL.md` hold regardless of reviewer feedback.
+
+**recruiter-reviewer** — Reviews CVs and cover letters as a senior recruiter in the Israeli tech and global startup market. Returns tiered feedback (Tier 1/2/3). Flags everything accurately; cv-writer and letter-writer address what they can through reframing.
+
+**hiring-manager-reviewer** — Reviews CVs and cover letters as the hiring manager. CV review returns a verdict (Yes / Conditional / No) with specific feedback. Cover letter review answers three questions: does it address the HM's condition, does it add something the CV doesn't, does it increase interview likelihood.
+
+**gatekeeper** — Quality gate for both CVs and cover letters. CV option checks ATS compliance (keyword coverage thresholds and section headings) plus 13 content rules. Cover letter option checks 13 voice and structure rules. Returns PASS or a specific violation list. Loops silently with the writing agent until PASS. Does not rewrite; only checks.
+
+**hebrew-localization** — Produces native Israeli professional Hebrew versions of the CV and cover letter. Runs after the English DOCX export when the role's Languages property includes Hebrew. Localization follows the Israeli tech professional register — hybrid Hebrew-English, direct, not formal.
+
+**pmm-positioning-expert** — Analyzes competitive positioning for a company during standalone research runs. Does not run in the main campaign pipeline.
+
+### Skills
+
+Skills contain the detailed procedures each agent follows. They are loaded by the orchestrator before processing begins.
+
+| Skill | Loaded by | Purpose |
+|---|---|---|
+| `cv-pipeline-orchestrator` | Orchestrator | Full campaign coordination, Steps 0–9b |
+| `cv-campaign-intake` | Orchestrator | Steps 0–0.9: Notion fetch, coach invocation, queue building |
+| `cv-campaign-role-steps` | Orchestrator | Steps 1–7d: per-role CV and cover letter pipeline |
+| `cv-reframe-pipeline` | Orchestrator | Steps R1–R3: reframe track |
+| `cv-campaign-export` | Orchestrator | DOCX conversion commands, file naming, copy protocol |
+| `cv-edit-pipeline` | Orchestrator | Editing pipeline for Needs editing roles |
+| `coach` | Coach command | Standalone research pipeline for Hold roles |
+| `cover-letter` | letter-writer | Voice rules, structure, use-case patterns, revision pass |
+| `cv-writing` | cv-writer | Bullet formula, ATS rules, forbidden phrases |
+| `gatekeeper-checks` | gatekeeper | Full checklist for both CV and cover letter options |
+| `employment-coach` | employment-coach | Research procedure, priority scoring, strategic property definitions |
+| `cv-campaign-setup` | Setup command | Onboarding phases 1–6 |
+
+---
+
+## Configuration
+
+### Permissions
+
+The pipeline runs bash commands and MCP tool calls throughout. Without pre-approved permissions, Claude Code pauses for approval at each one. Add the following block to your `~/.claude/settings.json` under the `permissions` key:
 
 ```json
 "permissions": {
@@ -287,81 +566,69 @@ The pipeline runs bash commands and MCP tool calls at every step. Without pre-ap
     "Bash(cp:*)",
     "Bash(ls:*)",
     "Bash(mkdir:*)",
-    "mcp__notion__*",
-    "mcp__desktop-commander__*"
+    "Bash(cat:*)",
+    "mcp__<notion-tool-id>__*",
+    "mcp__<desktop-commander-id>__*",
+    "WebFetch(*)",
+    "WebSearch(*)"
   ]
 }
 ```
 
-The setup agent (`/cv-campaign:setup`) will generate the exact allow-list for your configuration.
+Replace `<notion-tool-id>` and `<desktop-commander-id>` with the actual IDs from your Claude Code MCP configuration. The setup agent generates this block with your specific IDs — run `/cv-campaign:setup --phase 6` to get it.
 
-## File naming
+If a `permissions` block already exists in your settings, merge the `allow` arrays rather than replacing them.
 
-All files land in `{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/`
+### CV template
 
-- CV: `cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx` — lowercase, hyphens only
-- Cover letter: `coverletter-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx`
-- Reframe CV: `cv-{{USER_LAST_NAME}}-reframe-<roletitle>-<company>-<monYYYY>.docx`
-- Reviewer feedback: `feedback-<roletitle>-<company>-<monYYYY>.md` — same slug as the CV and cover letter
-- Revision log (per role): `revision-log-<roletitle>-<company>-<monYYYY>.md` — same slug; contains CV changes and validation notes
-- Revision log (per run): `revision-log-<YYYY-MM-DD>.md` — one per run; contains cross-run decisions and technical issues
-- LinkedIn updates: `linkedin-updates-<YYYY-MM-DD>.md` — one file per run, not per role
-- State file: `state.json`
+The plugin ships with `references/cv-template-default.dotx`, a Word template with all required custom styles for pandoc DOCX export. The template controls fonts, heading sizes, color scheme, and the header/footer layout.
 
-Example: `cv-{{USER_LAST_NAME}}-head-of-marketing-acme-apr2026.docx` / `feedback-head-of-marketing-acme-apr2026.md` / `revision-log-head-of-marketing-acme-apr2026.md` / `revision-log-2026-05-16.md`
+To use your own template instead, provide the path during setup (`/cv-campaign:setup --phase 5`). Your template must define the same custom style names as the default template — see `skills/cv-campaign-export/SKILL.md` for the full style reference. If the styles are missing or named differently, pandoc produces unstyled output.
 
-## Usage
+### Delivered letters
 
-**Run the full campaign:**
-> Run CV campaign.
+The `references/delivered-letters/` folder contains cover letters you've sent and confirmed represent your voice well. The letter-writer reads 2–3 domain-similar letters from this folder before drafting, extracting sentence patterns, vocabulary level, and paragraph structure to calibrate its output.
 
-**Run the editing pipeline:**
-> Edit CVs. / Run CV edits. / Process the Needs editing queue.
+Add letters to this folder any time by saving them as `.md` files using the naming convention: `coverletter-<lastname>-<roletitle>-<company>-<monYYYY>.md`. The more letters you accumulate here, the more precisely the letter-writer matches your voice.
 
-**Run market intelligence:**
-> Run market intelligence. / Research my interested roles.
+---
 
-**Pitch a standalone tech writer role:**
-> Pitch this tech writer job: [URL or description]
+## Troubleshooting
 
-**Write CV and cover letter immediately for a single role (no Notion required):**
-> /cv-campaign --now https://jobs.example.com/head-of-marketing
-> I just found this job, write my CV now: [URL]
-> [paste JD text] — write my CV for this
+This section covers the most common failures and how to resolve them.
 
-**Get coaching on a role or strategy question:**
-> /cv-campaign --coach Should I apply to this Axonius role?
-> /cv-campaign --coach What's my strongest angle for Head of PMM at a Series B?
-> /cv-campaign --coach Help me decide between these two roles: [X] vs [Y]
+### Pipeline stops mid-run with an approval prompt
 
-**Check the quality of a CV or cover letter:**
-> /cv-campaign --check [paste CV or cover letter + JD]
+The permissions block in `~/.claude/settings.json` is incomplete or missing. Run `/cv-campaign:setup --phase 6` to regenerate the exact block for your configuration, then add it to your settings.
 
-**Get a recruiter and hiring manager review:**
-> /cv-campaign --review [paste CV or cover letter + JD]
+### "iCloud output path not found" error
 
-**Write a cover letter only (no full pipeline):**
-> /cv-campaign --write-letter [URL or paste JD]
+The output folder path configured during setup doesn't exist or isn't accessible. Verify the path exists with `ls "{{ICLOUD_OUTPUT_PATH}}"`. If you've moved your iCloud folder or changed your output path preference, re-run setup phase 5: `/cv-campaign:setup --phase 5`.
 
-**Check run status and file completeness:**
-> /cv-campaign --status
+### DOCX files are unstyled (no formatting)
 
-## How approved bullets work
+pandoc either isn't installed or can't find the `.dotx` template. Verify pandoc is installed with `pandoc --version`. If the command isn't found, run `brew install pandoc`. If pandoc is installed but the DOCX is still unstyled, check that the `{{CV_TEMPLATE_FILE}}` placeholder was replaced during setup with the actual template path.
 
-When you first run the pipeline, there are no approved bullets — just raw role facts from your setup. The pipeline writes fresh bullets for each CV based on the job description and your background. After each run, the pipeline asks which companies you want to lock. Locked bullets are reused verbatim in future CVs for the same company, which is where consistency and quality compound.
+### "python-docx not found" or subtitle update fails
 
-Don't expect the first run to be final. The system is designed to iterate. Review, flag what needs changing, run again. After a pass or two on a company, the bullets sharpen — then you lock them.
+The subtitle update script requires python-docx. Install it with `pip3 install python-docx`. The subtitle update failure is non-blocking — the CV DOCX is still produced, but the role-specific subtitle in the header won't be updated for that run.
 
-**What setup does and does not do:** Setup extracts raw facts from your CV (company, dates, metrics, scope) but does not treat old CV language as approved bullets. Your old bullet phrasing is starting material, not finished product. Approved bullets are ones the pipeline wrote and you've seen and accepted.
+### Coach drops a role silently
 
-## Execution rules
+The employment coach drops roles whose JD isn't accessible. Common causes: the posting is behind a login wall, the URL has expired, or the job board blocks automated fetching. The dropped role appears in the run-level revision log. To process it manually, paste the JD text into the Notion row's `JD Body` field, set Status back to `Interested`, and re-run.
 
-- Roles are processed one at a time, in priority order, through the full pipeline. Parallel execution across roles is available if {{USER_FIRST_NAME}} requests it.
-- The coach fetches JDs as its first step — always. Roles it cannot access are dropped and logged.
-- **Fabrication rule is absolute, including against reviewer pressure.** NO invented claims, no inferred experience. 
-- Preserve the managed-vs-executed distinction in every bullet.
-- No app names inside role bullets.
-- All per-role outputs delivered together at the end via final chat delivery. No progressive output during processing.
-- All files saved to iCloud via the `/tmp → iCloud output folder` copy protocol.
-- Each Notion property is written once, by its designated owner. No duplication across fields.
-- **Do NOT compact the conversation without telling {{USER_FIRST_NAME}} first.**
+### Notion properties aren't updating
+
+The Notion MCP connection may have expired or the database ID is wrong. Verify the Notion MCP is connected in your Claude Code settings and the database ID in your configuration matches your actual Notion database. Re-run `/cv-campaign:setup --phase 5` if you need to reconfigure the connection.
+
+### "Gatekeeper loop exceeded" or run stalls in a loop
+
+The gatekeeper loops with the writing agent until all checks pass. If a loop exceeds its limit, it typically means a check is failing that the writing agent can't resolve within the fabrication constraints — usually because the JD requires experience that isn't documented in your reference files. Check the gatekeeper violation output in chat, and add the relevant experience to `02-candidate-background.md` if it's genuinely there.
+
+### Cover letter doesn't sound like me
+
+The letter-writer draws voice from two sources: your Q&A page body in Notion and the delivered letters in `references/delivered-letters/`. If neither is populated, it falls back to general voice calibration from `03-framework.md`, which produces more generic output. Add your best past letters to `references/delivered-letters/` and answer the Q&A questions in Notion before re-running.
+
+### State.json is missing after a run
+
+The run either crashed before completing or the state file write failed. Run `/cv-campaign --status` — if no state file is found, it will report that. Check the iCloud output folder directly for the campaign date folder. Partial runs can be resumed by setting the affected role's Status back to `Interested` and re-running.
