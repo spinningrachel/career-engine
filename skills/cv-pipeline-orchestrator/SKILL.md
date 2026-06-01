@@ -26,19 +26,19 @@ The orchestrator uses Bash to write files (markdown, DOCX, state.json, feedback)
 **Outputs go to {{USER_FIRST_NAME}}'s iCloud folder — never to a session scratchpad.**
 
 The only valid output destination is:
-`/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-<YYYY-MM-DD>/`
+`{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/`
 
 **Mandatory path verification — run this before processing the first role:**
 
 ```bash
-OUTPUT_DIR="/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-$(date +%Y-%m-%d)"
+OUTPUT_DIR="{{ICLOUD_OUTPUT_PATH}}/cv-campaign-$(date +%Y-%m-%d)"
 mkdir -p "$OUTPUT_DIR"
-# Verify — if this path does not contain "Mobile Documents", stop immediately
-echo "$OUTPUT_DIR" | grep -q "Mobile Documents" || { echo "ERROR: Output dir is not iCloud. Aborting."; exit 1; }
+# Verify — if this path does not contain "{{ICLOUD_OUTPUT_PATH}}", stop immediately
+echo "$OUTPUT_DIR" | grep -q "{{ICLOUD_OUTPUT_PATH}}" || { echo "ERROR: Output dir is not iCloud. Aborting."; exit 1; }
 echo "Output dir confirmed: $OUTPUT_DIR"
 ```
 
-If this check fails or the path does not contain "Mobile Documents", **stop the run immediately** and report the error to {{USER_FIRST_NAME}}. Do not proceed and do not fall back to any other path. Do not use `./outputs/`, relative paths, or any path containing "local-agent-mode-sessions" or "Application Support".
+If this check fails or the path does not contain "{{ICLOUD_OUTPUT_PATH}}", **stop the run immediately** and report the error to {{USER_FIRST_NAME}}. Do not proceed and do not fall back to any other path. Do not use `./outputs/`, relative paths, or any path containing "local-agent-mode-sessions" or "Application Support".
 
 **Three to five files per role, one file per run.**
 
@@ -67,7 +67,7 @@ This rule governs every agent that touches cover letter content:
 
 **Job Applications database:** Notion database ID `3465ef1aa63480a283cfdf847cb47404`. Source of job descriptions and destination for per-role updates.
 
-**Output folder:** `/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-<YYYY-MM-DD>/`
+**Output folder:** `{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/`
 
 Each role's files go in a subdirectory inside the campaign folder named after the hiring company (see company directory naming convention in `cv-campaign-export`). After all files for a role are produced and verified, the orchestrator writes the file directory URL to the `Draft Directory` URL property on the Notion row. All English and Hebrew files for the role are accessible from that directory URL.
 
@@ -228,7 +228,7 @@ Run `cv-campaign-role-steps` Steps 1 through 7d exactly as in the standard pipel
 - Step 7d (feedback file) — write as normal.
 
 **Output folder:** same as all other runs:
-`/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-<YYYY-MM-DD>/`
+`{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/`
 
 Create the folder if it does not exist (same as normal).
 
@@ -302,7 +302,7 @@ Read-only. No agents. No Notion. Just reads the filesystem.
 **Step S1 — Find the most recent run folder**
 
 ```bash
-ls -1d "/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-"* | sort | tail -1
+ls -1d "{{ICLOUD_OUTPUT_PATH}}/cv-campaign-"* | sort | tail -1
 ```
 
 If no campaign folder exists, report: "No campaign runs found."

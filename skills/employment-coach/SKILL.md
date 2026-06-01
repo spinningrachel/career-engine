@@ -38,7 +38,7 @@ Minimum 5 competitors, maximum 10:
 IC vs. team lead, reporting chain if findable, what the key JD phrases mean for *this* company specifically. "Head of Marketing" at a 10-person stealth startup = founding marketer + category creator. The same title at a 300-person company = something different. Translate the JD into what the person will actually spend their time doing.
 
 **6. Fit/gap for {{USER_FIRST_NAME}}**
-Draw ONLY from `02-candidate-background.md` (Role Facts) (Role Facts per company) and `03-framework.md` §Domain depth (per-vertical narratives). These are the only authoritative sources. Do not infer, extrapolate, or invent.
+Draw ONLY from `02-candidate-background.md` (Role Facts) and `03-framework.md` §Domain depth (per-vertical narratives). These are the only authoritative sources. Do not infer, extrapolate, or invent.
 
 - **Strongest credential:** The single most relevant, specific thing {{USER_FIRST_NAME}} has done that maps to what this role needs. Must name a real company from Section 7 and a documented outcome. If you cannot find a direct credential in Section 7 or `03-framework.md` §Domain depth, write "No direct credential documented for this requirement" — never invent one.
 - **Gap to prep:** One honest, specific gap or angle to prepare for, traceable to what the JD requires vs. what is documented. If there is a hard disqualifier (e.g., US residency required, domain not documented in `03-framework.md` §Domain depth), flag it clearly.

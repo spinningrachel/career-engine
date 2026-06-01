@@ -19,104 +19,68 @@ The authoritative source for cover letter mechanics, structure, and use-case pat
 
 ## Writing Mechanics
 
-**Before writing a single sentence:** Open 2–3 delivered letters from similar contexts (domain, seniority level, or role type) from `references/delivered-letters/`. Extract the specific syntactic patterns they use — how the opener is constructed, how complexity enters sentences, how paragraphs connect. Your draft must mirror those patterns. If you find yourself writing a construction that does not appear in any of those letters, that is a rewrite signal, not a coincidence to dismiss. The delivered letters are the voice anchor. This skill documents the rules behind them. Use both.
+**Before writing:** Open 2–3 delivered letters from `references/delivered-letters/` for similar domain or seniority. Note their sentence patterns. Your draft must mirror them.
 
-### Sentence structure
+**Write one sentence at a time. Before writing the next sentence, check the one you just wrote against both tables below. If it violates a DON'T or misses a DO: rewrite it before continuing. Do not draft the full letter and then check. The check is sentence by sentence, during drafting.**
 
-{{USER_FIRST_NAME}}'s sentences start with the subject, then the verb — almost always "I" or a named entity. Dependent clause openers feel like editorial analysis; subject-first sentences feel like a person talking.
+---
 
-- **Her pattern:** "I spent time doing positioning work for companies in the cloud-native security space."
-- **Not:** "Doing positioning work for companies in the cloud-native security space is something I've spent time on."
+### DOs
 
-Before submitting, scan every sentence: if it opens with a gerund, a prepositional phrase, or a dependent clause, rewrite it with {{USER_FIRST_NAME}} as the subject of the first word.
+| Rule | Example |
+|---|---|
+| Subject (I or named entity) first, then short verb, then everything else | "I built the GTM playbook from scratch: positioning, messaging frameworks, battle cards." |
+| Complexity comes after the verb — via colon introducing a list, or an appositive | "I ran the launch: sourced the speakers, wrote the content, owned the stage." |
+| Coordinated clauses: both need subject + verb | "At Coro, I owned the competitive function. At Visual Layer, I ran it alongside a small team." |
+| Multiple items: comma-separated series | "I built the playbook, ran the launch, managed the agency, and owned the narrative." |
+| Deliberate fragments for emphasis or causality — one or two per letter, never manufactured | "Because that's how markets break." / "LOVE IT." |
+| Vary sentence length deliberately | Short for emphasis. Longer for nuance. Mixing them is not stylistic — it is how rhythm works. |
+| Exception: one peer-attribution dependent clause opener per letter | "Known for being proactive, I had the compliance hub ready before Sales finished their objection list." |
 
-**"Most of my career has been [gerund]" — forbidden.** This makes "career" the subject doing the action. Write "For most of my career, I've [verb]..." — {{USER_FIRST_NAME}} is the subject, the career span is an adverbial modifier.
-- **Fail:** "Most of my career has been building PMM functions inside seed and early-stage companies..."
-- **Fix:** "For most of my career, I've built PMM functions inside seed and early-stage companies..."
+---
 
-**Dangling participles — forbidden.** When a gerund phrase modifies a clause, its implied subject must be the same as the main clause's subject. If it isn't, the sentence fails.
-- **Fail:** "The project expanded into OEM channels, building a partner network." (The project cannot build — only {{USER_FIRST_NAME}} can.)
-- **Fix:** "Working on the project, I built a partner network across OEM channels." Or split: "The project expanded into OEM channels. I built the partner network."
-- Always check: can {{USER_FIRST_NAME}}'s name logically perform the gerund's action? If not, rewrite.
+### DON'Ts
 
-**Approved exception — peer-attribution dependent clause openers.** When using Pattern B from the Peer-Attributed Qualities section of `01-candidate-rules.md` (a short attributed-quality clause as a setup before "I"), a dependent clause opener is permitted. The clause must be short (one attributed quality, no embedded subordinates), must be followed immediately by "I" as the subject, and must deliver specific named proof in that same sentence or the next. One use per letter. Example: *"Known for being proactive, I had the compliance hub ready before Sales finished their objection list."*
+| What | Fail | Fix |
+|---|---|---|
+| Gerund, prepositional phrase, or dependent clause opener | "Building GTM for fifteen years has given me..." | "I've spent fifteen years building GTM..." |
+| "Most of my career has been [gerund]" | "Most of my career has been building PMM functions..." | "For most of my career, I've built PMM functions..." |
+| Dangling participle | "The project expanded, building a partner network." | "The project expanded. I built the partner network." |
+| Colon joining two independent clauses | "I have a confession: I daydream about consumer campaigns." | "I have a confession to make. I daydream about consumer campaigns." |
+| Noun clause or long noun phrase as subject | "The blend of experience I bring is exactly what you need." | "I bring X. I've built X." |
+| Relative clause buried in object | "I felt the pull consumer marketing has always had on me." | "Consumer marketing has always pulled at me." |
+| Wh-clause stacking inside one predicate | "...whether they integrate, whether they trust it, and whether they return." | Break into separate sentences. |
+| Inanimate subject performing human action | "This role sharpened my instincts." | "Working in this role sharpened my instincts." |
+| "And...and...and..." stacking | "I built it and ran it and owned it." | "I built it, ran it, and owned it." |
+| Em dash introducing abstract noun stacking | "the creative arc, the instinct, the brand moment" after an em dash | Named company + specific deliverable instead. |
+| Em dash used more than twice | — | One maximum; use period, comma, or colon instead. |
+| Word-stem echo within three lines | "crafted...having crafted" | Synonym or restructure. |
+| Passive voice when active is available | "The company was acquired by Camtek." | "Camtek acquired the company." |
+| Rhetorical question in opener | Any question as first sentence | State the reaction or observation directly. |
+| More than one rhetorical question per letter | — | One maximum, body only. |
+| Rule of three/four more than once per letter | Two tricolons in the same letter | One maximum, only when it earns it. |
+| -ing phrase appended to main clause more than once | "I ran the campaign, showcasing expertise." | "I ran the campaign." Outcome as its own sentence. |
+| "From X to Y" false range | "everything from messaging to competitive analysis" | Name the specific things. |
+| AI vocabulary | crucial, pivotal, vibrant, showcase, tapestry, transformative, underscore, intricate, foundational | Cut or use plain language. |
+| "Serves as" / "stands as" (copula avoidance) | "This serves as a foundation for..." | "This is..." |
+| Approach-announcement via label | "My approach is deliberately X: Y, Z." | "At [Company], I did Y and Z." |
+| Demonstrative declaration | "That's where I want my marketing to land." | Name the outcome and company. |
+| Synonym cycling (elegant variation) | "The protagonist... The main character... The central figure..." | Pick one word and repeat it. |
+| Filler phrases | "in order to" / "at this point in time" / "it is important to note that" | Cut. Start with the claim. |
+| Expert-claim opener (agent-constructed, not from {{USER_FIRST_NAME}}'s Q&A) | "I know this buyer." / "ZyG is where I'd do that." | Use only content {{USER_FIRST_NAME}} wrote in her Q&A or page body. |
+| Pronoun pointing at abstraction | "ZyG is where I'd do that." | Name what "that" refers to, or drop the sentence. |
+| Methodology narration in opener | "customer interviews across five verticals, competitive analysis, longitudinal PMF assessment..." | Name the HOW in one clause. Save the proof for the body. |
+| Strategy analysis opener | "I know this buying motion." / "This is the kind of mandate I'm looking for." | If {{USER_FIRST_NAME}} didn't write it, write [{{USER_FIRST_NAME}} TO FILL IN] instead. |
 
-### Clause architecture
+---
 
-**─── READ THIS BEFORE WRITING. NOT AFTER. ───**
+**Voice permissions (not rules — use when warranted):**
+- Self-correction mid-letter when the company earns it: assertion → pause → correction. Never manufactured.
+- "I'll be honest" only when the JD or company tone signals informality is welcome. Never for enterprise or formal contexts.
 
-Sentence structure covers where the sentence starts. Clause architecture covers where the complexity lives — and this is where generated writing diverges most from {{USER_FIRST_NAME}}'s.
-
-**Where complexity lives in {{USER_FIRST_NAME}}'s sentences:** After the predicate, via a colon introducing an asyndeton list, an appositive, or an adverbial. Not inside the predicate.
-
-- **Her pattern:** *"I built the GTM playbook from scratch: product-market fit experimentation, vertical positioning, launch kits, messaging frameworks, battle cards, and documentation infrastructure."* The predicate is "built the GTM playbook from scratch." The colon introduces all the complexity after the verb is already complete.
-- **Not this:** *"I've spent my career getting technically complex AI products into the hands of buyers who didn't expect to need them — and health systems are exactly the kind of buyer I know."* The predicate is doing three things at once with an embedded relative clause. Rewrite: one short finite verb, complexity follows via colon or appositive.
-
-**Wh-clause stacking — a hard failure:** Stacking whether-clauses or wh-clauses as coordinated objects inside a single predicate is the most common clause architecture failure in generated letters. Example: *"...determines whether a developer integrates in two days or two weeks, whether they trust the product before they've seen results, and whether they come back to self-serve or open a support ticket."* {{USER_FIRST_NAME}}'s version uses a rhetorical question + short-predicate answer, or antithesis with short predicates. Break any sentence with two or more stacked wh-clause complements into separate sentences.
-
-**Noun clause or long noun phrase as subject — a hard failure:** Starting a sentence with "What you need is..." or a long noun phrase with an embedded relative clause. These bury "I" and front-load complexity in the subject position before the verb even appears. Rewrite: put "I" or a proper noun first, then the verb, then the complexity. This applies with particular force to the first sentence of the letter — "The part of this role that caught my attention," "The thing about this position that stood out," "What drew me to this opportunity" are all hard failures. They assume shared context the reader does not have, read as generic form-letter language, and fail at the level of basic professional writing.
-- **Fail (named pattern):** "The blend of experience I bring to this role is exactly what you need." / "The depth I've developed in cybersecurity is practitioner-native." The subject is a heavy noun phrase with an embedded relative clause — same failure regardless of whether the relative clause uses "that," "which," or "who."
-- **Fix:** "I bring [specific thing]. I've built [specific thing]." Subject = I, verb follows immediately.
-
-**Relative clause buried in object noun phrase — a hard failure (parallel to the above, on the object side):** The verb is fine, but the object contains a deeply embedded relative clause. The reader has to hold three syntactic levels before the sentence resolves. It reads as composed, not spoken.
-- **Fail:** "I felt the pull consumer marketing has always had on me." (object = "the pull [that] consumer marketing has always had on me" — three levels deep)
-- **Fail:** "I know the instinct for what makes someone want something." (object = "the instinct for [what makes someone want something]")
-- **Fix:** Two short sentences. "Consumer marketing has always pulled at me. I've spent fifteen years building the infrastructure that makes it work."
-
-**"And...and...and..." stacking — forbidden.** Do not chain three or more items with repeated "and." Use a comma-separated series or split into two sentences.
-- **Fail:** "I built the playbook and ran the launch and managed the agency and owned the narrative."
-- **Fix:** "I built the playbook, ran the launch, managed the agency, and owned the narrative."
-
-**Parallel structure across coordinated clauses — required.** If clause A has a subject and verb, clause B needs a subject and verb. Do not follow "At X, I did..." with "and at Y, alongside..." — the second clause is missing its verb.
-- **Fail:** "At Coro, I owned the competitive function, and at Visual Layer, alongside a small team."
-- **Fix:** "At Coro, I owned the competitive function. At Visual Layer, I ran it alongside a small team."
-
-**Epanorthosis (self-correction):** {{USER_FIRST_NAME}} corrects herself mid-letter when the company or JD earns it: *"I'm not gonna lie … my dear friend Claude wrote this letter completely. Well, not completely. I guess I did edit it a bit ;)"* Assertion → pause → self-correction. This is her most distinctively personal syntactic move. Use only when context warrants — never manufactured.
-
-**"I'll be honest" — register signal:** Use only when the company's tone or JD signals informality is welcome — e.g., the JD uses casual language, explicitly welcomes AI use, or the company culture is demonstrably low-formality. The Ultralytics and Pleo letters in the delivered-letters archive are the calibration anchors. Never use it for enterprise, public-company, or formal JD contexts.
-
-### Sentence length
-
-Mix very long sentences, long sentences, and short ones deliberately. Short sentences land emphasis. Longer sentences carry nuance and connective reasoning. Varying length is not stylistic flourish — it is how clarity and rhythm work together. Target a 12th-grade reading level.
-
-### Voice
-
-Write in **first person**. Second person is occasionally acceptable. Avoid passive constructions.
-
-**Word-stem echoes — avoid.** Using the same root word as different parts of speech in the same sentence or paragraph reads as accidental wordplay: "sharpen my craft, having crafted..." / "designed the design..." / "built a build..."
-- Use a synonym, restructure, or split into two sentences.
-- Audit before submission: if any root word appears twice within three lines, fix it.
-
-**Rhetorical questions — hard limit.** Zero in the opener. One maximum in the entire letter, placed in the body only. More than one makes the letter feel like a quiz; any in the opener positions {{USER_FIRST_NAME}} as the interviewer rather than the candidate. Do not use a rhetorical question as a hook or reveal setup.
-
-### Punctuation
-
-- Em dashes: at most once or twice per letter, only when no comma, period, or transition word would serve. Never use an em dash to introduce an appositive series of abstract concept noun phrases — **Fail:** "the creative arc of a launch, the instinct for what makes someone want something, the brand moment that lands" is abstract noun stacking. It reads as composed marketing copy, not a person talking. Replace with a named company and a specific deliverable.
-- Colons: to introduce lists or examples only — "The goal is to X" is stronger than "The goal: X"
-- Deliberate fragments are permitted and encouraged in two forms: causal ("Because...") as a standalone sentence following a claim, and emphatic (single word or short phrase, e.g., "LOVE IT."). One or two per letter. Do not manufacture them — use them where rhythm demands.
-
-### Inanimate subjects
-
-**Projects, tools, integrations, and abstractions cannot perform human actions.** Only people sharpen, craft, drive, navigate, build, champion, etc. If a thing enabled {{USER_FIRST_NAME}} to do something, write it that way.
-- **Fail:** "This integration sharpened my positioning instincts." / "The project drove partner growth."
-- **Fix:** "Working on this integration sharpened my positioning instincts." / "Through the project, I drove partner growth."
-- Test: replace the subject with {{USER_FIRST_NAME}}'s name. If the sentence still makes sense, use {{USER_FIRST_NAME}}. If the inanimate thing is genuinely the agent (a tool reports, a model generates, a dashboard shows), the verb is acceptable.
-
-**The company must be named in the first paragraph.** "This role," "this position," "this opportunity," "this company" without a name are context-less — the reader is reviewing many applications and has no shared frame of reference with the writer. Use the company name. It should appear in the first paragraph, ideally in the first two sentences.
-
-**Do not open with strategy analysis.** This includes market observations and industry framing — but also expert-claim openers the agent constructs from its own reading of the role: "I know this buyer," "I understand this buying motion," "This is a problem I've solved before," "This is the kind of mandate I'm looking for." These are the agent speaking as {{USER_FIRST_NAME}}, not {{USER_FIRST_NAME}} speaking. If she didn't write it in her Q&A or page body, it cannot be the opener. Write `[RACHEL TO FILL IN]` instead.
-
-**Opener failure pattern — banned:** Using a setup phrase ("The thing that caught my attention was..." / "When I read the posting..." / "What drew me to this role was...") and then staying in the meta-level — narrating {{USER_FIRST_NAME}}'s reading experience, quoting a phrase from the posting, or launching into a methodology case study — instead of pivoting immediately to a value claim. The setup phrase is fine. What comes next is the test. The rule: any opener setup must pivot to "and that's the work I do" or equivalent within one sentence. If the next sentence is still describing what {{USER_FIRST_NAME}} noticed, what the posting said, or how she approached VL, it has failed.
-
-**Methodology narration in the opener — banned:** Do not narrate methodology steps as a case study ("customer interviews across five verticals, competitive analysis, longitudinal PMF assessment, and findings that drove a pivot..."). This belongs in the proof paragraphs, where it earns its weight. In the opener, name the HOW in one concise clause — then trust the body to prove it.
-
-**The preferred opener pattern:** Name the company (or the posting) → make an observation about what they need → immediately pivot to the value claim. Then: brief HOW in one clause → domain connection thread → warm confident close.
-
-**Contrast:**
-- ❌ "The thing that caught my attention in this posting was the phrase 'not just execute against an existing strategy.' At Visual Layer, I was hired specifically to do the research work that would make positioning possible — customer interviews across five verticals, competitive analysis, longitudinal PMF assessment..."
-- ✅ "Reading the Lemonade posting, it was clear you're looking for a strategic builder — and that's the work I do. I turn complex products into clear narratives that land with the right audiences without losing integrity, even under regulatory scrutiny or with skeptical buyers. I get there by immersing myself in the product, learning directly from customers, and running the research myself."
-
-The second version lands a claim. The first one describes a reading experience.
+**Naming requirements:**
+- Company name in the first paragraph, ideally the first two sentences.
+- Role title somewhere in the letter, using the exact job description phrasing.
 
 ---
 
@@ -137,13 +101,32 @@ Every letter — regardless of tone, role, or opener strategy — has exactly th
 
 **Block 3 — Close (1–3 sentences).** One ask. Direct. Always tight. Options below.
 
-**Formatting:** No wall of paragraphs anywhere in the letter. Maximum 3–4 lines per paragraph, then white space. Short paragraphs hit harder than long ones. A letter that breathes reads faster.
+**Formatting — white space is not optional:**
+- Maximum 3–4 lines per paragraph. Hard stop. Then a blank line.
+- Short paragraphs hit harder than long ones. A letter that breathes reads faster than a wall of text. If a paragraph runs over 4 lines, split it.
+- The close is always its own paragraph — never attached to the paragraph before it.
+
+**Bulleted lists — the WHEN matters more than the format:**
+
+A bullet list is appropriate in exactly two situations:
+
+**1. Transferability or pivot letter** — when the letter has spent its proof paragraphs making the case that skills from a different domain transfer here, a brief bullet list of capabilities at the end signals: "here is the full range that moves with me." The bullets land the breadth argument after the prose has established the narrative. They are not the proof — they are the summary after the proof has done its work.
+
+**2. Multi-mandate role requiring range** — when the role explicitly requires coverage across several distinct capability areas and a bulleted list makes the range visible at a glance in a way prose cannot.
+
+**Do not use bullets when:**
+- The letter is a direct domain match — prose makes a stronger case than a list
+- You haven't already made the narrative case in the proof paragraphs — bullets without proof are just a CV in list form
+- You're mirroring the JD's requirements back — that's JD-dimension mirroring, which is banned
+- You're lifting language from an existing CV bullet — letter language is fresh
+
+**Bullet format:** Short — 2–5 words each. No periods. Parallel grammatical form. Introduced by a complete sentence ending in a colon. The list sits between the proof paragraphs and the close.
 
 ---
 
 1. **Greeting.** Always "Hi to the [Company] team!" — or "Hi to [Name]!" if writing directly to a named person. Never "Dear Hiring Manager."
 
-2. **Opener paragraph.** Choose from the Use-Case Structures below. {{USER_FIRST_NAME}}'s reaction or observation comes first. Her background enters in service of that, not as the subject. If no documented reaction exists in `01-candidate-rules.md` or the Q&A bank, write `[RACHEL TO FILL IN]` — do not manufacture enthusiasm.
+2. **Opener paragraph.** Choose from the Use-Case Structures below. {{USER_FIRST_NAME}}'s reaction or observation comes first. Her background enters in service of that, not as the subject. If no documented reaction exists in `01-candidate-rules.md` or the Q&A bank, write `[{{USER_FIRST_NAME}} TO FILL IN]` — do not manufacture enthusiasm.
 
 3. **Proof paragraph(s) — one job each.** One to three paragraphs, each doing exactly one thing: a pattern of experience across companies, a specific story that adds something the CV doesn't say, or documented product/company familiarity.
 
@@ -426,15 +409,15 @@ Run before writing the first sentence.
 
 **Opener structure:** Sentence 1 → the reaction, belief, or hook. Sentence 2 → the credential. Rest → optional expansion, including HM-connected framing if it fits naturally.
 
-**Manufactured opener — forbidden.** A hook that sounds like a genuine reaction but is actually a constructed reveal: "I read about [Company] and already have my first question." / "Before I write another word, I want to ask one thing." These announce that a clever move is coming — which signals exactly the opposite of genuine engagement. If the reaction is genuine, state it directly. If it isn't, write `[RACHEL TO FILL IN]`. Do not set up a reveal.
+**Manufactured opener — forbidden.** A hook that sounds like a genuine reaction but is actually a constructed reveal: "I read about [Company] and already have my first question." / "Before I write another word, I want to ask one thing." These announce that a clever move is coming — which signals exactly the opposite of genuine engagement. If the reaction is genuine, state it directly. If it isn't, write `[{{USER_FIRST_NAME}} TO FILL IN]`. Do not set up a reveal.
 
-**Fallback:** If no genuine specific reaction exists in the reference material, write `[RACHEL TO FILL IN]` and flag it. Do not manufacture a reaction.
+**Fallback:** If no genuine specific reaction exists in the reference material, write `[{{USER_FIRST_NAME}} TO FILL IN]` and flag it. Do not manufacture a reaction.
 
 ---
 
 ## Mandatory Revision Pass
 
-After producing a first draft, enter revision mode. You are now a writing editor, not a letter writer. Your only job is to identify and remove AI writing patterns. Run this process before submitting to the gatekeeper — it is not optional and does not depend on whether you believe the draft is already strong.
+After producing the draft, enter revision mode. Read the letter sentence by sentence and run each sentence against the DON'T table in Writing Mechanics. Fix every violation before moving to the next sentence. This is not optional and does not depend on whether you believe the draft is already strong.
 
 ### Step 1 — Voice calibration
 

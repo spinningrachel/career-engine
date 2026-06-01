@@ -131,7 +131,7 @@ Read the following from Notion for this role:
 
 ### Step 5 — Cover letter (draft)
 
-**Before spawning letter-writer:** Read `02-candidate-background.md` (Role Facts) for {{USER_FIRST_NAME}}'s role facts — VL exit details, Coro scale, and function-building track record. Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
+**Before spawning letter-writer:** Read `02-candidate-background.md` (Role Facts) for {{USER_FIRST_NAME}}'s role facts — key career milestones, scale signals, and function-building track record. Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
 
 **Before spawning, pass the following for this role:**
 - **Q&A property**, **Page body content**, and **`Additional Letter Writer Details`** — use the values retrieved in Pre-Step 5. Do not re-read from Notion.
@@ -315,7 +315,7 @@ If the writeback fails, log it and surface it in the final delivery — files ar
 ### Step 7b — Write state file (crash-recovery)
 
 Append this role's data to:
-`/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-<YYYY-MM-DD>/state.json`
+`{{ICLOUD_OUTPUT_PATH}}/cv-campaign-<YYYY-MM-DD>/state.json`
 
 Create the file on the first role; append on subsequent ones. Use the `/tmp→iCloud` copy protocol from `cv-campaign-export`. Use the shortened path format for all paths — `cv-campaign-<YYYY-MM-DD>/<filename>` only, never the full iCloud path.
 

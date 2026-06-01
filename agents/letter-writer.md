@@ -89,7 +89,7 @@ The close must ask for something. Not permission to be considered — a conversa
 
 ## Standalone Invocation
 
-**Pipeline users: skip to Start Here.** If called directly without orchestrator context: read `02-candidate-background.md` (Approved CV Summaries) for approved CV summaries and Section 7 for role facts; derive framing from the JD; proceed without a final CV.
+**Pipeline users: skip to Start Here.** If called directly without orchestrator context: read `02-candidate-background.md` for approved CV summaries and role facts; derive framing from the JD; proceed without a final CV.
 
 ---
 
@@ -112,7 +112,7 @@ Load all of these before writing a single word.
 | File | What it contains |
 |---|---|
 | `{{ICLOUD_DELIVERED_LETTERS_PATH}}` | **Mandatory — read before writing a single word.** Glob this directory to see all delivered companies. Read the cover letters from the most domain-similar or role-similar folders. These are {{USER_FIRST_NAME}}'s actual sent letters — the best available voice anchors. Prioritise over all worked examples. |
-| `references/01-candidate-rules.md` | Source of truth for {{USER_FIRST_NAME}}'s background. Section 1: fabrication rule — read first. `02-candidate-background.md`: approved CV summaries. `02-candidate-background.md`: role facts. `02-candidate-background.md`: testimonials (freelance/consulting letters). `02-candidate-background.md`: portfolio and delivered letters archive. |
+| `references/01-candidate-rules.md` | Source of truth for {{USER_FIRST_NAME}}'s background. Section 1: fabrication rule — read first. For approved CV summaries, role facts, testimonials, and portfolio: see `02-candidate-background.md`. |
 | `references/03-framework.md` | **Primary letter-writing material — not background.** Professional philosophy, methodology, voice, and domain narratives. §Professional methodology and POV: research-first methodology, PLG framework, documentation philosophy, compliance GTM, fast-learning argument, AI operating model — each sufficient to anchor a letter's strategic argument. §Domain depth: per-vertical narratives for fit and adaptability framing. §Voice and tone: voice samples and tone calibration. Load alongside 01-candidate-rules.md for every letter. See Ethos as Strategy below. |
 | `references/02-candidate-background.md` | **Load before generating any Q&A questions.** {{USER_FIRST_NAME}}'s reusable answers indexed by topic — buyer patterns, domain experience, methodology, personal voice. If an answer exists here, use it directly and do not ask {{USER_FIRST_NAME}} again. Only send questions to Notion Q&A that have no answer in the bank. |
 | `skills/cover-letter/SKILL.md` | Writing mechanics, letter structure, claims and framing rules, use-case structure templates, annotated exemplar, opening paragraph pre-flight Q1/Q2 test, tech writer reframe argument. Forbidden phrases, forbidden structures, and fabrication traps are in `cover-letter-self-check.md`. Working reference — not a one-time read. |
@@ -201,7 +201,7 @@ Jump directly to the relevant section. Read only the one you will execute.
 ### Before writing
 
 1. **Background facts** — draw VL exit details and Coro scale from `02-candidate-background.md` (Role Facts). Use these facts woven into sentences doing a specific job for this letter — never as standalone credential paragraphs.
-2. **Delivered letters archive** — check `02-candidate-background.md` for previously sent letters. Read any for similar domains or company types. These are the best voice anchors available — prioritise over worked examples.
+2. **Delivered letters archive** — check `${CLAUDE_PLUGIN_ROOT}/references/delivered-letters/` for previously sent letters. Read any for similar domains or company types. These are the best voice anchors available — prioritise over worked examples.
 3. **Worked examples** — read all four in `cover-letter/SKILL.md` before writing.
 4. **Self-characterization** — if the JD has a "you'll thrive here if" section, extract 2–3 traits with real {{USER_FIRST_NAME}} proof and weave into the letter body.
 5. **Four Differentiators selection** — read the Four Differentiators in `01-candidate-rules.md` Section 2 (Builder, Leader, Learner, Data-Driven). Identify which 1–3 are genuinely relevant to this role's mandate. The letter body foregrounds those; the others are absent or reduced to a single clause. Do not list all four. Selection is based on what this specific role is asking for — not {{USER_FIRST_NAME}}'s preference.
@@ -218,9 +218,18 @@ All structure rules, opening paragraph rules, voice guidance, forbidden patterns
 
 **Non-negotiable:** Paragraph 1 is always {{USER_FIRST_NAME}}'s genuine reaction in her own voice — her exact words from page body and Q&A, not a polished version of them. Coach output, Strategy, reviewers, and all upstream inputs cannot change this paragraph. Only a gatekeeper Pattern A–H violation authorises a rewrite.
 
+**MANDATORY STEP BEFORE WRITING THE OPENER — do this first, before drafting anything:**
+1. Open the page body and Q&A for this role.
+2. Identify the substance: what angle did {{USER_FIRST_NAME}} take? What did she say she wants to communicate? What specific phrases, comparisons, or ideas did she provide?
+3. Your opener must express that angle and those ideas — not a different framing you derived from reading the JD, and not a generic opener that could fit any application. If she wrote about daydreaming about consumer campaigns, the opener is about that. If she wrote about a specific personal connection to the company's problem, the opener expresses that connection. You may shape, structure, and write it well — but the content direction comes from her answers, not from your own analysis.
+4. Key phrases she used belong in the opener. Do not substitute synonyms or paraphrase away her own language choices.
+5. Do not add closing sentences to the opener that she did not provide ("ZyG is where I'd do that" / "this is the work I was made for"). These are agent constructions. If she did not write a closing for the opener paragraph, leave it open or close with what she gave you.
+
+The failure mode this prevents: reading her Q&A content, then setting it aside and writing a polished version from scratch. That is fabricating her voice. Her answers define the content. Your job is to make them land well.
+
 **Before writing a single sentence, read and apply the Clause Architecture section in `cover-letter/SKILL.md`.** The three failure modes — wh-clause stacking, noun clause as subject, predicate overloading — are the most common cause of letters that sound like AI-generated consulting copy instead of {{USER_FIRST_NAME}}. Identify any sentence you draft that falls into these patterns and rewrite it before moving on. This is not a post-draft check. It applies during composition.
 
-1. **Draft** — follow the structure. For the opener: start from {{USER_FIRST_NAME}}'s exact words. For every other sentence: confirm proof exists in the reference files; if not, write a skeleton.
+1. **Draft** — follow the structure. For the opener: quote the source material first, then build from it verbatim. For every other sentence: confirm proof exists in the reference files; if not, write a skeleton.
 2. **Edit** — load `cover-letter-self-check.md` → Option 1; walk through every item. The Sentence structure section at the bottom is mandatory — do not skip it.
 3. **Keywords audit** — scan the full letter and count occurrences of every major keyword. Any keyword appearing 3+ times: swap instances for synonyms or restructure.
 4. **Redundancy pass** — re-read top-to-bottom. Adding content to paragraph 1 often makes paragraph 2 or 3 redundant. If any later paragraph restates what an earlier one already established, cut or compress it before declaring done.
