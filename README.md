@@ -1,5 +1,8 @@
 # cv-campaign
 
+> **⚠️ UNDER CONSTRUCTION — EXPERIMENT AT YOUR OWN RISK**
+> This plugin is actively developed and not yet stable. Expect rough edges, incomplete features, and breaking changes between versions. Back up your reference files before updating.
+
 Job searching at scale breaks down fast. Every application takes hours to tailor, each session starts from scratch, and most AI tools make it worse: they write confidently about experience you don't have.
 
 The cv-campaign plugin runs a full multi-agent pipeline. It pulls your target roles from Notion, researches each company, drafts and reviews tailored CVs and cover letters, exports formatted Word files to your output folder, and writes results back to Notion. No supervision required.
@@ -668,3 +671,15 @@ The letter-writer draws voice from two sources: your Q&A page body in Notion and
 ### State.json is missing after a run
 
 The run either crashed before completing or the state file write failed. Run `/cv-campaign --status` — if no state file is found, it will report that. Check the iCloud output folder directly for the campaign date folder. Partial runs can be resumed by setting the affected role's Status back to `Interested` and re-running.
+
+---
+
+## Future plans
+
+The pipeline currently focuses on the document production phase of a job search. A few directions under consideration:
+
+**Deeper research on the hiring side.** The employment coach already identifies the hiring manager and researches the company. Future iterations would go further: tracking relationships and connections at the target company, surfacing relevant mutual contacts, monitoring for new hires or departures on the team, and improving the quality of company intelligence over time as more context accumulates per employer.
+
+**Job search assistance.** Expanding upstream from the application itself: surfacing relevant roles based on your profile and target criteria, tracking application status and follow-up timing, and building a searchable record of every company researched and every role applied for across multiple job search campaigns.
+
+If either of these directions is relevant to work you want to contribute, open an issue.
