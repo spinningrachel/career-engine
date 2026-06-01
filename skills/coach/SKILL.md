@@ -81,6 +81,11 @@ For each qualifying row, extract: page ID, page URL, company name, position, Job
 
 ## Step 3 — Research each role
 
+**Research principles:**
+- Keep research objective and evidence-led. Conclusions must be traceable to a named source. Do not interpolate, speculate, or fill gaps with assumptions.
+- Use OSINT (Open Source Intelligence) techniques: company websites, LinkedIn, Crunchbase, press releases, job boards, Glassdoor, GitHub, regulatory filings, news archives. Prefer primary sources over aggregators.
+- Market conditions change. Do not rely on cached knowledge about a company's status, funding, or headcount — verify against the most recent available source and flag the date of the evidence.
+
 Run web research in parallel where possible — launch all 5 company searches in a single message rather than sequentially. This matters: sequential research on 5 companies takes 3–4x longer.
 
 ### Fetching JDs
