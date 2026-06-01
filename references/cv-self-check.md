@@ -23,7 +23,7 @@ Run every item in order before returning output. The gatekeeper runs the same ch
 ## Summary
 
 - [ ] No company names, conference names, or named clients anywhere in the summary — descriptors only
-- [ ] Paragraph 1 establishes the most recent role context with a descriptor, not a company name — acceptable descriptor signals are in `who-rachel-is.md` Section 1
+- [ ] Paragraph 1 establishes the most recent role context with a descriptor, not a company name — acceptable descriptor signals are in `operating-rules.md` Section 1
 - [ ] Word count is 120 words or fewer, counted explicitly
 - [ ] Sentence count is 4 or fewer, counted explicitly
 - [ ] Paragraph count is 1 (single paragraph only)
@@ -39,16 +39,16 @@ Run every item in order before returning output. The gatekeeper runs the same ch
 ## Experience
 
 - [ ] `## EDUCATION`, `## LANGUAGES`, and `## ADDITIONAL` do NOT appear anywhere in the output — these sections are injected by {{USER_FIRST_NAME}}'s Word macros after DOCX export and must never be included in cv-writer's markdown
-- [ ] `## EXPERIENCE` contains full-time employment only, in reverse-chronological order per `who-rachel-is.md` Section 7 — Contentabl must not appear here
+- [ ] `## EXPERIENCE` contains full-time employment only, in reverse-chronological order per `operating-rules.md` Section 7 — Contentabl must not appear here
 - [ ] `## CONSULTING` section is present and contains Contentabl
 - [ ] Every named role has a RoleOverview immediately below its RoleTitle — count them; the numbers must match (applies to both EXPERIENCE and CONSULTING sections)
 - [ ] No tool or app names inside any experience bullet (exemption: approved bullets from Section 7 are pre-validated — do not alter them to satisfy this check)
-- [ ] Each employer is described using only the approved target market from `who-rachel-is.md` Section 7
+- [ ] Each employer is described using only the approved target market from `operating-rules.md` Section 7
 - [ ] No opening verb appears 3 or more times across all bullets — tally and fix before returning
 
 ## Tools section
 
-- [ ] If the Role Type is Specialist or Builder AND the JD mentions tools or platform proficiency: `## TOOLS` section is present with a relevant selection from `who-rachel-is.md` Section 8
+- [ ] If the Role Type is Specialist or Builder AND the JD mentions tools or platform proficiency: `## TOOLS` section is present with a relevant selection from `operating-rules.md` Section 8
 - [ ] If the Role Type is Leader or Scaler, OR the JD does not mention tools: `## TOOLS` section is absent
 
 ## Earlier

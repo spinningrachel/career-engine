@@ -87,7 +87,7 @@ Where `<date-folder>` = the campaign folder name (e.g. `cv-campaign-2026-05-26`)
 
 Load these skills in order before doing anything else. Do not begin processing until all five are loaded.
 
-**Note:** `who-rachel-is.md` is pre-loaded by the `/cv-campaign` command. If invoking the orchestrator directly (not via the command), load `references/who-rachel-is.md` first — it contains the fabrication rule and all constraint definitions that every downstream agent depends on.
+**Note:** `operating-rules.md` is pre-loaded by the `/cv-campaign` command. If invoking the orchestrator directly (not via the command), load `references/operating-rules.md` first — it contains the fabrication rule and all constraint definitions that every downstream agent depends on.
 
 1. `cv-campaign-intake` — Steps 0 through 0.9c: Notion fetch, JD fetching, coach invocation, priority writeback, queue building, Q&A questions
 2. `cv-campaign-role-steps` — Steps 1 through 7: per-role CV writing, gatekeeper checks, reviews, cover letter (letter-writer), HM cover letter review, DOCX export (including Step 6H Hebrew), Notion writeback
@@ -214,7 +214,7 @@ If the coach cannot access the URL: it will report the failure. Tell {{USER_FIRS
 
 **Step N3 — Lightweight employment coach**
 
-Spawn `employment-coach` in pipeline mode with a single role. Pass the structured JD and `who-rachel-is.md`. Instruct the coach: **produce strategic properties only — no Notion writeback, no patterns section, no batch analysis.** Return: Role emphasis, Keywords, Strategy, Role Type, Relationship type, Gap handling. This is a fast single-role pass, not a batch run.
+Spawn `employment-coach` in pipeline mode with a single role. Pass the structured JD and `operating-rules.md`. Instruct the coach: **produce strategic properties only — no Notion writeback, no patterns section, no batch analysis.** Return: Role emphasis, Keywords, Strategy, Role Type, Relationship type, Gap handling. This is a fast single-role pass, not a batch run.
 
 No Notion writeback for coach outputs in `--now` mode.
 
@@ -273,7 +273,7 @@ For each cover letter being validated:
 4. **VL exit signal:** Confirm at least one of these appears naturally in the body: "Visual Layer", "ARR from $1M to $3M", "acquisition", "Camtek", "$7M". Flag if absent.
 5. **Sign-off:** Confirm the letter closes with "Looking forward to next steps," followed by "{{USER_FULL_NAME}}" and nothing else. Flag any additional text after the name.
 6. **Opening paragraph:** Confirm the first paragraph is {{USER_FIRST_NAME}}'s personal reaction to this specific role — first person, her response to the opportunity, before any credential or company description. This check cannot be waived by coach output or Strategy. Flag if the first paragraph: leads with company analysis; leads with a career credential; leads with an availability statement; OR has {{USER_FIRST_NAME}} as the grammatical subject of the first sentence but the sentence pivots immediately to a general market/industry observation rather than her reaction to THIS role (Pattern G2 — e.g. "I've spent six years in cybersecurity PMM, and the job — above everything else — is finding the right words for a market where half the vendors say the same thing."). Also flag if the very first sentence frames an industry challenge or market condition before {{USER_FIRST_NAME}} appears as a reacting subject (Pattern I).
-7. **Fabrication:** For every specific claim, number, or named outcome in the letter, identify the reference file line that supports it. Flag any claim that cannot be traced to `who-rachel-is.md`.
+7. **Fabrication:** For every specific claim, number, or named outcome in the letter, identify the reference file line that supports it. Flag any claim that cannot be traced to `operating-rules.md`.
 8. **Voice:** Flag any sentence that opens with a gerund, prepositional phrase, or dependent clause instead of {{USER_FIRST_NAME}} as subject. Flag any hollow phrase from the banned list in `skills/cover-letter/SKILL.md`.
 
 If flags found: append them to the matching role's revision log file under a `## Cover Letter Validation Issues` section.
@@ -539,7 +539,7 @@ Parse each Q&A text block into question/answer pairs. The format is free-form ({
 
 ### Step 9a.3 — Deduplicate against qa-bank.md
 
-Read `references/qa-bank.md` (same directory as `who-rachel-is.md`). Extract all existing questions from the table.
+Read `references/qa-bank.md` (same directory as `operating-rules.md`). Extract all existing questions from the table.
 
 For each new candidate pair, check whether a sufficiently similar question is already present:
 
@@ -601,4 +601,4 @@ Nothing else. All feedback, validation results, and decisions are in the revisio
 - Narrate progress briefly between steps: "Role 3/5: recruiter review done, moving to hiring manager."
 - Do not deliver individual role outputs during processing — deliver everything together at the end.
 - If any step fails, log it and move on. All failures are written to the run-level revision log (Step 9).
-- The fabrication rule is absolute. Every claim must trace to `who-rachel-is.md`. If it is not documented there, it does not exist.
+- The fabrication rule is absolute. Every claim must trace to `operating-rules.md`. If it is not documented there, it does not exist.

@@ -147,7 +147,7 @@ Used by the employment coach to score roles. Apply these criteria in order — d
 | API testing, Postman, validate-by-doing | Core documentation methodology across every API documentation engagement. {{USER_FIRST_NAME}} tests endpoints directly using Postman (and equivalent tools), validates actual behavior vs. spec, documents edge cases, and files PRs/tickets for bugs found during documentation work. This is the standard process, not an exceptional one. |
 | SDK documentation | Documented. Experience started at Lytx/Surfsight (partner developer portal, SDK documentation for the Surfsight integration ecosystem) and continued across subsequent roles and clients. |
 | Webhook documentation | Covered by the API documentation methodology — webhooks are a standard component of any API documentation suite and are not a separate capability to flag. |
-| Developer community content (blog posts, tutorials, code examples, guides) | Substantial documented output. Snyk was the primary context: developer-facing content for a B2D audience at scale — tutorials, integration guides, security reports, community content. Supplemented by developer-facing content across Contentabl clients. Portfolio (Section 10) is the primary evidence surface — it is referenced and linked from who-rachel-is. Do not flag as a gap. |
+| Developer community content (blog posts, tutorials, code examples, guides) | Substantial documented output. Snyk was the primary context: developer-facing content for a B2D audience at scale — tutorials, integration guides, security reports, community content. Supplemented by developer-facing content across Contentabl clients. Portfolio (Section 10) is the primary evidence surface — it is referenced and linked from `operating-rules.md`. Do not flag as a gap. |
 | Automated workflows, workflow automation, Zapier, Make | Fully fluent — builds multi-step automation pipelines for documentation, research, and content workflows. Built automations since before the AI era (Slackbot at Coro, Zapier, multi-step process automation). Now integrates AI-assisted tooling (Claude pipelines, MCP servers) into documentation workflows. |
 | Kubernetes, K8s, container orchestration, cloud-native | Practitioner-level exposure across multiple Contentabl clients: Portshift (K8SHIELD framework, Kubernetes attack vectors), Alcide (Kubernetes-native security), Ionir (Kubernetes storage), plus VL architecture documentation (K8s deployment components). Spun up pods herself as part of validate-by-doing documentation methodology. Not a gap. |
 | Git, GitHub, version control, pull requests | Daily production use across documentation and development workflow. Files PRs as standard output of documentation work. |
@@ -178,7 +178,7 @@ Used by the employment coach to score roles. Apply these criteria in order — d
 
 ### Operational Identity
 
-{{USER_FULL_NAME}} is a hybrid product marketer and technical writer with 25+ years of experience, the last 15 in B2B SaaS and deep tech. She has spent her career at the intersection of go-to-market strategy and documentation infrastructure — setting strategic direction for positioning while writing the precise technical content that makes that positioning credible. Most companies hire two people for this. She covers both.
+{{USER_FIRST_NAME}} {{USER_LAST_NAME}} is a hybrid product marketer and technical writer with 25+ years of experience, the last 15 in B2B SaaS and deep tech. She has spent her career at the intersection of go-to-market strategy and documentation infrastructure — setting strategic direction for positioning while writing the precise technical content that makes that positioning credible. Most companies hire two people for this. She covers both.
 
 She most recently built and **led the full marketing function** at Visual Layer, a seed-stage computer vision and ML platform, from first hire through the company's successful acquisition by Camtek (Nasdaq: CAMT) in April 2026. Founding marketer. Owned everything, managed office admin in relation to events (conferences, meetups, etc.). Managed external vendors.
 
@@ -345,7 +345,7 @@ Axero's published case study on Coro documents outcomes from {{USER_FIRST_NAME}}
 - **70% higher satisfaction and engagement**
 
 {{USER_FIRST_NAME}} is quoted directly in the case study:
-> "Great staff that cares about us. Super flexible product. Feedback is taken seriously. Pricing is fair and negotiable. Excellent for sharing relevant information with teams via personalization and segmentation. Equally excellent security-wise." — {{USER_FULL_NAME}}, Director of Product Marketing
+> "Great staff that cares about us. Super flexible product. Feedback is taken seriously. Pricing is fair and negotiable. Excellent for sharing relevant information with teams via personalization and segmentation. Equally excellent security-wise." — {{USER_FIRST_NAME}} {{USER_LAST_NAME}}, Director of Product Marketing
 
 **Framing rule:** These are Axero's reported metrics. When citing: "Implemented Axero intranet; Axero's published case study documents 40% improvement in sales performance, 60% reduction in onboarding costs." → Role facts in Section 7 (Coro).
 

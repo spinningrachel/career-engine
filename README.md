@@ -249,7 +249,7 @@ The employment coach owns `Role emphasis`, `JD proof`, `Keywords`, and `Strategy
 
 ## Dependencies
 
-- **Reference files** in `references/`. All agents that write CV or cover letter content MUST read from this folder before producing any output. `who-rachel-is.md` is the primary reference file and is mandatory for every writing task.
+- **Reference files** in `references/`. All agents that write CV or cover letter content MUST read from this folder before producing any output. `operating-rules.md` is the primary reference file and is mandatory for every writing task.
 - **Notion** — read/write access to both databases. Configured in `.mcp.json`.
 - **iCloud** — local filesystem storage for DOCX outputs. Files are saved via `cp` to the iCloud path, which syncs automatically. No MCP configuration needed — iCloud is a local folder, not a network service.
 - **Job search MCPs** — Indeed, Dice, ZipRecruiter. Available to the employment coach. Configured in `.mcp.json`.

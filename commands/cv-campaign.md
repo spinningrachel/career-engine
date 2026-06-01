@@ -55,7 +55,7 @@ Without arguments, the command runs the main campaign against all roles with Sta
 Load the following skills in order before doing anything. Do not spawn any sub-agent until all required skills are loaded.
 
 **Main campaign (no flag):**
-1. `who-rachel-is.md` — core constraints governing every agent; load first
+1. `operating-rules.md` — core constraints governing every agent; load first
 2. `cv-pipeline-orchestrator` — queue cap, queue selection logic, Role Type and Priority Definitions, Notion property ownership, Steps 8–9 (LinkedIn updates file, run-level revision log), Post-Run Validation, State File and crash recovery
 3. `cv-campaign-intake` — Steps 0 through 0.10: fetch roles, run employment coach, build queue, warm-up role selection
 4. `cv-campaign-role-steps` — Step 0.10 and Steps 1 through 7d: CV draft, gatekeeper, recruiter review, HM review, CV revision, cover letter draft through final gatekeeper, DOCX export, Notion writeback, reviewer feedback file
@@ -63,34 +63,34 @@ Load the following skills in order before doing anything. Do not spawn any sub-a
 6. `cv-campaign-export` — DOCX production protocol, pandoc commands, template styles, page count verification
 
 **`--edit` flag:**
-Load in order: `who-rachel-is.md`, `cv-campaign-export`, `cv-edit-pipeline`. Follow the editing pipeline as written in that skill.
+Load in order: `operating-rules.md`, `cv-campaign-export`, `cv-edit-pipeline`. Follow the editing pipeline as written in that skill.
 
 **`--coach-skills` flag:**
 Load `coach` only. Follow that skill and stop.
 
 **`--coach` flag:**
-Load `who-rachel-is.md` first. Then spawn `employment-coach` in direct coaching mode. Pass {{USER_FIRST_NAME}}'s question, role URL, or JD text as the input. The coach responds conversationally — no structured output format, no Notion writeback.
+Load `operating-rules.md` first. Then spawn `employment-coach` in direct coaching mode. Pass {{USER_FIRST_NAME}}'s question, role URL, or JD text as the input. The coach responds conversationally — no structured output format, no Notion writeback.
 
 **`--now <url or JD text>` flag:**
-Load in order: `who-rachel-is.md`, `cv-pipeline-orchestrator` (read the `--now` mode section), `cv-campaign-role-steps`, `cv-campaign-export`. Follow the `--now` flow defined in `cv-pipeline-orchestrator`.
+Load in order: `operating-rules.md`, `cv-pipeline-orchestrator` (read the `--now` mode section), `cv-campaign-role-steps`, `cv-campaign-export`. Follow the `--now` flow defined in `cv-pipeline-orchestrator`.
 
 **`--status` flag:**
 Load `cv-pipeline-orchestrator` (read the `--status` section). No other skills needed. No Notion access, no agents spawned — read-only filesystem operation.
 
 **`--check` flag:**
-Load `who-rachel-is.md` first. Then spawn `gatekeeper` directly:
+Load `operating-rules.md` first. Then spawn `gatekeeper` directly:
 - If {{USER_FIRST_NAME}} says "check my CV" or pastes CV text → spawn with `option=content`. Pass the CV text and JD if provided. If no JD, note that checks requiring JD comparison (keyword coverage and JD phrase checks) will be skipped.
 - If {{USER_FIRST_NAME}} says "check my cover letter" or pastes letter text → spawn with `option=cover-letter`. Pass the letter text and JD if provided. If no JD, note that Check 7 (company self-characterization) will be skipped.
 Return the gatekeeper's PASS or FAIL result directly. No loop.
 
 **`--review` flag:**
-Load `who-rachel-is.md` first. Ask {{USER_FIRST_NAME}} to paste the document (CV or cover letter) and the JD if she hasn't already. Then:
+Load `operating-rules.md` first. Ask {{USER_FIRST_NAME}} to paste the document (CV or cover letter) and the JD if she hasn't already. Then:
 1. Spawn `recruiter-reviewer` with the document and JD. Return results.
 2. Spawn `hiring-manager-reviewer` with the document and JD. For cover letter review, treat prior HM CV verdict as N/A. Return results.
 Deliver both reviews together. No revision loop.
 
 **`--write-letter` flag:**
-Load `who-rachel-is.md` and `cover-letter` skill. Ask {{USER_FIRST_NAME}} for the URL or JD text if not provided. Then spawn `letter-writer` using the Standalone Invocation path — no final CV required, no reviewer loop, no gatekeeper spawn. Return the cover letter draft directly for {{USER_FIRST_NAME}} to use or refine.
+Load `operating-rules.md` and `cover-letter` skill. Ask {{USER_FIRST_NAME}} for the URL or JD text if not provided. Then spawn `letter-writer` using the Standalone Invocation path — no final CV required, no reviewer loop, no gatekeeper spawn. Return the cover letter draft directly for {{USER_FIRST_NAME}} to use or refine.
 
 ## Rules
 

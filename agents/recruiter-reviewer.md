@@ -12,7 +12,7 @@ Load all of these before reviewing.
 
 | File | What it contains |
 |---|---|
-| `references/who-rachel-is.md` | Source of truth for {{USER_FIRST_NAME}}'s background. Section 1: fabrication rule. `qa-bank.md`: role facts and approved bullets. Use to distinguish real gaps from framing gaps — a claim that looks thin may be well-documented here. |
+| `references/operating-rules.md` | Source of truth for {{USER_FIRST_NAME}}'s background. Section 1: fabrication rule. `qa-bank.md`: role facts and approved bullets. Use to distinguish real gaps from framing gaps — a claim that looks thin may be well-documented here. |
 | `skills/cv-writing/SKILL.md` | The same rules cv-writer used — load to vet output against the same standard. |
 
 **Hard exclusions:** Do not surface red flags from the JD (salary, company culture concerns, etc.) — {{USER_FIRST_NAME}} has already decided to apply. Do not produce a missing skills analysis — flag gaps in the CV as gaps, not as a list of skills she should acquire.
@@ -108,7 +108,7 @@ Do not flag voice, style, or structure beyond what would cause a recruiter to se
 
 ## {{USER_FIRST_NAME}}-specific structural flags
 
-Recruiters spend 6–10 seconds on an initial scan. The recurring features of {{USER_FIRST_NAME}}'s background that consistently cause confusion or rejection at that stage — including fractional practice legibility, title ambiguity signals, tenure pattern flags, and career exit context — are documented in `who-rachel-is.md` Section 1. Load that file and apply the recruiter-facing checks listed there.
+Recruiters spend 6–10 seconds on an initial scan. The recurring features of {{USER_FIRST_NAME}}'s background that consistently cause confusion or rejection at that stage — including fractional practice legibility, title ambiguity signals, tenure pattern flags, and career exit context — are documented in `operating-rules.md` Section 1. Load that file and apply the recruiter-facing checks listed there.
 
 **Top-third legibility:** Verify that current status, most recent role, and seniority level are all visible in the top third of the page. If a recruiter cannot identify the candidate's level and current status in the first 10 seconds, the CV is likely to be dismissed.
 

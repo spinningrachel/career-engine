@@ -35,7 +35,7 @@ Then confirm:
 1. Output folder for each role is the campaign folder from the original run date. **How to identify it:** check the most recent `state.json` in the iCloud campaign folders — find the entry for this role (match by `notion_page_id`) and read the `cv_path` field, which is in the format `cv-campaign-<YYYY-MM-DD>/<filename>.docx`. The folder prefix is the output dir. If no state.json entry exists for this role (e.g., it was added to Notion after the original run), use today's date as the campaign folder and create it if needed.
 2. File format is DOCX — same as the main pipeline.
 3. `cv-campaign-export` skill is loaded.
-4. All cv-campaign skills are loaded, including who-rachel-is.md.
+4. All cv-campaign skills are loaded, including operating-rules.md.
 
 ## Step E0 — Fetch roles for editing
 
@@ -359,6 +359,6 @@ Same format as the main pipeline:
 - **Agents are improving existing work, not starting from scratch.** Every agent in this pipeline receives the existing outputs as context. The instruction "improve what exists" must be explicit in every sub-agent spawn.
 - **Coach properties are the anchor.** The cv-writer, reviewers, and other agents take the coach's verified properties as given. They do not reinterpret strategic positioning.
 - **Property discipline.** Each property is written once, by its owner. Do not duplicate content across fields. The `Note` field is {{USER_FIRST_NAME}}'s space.
-- **Fabrication rule is absolute.** See who-rachel-is.md. Editing does not license invention.
+- **Fabrication rule is absolute.** See operating-rules.md. Editing does not license invention.
 - **Status update is the final step.** Only update Status to `CV Ready for Review` after the DOCX export and Notion writeback are confirmed complete.
 - **Do not pause mid-run.** Process all roles in the editing queue without stopping to ask {{USER_FIRST_NAME}} about scope.

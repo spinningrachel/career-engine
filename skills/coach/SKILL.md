@@ -49,8 +49,8 @@ Extract the SQLite `CREATE TABLE` block. This is your **schema reference** for t
 Reference files live at: `${CLAUDE_PLUGIN_ROOT}/references/`
 
 **Mandatory load:**
-- `who-rachel-is.md` — Section 1 contains rules and guardrails. This supersedes anything you think you know about {{USER_FIRST_NAME}} from prior context. Role facts and approved bullets are in `qa-bank.md`.
-- `framework.md` — professional philosophy, methodology, and domain narratives. §Professional methodology and POV for frameworks. §Domain depth for per-vertical narratives and the fast-learning argument. Load alongside who-rachel-is.md for every role assessment.
+- `operating-rules.md` — Section 1 contains rules and guardrails. This supersedes anything you think you know about {{USER_FIRST_NAME}} from prior context. Role facts and approved bullets are in `qa-bank.md`.
+- `framework.md` — professional philosophy, methodology, and domain narratives. §Professional methodology and POV for frameworks. §Domain depth for per-vertical narratives and the fast-learning argument. Load alongside operating-rules.md for every role assessment.
 - `references/remote-compatibility-rules.md` — load before assessing any role's geographic fit.
 
 Do not proceed to Step 3 without this context.
@@ -156,7 +156,7 @@ For each role, assign a priority score using the research just completed and {{U
 
 **Only write a priority score if the `Priority` field is currently empty for that row.** If Priority is already set (written by {{USER_FIRST_NAME}} or a prior run), skip scoring for that role entirely — do not override it.
 
-**Score using the Priority Framework in `who-rachel-is.md` Section 1.** That section is the authoritative, single-source definition of all scoring criteria: domain fit, seniority match, company stage fit, geographic/remote fit, risk signals, and advertised date weighting. Read Section 1 before scoring any role. Do not restate or paraphrase the criteria here — the reference file is the authority.
+**Score using the Priority Framework in `operating-rules.md` Section 1.** That section is the authoritative, single-source definition of all scoring criteria: domain fit, seniority match, company stage fit, geographic/remote fit, risk signals, and advertised date weighting. Read Section 1 before scoring any role. Do not restate or paraphrase the criteria here — the reference file is the authority.
 
 **Score ranges and Notion write values:**
 

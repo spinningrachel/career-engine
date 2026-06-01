@@ -129,11 +129,11 @@ Hold the coach output in memory. Proceed immediately to Step 0.8.5.
 
 Spawn `gatekeeper` with `option=coach-output`, passing:
 - The full coach output for all roles (Role emphasis, Strategy, Gap handling, Role summary per role)
-- `who-rachel-is.md` is already in memory — confirm it is loaded before spawning
+- `operating-rules.md` is already in memory — confirm it is loaded before spawning
 
 **If PASS:** proceed to Step 0.9.
 
-**If FAIL:** the gatekeeper returns a list of specific unverifiable claims per role and per property. Return those claims to the employment coach with this instruction: "The following claims in your output cannot be traced to `who-rachel-is.md`. Revise the affected properties to remove or correct them. Do not substitute alternative fabrications — if a claim cannot be grounded in the reference file, omit it." Spawn the coach with only the affected roles and properties.
+**If FAIL:** the gatekeeper returns a list of specific unverifiable claims per role and per property. Return those claims to the employment coach with this instruction: "The following claims in your output cannot be traced to `operating-rules.md`. Revise the affected properties to remove or correct them. Do not substitute alternative fabrications — if a claim cannot be grounded in the reference file, omit it." Spawn the coach with only the affected roles and properties.
 
 **Cap: 2 revision passes.** If still failing after pass 2, strip the unverifiable claims from the affected properties (replace with `[UNVERIFIABLE — removed]`), log all removed claims in the run-level revision log under `## Coach Fact Check — Unverifiable Claims Removed`, flag for {{USER_FIRST_NAME}} in final delivery, and proceed to Step 0.9.
 
