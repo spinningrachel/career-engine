@@ -2,6 +2,8 @@
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A1L720MCOG)
 
+**[⬇️ Download career-engine.plugin](https://github.com/spinningrachel/career-engine/raw/main/career-engine.plugin)** — install directly in [Claude Code Cowork](https://cowork.anthropic.com). After installing, run `/career-engine:setup` to configure the plugin with your own background and job tracking setup.
+
 > **⚠️ UNDER CONSTRUCTION — EXPERIMENT AT YOUR OWN RISK**
 > This plugin is actively developed and not yet stable. Expect rough edges, incomplete features, and breaking changes between versions. Back up your reference files before updating.
 
