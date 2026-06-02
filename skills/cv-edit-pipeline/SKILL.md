@@ -278,7 +278,7 @@ cat > /tmp/he-<cl_filename>.md << 'MARKDOWN_EOF'
 <Hebrew cover letter markdown from agent>
 MARKDOWN_EOF
 
-HE_TEMPLATES="/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized"
+HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
 
 # Hebrew CV — concatenate with Hebrew footer, then convert
 cat /tmp/he-<cv_filename>.md \

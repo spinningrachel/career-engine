@@ -278,7 +278,7 @@ cp /tmp/he-<cl_filename>.md "<output_dir>/"
 Convert using the Hebrew DOCX production protocol from `cv-campaign-export`:
 
 ```bash
-HE_TEMPLATES="/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized"
+HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
 
 # Hebrew CV — concatenate with Hebrew footer, then convert
 cat /tmp/he-<cv_filename>.md \

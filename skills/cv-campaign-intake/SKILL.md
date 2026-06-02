@@ -36,7 +36,7 @@ Extract the SQLite `CREATE TABLE` block from the response. This is your **schema
 **Then — fetch roles.** Use `notion-query-database-view` with this exact view URL:
 
 ```
-https://www.notion.so/{{NOTION_DATABASE_ID}}?v=35e5ef1aa63480ff9b4e000cbcd67aec
+https://www.notion.so/{{NOTION_DATABASE_ID}}?v={{NOTION_VIEW_ID}}
 ```
 
 This view returns `Hold` roles. Do not construct your own filter — use the view directly. Do not fetch the full database. Verify that returned rows have Status = `Hold` before processing — skip any row with a different status.

@@ -15,12 +15,14 @@ Before running any checks:
 - `references/01-candidate-rules.md` — required for CV content checks (Coro target market, app names, approved bullet exemptions)
 - `references/cover-letter-self-check.md` — required for Option 2 forbidden phrases and forbidden structures
 
+**For Option 2 (cover letter check) only:** Before running any checks, also read the delivered letters at `{{OUTPUT_FOLDER}}/final-pdfs-delivered`. Read the two or three letters closest in domain or role type to the role being checked. Use them as your register calibration for the voice checks in `cover-letter-self-check.md`.
+
 ## Options
 
 Run the section in `skills/gatekeeper-checks/SKILL.md` matching the option you were called with:
 
 - **Option 1 — CV content check:** after every cv-writer output, before any reviewer sees it. Input: CV text + structured JD + coach's `Keywords` property (required for ATS pre-check; parse into Critical / Important / Nice-to-have tiers per the check definitions).
-- **Option 2 — Cover letter check:** after every letter-writer output, before DOCX production. Input: cover letter text + structured JD + whether `Additional Letter Writer Details` is populated or empty + {{USER_FIRST_NAME}}'s Q&A answers and page body content (so the Q&A exemption can be applied correctly).
+- **Option 2 — Cover letter check:** after every letter-writer output, before DOCX production. Input: cover letter text + structured JD + whether `Additional Letter Writer Details` is populated or empty + Rachel's Q&A answers and page body content (so the Q&A exemption can be applied correctly).
 - **Option 3 — Coach output fact check:** after employment coach output, before Notion writeback. Input: full coach output for all roles.
 
 ## Output format
