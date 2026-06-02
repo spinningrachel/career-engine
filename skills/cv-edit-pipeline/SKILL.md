@@ -16,7 +16,7 @@ The key difference from the main pipeline: **agents are not starting from scratc
 **Outputs go to the iCloud output folder — never to a session scratchpad.**
 
 The only valid output destination is:
-`{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/`
+`/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-<YYYY-MM-DD>/`
 
 Do not create a local output directory inside a session path (`local_*/outputs/` or similar). Files written there do not sync and are not findable.
 
@@ -24,7 +24,7 @@ Before starting, run this path verification:
 
 ```bash
 # Verify iCloud output root exists — if not, stop immediately
-ls "{{OUTPUT_FOLDER}}/" 2>/dev/null \
+ls "/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/" 2>/dev/null \
   && echo "iCloud output path confirmed." \
   || { echo "ERROR: iCloud output root not found. Aborting."; exit 1; }
 ```
@@ -39,7 +39,7 @@ Then confirm:
 
 ## Step E0 — Fetch roles for editing
 
-Query the Job Applications database (ID: `{{NOTION_DATABASE_ID}}`). Filter for entries where:
+Query the Job Applications database (ID: `3465ef1aa63480a283cfdf847cb47404`). Filter for entries where:
 - Status is `Needs editing`
 
 For each matching entry, capture the full row payload including:
@@ -229,10 +229,21 @@ Returns the final cover letter and a brief revision log (what changed and why, o
 
 Spawn `gatekeeper` with `option=cover-letter`, passing the final cover letter text, the structured JD, {{USER_FIRST_NAME}}'s Q&A answers and page body content (same as Step E7.3), and the `Additional Letter Writer Details` status (populated or empty).
 
-**If PASS:** proceed to Step E9.
+**If PASS:** proceed to Step E8 (humanizer).
 
 **If FAIL:** spawn `letter-writer` with `option=revision`, passing the final cover letter and the gatekeeper's full violation list. After revision, spawn `gatekeeper` again with `option=cover-letter`. Repeat until PASS. Log all violation rounds internally.
 
+---
+
+**Step E8 — Humanizer (cover letter)**
+
+Spawn `cover-letter-humanizer`, passing the final cover letter markdown and the structured JD.
+
+The humanizer removes AI writing patterns sentence by sentence. It does not change structure, strategy, or content — only language. Wait for it to return the corrected letter and its change log.
+
+Save the humanizer's output, overwriting the previous cover letter markdown. The change log goes into the revision log under `## Humanizer changes`. Non-blocking — if the humanizer fails, proceed with the pre-humanizer version.
+
+---
 
 **Step E9 — Produce DOCX**
 
@@ -267,7 +278,7 @@ cat > /tmp/he-<cl_filename>.md << 'MARKDOWN_EOF'
 <Hebrew cover letter markdown from agent>
 MARKDOWN_EOF
 
-HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
+HE_TEMPLATES="/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized"
 
 # Hebrew CV — concatenate with Hebrew footer, then convert
 cat /tmp/he-<cv_filename>.md \
@@ -313,7 +324,7 @@ Do not write anything to the `Note` field unless the agent has genuinely additio
 ## State file (crash-recovery resilience)
 
 After each role completes, append its data to:
-`{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/state.json`
+`/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-<YYYY-MM-DD>/state.json`
 
 Use the same format as the main pipeline (see cv-campaign-role-steps Step 7b). The `session_date` field must reflect today's date.
 

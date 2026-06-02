@@ -18,61 +18,30 @@ The authoritative source for cover letter mechanics, structure, and use-case pat
 
 ## Writing Mechanics
 
-**Before writing:** Open 2–3 delivered letters from `references/delivered-letters/` for similar domain, seniority, or situation (e.g. transferability letter, founding-marketer role, regulated-industry buyer). Read them for two purposes:
+**Before writing:** Open 2–3 delivered letters from `references/delivered-letters/` for similar domain, seniority, or situation. Read them for two purposes:
 
-1. **Voice calibration** — note sentence patterns, paragraph openers, rhythm, punctuation habits. Your draft must mirror them.
-2. **Content mining** — look for proof points, specific phrasings, analogies, or framings that worked and could be relevant to the current letter. A B2C transferability letter should check what content landed in other B2C or pivot letters. A cybersecurity letter should mine prior cybersecurity letters for proof structure. If a past letter handled a similar situation well, draw from it — that content is already approved.
+1. **Voice calibration** — sentence patterns, paragraph openers, rhythm, punctuation habits. Your draft must mirror them.
+2. **Content mining** — proof points, phrasings, or framings that worked and could apply here. Approved content from past letters is fair game.
 
-**Write one sentence at a time. Before writing the next sentence, check the one you just wrote against both tables below. If it violates a DON'T or misses a DO: rewrite it before continuing. Do not draft the full letter and then check. The check is sentence by sentence, during drafting.**
+**The full syntax rule list lives with the humanizer agent**, which runs after you. Your job is to write a strong, honest letter. The humanizer's job is to fix the language. Trust the division of labour: you focus on strategy and content, not on policing every sentence structure.
 
----
+That said — these principles will keep you out of the most egregious patterns:
 
-### DOs
+### Drafting principles
 
-| Rule | Example |
-|---|---|
-| Subject (I or named entity) first, then short verb, then everything else | "I built the GTM playbook from scratch: positioning, messaging frameworks, battle cards." |
-| Complexity comes after the verb — via colon introducing a list, or an appositive | "I ran the launch: sourced the speakers, wrote the content, owned the stage." |
-| Coordinated clauses: both need subject + verb | "At Coro, I owned the competitive function. At Visual Layer, I ran it alongside a small team." |
-| Multiple items: comma-separated series | "I built the playbook, ran the launch, managed the agency, and owned the narrative." |
-| Deliberate fragments for emphasis or causality — one or two per letter, never manufactured | "Because that's how markets break." / "LOVE IT." |
-| Vary sentence length deliberately | Short for emphasis. Longer for nuance. Mixing them is not stylistic — it is how rhythm works. |
-| Exception: one peer-attribution dependent clause opener per letter | "Known for being proactive, I had the compliance hub ready before Sales finished their objection list." |
+**Always:**
+- "I" or a named entity as the subject of every sentence
+- Complexity after the verb, not before it — via colon, appositive, or short follow-on sentence
+- Vary sentence length deliberately. Short sentences land emphasis. Longer ones carry nuance.
+- Specific company names, numbers, and named outcomes. Never generic claims.
 
----
+**The top 3 — treat these as absolute during drafting:**
+1. **Zero em dashes.** Use a period, comma, or colon instead. Every time, without exception.
+2. **Rule of three: once per letter maximum.** If you've already used a tricolon, don't use another one.
+3. **-ing phrases appended to a main clause: once per letter maximum.** "...contributing to X," "...showcasing Y" — pick one, make it count, that's the limit.
 
-### DON'Ts
-
-| What | Fail | Fix |
-|---|---|---|
-| Gerund, prepositional phrase, or dependent clause opener | "Building GTM for fifteen years has given me..." | "I've spent fifteen years building GTM..." |
-| "Most of my career has been [gerund]" | "Most of my career has been building PMM functions..." | "For most of my career, I've built PMM functions..." |
-| Dangling participle | "The project expanded, building a partner network." | "The project expanded. I built the partner network." |
-| Colon joining two independent clauses | "I have a confession: I daydream about consumer campaigns." | "I have a confession to make. I daydream about consumer campaigns." |
-| Noun clause or long noun phrase as subject | "The blend of experience I bring is exactly what you need." | "I bring X. I've built X." |
-| Relative clause buried in object | "I felt the pull consumer marketing has always had on me." | "Consumer marketing has always pulled at me." |
-| Wh-clause stacking inside one predicate | "...whether they integrate, whether they trust it, and whether they return." | Break into separate sentences. |
-| Inanimate subject performing human action | "This role sharpened my instincts." | "Working in this role sharpened my instincts." |
-| "And...and...and..." stacking | "I built it and ran it and owned it." | "I built it, ran it, and owned it." |
-| Em dash introducing abstract noun stacking | "the creative arc, the instinct, the brand moment" after an em dash | Named company + specific deliverable instead. |
-| Em dash used more than twice | — | One maximum; use period, comma, or colon instead. |
-| Word-stem echo within three lines | "crafted...having crafted" | Synonym or restructure. |
-| Passive voice when active is available | "The company was acquired by Camtek." | "Camtek acquired the company." |
-| Rhetorical question in opener | Any question as first sentence | State the reaction or observation directly. |
-| More than one rhetorical question per letter | — | One maximum, body only. |
-| Rule of three/four more than once per letter | Two tricolons in the same letter | One maximum, only when it earns it. |
-| -ing phrase appended to main clause more than once | "I ran the campaign, showcasing expertise." | "I ran the campaign." Outcome as its own sentence. |
-| "From X to Y" false range | "everything from messaging to competitive analysis" | Name the specific things. |
-| AI vocabulary | crucial, pivotal, vibrant, showcase, tapestry, transformative, underscore, intricate, foundational | Cut or use plain language. |
-| "Serves as" / "stands as" (copula avoidance) | "This serves as a foundation for..." | "This is..." |
-| Approach-announcement via label | "My approach is deliberately X: Y, Z." | "At [Company], I did Y and Z." |
-| Demonstrative declaration | "That's where I want my marketing to land." | Name the outcome and company. |
-| Synonym cycling (elegant variation) | "The protagonist... The main character... The central figure..." | Pick one word and repeat it. |
-| Filler phrases | "in order to" / "at this point in time" / "it is important to note that" | Cut. Start with the claim. |
-| Expert-claim opener (agent-constructed, not from {{USER_FIRST_NAME}}'s Q&A) | "I know this buyer." / "ZyG is where I'd do that." | Use only content {{USER_FIRST_NAME}} wrote in her Q&A or page body. |
-| Pronoun pointing at abstraction | "ZyG is where I'd do that." | Name what "that" refers to, or drop the sentence. |
-| Methodology narration in opener | "customer interviews across five verticals, competitive analysis, longitudinal PMF assessment..." | Name the HOW in one clause. Save the proof for the body. |
-| Strategy analysis opener | "I know this buying motion." / "This is the kind of mandate I'm looking for." | If {{USER_FIRST_NAME}} didn't write it, write [RACHEL TO FILL IN] instead. |
+**Opener rule — non-negotiable:**
+The opener must express {{USER_FIRST_NAME}}'s genuine reaction to this specific role. If her Q&A or page body doesn't give you content for the opener, write `[{{USER_FIRST_NAME}} TO FILL IN]`. Do not construct an opener from your own reading of the JD. Do not write strategy analysis, expert claims, or methodology descriptions as openers.
 
 ---
 
@@ -129,7 +98,7 @@ A bullet list is appropriate in exactly two situations:
 
 1. **Greeting.** Always "Hi to the [Company] team!" — or "Hi to [Name]!" if writing directly to a named person. Never "Dear Hiring Manager."
 
-2. **Opener paragraph.** Choose from the Use-Case Structures below. {{USER_FIRST_NAME}}'s reaction or observation comes first. Her background enters in service of that, not as the subject. If no documented reaction exists in `01-candidate-rules.md` or the Q&A bank, write `[RACHEL TO FILL IN]` — do not manufacture enthusiasm.
+2. **Opener paragraph.** Choose from the Use-Case Structures below. {{USER_FIRST_NAME}}'s reaction or observation comes first. Her background enters in service of that, not as the subject. If no documented reaction exists in `01-candidate-rules.md` or the Q&A bank, write `[{{USER_FIRST_NAME}} TO FILL IN]` — do not manufacture enthusiasm.
 
 3. **Proof paragraph(s) — one job each.** One to three paragraphs, each doing exactly one thing: a pattern of experience across companies, a specific story that adds something the CV doesn't say, or documented product/company familiarity.
 
@@ -143,7 +112,7 @@ A bullet list is appropriate in exactly two situations:
 
 4. **Closing.** Choose from the options below. One ask, direct, always tight.
 
-5. **Sign-off.** "Looking forward to next steps," on its own line. "{{USER_FULL_NAME}}" on the next line. No variation unless writing directly to a named hiring manager.
+5. **Sign-off.** "Looking forward to next steps," on its own line. "{{USER_FIRST_NAME}} {{USER_LAST_NAME}}" on the next line. No variation unless writing directly to a named hiring manager.
 
 **Word count:** 230–290 words total, excluding greeting and sign-off.
 
@@ -414,9 +383,9 @@ Run before writing the first sentence.
 
 **Opener structure:** Sentence 1 → the reaction, belief, or hook. Sentence 2 → the credential. Rest → optional expansion, including HM-connected framing if it fits naturally.
 
-**Manufactured opener — forbidden.** A hook that sounds like a genuine reaction but is actually a constructed reveal: "I read about [Company] and already have my first question." / "Before I write another word, I want to ask one thing." These announce that a clever move is coming — which signals exactly the opposite of genuine engagement. If the reaction is genuine, state it directly. If it isn't, write `[RACHEL TO FILL IN]`. Do not set up a reveal.
+**Manufactured opener — forbidden.** A hook that sounds like a genuine reaction but is actually a constructed reveal: "I read about [Company] and already have my first question." / "Before I write another word, I want to ask one thing." These announce that a clever move is coming — which signals exactly the opposite of genuine engagement. If the reaction is genuine, state it directly. If it isn't, write `[{{USER_FIRST_NAME}} TO FILL IN]`. Do not set up a reveal.
 
-**Fallback:** If no genuine specific reaction exists in the reference material, write `[RACHEL TO FILL IN]` and flag it. Do not manufacture a reaction.
+**Fallback:** If no genuine specific reaction exists in the reference material, write `[{{USER_FIRST_NAME}} TO FILL IN]` and flag it. Do not manufacture a reaction.
 
 ---
 

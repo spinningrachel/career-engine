@@ -211,11 +211,25 @@ cp /tmp/<coverletter_filename>.md "<output_dir>/<company_dir>/<coverletter_filen
 
 Spawn `gatekeeper` with `option=cover-letter`, passing the revised cover letter text, the structured JD, {{USER_FIRST_NAME}}'s Q&A answers and page body content (same as Step 5.2), and whether `Additional Letter Writer Details` is populated or empty.
 
-**If PASS:** proceed to Step 6.
+**If PASS:** proceed to Step 5.9.
 
 **If FAIL:** spawn `letter-writer` with `option=revision`, passing the revised cover letter and the gatekeeper's full violation list. After revision, re-save the updated markdown to `/tmp/` and the iCloud backup path before spawning `gatekeeper` again. Repeat until PASS. Log all violation rounds internally.
 
-**Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 5.8)` section in the revision log, proceed to Step 6, and flag for {{USER_FIRST_NAME}} in the final delivery that this cover letter needs manual review before sending.
+**Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 5.8)` section in the revision log, proceed to Step 5.9, and flag for {{USER_FIRST_NAME}} in the final delivery that this cover letter needs manual review before sending.
+
+---
+
+### Step 5.9 — Humanizer (cover letter)
+
+Spawn `cover-letter-humanizer`, passing the final cover letter markdown and the structured JD.
+
+The humanizer is a writing editor and linguistics expert. It loads `skills/cover-letter-humanizer/SKILL.md` and removes AI writing patterns sentence by sentence. It does not change structure, strategy, or content — only language.
+
+**Wait for the humanizer to return** the corrected letter and its change log before proceeding.
+
+Save the humanizer's output to `/tmp/` and the iCloud backup path, overwriting the previous cover letter markdown. The change log goes into the revision log under `## Humanizer changes`.
+
+This step is non-blocking — if the humanizer returns no changes, proceed normally. If the humanizer fails, log the failure and proceed with the pre-humanizer version.
 
 ---
 
@@ -264,7 +278,7 @@ cp /tmp/he-<cl_filename>.md "<output_dir>/"
 Convert using the Hebrew DOCX production protocol from `cv-campaign-export`:
 
 ```bash
-HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
+HE_TEMPLATES="/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized"
 
 # Hebrew CV — concatenate with Hebrew footer, then convert
 cat /tmp/he-<cv_filename>.md \
@@ -315,7 +329,7 @@ If the writeback fails, log it and surface it in the final delivery — files ar
 ### Step 7b — Write state file (crash-recovery)
 
 Append this role's data to:
-`{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/state.json`
+`/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/cv-campaign-<YYYY-MM-DD>/state.json`
 
 Create the file on the first role; append on subsequent ones. Use the `/tmp→iCloud` copy protocol from `cv-campaign-export`. Use the shortened path format for all paths — `cv-campaign-<YYYY-MM-DD>/<filename>` only, never the full iCloud path.
 
