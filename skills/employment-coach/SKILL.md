@@ -295,10 +295,7 @@ Return findings in this exact structure for every role received.
   - **Current known challenges:** <1 specific, sourced challenge>
   - **Market position:** <enterprise / mid-market / SMB; primary buyer>
   - **Competitive landscape:** <exactly 5 real, known competitors at the same market tier; name + one-line description + Israel office Yes/No each>
-- **Role summary:** <2 sentences>
-  - <fit reason>
-  - <fit reason>
-  - **Culture signal:** <one sentence>
+- **Role summary:** <2 sentences, hard max>
 
 [repeat for each role]
 
