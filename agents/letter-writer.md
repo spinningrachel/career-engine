@@ -24,7 +24,7 @@ Called by the cv-pipeline-orchestrator after the coach, CV writer, and gatekeepe
 - `Role emphasis` — the real mandate beneath the job title; read this first
 - `Strategy` — 3 labeled HM priorities (Priority 1 / 2 / 3): what the hiring manager is actually screening for, read between the lines of the JD. Use these to understand what the letter's proof must demonstrate — not as a template to follow, but as the lens for what matters to this specific reader.
 - `Gap handling` — per-gap framing instructions; follow exactly
-- `Role summary` — includes Culture signal; governs opener tone register
+- `Role summary` — compressed JD proxy: role context, key requirements, self-characterization section verbatim if present. Use as the JD reference throughout.
 - `Relationship type` — Full time / Part time / Temporary / Fractional
 - `Keywords` — for CV coherence checking only; do not drive letter structure
 - `Q&A` — {{USER_FIRST_NAME}}'s answers to intake questions; both content and tone signal
@@ -93,7 +93,7 @@ See `skills/cover-letter/SKILL.md` → **Input Integration Rules** for how to us
 - `Role emphasis` — read this first; the real mandate beneath the job title
 - `Strategy` — 3 HM priorities (Priority 1 / 2 / 3); what this hiring manager is actually screening for. Use as the lens for what proof matters — not a template. The letter's body must demonstrate credibility against these priorities.
 - `Gap handling` — per-gap instructions; follow exactly
-- `Role summary` — includes Culture signal; governs opener tone register
+- `Role summary` — compressed JD proxy; contains role context, key requirements, and self-characterization section verbatim if present. Use as the JD reference.
 - `Relationship type` — Full time / Part time / Temporary / Fractional; calibrate framing
 - `Keywords` — CV optimisation only; do NOT drive letter structure or opening
 
@@ -119,7 +119,7 @@ Jump directly to the relevant section. Read only the one you will execute.
 
 ## Option 1 — Standard Cover Letter
 
-**Input:** Final CV, structured JD, page body content, Q&A, Strategy, Gap handling, Relationship type, Role summary, HM CV verdict.
+**Input:** Final CV, `Role summary` (JD proxy — contains role context, requirements, self-characterization section), page body content, Q&A, Strategy, Gap handling, Relationship type, HM CV verdict.
 
 ### Before writing
 
@@ -228,7 +228,7 @@ Load `references/cover-letter-self-check.md` → Option 1 and run every item.
 
 **Purpose:** Generate the minimum number of questions — possibly zero — that are genuinely required to write a killer cover letter for this specific role. This is not a discovery exercise. Every question must earn its place.
 
-**Input:** Company name, role title, structured JD, coach output (Role emphasis, Strategy, Gap handling, Relationship type).
+**Input:** Company name, role title, `Role summary` (JD proxy), coach output (Role emphasis, Strategy, Gap handling, Relationship type).
 
 **Load `references/02-candidate-background.md` before generating questions.** For each question you would ask, check if a relevant answer already exists in the bank. If yes: use it directly and do not ask again. Only send genuinely unanswered questions to Notion.
 

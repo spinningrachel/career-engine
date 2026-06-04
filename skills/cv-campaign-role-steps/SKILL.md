@@ -44,14 +44,12 @@ This is the only inter-role learning mechanism. It does not require agents to sh
 ### Step 1 — CV writer (draft)
 
 Spawn `cv-writer` with `option=draft`, passing:
-- The structured JD (from Step 0.5)
-- The coach's output for this role from Step 0.8: `Role emphasis`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`
-
-The coach's `Strategy` contains the lead proof point, secondary evidence, and 2–3 sentence summary direction. cv-writer reads Role Type to determine CV structure and skills section format, and Relationship type for framing tone.
+- `Role summary` (the compressed JD proxy — contains role context, key requirements, and self-characterization section)
+- The coach's output for this role: `Role emphasis`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`
 
 ### Step 1.5 — Gatekeeper (CV draft check)
 
-Spawn `gatekeeper` with `option=content`, passing the draft CV text, the structured JD, and the coach's `Keywords` property for this role. The gatekeeper's ATS pre-check parses Keywords into tiers (Critical / Important / Nice-to-have) to verify coverage — the raw JD text is not a substitute for the tiered Keywords list.
+Spawn `gatekeeper` with `option=content`, passing the draft CV text, `Role summary`, and the coach's `Keywords` property for this role. The gatekeeper's ATS pre-check parses Keywords into tiers (Critical / Important / Nice-to-have) to verify coverage.
 
 **If PASS:** proceed to Step 2.
 
@@ -61,11 +59,11 @@ Spawn `gatekeeper` with `option=content`, passing the draft CV text, the structu
 
 ### Step 2 — Recruiter review (CV)
 
-Spawn `recruiter-reviewer` with the structured JD and the draft CV. Returns tiered feedback.
+Spawn `recruiter-reviewer` with `Role summary` and the draft CV. Returns tiered feedback.
 
 ### Step 3 — Hiring manager review (CV)
 
-Spawn `hiring-manager-reviewer` with `option=cv`, passing the structured JD and the draft CV. Returns structured feedback and a verdict (Yes / Conditional / No).
+Spawn `hiring-manager-reviewer` with `option=cv`, passing `Role summary` and the draft CV. Returns structured feedback and a verdict (Yes / Conditional / No).
 
 ### Step 4 — CV writer (revision)
 
@@ -95,7 +93,7 @@ MARKDOWN_EOF
 
 ### Step 4.5 — Gatekeeper (CV final check)
 
-Spawn `gatekeeper` with `option=content`, passing the revised CV text, the structured JD, and the coach's `Keywords` property for this role.
+Spawn `gatekeeper` with `option=content`, passing the revised CV text, `Role summary`, and the coach's `Keywords` property for this role.
 
 **If PASS:** proceed to Step 5.
 
@@ -145,9 +143,8 @@ Read the following from Notion for this role:
 
 Spawn `letter-writer` with `option=cover-letter`, passing:
 - The **final revised CV** (from Step 4)
-- The structured JD (including the Company self-characterization section if present)
+- `Role summary` (contains the role context, key requirements, and Company self-characterization section verbatim if present — this is the JD proxy for the letter-writer)
 - The coach's Relationship type
-- The coach's **Role summary** (including the Culture signal) — governs tone register of the opening paragraph
 - The HM CV verdict from Step 3 — if Conditional, quote the specific condition verbatim so letter-writer knows upfront what the cover letter must address
 - **Q&A** from Notion (read above) — primary content input; include if populated
 - **Page body content** from Notion (read above) — supplementary; include if present
@@ -166,7 +163,7 @@ If the answer to any of these is "no," return to `letter-writer` with `option=co
 
 ### Step 5.2 — Gatekeeper (cover letter draft check)
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, the structured JD (including the Company self-characterization section), {{USER_FIRST_NAME}}'s Q&A answers and page body content (from the Pre-Step 5 read), and whether `Additional Letter Writer Details` is populated or empty. The Q&A and page body content allows the gatekeeper to apply the Q&A exemption correctly — see the exemption rule at the top of Option 2 in `gatekeeper-checks/SKILL.md`.
+Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Q&A answers and page body content (from the Pre-Step 5 read), and whether `Additional Letter Writer Details` is populated or empty. The Q&A and page body content allows the gatekeeper to apply the Q&A exemption correctly — see the exemption rule at the top of Option 2 in `gatekeeper-checks/SKILL.md`.
 
 **If PASS:** proceed to Step 5.3.
 
@@ -176,14 +173,14 @@ Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, th
 
 ### Step 5.3 — Recruiter review (cover letter)
 
-Spawn `recruiter-reviewer` with `option=cover-letter`, passing the structured JD and the draft cover letter. The recruiter reviews the cover letter for screening-risk issues: does it hold attention past the first sentence, does it establish {{USER_FIRST_NAME}}'s seniority and relevance quickly, does anything read as a red flag before a hiring manager sees her. Returns tiered feedback.
+Spawn `recruiter-reviewer` with `option=cover-letter`, passing `Role summary` and the draft cover letter. The recruiter reviews the cover letter for screening-risk issues: does it hold attention past the first sentence, does it establish {{USER_FIRST_NAME}}'s seniority and relevance quickly, does anything read as a red flag before a hiring manager sees her. Returns tiered feedback.
 
 ### Step 5.5 — Hiring manager review (cover letter)
 
 Spawn `hiring-manager-reviewer` with `option=cover-letter`, passing:
 - The cover letter
 - The HM CV verdict from Step 3 (including the specific condition if Conditional)
-- The structured JD
+- `Role summary`
 
 Returns three questions: does it address the condition (if any), does it add something new the CV doesn't say, does it increase interview likelihood. Returns a verdict: Proceed to DOCX / Return to letter-writer.
 
@@ -209,7 +206,7 @@ cp /tmp/<coverletter_filename>.md "<output_dir>/<company_dir>/<coverletter_filen
 
 ### Step 5.8 — Gatekeeper (cover letter final check)
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the revised cover letter text, the structured JD, {{USER_FIRST_NAME}}'s Q&A answers and page body content (same as Step 5.2), and whether `Additional Letter Writer Details` is populated or empty.
+Spawn `gatekeeper` with `option=cover-letter`, passing the revised cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Q&A answers and page body content (same as Step 5.2), and whether `Additional Letter Writer Details` is populated or empty.
 
 **If PASS:** proceed to Step 5.9.
 
@@ -221,7 +218,7 @@ Spawn `gatekeeper` with `option=cover-letter`, passing the revised cover letter 
 
 ### Step 5.9 — Humanizer (cover letter)
 
-Spawn `cover-letter-humanizer`, passing the final cover letter markdown and the structured JD.
+Spawn `cover-letter-humanizer`, passing the final cover letter markdown and `Role summary`.
 
 The humanizer is a writing editor and linguistics expert. It loads `skills/cover-letter-humanizer/SKILL.md` and removes AI writing patterns sentence by sentence. It does not change structure, strategy, or content — only language.
 

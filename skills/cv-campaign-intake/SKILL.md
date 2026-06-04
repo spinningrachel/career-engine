@@ -204,7 +204,7 @@ For each role in the processing queue:
 
 3. **If the role WAS `coach-complete` before this session AND `Q&A` is empty or null:** Spawn `letter-writer` with `option=interview-questions`, passing:
    - Company name and role title
-   - The structured JD (including the Company self-characterization section if present)
+   - `Role summary` (the compressed JD proxy — contains key requirements and self-characterization section if present)
    - The coach's output for this role: Role emphasis, Strategy, Gap handling, Relationship type
 
 4. **Write the returned questions to Notion** using `notion-update-page`, writing to the `Q&A` property.

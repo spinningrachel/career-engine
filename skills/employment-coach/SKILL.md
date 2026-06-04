@@ -242,7 +242,17 @@ If the specific AI category (e.g., conversational AI, NLP, voice agents) is not 
 
 **`Funding context`** — Most recent round, amount, date, investors — or "No recent funding news found."
 
-**`Role summary`** — 2 sentences, hard maximum. Sentence 1: what the role is + the single strongest fit reason grounded in her documented background. Sentence 2: one culture signal sourced from research. No bullet lists.
+**`Role summary`** — A compressed summary of the JD itself. Not about {{USER_FIRST_NAME}}. This property serves as the JD proxy for all downstream agents — they read this instead of the full JD body.
+
+Write from the JD body only. Do not add analysis, commentary, or anything not in the source.
+
+Format: one paragraph (what the role is, who they're hiring for, key context) followed by up to 5 bullets (the most important requirements or signals from the JD). No more.
+
+Rules:
+- Use the JD's own vocabulary where possible
+- No verbosity, no repetition
+- Never reference {{USER_FIRST_NAME}} or candidate fit
+- If the JD contains a self-characterization section ("you'll thrive here if", "good fit / not a good fit", or similar) — include it verbatim as the final bullet, labeled: `Self-characterization: [verbatim text]`. This is required — the letter-writer depends on it.
 
 ---
 
@@ -310,7 +320,7 @@ Return findings in this exact structure for every role received.
   - **Market position:** <enterprise / mid-market / SMB; primary buyer>
   - **Sector and market signals:** <1–2 sentences — relevant tailwinds, headwinds, or sector dynamics that affect this company's trajectory right now>
   - **Competitive landscape:** <exactly 5 real, known competitors at the same market tier; name + one-line description + {{USER_COUNTRY}} office Yes/No each>
-- **Role summary:** <2 sentences, hard max>
+- **Role summary:** <paragraph> + up to 5 bullets. JD vocabulary. No candidate references. Self-characterization section verbatim as final bullet if present.
 
 [repeat for each role]
 
