@@ -28,7 +28,7 @@ Ownership (independent / PE-backed / acquired / public), parent company if any, 
 Enterprise, mid-market, or SMB? Primary target buyer?
 
 **4. Competitive landscape**
-Minimum 5 competitors, maximum 10:
+Exactly 5 competitors:
 - Match the hiring company's actual market tier. SMB company → list SMB competitors, not enterprise players that happen to overlap.
 - Israel office flag is additive. Find Israel-present competitors as a bonus after identifying the core 5. Do not replace genuine top competitors with Israel-only brands.
 - Real, known brands only. No obscure or invented names.
@@ -106,13 +106,13 @@ Also factor in advertised date: a very recent role with strong fit may be more u
 
 ### Part 1 — Writing guidance
 
-**Batch analysis:** Common gaps, shared keywords, and role tiers across the queue.
+**Batch analysis:** 1 sentence on common gaps, 1 sentence on shared keywords. No more.
 
-**Base CV recommendation:** Which shared CV sections (summary framing, key achievements intro) should be drafted once before branching per role. If 3 or more roles share the same Role Type or seniority level, name the sections to draft once.
+**Base CV recommendation:** If 3+ roles share the same Role Type or seniority level, name the sections to draft once. 1 sentence.
 
-**Structural framing — address proactively in Strategy:** Certain features of {{USER_FIRST_NAME}}'s background consistently confuse evaluators. Strategy should preempt these rather than leaving cv-writer to handle them ad-hoc. Structural framing triggers, known title ambiguities, tenure patterns, and career arc guidance are in `01-candidate-rules.md` Section 1.
+**Structural framing:** Name any framing trigger from `01-candidate-rules.md` Section 1 that applies to this batch. 1 sentence.
 
-**Per-role focus:** One line per role — primary emphasis and secondary emphasis for that specific CV.
+**Per-role focus:** One line per role — primary emphasis only.
 
 ---
 
@@ -142,7 +142,7 @@ For Specialist / practitioner roles (IC contributor, no direct reports), explici
 
 ---
 
-**`Keywords`** — 8–15 exact terms pulled verbatim from or directly derivable from the JD text. Divided into three tiers. Aim for at least 4 terms per tier where the JD supports it — a tier with 2 terms is functionally 100%, which defeats the purpose.
+**`Keywords`** — 6–10 exact terms pulled verbatim from or directly derivable from the JD text. Divided into three tiers. Aim for 2–4 terms per tier — no padding.
 
 Format: `Critical: [terms] | Important: [terms] | Nice-to-have: [terms]`
 
@@ -154,7 +154,7 @@ Keywords are for CV text only — they do not set the agenda for the cover lette
 
 ---
 
-**`Strategy`** — Three sentences maximum. Sentence 1: lead proof point and secondary evidence. Sentences 2–3: summary direction — what to lead with, which proof anchors the middle, how the story closes. This is the spine the cv-writer builds the summary from.
+**`Strategy`** — Three sentences, hard maximum. Sentence 1: the one lead proof point. Sentences 2–3: what to lead with, which proof anchors the middle, how the story closes. No more. This is the spine the cv-writer builds from — dense direction, not prose.
 
 When pointing to prior experience as analogous to the target company's context, name the **specific dimension** that transfers — not just a category label. "Technically complex B2B SaaS" is not sufficient if what actually transfers is the compliance-first buying motion, the multi-stakeholder procurement cycle, or the B2D developer motion. State which specific pattern is the real bridge.
 
@@ -176,7 +176,7 @@ Document framing only. No interview prep, no hiring-process positioning beyond t
 
 ---
 
-**`Gap handling`** — One line per genuine, material gap between the JD requirements and {{USER_FIRST_NAME}}'s documented background. For each gap: state what it is and the recommended handling.
+**`Gap handling`** — One line per genuine, material gap. Maximum 3 gaps — prioritize the most screening-critical. For each gap: state what it is and the recommended handling.
 
 Format: `[Gap]: [handling]`
 
@@ -228,11 +228,7 @@ If the specific AI category (e.g., conversational AI, NLP, voice agents) is not 
 
 **`Funding context`** — Most recent round, amount, date, investors — or "No recent funding news found."
 
-**`Role summary`** — 2 sentences max: the role and why it fits {{USER_FIRST_NAME}}. Include:
-- Fit reason — specific, grounded in her documented background
-- Fit reason
-- Fit reason (up to 3)
-- **Culture signal:** one sentence on what the company actually values, sourced from research
+**`Role summary`** — 2 sentences, hard maximum. Sentence 1: what the role is + the single strongest fit reason grounded in her documented background. Sentence 2: one culture signal sourced from research. No bullet lists.
 
 ---
 
@@ -291,14 +287,14 @@ Return findings in this exact structure for every role received.
 - **Recent news:** <one sentence, or "None found in last 6 months">
 - **Funding context:** <round, amount, date, investors>
 - **Landscape:** (write only if currently empty in Notion)
-  - **What the company actually does today:** <1–2 sentences — product, not positioning>
+  - **What the company actually does today:** <1 sentence — product, not positioning>
   - **Corporate structure:** <independent / PE-backed / acquired / public; parent company if applicable>
   - **Company size:** <headcount or range>
-  - **Funding:** <total raised, most recent round, amount, date, lead investors>
-  - **Category:** <the market category this company operates in>
-  - **Current known challenges:** <1–2 specific, sourced challenges — from news, investor comms, Glassdoor, or product signals>
-  - **Market position:** <enterprise / mid-market / SMB; primary buyer; where they sit vs. the category>
-  - **Competitive landscape:** <5–10 real, known competitors at the same market tier; name + one-line description + Israel office Yes/No each>
+  - **Funding:** <most recent round, amount, date, lead investors — single line>
+  - **Category:** <the market category this company operates in — 1–3 words>
+  - **Current known challenges:** <1 specific, sourced challenge>
+  - **Market position:** <enterprise / mid-market / SMB; primary buyer>
+  - **Competitive landscape:** <exactly 5 real, known competitors at the same market tier; name + one-line description + Israel office Yes/No each>
 - **Role summary:** <2 sentences>
   - <fit reason>
   - <fit reason>
@@ -325,4 +321,4 @@ Properties produced by this agent are tagged [HIGH] or [LOW]. The orchestrator a
 
 **Mandatory value rule:** Every property the coach owns must receive an explicit value on every run — no property may be left blank. If a property is genuinely not applicable for a role, write `N/A` intentionally. A blank field and an `N/A` field mean different things: blank means the agent failed to run; `N/A` means the agent ran and determined there was nothing to write. This applies to all coach-owned properties: `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, `Company Stage`, `Person who Advertised Role (if not Hiring Manager)`, and `Priority`.
 
-**`Landscape` — write only if currently empty in Notion.** This is purely competitive intelligence about the company — not role-specific analysis. It contains: what the company actually does today, corporate structure, size, funding, category, current known challenges, market position, and competitive landscape (5–10 real competitors at the same market tier). If the property already has content, do not overwrite it. Source this from the research sections (Company basics, Ownership and funding, Market position, Competitive landscape, Company and org dynamics) already gathered in the research phase — do not re-research.
+**`Landscape` — write only if currently empty in Notion.** This is purely competitive intelligence about the company — not role-specific analysis. It contains: what the company actually does today, corporate structure, size, funding, category, one known challenge, market position, and exactly 5 real competitors at the same market tier. If the property already has content, do not overwrite it. Source this from the research sections (Company basics, Ownership and funding, Market position, Competitive landscape, Company and org dynamics) already gathered in the research phase — do not re-research.
