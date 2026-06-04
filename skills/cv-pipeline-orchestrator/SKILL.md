@@ -69,9 +69,9 @@ This rule governs every agent that touches cover letter content:
 
 **Output folder:** `{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/`
 
-Each role's files go in a subdirectory inside the campaign folder named after the hiring company (see company directory naming convention in `cv-campaign-export`). After all files for a role are produced and verified, the orchestrator writes the file directory URL to the `Draft Directory` URL property on the Notion row. All English and Hebrew files for the role are accessible from that directory URL.
+Each role's files go in a subdirectory inside the campaign folder named after the hiring company (see company directory naming convention in `cv-campaign-export`). After all files for a role are produced and verified **on disk** (confirmed via `ls`), the orchestrator writes the file directory URL to the `Draft Directory` URL property on the Notion row. All English and Hebrew files for the role are accessible from that directory URL.
 
-**`Draft Directory` property:** URL property. Written once per role when DOCX export (and Hebrew export if applicable) is confirmed. Value formula:
+**`Draft Directory` property:** URL property. Written in Step 7a — only after both DOCX files are confirmed present and nonzero on disk via `ls`. **Never written before files are confirmed on disk.** If the `ls` check fails, the role is flagged as incomplete and Notion is not updated for that role. Value formula:
 
 ```
 https://anchorpoint.app/link?p=projects%2F83fe790c-6170-462d-a560-ad639af051c6%2F<date-folder>%2F<company_dir>%2F

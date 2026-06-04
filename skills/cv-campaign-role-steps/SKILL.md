@@ -317,14 +317,24 @@ Hebrew files land in the same `<company_dir>` subdirectory as the English files.
 
 ### Step 7a — Notion Draft Directory writeback
 
-1. Confirm both DOCX files are in the iCloud output dir under `<company_dir>/`.
-2. Write the Draft Directory URL (generated in export Step 7) to the `Draft Directory` URL property on the Notion row. Match by Page ID captured in Step 0.
+**Hard gate — do not skip, do not proceed on failure.**
+
+Run this bash check first:
+
+```bash
+ls -lh "<output_dir>/<company_dir>/<cv_filename>.docx"
+ls -lh "<output_dir>/<company_dir>/<cl_filename>.docx"
+```
+
+**If either file is missing or zero bytes: STOP.** Do not write anything to Notion. Do not mark the role complete. Report to {{USER_FIRST_NAME}}: "DOCX export failed for [Company] — files not found on disk. Step 6 did not complete. Notion has not been updated." Then move to the next role in the queue.
+
+**Only if both files exist and are nonzero:** write the Draft Directory URL to the `Draft Directory` URL property on the Notion row (match by Page ID from Step 0), then write `state.json` in Step 7b, then write remaining Notion properties in Step 7c.
 
 ```
 Draft Directory: https://anchorpoint.app/link?p=projects%2F83fe790c-6170-462d-a560-ad639af051c6%2F<date-folder>%2F<company_dir>%2F
 ```
 
-If the writeback fails, log it and surface it in the final delivery — files are already on disk.
+If the Notion writeback itself fails after files are confirmed, log it and surface it in the final delivery — the files are on disk and state.json captures the data as fallback.
 
 ### Step 7b — Write state file (crash-recovery)
 
