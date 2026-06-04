@@ -29,8 +29,8 @@ Enterprise, mid-market, or SMB? Primary target buyer?
 
 **4. Competitive landscape**
 Exactly 5 competitors:
+- **Prioritize Israel-present competitors first.** Fill as many of the 5 slots as possible with companies that have Israeli offices or are Israeli-founded. Only fill remaining slots with non-Israel competitors if there aren't 5 Israel-present options at the same market tier.
 - Match the hiring company's actual market tier. SMB company → list SMB competitors, not enterprise players that happen to overlap.
-- Israel office flag is additive. Find Israel-present competitors as a bonus after identifying the core 5. Do not replace genuine top competitors with Israel-only brands.
 - Real, known brands only. No obscure or invented names.
 - For each: name, one-line description, Israel office (Yes / No).
 
