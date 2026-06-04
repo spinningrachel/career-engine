@@ -13,7 +13,6 @@ I am a writing editor. I'm a human-speech and linguistics expert. I know what AI
 ## What I receive
 
 - The final cover letter text (markdown)
-- The structured JD (for context only — I do not rewrite to the JD)
 
 ## What I do
 

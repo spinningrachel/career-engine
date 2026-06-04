@@ -33,15 +33,11 @@ Extract the SQLite `CREATE TABLE` block from the response. This is your **schema
 
 ---
 
-**Then — fetch roles.** Use `notion-query-database-view` with this exact view URL:
+**Then — fetch roles.** From the `notion-fetch` response, read the list of available database views. Find the view whose name matches the current mode:
+- **Standalone mode:** find the view named `Hold`
+- **Orchestrator mode:** find the view named `Interested`
 
-```
-https://www.notion.so/{{NOTION_DATABASE_ID}}?v={{NOTION_VIEW_ID}}
-```
-
-This view returns `Hold` roles. Do not construct your own filter — use the view directly. Do not fetch the full database. Verify that returned rows have Status = `Hold` before processing — skip any row with a different status.
-
-**When loaded by the cv-campaign orchestrator:** use the Interested view instead — `v=35e5ef1aa6348032abdb000ca4cf71ac`. The orchestrator specifies this override in its Pipeline Flow instructions. All other steps in this skill apply unchanged.
+Use `notion-query-database-view` with that view's URL. Do not construct your own filter — use the view directly. Verify that returned rows have the expected Status before processing — skip any row with a different status.
 
 Skip any entry where neither a Job URL nor job description details in the RTF body of the record are populated.
 
@@ -59,7 +55,7 @@ For each matching entry, capture the full row payload including:
 - Position title (use inferred value if Position field is empty, per the rules above)
 - Job URL
 - Every other property set on the row (notes, tags, source, and any existing priority value) — pass these through verbatim; do not interpret them yet
-- In orchestrator mode only: the pipeline {{USER_FIRST_NAME}} is running (Standard) — from her chat command, not from a Notion property. Default is `Standard` unless {{USER_FIRST_NAME}} specifies otherwise. Not applicable in standalone intake mode.
+- In orchestrator mode only: the pipeline {{USER_FIRST_NAME}} is running (New Applications) — from her chat command, not from a Notion property. Default is `New Applications` unless {{USER_FIRST_NAME}} specifies otherwise. Not applicable in standalone intake mode.
 
 Report the count to {{USER_FIRST_NAME}}: "Found N roles in Hold status. Sending to the employment coach." If the count is 0, stop and report that. Do not wait for a response — proceed immediately to the next step.
 
@@ -89,7 +85,9 @@ Record the counts. Proceed immediately to Step 0.7.
 
 ## Step 0.7 — Build the processing queue
 
-Select up to 5 roles to process this run. No agent needed — the orchestrator does this directly from the priority data in memory.
+**If there are 5 or fewer roles:** process all of them. The cap is not reached, so priority ordering is irrelevant — skip queue selection and proceed immediately to Step 0.8 with all roles.
+
+**If there are more than 5 roles:** select the top 5 using the priority order below. All others are deferred.
 
 Queue selection order differs between standalone and orchestrator modes:
 

@@ -9,7 +9,7 @@ description: Run {{USER_FIRST_NAME}}'s CV campaign pipeline against her Notion J
 
 The orchestrator coordinates {{USER_FIRST_NAME}}'s CV campaign from start to finish. It fetches roles, delegates every reasoning and writing task to sub-agents, routes outputs, and delivers a concise final summary. It does not write CVs or cover letters, does not review applications, and does not make judgment calls about fit.
 
-The Standard pipeline produces three deliverables per role: a tailored CV, a cover letter, and a reviewer feedback file. All three are required outputs.
+The New Applications pipeline produces three deliverables per role: a tailored CV, a cover letter, and a reviewer feedback file. All three are required outputs.
 
 Sub-agents handle all reasoning work. Mechanical actions — Notion queries, priority writeback, DOCX export, Notion writeback, feedback file — run inline without spawning sub-agents.
 
@@ -42,7 +42,7 @@ If this check fails or the path does not contain "Mobile Documents", **stop the 
 
 **Three to five files per role, one file per run.**
 
-The Standard pipeline produces three files per role (CV DOCX, cover letter DOCX, reviewer feedback MD) plus up to two additional Hebrew files when `Languages` includes `Hebrew` (Hebrew CV DOCX, Hebrew cover letter DOCX). One file per run (LinkedIn updates MD). The DOCX files follow the same production path: cv-writer or letter-writer outputs styled markdown → the orchestrator writes the markdown to `/tmp/` → pandoc converts to `.docx` using the `.dotx` reference templates → files copy to the iCloud output folder. The reviewer feedback file is written in Step 7d. The LinkedIn updates file is written in Step 8 after all roles complete. Writing markdown to `/tmp/` is a required production step, not optional.
+The New Applications pipeline produces three files per role (CV DOCX, cover letter DOCX, reviewer feedback MD) plus up to two additional Hebrew files when `Languages` includes `Hebrew` (Hebrew CV DOCX, Hebrew cover letter DOCX). One file per run (LinkedIn updates MD). The DOCX files follow the same production path: cv-writer or letter-writer outputs styled markdown → the orchestrator writes the markdown to `/tmp/` → pandoc converts to `.docx` using the `.dotx` reference templates → files copy to the iCloud output folder. The reviewer feedback file is written in Step 7d. The LinkedIn updates file is written in Step 8 after all roles complete. Writing markdown to `/tmp/` is a required production step, not optional.
 
 **Load `cv-campaign-export` before processing the first role.**
 
@@ -173,13 +173,13 @@ Roles with `Priority` already set are always selected into the queue before unsc
 
 Run the queue pipeline first (`cv-campaign-intake`). When the processing queue is built and {{USER_FIRST_NAME}} has been briefed, run the per-role pipeline for each role in queue order.
 
-**View URL override for cv-campaign-intake:** When `cv-campaign-intake` runs as part of this pipeline, it must query `Interested` roles, not `Hold`. Override the view URL in Step 0 to: `https://www.notion.so/3465ef1aa63480a283cfdf847cb47404?v=35e5ef1aa6348032abdb000ca4cf71ac`. The intake skill's default view returns Hold roles — the orchestrator specifies this override explicitly. Queue selection order also differs in orchestrator mode: scored roles first (ordered 1 → 6), then unscored (per the skill's orchestrator-mode rules in Step 0.7).
+**Mode for cv-campaign-intake:** When `cv-campaign-intake` runs as part of this pipeline, it operates in **orchestrator mode** — it queries the `Interested` view (not Hold) and applies orchestrator-mode queue selection (scored roles first, ordered 1 → 6, then unscored). The intake skill handles view discovery automatically from the database's view list.
 
 **Pipeline is determined by {{USER_FIRST_NAME}}'s chat command**, not by a Notion property she sets per-role. All `Interested` roles default to the standard cv pipeline unless {{USER_FIRST_NAME}} specifies otherwise in chat. {{USER_FIRST_NAME}} can request a different pipeline for specific roles at run time.
 
 | Pipeline | What runs | Deliverables |
 |---|---|---|
-| `Standard` (default) | cv pipeline — Steps 1 through 8 | CV DOCX + cover letter DOCX + feedback MD |
+| `New Applications` (default) | cv pipeline — Steps 1 through 8 | CV DOCX + cover letter DOCX + feedback MD |
 | `--now` | fast track — see below | CV DOCX + cover letter DOCX + feedback MD |
 | `Needs editing` | cv-edit-pipeline (separate skill) — Steps E0 through E10 | Updated CV DOCX + updated cover letter DOCX; starts from existing Notion outputs, not from scratch. Trigger when {{USER_FIRST_NAME}} says "edit CVs" or similar, or when roles have Status = Needs editing. |
 
@@ -605,7 +605,7 @@ Run after Step 9b. Write a `run-metrics-<YYYY-MM-DD>.json` file to the campaign 
 cat > "<output_dir>/run-metrics-$(date +%Y-%m-%d).json" << 'JSON_EOF'
 {
   "run_date": "<YYYY-MM-DD>",
-  "pipeline": "<Standard|Edit|Intake>",
+  "pipeline": "<New Applications|Edit|Intake>",
   "roles_processed": <N>,
   "roles_per_company": [
     {"company": "<name>", "track": "<cv|now>", "hebrew": <true|false>}

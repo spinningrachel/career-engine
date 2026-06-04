@@ -47,7 +47,7 @@ For each matching entry, capture the full row payload including:
 - Company name
 - Position title
 - Job URL
-- Pipeline (Standard — from {{USER_FIRST_NAME}}'s chat command)
+- Pipeline (New Applications — from {{USER_FIRST_NAME}}'s chat command)
 - All existing property values — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Additional Letter Writer Details`, `CV File Name`, `Letter File Name`, `Note`, and any other populated fields
 - Any reviewer feedback or notes already on the row
 
@@ -103,7 +103,7 @@ Confirm in chat: "Coach verification complete: K properties updated across N rol
 
 Process roles sequentially. For each role, branch on the pipeline {{USER_FIRST_NAME}} specified in chat (same logic as the main pipeline).
 
-### Pipeline `Standard`
+### Pipeline `New Applications`
 
 Agents in this track are explicitly informed they are improving existing work. Pass each agent:
 - The structured JD from Step E0.5

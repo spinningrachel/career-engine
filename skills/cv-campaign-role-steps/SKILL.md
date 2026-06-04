@@ -1,11 +1,11 @@
 ---
 name: cv-campaign-role-steps
-description: 'Per-role pipeline for the cv-campaign orchestrator. Handles Step 0.10 (warm-up role selection) and Steps 1 through 7 for Standard pipeline roles: CV draft, gatekeeper, recruiter review, HM review, CV revision, cover letter draft, cover letter gatekeeper, cover letter recruiter review, cover letter HM review, cover letter revision, cover letter gatekeeper (post-revision), DOCX export for both files, and Notion writeback. The structured JD for each role is already in memory from the queue pipeline — do not re-fetch. Load this skill as part of the cv-campaign pipeline, after cv-campaign-intake.'
+description: 'Per-role pipeline for the cv-campaign orchestrator. Handles Step 0.10 (warm-up role selection) and Steps 1 through 7 for New Applications pipeline roles: CV draft, gatekeeper, recruiter review, HM review, CV revision, cover letter draft, cover letter gatekeeper, cover letter recruiter review, cover letter HM review, cover letter revision, cover letter gatekeeper (post-revision), DOCX export for both files, and Notion writeback. The structured JD for each role is already in memory from the queue pipeline — do not re-fetch. Load this skill as part of the cv-campaign pipeline, after cv-campaign-intake.'
 ---
 
 # CV Campaign — Per-Role Pipeline
 
-This skill covers Step 0.10 and Steps 1 through 7 of the Standard pipeline. Step 0.10 runs once before the per-role loop begins. Steps 1 through 7 repeat for each role in the processing queue. The structured JD was fetched in Step 0.5 and is in memory — pass it directly without re-fetching.
+This skill covers Step 0.10 and Steps 1 through 7 of the New Applications pipeline. Step 0.10 runs once before the per-role loop begins. Steps 1 through 7 repeat for each role in the processing queue. The structured JD was fetched in Step 0.5 and is in memory — pass it directly without re-fetching.
 
 The pipeline produces two deliverables per role: a CV DOCX and a cover letter DOCX. Both go through the same review sequence — draft, gatekeeper, recruiter review, HM review, revision, gatekeeper (post-revision) — before DOCX export.
 
@@ -365,7 +365,7 @@ Create the file on the first role; append on subsequent ones. Use the `/tmp→iC
 ```
 
 **Field notes:**
-- `track` — `cv` for Standard pipeline, `now` for --now mode
+- `track` — `cv` for New Applications pipeline, `now` for --now mode
 - `notion_page_id` — `null` for --now mode roles that were never in Notion
 - `company_dir` — the kebab-case company directory name (same as used for the subdirectory)
 - `hm_cv_verdict` / `hm_cl_verdict` — record both verdicts separately; omit `hm_cl_verdict` if the cover letter loop did not complete

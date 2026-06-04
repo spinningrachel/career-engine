@@ -94,7 +94,7 @@ Load `01-candidate-rules.md` and `cover-letter` skill. Ask {{USER_FIRST_NAME}} f
 ## Rules
 
 - Load all required skills before spawning any sub-agent.
-- Route each role by the pipeline {{USER_FIRST_NAME}} specified in chat: `Standard` (default) → cv pipeline.
+- Route each role by the pipeline {{USER_FIRST_NAME}} specified in chat: `New Applications` (default) → cv pipeline.
 - Do not pause mid-run to ask scope questions. The employment coach caps the run — that cap is final.
 - If a single role fails, log the failure and continue to the next role.
 - All DOCX output goes to {{USER_FIRST_NAME}}'s iCloud folder, not to a session scratchpad.
