@@ -170,17 +170,18 @@ This step is mechanical and runs end-to-end without pausing.
 
 ### 0.9a — Write coach outputs to Notion
 
-For each role in the processing queue, write the following using `notion-update-page`. Every coach-owned property must receive a value — write `N/A` explicitly if nothing applies. Do not leave any coach-owned property blank.
+**Rule: write only to empty properties.** For every property below, check the current Notion value first. If already populated — skip it. Do not overwrite any existing value. `N/A` counts as populated.
 
-- `Priority` — **apply this rule per role, not per session.** For each role where the coach ran (it was not coach-complete before this session): write the coach's numeric Notion value (`1`–`6`) from Part 0. For `scored` roles the coach returns `confirmed` or `revised`; for `unscored` roles it returns `new`. For each role where the coach was skipped (already coach-complete per Step 0.8): leave Priority unchanged — do NOT write to it. Writing null or a stale value to Priority for a coach-skipped role is a data loss error. In a mixed batch (some roles coached, some skipped), apply this rule individually to each role.
-- `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Relationship type`, `Role summary`, `Person who Advertised Role (if not Hiring Manager)` — write for every role in the queue.
-- `Hiring manager's role`, `Manager role confirmed`, `No other Marketing roles employed by company` — write for every role in the queue.
-- `Gap handling` — write for every role in the queue. If {{USER_FIRST_NAME}} has already edited this in Notion, treat her version as authoritative and do not overwrite it.
-- `Company Stage` — from the coach's output. Use the exact option values: `Seed`, `Series A`, `Series B`, `Series C`, `Public`, `PE-backed`, `Stealth`, or `N/A`. Write `N/A` if the coach could not determine stage.
-- `Role Type` — from the coach's output. Multi-select — use the exact option values: `Builder`, `Scaler`, `Specialist`, `Leader`, or `N/A`. Write `N/A` if not determinable.
-- `Landscape` — from the coach's output. **Write only if currently empty in Notion.** If the property already has content, skip it entirely — do not overwrite. This is company-level competitive intelligence, not role analysis: what the company does, corporate structure, size, funding, category, current challenges, market position, and competitive landscape.
+For each role in the processing queue, apply this rule to:
+- `Priority` — write the coach's value (`1`–`6`) only if currently empty. If the role was coach-skipped (already coach-complete per Step 0.8), do not write at all — leave unchanged. In a mixed batch, apply per role individually.
+- `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Relationship type`, `Role summary`, `Person who Advertised Role (if not Hiring Manager)` — write if empty.
+- `Hiring manager's role`, `Manager role confirmed`, `No other Marketing roles employed by company` — write if empty.
+- `Gap handling` — write if empty. If gap_handling_mode = disabled, skip entirely.
+- `Company Stage` — write if empty. Exact option values: `Seed`, `Series A`, `Series B`, `Series C`, `Public`, `PE-backed`, `Stealth`, or `N/A`.
+- `Role Type` — write if empty. Multi-select exact values: `Builder`, `Scaler`, `Specialist`, `Leader`, or `N/A`.
+- `Landscape` — write if empty. Skip entirely if already has content.
 
-Confirm in chat: "Writeback complete: K roles scored (N confirmed, M revised, P new)."
+Confirm in chat: "Writeback complete: K roles updated, M properties skipped (already populated)."
 
 ### 0.9b — Brief {{USER_FIRST_NAME}}
 

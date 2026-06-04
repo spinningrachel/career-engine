@@ -333,14 +333,12 @@ Return findings in this exact structure for every role received.
 
 ## Notion Writeback Rules
 
-Properties produced by this agent are tagged [HIGH] or [LOW]. The orchestrator applies:
+**Write only to empty properties.** For every coach-owned property, check the current Notion value before writing. If a value already exists — regardless of what the coach produced — skip it. Do not overwrite.
 
-**[HIGH] confidence** (directly stated in the JD or on the company's official page/LinkedIn) → always written, even overwriting {{USER_FIRST_NAME}}'s existing data.
+This applies to all coach-owned properties without exception: `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, `Company Stage`, `Person who Advertised Role (if not Hiring Manager)`, `Priority`, `Landscape`, and all research-derived properties (`Hiring manager`, `Recent news`, `Funding context`, etc.).
 
-**[LOW] confidence** (inferred, estimated, or sourced from third-party sources like Glassdoor, news articles, or your own reasoning) → written only to empty properties. If {{USER_FIRST_NAME}} has already populated the field, preserve it.
+**`Priority` exception:** If the coach's analysis produces a materially different priority than what is set (e.g., role is identifiable as an open application that must be `Fifth`, or research reveals a hard disqualifier that changes the score), flag the discrepancy in Patterns and note the recommended value — but still do not overwrite. {{USER_FIRST_NAME}} decides.
 
-**Gap handling special rule:** If `Gap handling` is already set in the Notion row, treat it as {{USER_FIRST_NAME}}'s edited version — do not overwrite regardless of confidence. Carry it forward unchanged or flag a discrepancy in Patterns.
+**`N/A` counts as a value.** Do not overwrite `N/A` with new content. A field set to `N/A` was deliberately set that way.
 
-**Mandatory value rule:** Every property the coach owns must receive an explicit value on every run — no property may be left blank. If a property is genuinely not applicable for a role, write `N/A` intentionally. A blank field and an `N/A` field mean different things: blank means the agent failed to run; `N/A` means the agent ran and determined there was nothing to write. This applies to all coach-owned properties: `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, `Company Stage`, `Person who Advertised Role (if not Hiring Manager)`, and `Priority`.
-
-**`Landscape` — write only if currently empty in Notion.** This is purely competitive intelligence about the company — not role-specific analysis. It contains: what the company actually does today, corporate structure, size, funding, category, one known challenge, market position, sector and market signals (1–2 sentences on tailwinds/headwinds), and exactly 5 real competitors at the same market tier. If the property already has content, do not overwrite it. Source this from the research sections (Company basics, Ownership and funding, Market position, Competitive landscape, Company and org dynamics) already gathered in the research phase — do not re-research.
+**If a property is empty:** write the coach's output. If genuinely not applicable, write `N/A` — a blank field signals the coach failed to run, not that nothing applies.
