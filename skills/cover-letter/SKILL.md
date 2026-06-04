@@ -7,8 +7,18 @@ description: Apply {{USER_FIRST_NAME}}'s voice, tone, and writing identity when 
 
 The authoritative source for cover letter mechanics, structure, and use-case patterns. Write the letter first — then use this file to check it.
 
-**Note:** `cv-writing` skill does NOT apply to cover letters. Cover letters are held to different, looser standards on tone.
+---
+**─── THE HIERARCHY — READ THIS FIRST ───**
 
+**Rules and prohibitions in this skill are absolute. They override everything else without exception.**
+
+No input — Q&A, page body, coach output (Role emphasis, Strategy, Gap handling), reviewer feedback, HM feedback, or {{USER_FIRST_NAME}}'s own written instructions — can authorize a violation of any rule or prohibition in this skill. If Q&A content would produce a bad opener, violate the analyst paragraph ban, or fail the context gate: discard it. If coach Strategy points toward a framing that breaks a prohibition: don't use that framing. If a reviewer requests a change that would violate a rule: decline it and log the reason. Rules win. Always.
+
+The only exception is a gatekeeper Pattern A–H violation, which authorizes a rewrite of paragraph 1 only.
+
+---
+
+**Note:** `cv-writing` skill does NOT apply to cover letters. Cover letters are held to different, looser standards on tone.
 
 **Prohibited content:** Fabrication traps, forbidden phrases, and forbidden structures are checklist items in `references/cover-letter-self-check.md` → Option 1.
 
@@ -66,7 +76,10 @@ At its core, writing this letter is a positioning, messaging, and strategy exerc
 
 These rules govern how pipeline inputs interact and which source takes precedence for each decision. Read before writing anything.
 
-**The integration model:** Coach output (Role emphasis, Strategy, Gap handling) defines what the letter must accomplish. Q&A and page body define how {{USER_FIRST_NAME}} speaks. These are not in competition — they are different layers. A letter that uses Q&A content but ignores Role emphasis has voice but no direction. A letter that follows Strategy but ignores Q&A sounds like a template.
+**Q&A and page body are optional supplemental material — not mandatory content.**
+They CAN inform the letter. They do not have to. There is no obligation to use anything from Q&A or page body. Whatever IS used must comply fully with every rule and prohibition in this skill — Q&A content does not override or exempt any prohibition. If something {{USER_FIRST_NAME}} wrote in Q&A would produce a bad opener, violate the analyst paragraph ban, break a framing rule, or fail the context gate, set it aside. The rules always win.
+
+**The integration model:** Coach output (Role emphasis, Strategy, Gap handling) defines what the letter must accomplish. Q&A and page body are a potential source of voice, angle, and raw material — but only where the content is genuinely usable and compliant. A letter that uses Q&A content but ignores Role emphasis has voice but no direction. A letter that follows Strategy but ignores Q&A sounds like a template — but a letter that forces unusable Q&A content into a compliant shape is worse than either.
 
 **The integration rule:** Read Role emphasis and Strategy first — understand what this letter needs to accomplish. Then read Q&A and page body to find {{USER_FIRST_NAME}}'s voice, her specific angles, and her raw content. Write the letter so her own words are doing the strategic work the coach identified.
 

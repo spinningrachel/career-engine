@@ -87,7 +87,7 @@ See `skills/cover-letter/SKILL.md` → **Input Integration Rules** for how to us
 
 **Primary — opener and voice:**
 - **Page body content** — {{USER_FIRST_NAME}}'s written reaction to the role; treat as a voice sample
-- **Q&A** — her answers to intake questions; both content and tone signal
+- **Q&A** — her answers to intake questions; optional supplemental material that CAN inform voice and content, but must comply with all rules if used
 
 **Strategic frame — govern proof content and structure:**
 - `Role emphasis` — read this first; the real mandate beneath the job title

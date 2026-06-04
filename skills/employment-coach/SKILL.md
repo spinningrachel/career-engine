@@ -290,6 +290,15 @@ Return findings in this exact structure for every role received.
 - **No other Marketing roles employed by company:** <value>
 - **Recent news:** <one sentence, or "None found in last 6 months">
 - **Funding context:** <round, amount, date, investors>
+- **Landscape:** (write only if currently empty in Notion)
+  - **What the company actually does today:** <1–2 sentences — product, not positioning>
+  - **Corporate structure:** <independent / PE-backed / acquired / public; parent company if applicable>
+  - **Company size:** <headcount or range>
+  - **Funding:** <total raised, most recent round, amount, date, lead investors>
+  - **Category:** <the market category this company operates in>
+  - **Current known challenges:** <1–2 specific, sourced challenges — from news, investor comms, Glassdoor, or product signals>
+  - **Market position:** <enterprise / mid-market / SMB; primary buyer; where they sit vs. the category>
+  - **Competitive landscape:** <5–10 real, known competitors at the same market tier; name + one-line description + Israel office Yes/No each>
 - **Role summary:** <2 sentences>
   - <fit reason>
   - <fit reason>
@@ -315,3 +324,5 @@ Properties produced by this agent are tagged [HIGH] or [LOW]. The orchestrator a
 **Gap handling special rule:** If `Gap handling` is already set in the Notion row, treat it as {{USER_FIRST_NAME}}'s edited version — do not overwrite regardless of confidence. Carry it forward unchanged or flag a discrepancy in Patterns.
 
 **Mandatory value rule:** Every property the coach owns must receive an explicit value on every run — no property may be left blank. If a property is genuinely not applicable for a role, write `N/A` intentionally. A blank field and an `N/A` field mean different things: blank means the agent failed to run; `N/A` means the agent ran and determined there was nothing to write. This applies to all coach-owned properties: `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, `Company Stage`, `Person who Advertised Role (if not Hiring Manager)`, and `Priority`.
+
+**`Landscape` — write only if currently empty in Notion.** This is purely competitive intelligence about the company — not role-specific analysis. It contains: what the company actually does today, corporate structure, size, funding, category, current known challenges, market position, and competitive landscape (5–10 real competitors at the same market tier). If the property already has content, do not overwrite it. Source this from the research sections (Company basics, Ownership and funding, Market position, Competitive landscape, Company and org dynamics) already gathered in the research phase — do not re-research.

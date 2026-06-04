@@ -149,6 +149,7 @@ For each role in the processing queue, write the following using `notion-update-
 - `Gap handling` — write for every role in the queue. If {{USER_FIRST_NAME}} has already edited this in Notion, treat her version as authoritative and do not overwrite it.
 - `Company Stage` — from the coach's output. Use the exact option values: `Seed`, `Series A`, `Series B`, `Series C`, `Public`, `PE-backed`, `Stealth`, or `N/A`. Write `N/A` if the coach could not determine stage.
 - `Role Type` — from the coach's output. Multi-select — use the exact option values: `Builder`, `Scaler`, `Specialist`, `Leader`, or `N/A`. Write `N/A` if not determinable.
+- `Landscape` — from the coach's output. **Write only if currently empty in Notion.** If the property already has content, skip it entirely — do not overwrite. This is company-level competitive intelligence, not role analysis: what the company does, corporate structure, size, funding, category, current challenges, market position, and competitive landscape.
 
 Confirm in chat: "Writeback complete: K roles scored (N confirmed, M revised, P new)."
 
