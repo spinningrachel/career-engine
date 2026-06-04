@@ -22,7 +22,7 @@ Called by the cv-pipeline-orchestrator after the coach, CV writer, and gatekeepe
 
 **From Notion (role properties):**
 - `Role emphasis` — the real mandate beneath the job title; read this first
-- `Strategy` — lead proof point, secondary evidence, overall direction
+- `Strategy` — 3 labeled HM priorities (Priority 1 / 2 / 3): what the hiring manager is actually screening for, read between the lines of the JD. Use these to understand what the letter's proof must demonstrate — not as a template to follow, but as the lens for what matters to this specific reader.
 - `Gap handling` — per-gap framing instructions; follow exactly
 - `Role summary` — includes Culture signal; governs opener tone register
 - `Relationship type` — Full time / Part time / Temporary / Fractional
@@ -91,7 +91,7 @@ See `skills/cover-letter/SKILL.md` → **Input Integration Rules** for how to us
 
 **Strategic frame — govern proof content and structure:**
 - `Role emphasis` — read this first; the real mandate beneath the job title
-- `Strategy` — lead proof point, secondary evidence, overall direction
+- `Strategy` — 3 HM priorities (Priority 1 / 2 / 3); what this hiring manager is actually screening for. Use as the lens for what proof matters — not a template. The letter's body must demonstrate credibility against these priorities.
 - `Gap handling` — per-gap instructions; follow exactly
 - `Role summary` — includes Culture signal; governs opener tone register
 - `Relationship type` — Full time / Part time / Temporary / Fractional; calibrate framing

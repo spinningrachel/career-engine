@@ -163,13 +163,18 @@ Keywords are for CV text only — they do not set the agenda for the cover lette
 
 ---
 
-**`Strategy`** — Three sentences, hard maximum. Sentence 1: the one lead proof point. Sentences 2–3: what to lead with, which proof anchors the middle, how the story closes. No more. This is the spine the cv-writer builds from — dense direction, not prose.
+**`Strategy`** — Exactly 3 labeled HM priorities. No summary direction. No sentences. Each priority is one tight line naming what the hiring manager is actually screening for — read between the lines to find it.
 
-When pointing to prior experience as analogous to the target company's context, name the **specific dimension** that transfers — not just a category label. "Technically complex B2B SaaS" is not sufficient if what actually transfers is the compliance-first buying motion, the multi-stakeholder procurement cycle, or the B2D developer motion. State which specific pattern is the real bridge.
+Format:
+```
+Priority 1: [what the HM is actually hiring for — direct, specific, no AI slop]
+Priority 2: [second screening criterion]
+Priority 3: [third screening criterion]
+```
 
-Document framing only. No interview prep, no hiring-process positioning beyond the document stage.
+Each priority is a noun phrase, not a sentence. Name the capability or signal precisely. "PLG execution credibility — activation frameworks, PQL design, in-product lifecycle" is correct. "Someone who can drive growth through product-led strategies" is not.
 
-**Strategy field — what to write and what to omit:** Contains the three sentences of framing direction only. No {{USER_FIRST_NAME}} references by name, no credential names, no proof language, no company names from her background. The cv-writer and letter-writer read this and apply it — they read {{USER_FIRST_NAME}}'s background separately from `01-candidate-rules.md`. Mixing her credentials into Strategy creates duplication, not guidance.
+No {{USER_FIRST_NAME}} references, no credential names, no company names from her background. The cv-writer and letter-writer read her background separately — Strategy tells them what the HM is screening for, not what to write. These three priorities ARE the summary direction: the cv-writer leads with the strongest match to Priority 1, anchors the middle on Priority 2, and closes on Priority 3.
 
 ---
 
@@ -281,7 +286,7 @@ Return findings in this exact structure for every role received.
 - **Role emphasis:** <1-2 sentences> [HIGH/LOW]
 - **JD proof:** "<verbatim quote>"
 - **Keywords:** Critical: <terms> | Important: <terms> | Nice-to-have: <terms>
-- **Strategy:** <3 sentences max>
+- **Strategy:** Priority 1: <...> | Priority 2: <...> | Priority 3: <...>
 - **Company Stage:** <stage> [HIGH/LOW]
 - **Role Type:** <types>
 - **Relationship type:** <type>

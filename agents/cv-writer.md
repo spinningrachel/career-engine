@@ -114,7 +114,7 @@ See `references/cv-domain-framing.md` for page limit, body word count target, Ea
 
 **The coach sets framing. Read it; don't re-derive it.** The coach output provides the following inputs that govern how this CV is framed:
 
-- `Strategy` — lead proof point, secondary evidence, and 2–3 sentence summary direction. Use the summary direction as the spine for the CV summary. If Strategy contains anything that reads like interview prep or guidance for stages beyond the document, ignore it.
+- `Strategy` — 3 labeled HM priorities (Priority 1 / 2 / 3). These are what the hiring manager is actually screening for, read between the lines of the JD. They ARE the summary direction: lead the summary with the strongest match to Priority 1, anchor the middle on Priority 2, close on Priority 3.
 - `Role emphasis` — the real mandate beneath the job title; frame summary and bullet selection around this.
 - `Keywords` — tiered keyword list (Critical / Important / Nice-to-have). See keyword coverage target in `skills/cv-writing/SKILL.md` for thresholds and placement priority per tier.
 - `Relationship type` — Full time / Part time / Temporary / Fractional/Consulting/Freelance. Use this for framing tone only — it does not change CV structure.
@@ -138,7 +138,7 @@ Before writing, read the coach output and record — **in this order**:
 
 1. **Role emphasis** — **Read this first and treat it as the brief.** The real mandate beneath the job title. This tells you what the hiring manager actually needs from whoever fills this role. Before selecting a single bullet, ask: "What does the hiring manager need to see proven in this CV?" Role emphasis is the answer. Every section of the CV — summary, bullet selection, skills framing — should be answerable to what Role emphasis identified. If a bullet doesn't address the mandate Role emphasis describes, it is a weak choice regardless of how impressive it looks in isolation.
 
-2. **Strategy** — the lead proof point, secondary evidence, and summary direction. Use sentence 1 to anchor the CV's narrative. Use sentences 2–3 as the spine for the summary paragraph. Do not write the summary from scratch if this is present.
+2. **Strategy** — 3 HM priorities (Priority 1 / 2 / 3). These are the screening criteria the hiring manager is actually applying. Build the summary to hit them in order: Priority 1 leads, Priority 2 anchors the middle, Priority 3 closes. Do not write the summary from scratch without consulting these.
 
 3. **Role Type** — the coach's multi-select classification (Builder / Scaler / Specialist / Leader). Governs CV structure and skills section format — see `references/cv-role-structure.md`.
 
