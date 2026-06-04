@@ -17,6 +17,35 @@ description: >
 
 This skill covers Steps 0 through 0.9 of the cv-campaign pipeline. All of these steps run before any per-role CV work begins. The goal of this pipeline is to give the employment coach complete information — full JD data for every role — before it makes any prioritization or writing decisions.
 
+## Step −1 — Gap handling preference
+
+**Before doing anything else**, ask {{USER_FIRST_NAME}} one question using this exact visualization:
+
+```
+How should the pipeline handle gap analysis?
+
+  [A] ✅ Include gap handling
+      The coach identifies gaps between the JD and your background
+      and recommends how to address each one in the CV and letter.
+
+  [B] ⏭️  Skip gap handling
+      Gap handling is omitted entirely. Strategy and framing only.
+      (Faster — good if you already know your fit well.)
+```
+
+Wait for her answer before proceeding. Store the choice as `gap_handling_mode`:
+- Answer A → `gap_handling_mode = enabled`
+- Answer B → `gap_handling_mode = disabled`
+
+**If `gap_handling_mode = disabled`:**
+- Instruct the coach (in Step 0.8) to skip the `Gap handling` property entirely — do not populate it, do not write `N/A`.
+- Skip the `Gap handling` writeback in Step 0.9a.
+- The `coach-complete` check in Step 0.8 must NOT require `Gap handling` to be populated for this run.
+
+**If `gap_handling_mode = enabled`:** proceed normally — gap handling is required for every role as documented.
+
+---
+
 ## Step 0 — Fetch Notion schema and roles
 
 **First — fetch the database schema.** Run `notion-fetch` on the Job Applications database before doing anything else:

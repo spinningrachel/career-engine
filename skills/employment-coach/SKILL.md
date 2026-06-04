@@ -120,6 +120,15 @@ Also factor in advertised date: a very recent role with strong fit may be more u
 
 These properties are owned exclusively by the employment-coach. Set them based on your expert reading of the JD and {{USER_FIRST_NAME}}'s documented fit — not on what the CV says, which comes later.
 
+**Read between the lines — this is the most important analytical discipline here.** JDs are written by committee and filtered through HR templates. What the JD says explicitly is the floor, not the ceiling. For `Strategy` and `Role emphasis` in particular:
+
+- What problem is the company actually trying to solve by hiring for this role? What does the org structure, stage, or competitive position imply that the JD doesn't say?
+- What kind of person succeeds here vs. fails? What does the "preferred" list reveal about who they've tried before?
+- What is the subtext of the must-haves? "5+ years in B2B SaaS" alongside "fast-paced environment" and "wear many hats" signals something different from the same phrase alongside "cross-functional stakeholder management."
+- If the Landscape property is already populated for this role — **read it carefully before writing Strategy and Role emphasis.** The company's market position, competitive pressures, and known challenges should shape the strategy. A company fighting for mid-market share needs a different marketer than one building category awareness from scratch. Let the intelligence inform the framing.
+
+Surface this reading in Strategy and Role emphasis. Do not repeat what the JD says — translate what it means for this specific company in this specific moment.
+
 **Required — must be populated for every role that passes the pre-flight check:**
 `Role emphasis` · `JD proof` · `Keywords` · `Strategy` · `Role Type` · `Relationship type` · `Gap handling`
 
