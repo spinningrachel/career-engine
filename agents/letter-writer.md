@@ -226,31 +226,38 @@ Load `references/cover-letter-self-check.md` → Option 1 and run every item.
 
 **Triggers:** Step 0.9c after the coach runs, or orchestrator fallback when Q&A is empty.
 
-**Purpose:** Generate 3–5 targeted questions for {{USER_FIRST_NAME}} to answer in Notion before the letter is written.
+**Purpose:** Generate the minimum number of questions — possibly zero — that are genuinely required to write a killer cover letter for this specific role. This is not a discovery exercise. Every question must earn its place.
 
 **Input:** Company name, role title, structured JD, coach output (Role emphasis, Strategy, Gap handling, Relationship type).
 
-**Load `references/02-candidate-background.md` before generating questions.** For each question you would ask, check if a relevant answer already exists in the bank. If yes: note it as "answered from candidate-background — [topic]" and do not include it in the Notion Q&A. Only send genuinely unanswered questions to Notion.
+**Load `references/02-candidate-background.md` before generating questions.** For each question you would ask, check if a relevant answer already exists in the bank. If yes: use it directly and do not ask again. Only send genuinely unanswered questions to Notion.
 
-### The only test that matters
+### The discipline
 
-**Before including any question:** Can {{USER_FIRST_NAME}} answer it right now, from her own memory and experience, and will that answer become content in the letter?
+Start from zero. Ask yourself: can I write a strong, specific, non-generic opener right now, using only what's in the JD, the coach output, and `02-candidate-background.md`? If yes — the question count may be zero. That is a valid answer.
 
-If No to either part — cut the question:
-- Questions about how the company works, what the role does day-to-day, or what {{USER_FIRST_NAME}} should find out in the interview → **out of scope**
-- Questions about the hiring team's process, org structure, or role reporting → **out of scope**
-- Questions whose answers would inform interview prep but not change a word of the letter → **out of scope**
+Only add a question when the answer would **directly change a sentence** in the letter that you cannot write without it. The letter must be the reason for every question. Not curiosity. Not completeness. Not covering gaps.
 
-Every question must be a request for a story, a reaction, a preference, or a named deliverable the letter-writer will use to write a specific sentence.
+**Before including any question, it must pass all three:**
+1. The answer must come from {{USER_FIRST_NAME}}'s own experience or memory — not from research she'd need to do
+2. The answer will become specific content in the letter — a named story, a reaction, a deliverable, a verbatim motivation
+3. The letter cannot be written well without it — the best available substitute (background file, CV, JD) is genuinely insufficient
+
+**Cut anything that:**
+- Would be useful but produces a letter equally good without it
+- Informs interview prep but not the letter itself
+- Asks about the company, the role's day-to-day, the team, or the hiring process
+- Covers a gap that the letter won't explicitly address anyway
+- Duplicates what the coach Strategy or Role emphasis already tells you
 
 ### What to generate
 
-**Generate only those that apply:**
-- JD has a self-characterization section with traits {{USER_FIRST_NAME}} might have examples for → ask for a specific example of the trait with weakest documentation
-- Gap handling identifies a gap the letter must address → ask for a named anecdote or deliverable proving she's done that thing
-- Strategy mentions a specific company/domain {{USER_FIRST_NAME}} might have a genuine connection to → ask if she has a real story there
-- Relationship type is Fractional and the company hasn't hired fractional before → ask what her framing is for the scope conversation
-- Catch-all (always last, always optional): "Anything else you want the letter to say that I wouldn't know from your CV?"
+Consider only these triggers — and only if they survive the three-part test above:
+- The JD's self-characterization section names a trait with no example documented in her background → ask for a specific example if and only if the opener depends on it
+- Gap handling identifies something the letter must address and no angle exists in `02-candidate-background.md` → ask for the specific anecdote or deliverable
+- The opener requires a genuine personal reaction to this company or role that cannot be inferred from the JD → ask for it directly
+- Relationship type is Fractional and framing the scope is genuinely letter-relevant → ask her framing
+- Catch-all (only if nothing above applies and the letter still has an unanswerable gap): "Anything specific you want the letter to say that I can't get from your CV or background?"
 
 ### Output format
 
