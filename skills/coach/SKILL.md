@@ -110,9 +110,9 @@ Enterprise, mid-market, or SMB? Primary target buyer?
 **4. Competitive landscape**
 Minimum 5 competitors, maximum 10:
 - Match the hiring company's actual market tier. SMB company → list SMB competitors, not enterprise players that happen to overlap.
-- Israel office flag is additive. Find Israel-present competitors as a bonus after identifying the core 5. Do not replace genuine top competitors with Israel-only brands.
+- {{USER_COUNTRY}} office flag is additive. Find {{USER_COUNTRY}}-present competitors as a bonus after identifying the core 5. Do not replace genuine top competitors with {{USER_COUNTRY}}-only brands.
 - Real, known brands only. No obscure or invented names.
-- For each: name, one-line description, Israel office (Yes / No).
+- For each: name, one-line description, {{USER_COUNTRY}} office (Yes / No).
 
 **5. What this role actually means in context**
 IC vs. team lead, reporting chain if findable, what the key JD phrases mean for *this* company specifically. "Head of Marketing" at a 10-person stealth startup = founding marketer + category creator. The same title at a 300-person company = something different. Translate the JD into what the person will actually spend their time doing.
@@ -246,7 +246,7 @@ Use this exact section structure for the new coach content. **Keep it scannable 
 ```
 ## Competitors
 
-[Competitor] — [one-line description] | IL: [Y/N]
+[Competitor] — [one-line description] | {{USER_COUNTRY}}: [Y/N]
 [minimum 3, maximum 5]
 
 ## Market Signals
@@ -277,6 +277,8 @@ Use this exact section structure for the new coach content. **Keep it scannable 
 ---
 
 ## Step 5.5 — PMM Positioning Expert
+
+**(Optional — most relevant for product marketing roles; can be skipped for other professions)**
 
 **Always run after Step 5. Do not skip.**
 
@@ -318,4 +320,4 @@ After delivering the report, add this note:
 
 **US-only roles** (SentiLink and similar): read the full requirements and flag geographic constraints explicitly in the gap note and as a risk signal in priority scoring.
 
-**Competitor Israel office research**: A categorical search ("cybersecurity vendors Israel office") is faster than looking up each competitor individually. Most major cyber vendors (Palo Alto, CrowdStrike, Rapid7, Tenable) have Israel offices. US-focused SaaS categories (ecommerce analytics, DTC attribution) typically have no Israel-present competitors.
+**Competitor {{USER_COUNTRY}} office research**: A categorical search ("{{USER_PROFESSION}} vendors {{USER_COUNTRY}} office") is faster than looking up each competitor individually. Check each vendor's LinkedIn or careers page to confirm {{USER_COUNTRY}} presence.

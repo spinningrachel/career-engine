@@ -45,7 +45,7 @@ COMPANY_DIR=$(echo "<company_name>" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | 
 [ -z "$COMPANY_DIR" ] && COMPANY_DIR="unknown-company"
 ```
 
-Examples: `"Nuvoton"` → `nuvoton` · `"Visual Layer"` → `visual-layer` · `"Coro Cybersecurity"` → `coro-cybersecurity`
+Examples: `"Acme Corp"` → `acme-corp` · `"Blue Sky"` → `blue-sky` · `"Acme Cybersecurity"` → `acme-cybersecurity`
 
 ### 1. Create output directory
 
@@ -88,7 +88,7 @@ python3 "${CLAUDE_PLUGIN_ROOT}/skills/cv-campaign-export/scripts/update-subtitle
   "<role title>"
 ```
 
-**The subtitle MUST be the exact job title {{USER_FIRST_NAME}} is applying for — taken verbatim from the JD.** Examples: "Head of Marketing", "Director of Product Marketing", "VP of Marketing". NOT a generic descriptor like "Product Marketing & GTM Leader". NOT {{USER_FIRST_NAME}}'s background framing. The role title. Full stop.
+**The subtitle MUST be the exact job title {{USER_FIRST_NAME}} is applying for — taken verbatim from the JD.** Examples: e.g., "Head of Marketing", "Senior Software Engineer", "Director of Product Design". NOT a generic descriptor. NOT {{USER_FIRST_NAME}}'s background framing. The role title. Full stop.
 
 The cover letter header does not need a subtitle update.
 
@@ -141,7 +141,7 @@ All filenames are lowercase, no spaces, hyphens between words. Extension is `.do
 - Revision log (per run): `revision-log-<YYYY-MM-DD>.md`
 - State file: `state.json`
 
-Example: `cv-{{USER_LAST_NAME}}-head-of-marketing-acme-apr2026.docx` / `revision-log-head-of-marketing-acme-apr2026.md`
+Example: `cv-{{USER_LAST_NAME}}-[role-title]-[company]-[mon-year].docx` / `revision-log-[role-title]-[company]-[mon-year].md`
 
 ---
 
@@ -228,7 +228,7 @@ Standard `##` headings map automatically to the `Heading 2` style from the templ
 Regular markdown paragraphs use the `Normal` style automatically:
 
 ```markdown
-Go-to-market and technical marketing leader with 15 years of experience translating complex B2B products into clear value for the buyers who need them.
+[Example — your summary paragraph goes here. Typically 1–2 sentences establishing your function and value proposition.]
 ```
 
 ### Builder / Leader competencies line → Normal (no annotation needed)
@@ -236,14 +236,14 @@ Go-to-market and technical marketing leader with 15 years of experience translat
 Plain paragraph, pipe-separated. No annotation:
 
 ```markdown
-Product Marketing | GTM Strategy | Technical Documentation | Analyst Relations | Team Leadership | Content Strategy | Sales Enablement | Brand
+[Example — pipe-separated list of your core competencies]
 ```
 
 ### RoleTitle
 
 ```markdown
 ::: {custom-style="RoleTitle"}
-Head of Product Marketing | [Visual Layer]{custom-style="BlueFont"} | Tel Aviv, Israel | *Apr 2025 -- Apr 2026*
+Head of [Function] | [Company Name]{custom-style="BlueFont"} | {{USER_CITY}}, {{USER_COUNTRY}} | *[Start] -- [End]*
 :::
 ```
 
@@ -256,7 +256,7 @@ Notes:
 
 ```markdown
 ::: {custom-style="RoleOverview"}
-Computer vision and ML platform acquired by Camtek ($3M+ integration); sole marketing hire from founding through acquisition, owning all GTM and technical documentation.
+[Example — one sentence: company context and your scope, e.g. "B2B SaaS platform; sole [function] hire from founding through Series B, owning all GTM and content."]
 :::
 ```
 
@@ -266,11 +266,11 @@ One sentence. No bold or italic markup — the style handles formatting.
 
 ```markdown
 - ::: {custom-style="RoleActivitiesList"}
-  Led full GTM motion across product, content, events, and sales enablement for a seed-stage computer vision platform targeting manufacturing and defense verticals.
+  [Example — outcome-first bullet: what changed, with metric or named result, because of your work.]
   :::
 
 - ::: {custom-style="RoleActivitiesList"}
-  Built the documentation infrastructure from zero: API docs, product guides, and a GEO-optimized technical site that became a primary inbound channel.
+  [Example — outcome-first bullet: what you built or delivered, with scope or named outcome.]
   :::
 ```
 
@@ -278,7 +278,7 @@ For a role with a single bullet, use `RoleActivitySingle` instead:
 
 ```markdown
 ::: {custom-style="RoleActivitySingle"}
-Fractional GTM and content for seed-stage SaaS clients; engagements kept open alongside full-time roles.
+[Example — single-bullet role entry, e.g. "Fractional [function] for seed-stage SaaS clients; engagements kept open alongside full-time roles."]
 :::
 ```
 
@@ -298,7 +298,7 @@ Leadership
 :::
 
 ::: {custom-style="Skills"}
-Team building (up to 13 reports) | Cross-functional alignment | Board reporting
+[Example — pipe-separated skills for this category, e.g. "Team building | Cross-functional alignment | Board reporting"]
 :::
 ```
 
@@ -307,7 +307,7 @@ Team building (up to 13 reports) | Cross-functional alignment | Board reporting
 Use for company name in RoleTitle — ONE word or phrase per line, maximum:
 
 ```markdown
-[Visual Layer]{custom-style="BlueFont"}
+[Company Name]{custom-style="BlueFont"}
 ```
 
 ### Earlier line (collapsed older roles)

@@ -12,7 +12,7 @@ Your only job: check output against documented rules and return PASS or FAIL wit
 
 Before running any checks:
 - `skills/gatekeeper-checks/SKILL.md` — all check definitions for all three options
-- `references/01-candidate-rules.md` — required for CV content checks (Coro target market, app names, approved bullet exemptions)
+- `references/01-candidate-rules.md` — required for CV content checks (target market claims, app names, approved bullet exemptions)
 - `references/cover-letter-self-check.md` — required for Option 2 forbidden phrases and forbidden structures
 
 **For Option 2 (cover letter check) only:** Before running any checks, also read the delivered letters at `{{OUTPUT_FOLDER}}/final-pdfs-delivered`. Read the two or three letters closest in domain or role type to the role being checked. Use them as your register calibration for the voice checks in `cover-letter-self-check.md`.

@@ -53,9 +53,9 @@ These rules apply to every mode without exception. Read them before writing anyt
 
 **The fabrication rule** is defined once and authoritatively in `01-candidate-rules.md` Section 1. When in doubt: if a claim cannot be traced to documented facts in `02-candidate-background.md` (Role Facts), it does not exist.
 
-**Contentabl/freelancing scope — enforce on every draft.** Contentabl client work is fractional consulting. {{USER_FIRST_NAME}} NEVER owned, led, or ran the PMM function at any Contentabl client (Pentera, XM Cyber, BlinkOps, Cycode, Comeet, Akeyless, Alcide, Firebolt, Anodot, Portshift, Ionir, or any other client). The correct verb pattern is "delivered [specific work] for [client]" — never "owned PMM at," "led marketing at," or "ran the function at." This is the most common fabrication error and must be caught at draft stage. See `01-candidate-rules.md` Section 1 for the full prohibition with examples.
+**Consulting/fractional scope — enforce on every draft.** Consulting or fractional client work listed in `02-candidate-background.md` must be described at the correct scope. The correct verb pattern and prohibited overclaim patterns are defined in `01-candidate-rules.md` Section 1 — read and apply them. This is the most common fabrication error and must be caught at draft stage.
 
-**Snyk — cover letter context block is NOT a bullet source.** `02-candidate-background.md` (Role Facts) under Snyk contains a "Developer Security category" narrative block labeled "cover letter context only." Do NOT synthesize, paraphrase, or adapt CV bullets from that block. It exists to inform letter framing — not to supply CV content. All Snyk CV content must come from the role facts and approved bullets in `02-candidate-background.md` (Role Facts) only.
+**Cover letter context blocks are NOT bullet sources.** Some roles in `02-candidate-background.md` may contain cover letter context blocks labeled "cover letter context only." Do NOT synthesize, paraphrase, or adapt CV bullets from those blocks. They exist to inform letter framing — not to supply CV content. All CV content for a given role must come from the role facts and approved bullets in `02-candidate-background.md` (Role Facts) only.
 
 ### Section Scope — what cv-writer produces and does not produce
 
@@ -84,11 +84,11 @@ These rules apply to every mode without exception. Read them before writing anyt
 
 ### Experience Rules
 
-**Ordering:** `## EXPERIENCE` contains full-time employment only, in strict reverse chronological order. Contentabl does not appear here. Correct ordering and dates are in `02-candidate-background.md` (Role Facts).
+**Ordering:** `## EXPERIENCE` contains full-time employment only, in strict reverse chronological order. Consulting/fractional practices do not appear here. Correct ordering and dates are in `02-candidate-background.md` (Role Facts).
 
-**Lightrun and Firebolt must always appear.** Include each as a standalone entry in `## CONSULTING` (preferred — use the approved standalone entries from `02-candidate-background.md` (Role Facts)) or as bullets within the Contentabl section (use the approved folded bullets). Never omit either entirely.
+**Standalone consulting entries must always appear.** Any consulting engagement listed in `02-candidate-background.md` (Role Facts) as requiring a standalone entry must appear — either as a standalone entry in `## CONSULTING` (preferred — use the approved standalone entries from `02-candidate-background.md`) or folded into the main consulting section entry. Never omit an entry flagged as mandatory in the background file.
 
-**CONSULTING section:** Contentabl entries go in a separate `## CONSULTING` section. **Placement: `## CONSULTING` always comes AFTER the "Earlier:" line, never before it.** The correct order within the document is: named full-time experience roles → "Earlier:" aggregation line → `## CONSULTING`. Use the same RoleTitle / RoleOverview / RoleActivitiesList structure as Experience. The RoleOverview line should read: *"Running continuously, primarily between full-time roles, serving clients across cybersecurity, AI, developer tools, and HR tech."* Include date range and relevant bullets from `02-candidate-background.md` (Role Facts).
+**CONSULTING section:** Consulting/fractional entries go in a separate `## CONSULTING` section. **Placement: `## CONSULTING` always comes AFTER the "Earlier:" line, never before it.** The correct order within the document is: named full-time experience roles → "Earlier:" aggregation line → `## CONSULTING`. Use the same RoleTitle / RoleOverview / RoleActivitiesList structure as Experience. Include date range and relevant bullets from `02-candidate-background.md` (Role Facts).
 
 **RoleOverview — mandatory for every named role:** Every role entry requires a one-sentence RoleOverview immediately under the RoleTitle — company context and {{USER_FIRST_NAME}}'s scope in italic. Count RoleTitles and RoleOverviews before returning any draft; the numbers must match. SOLE Exception: the "Earlier:" aggregation line does not require a RoleOverview.
 

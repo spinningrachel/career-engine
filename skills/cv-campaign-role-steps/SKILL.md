@@ -21,13 +21,13 @@ Before processing the full queue, identify the warm-up role — the first role t
 1. If any role in the queue has priority `Highest` — use the first one.
 2. Otherwise, use the first `First` priority role in the queue.
 3. If no `Highest` or `First` exists — use the first role in the queue regardless of priority.
-4. Among ties, prefer Israel/Tel Aviv location over remote.
+4. Among ties, prefer {{USER_CITY}}/{{USER_COUNTRY}} location over remote.
 
 **After the warm-up role completes Steps 1 through 4.5 (draft → gatekeeper → reviews → revision → gatekeeper):**
 
 Extract recurring failure patterns from the gatekeeper violation logs. Specifically:
 - Any tool name found in bullets (e.g., "ZoomInfo found in VL bullets")
-- Any role missing RoleOverview (e.g., "Contentabl missing RoleOverview")
+- Any role missing RoleOverview (e.g., "[Company] missing RoleOverview")
 - Any verb used 3+ times (e.g., "'Built' appeared 4 times")
 - Any summary violation that repeated across loops
 
@@ -131,7 +131,7 @@ Read the following from Notion for this role:
 
 ### Step 5 — Cover letter (draft)
 
-**Before spawning letter-writer:** Read `02-candidate-background.md` (Role Facts) for {{USER_FIRST_NAME}}'s role facts — VL exit details, Coro scale, and function-building track record. Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
+**Before spawning letter-writer:** Read `02-candidate-background.md` (Role Facts) for {{USER_FIRST_NAME}}'s role facts — key proof points from `02-candidate-background.md` (Role Facts). Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
 
 **Before spawning, pass the following for this role:**
 - **Q&A property**, **Page body content**, and **`Additional Letter Writer Details`** — use the values retrieved in Pre-Step 5. Do not re-read from Notion.
@@ -239,7 +239,7 @@ Both the CV and the cover letter are now final markdown files saved to `/tmp/`. 
 
 Follow the `cv-campaign-export` skill's Step 6 production protocol exactly — it is the single authoritative source for pandoc commands, script paths, subtitle update, and verification. Do not substitute your own abbreviated steps. Both files must exist and be nonzero in the iCloud output folder before proceeding to Step 7.
 
-**Subtitle argument:** Pass the exact role title from the JD as the subtitle argument to `update-subtitle.py` — the job title {{USER_FIRST_NAME}} is applying for (e.g., "Head of Marketing"). This is the ONLY text that should appear in the subtitle slot under {{USER_FIRST_NAME}}'s name. Do not pass a generic descriptor, {{USER_FIRST_NAME}}'s background framing, or anything not directly taken from the JD role title field.
+**Subtitle argument:** Pass the exact role title from the JD as the subtitle argument to `update-subtitle.py` — the job title {{USER_FIRST_NAME}} is applying for (e.g., "[Role Title from JD]"). This is the ONLY text that should appear in the subtitle slot under {{USER_FIRST_NAME}}'s name. Do not pass a generic descriptor, {{USER_FIRST_NAME}}'s background framing, or anything not directly taken from the JD role title field.
 
 ---
 
@@ -370,7 +370,7 @@ Create the file on the first role; append on subsequent ones. Use the `/tmp→iC
 - `company_dir` — the kebab-case company directory name (same as used for the subdirectory)
 - `hm_cv_verdict` / `hm_cl_verdict` — record both verdicts separately; omit `hm_cl_verdict` if the cover letter loop did not complete
 - `date_first_advertised` / `remote_compatibility` — from the coach's research output; write `null` if not available (e.g., content-exists roles where coach skipped fetching)
-- All paths are relative to the campaign folder (e.g., `nuvoton/cv-{{USER_LAST_NAME}}-pmm-nuvoton-may2026.docx`). Hebrew files are not listed separately — they are in the same `company_dir` and accessible via the Draft Directory URL.
+- All paths are relative to the campaign folder (e.g., `company-name/cv-{{USER_LAST_NAME}}-[role-title]-company-name-may2026.docx`). Hebrew files are not listed separately — they are in the same `company_dir` and accessible via the Draft Directory URL.
 
 ### Step 7c — Write pipeline outputs to Notion properties
 

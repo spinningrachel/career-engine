@@ -74,8 +74,12 @@ Ask for the following. Use the placeholder name as the prompt — "What's your `
 | `{{USER_WEBSITE}}` | Personal website or portfolio domain |
 | `{{USER_LOCATION}}` | City, Country |
 | `{{USER_CITIZENSHIP}}` | Citizenship or right to work |
+| `{{USER_PROFESSION}}` | Your profession or function (e.g., "marketing", "software engineering", "product design", "sales", "data science") |
+| `{{USER_CITY}}` | City you are based in |
+| `{{USER_COUNTRY}}` | Country you are based in |
+| `{{USER_FUNCTION_SENIORITY_HIERARCHY}}` | Typical title tiers in your function from most senior to IC (e.g., for marketing: "CMO → VP → Head/Director → Manager → IC") |
 
-Write answers into `01-candidate-rules.md` Section 8. Write `{{USER_FIRST_NAME}}`, `{{USER_FULL_NAME}}`, and `{{USER_LAST_NAME}}` into every occurrence across all three reference files.
+Write answers into `01-candidate-rules.md` Section 8. Write `{{USER_FIRST_NAME}}`, `{{USER_FULL_NAME}}`, and `{{USER_LAST_NAME}}` into every occurrence across all three reference files. Write `{{USER_PROFESSION}}`, `{{USER_CITY}}`, `{{USER_COUNTRY}}`, and `{{USER_FUNCTION_SENIORITY_HIERARCHY}}` into every occurrence across all skill and agent files.
 
 Confirm: "Done. Let's move to your career materials."
 

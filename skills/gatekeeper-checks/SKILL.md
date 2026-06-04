@@ -53,16 +53,15 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 - No company, client, or conference names — descriptors only (prohibited list in `01-candidate-rules.md` Section 1)
 - The summary should open with language most relevant to the hiring manager and the role being applied for. No specific role is required to appear — the summary's job is to lead with {{USER_FIRST_NAME}}'s strongest, most relevant credentials for this opening. Do not fail on the absence of any particular role, including the most recent one.
 - ≤120 words, 1 paragraph, ≤4 sentences
-- No tool/platform names, Contentabl client names, or metrics not documented as summary-appropriate
+- No tool/platform names, consulting client names, or metrics not documented as summary-appropriate
 - None of these phrases: "comfortable operating across", "proven track record", "passionate about", "results-driven", "dynamic", "extensive experience" — **advisory only if found; do not fail or loop**
 
 **Experience**
 - `## EXPERIENCE` contains full-time employment only, in reverse-chronological order by end date
-- Contentabl appears in `## CONSULTING`, not `## EXPERIENCE` — flag if found in the Experience section
-- Lightrun appears somewhere in the CV — either as a standalone entry in `## CONSULTING` or as a bullet within Contentabl — FAIL if absent entirely
-- Firebolt appears somewhere in the CV — either as a standalone entry in `## CONSULTING` or as a bullet within Contentabl — FAIL if absent entirely
+- Any consulting/fractional practice appears in `## CONSULTING`, not `## EXPERIENCE` — flag if found in the Experience section
+- Any consulting entry flagged as mandatory in `02-candidate-background.md` appears somewhere in the CV — either as a standalone entry in `## CONSULTING` or as a bullet within the main consulting section — FAIL if absent entirely
 - The "Earlier:" line appears as the final entry inside `## EXPERIENCE`, before the `## CONSULTING` section header — FAIL if Earlier appears after CONSULTING
-- Coro target market matches `02-candidate-background.md` (Role Facts)
+- Claims about target market match `02-candidate-background.md` (Role Facts)
 - No app/tool names inside bullets: HubSpot, Salesforce, Salesloft, Moosend, Webflow, Mintlify, Chameleon, HeyReach, ZoomInfo, Chorus.ai, Notion, Jira, Slack — approved bullets from `02-candidate-background.md` are exempt
 - Every named role has a RoleOverview immediately below its RoleTitle — count must match (Earlier: exempt)
 
@@ -93,7 +92,7 @@ The orchestrator should pass whether `Additional Letter Writer Details` is popul
 - **If empty or not passed:** FAIL if the letter contains any of the following — any sentence analysing, describing, commenting on, or referencing the hiring company's positioning, messaging, or how they frame their product in the market. This includes: direct positioning observations ("your framing of X as Y is interesting"), indirect references that imply positioning awareness ("a company that understands the X problem"), and any sentence where {{USER_FIRST_NAME}} positions herself as having studied their market strategy. The "no analyst paragraph" check below is the specific violation to flag.
 
 **Content**
-- VL EXIT signal woven into the body (not a standalone boilerplate sentence): "Visual Layer", "ARR from $1M to $3M", "acquisition", "Camtek", "$7M"
+- Key proof signals from the most recent role in `02-candidate-background.md` are woven naturally into the body (not as a standalone boilerplate sentence)
 - No fit claims: "this role has my name on it", "I was made for this role", "I'm the perfect candidate", "perfect fit", "couldn't be a better fit"
 - No gap volunteering: "Full disclosure:" + scope claims; "whether that's the fit you need"; any sentence pre-empting a concern the hiring manager hasn't raised
 - No analyst paragraph in the body: any paragraph describing the company's product, positioning, or market back to them; any market observation from outside ("in a crowded X market", "a genuinely differentiated story"); any capability announcement without named proof ("that translation is where I live", "that's the work I do", "that's where I operate"). {{USER_FIRST_NAME}} must be the subject of every paragraph, speaking from named experience. FAIL if any paragraph reads as {{USER_FIRST_NAME}} analysing the company rather than demonstrating her own work. **This check is always active, regardless of `Additional Letter Writer Details` — even when that field is populated, analyst paragraphs that are not directly sourced from {{USER_FIRST_NAME}}'s instructions in that field still fail.**
@@ -119,11 +118,11 @@ Check for the following failure patterns — any one is a fail:
 
 **Pattern E — Product or category flattery:** Opener compliments the company's **specific** terminology, product framing, or positioning. Pattern: "'[Company term]' is a genuinely smart framing" · "'Security Operations Resilience' is not just a buzzword" · "Calling it [Company name]" is a refreshingly honest take on [market]." Positions {{USER_FIRST_NAME}} as an observer validating the company. **Scope clarification:** Pattern E is about company-specific compliments only — not about general market observations. Do NOT apply Pattern E to sentences about the industry broadly; those are Pattern G or Pattern G2.
 
-**Pattern F — Availability statement:** Opener leads with {{USER_FIRST_NAME}}'s current status. Pattern: "I just wrapped up at [Company]..." as the first move. The VL exit belongs integrated into the letter, not as the opening sentence.
+**Pattern F — Availability statement:** Opener leads with {{USER_FIRST_NAME}}'s current status. Pattern: "I just wrapped up at [Company]..." as the first move. A recent exit belongs integrated into the letter, not as the opening sentence.
 
 **Pattern G — Generic industry observation:** The opening paragraph's subject is a market category, stage, or type of company rather than {{USER_FIRST_NAME}}. Pattern: "B2B tech companies hiring at the growth stage usually need someone who can operate at both ends simultaneously." · "The hardest part of selling security is that every vendor says the same thing."
 
-**Pattern G2 — {{USER_FIRST_NAME}}-as-subject-but-market-as-claim:** {{USER_FIRST_NAME}} IS the grammatical subject of the first sentence, but the sentence immediately pivots to a general claim about "the job," "the market," or "the problem" as if {{USER_FIRST_NAME}} is explaining the industry to the reader. Pattern: "I've spent six years in cybersecurity PMM, and the job — above everything else — is finding the right words for a market where half the vendors say the same thing." · "I've been doing this long enough to know that the real challenge in [space] is [general observation]." The tell: the clause after "and" or the subordinate clause is a market/industry insight, not a personal reaction to THIS role. {{USER_FIRST_NAME}} sounds like she's lecturing about the market rather than saying why she wants this specific job.
+**Pattern G2 — {{USER_FIRST_NAME}}-as-subject-but-market-as-claim:** {{USER_FIRST_NAME}} IS the grammatical subject of the first sentence, but the sentence immediately pivots to a general claim about "the job," "the market," or "the problem" as if {{USER_FIRST_NAME}} is explaining the industry to the reader. Pattern: "I've spent six years in [field], and the job — above everything else — is [general market observation]." [Example from your background] · "I've been doing this long enough to know that the real challenge in [space] is [general observation]." The tell: the clause after "and" or the subordinate clause is a market/industry insight, not a personal reaction to THIS role. {{USER_FIRST_NAME}} sounds like she's lecturing about the market rather than saying why she wants this specific job.
 
 **Pattern H — Company-specific hook substituting for a reaction:** Opener quotes the company's tagline, names a prior technical challenge as a credential hook, or names an exact client as domain proof. These feel researched but position {{USER_FIRST_NAME}} as doing due diligence rather than reacting to the opportunity. Company-specific knowledge belongs in paragraph 2 as proof.
 

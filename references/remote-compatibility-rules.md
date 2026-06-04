@@ -1,6 +1,6 @@
 ---
 name: remote-compatibility-rules
-description: Rules for assessing whether a role is compatible with {{USER_FIRST_NAME}}'s Israel-based location. Load before scoring priority on any role. Covers not-compatible, confirmed-compatible, and ambiguous patterns with research guidance.
+description: Rules for assessing whether a role is compatible with {{USER_FIRST_NAME}}'s {{USER_COUNTRY}}-based location. Load before scoring priority on any role. Covers not-compatible, confirmed-compatible, and ambiguous patterns with research guidance.
 ---
 
 # Remote Compatibility Rules
@@ -9,19 +9,19 @@ This check is mandatory before scoring priority. "Remote" does not mean the same
 
 ## Rules (in priority order)
 
-**NOT compatible with Israel-based candidates:**
-- Remote(US), Remote – United States, Remote (US only), "Must be authorized to work in the US" — hard no
-- Remote(UK), Remote(EU), Remote(Canada), Remote(Germany) etc. with a specific non-Israel country — NOT compatible unless Israel or EMEA broadly is explicitly included elsewhere
+**NOT compatible with {{USER_COUNTRY}}-based candidates:**
+- Remote(US), Remote – United States, Remote (US only), "Must be authorized to work in the US" — hard no if {{USER_COUNTRY}} is not the US
+- Remote with a specific country qualifier that excludes {{USER_COUNTRY}} — NOT compatible unless {{USER_COUNTRY}} or the relevant region broadly is explicitly included elsewhere
 - Any role requiring work authorization in a specific country {{USER_FIRST_NAME}} is not authorized to work in
 
 **Confirmed worldwide compatible:**
 - "Remote (Worldwide)", "Work from anywhere", "Open to candidates globally", "No timezone restrictions"
 - Remote with no country qualifier AND the company's other open roles consistently show no country qualifier
-- "Remote + EMEA" or "Remote + [list that includes Israel or the EMEA region broadly]"
+- "Remote + [region that includes {{USER_COUNTRY}}]"
 - Company About page explicitly states a distributed global team
 
 **Ambiguous — requires research:**
-- "Remote" with no country qualifier on this role, BUT other roles at the same company say "Remote(US)" → treat as NOT compatible
+- "Remote" with no country qualifier on this role, BUT other roles at the same company have country-specific qualifiers → treat as NOT compatible unless confirmed otherwise
 - "Remote" with no qualifier and the company's hiring pattern is unclear → flag as ambiguous and state what was checked
 - Hybrid or remote-first language without geographic scope → research the company's hiring page
 

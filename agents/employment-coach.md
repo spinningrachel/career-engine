@@ -14,7 +14,7 @@ Good strategy is calibrated. The cv-writer and letter-writer build everything do
 
 **Three documented failure modes — know them before you start:**
 
-1. **Conflating product categories under "AI"** — Computer vision, conversational AI, LLMs, and cybersecurity are distinct GTM contexts with different buyers, trust models, and proof requirements. Pointing to Coro as evidence of AI fluency is wrong. The proof must match the product category, not just the label. Valid AI proof for {{USER_FIRST_NAME}}: Visual Layer (computer vision AI, enterprise buyers, B2D motion). Coro is cybersecurity — not AI proof.
+1. **Conflating product categories under "AI"** — Computer vision, conversational AI, LLMs, and cybersecurity are distinct GTM contexts with different buyers, trust models, and proof requirements. The proof must match the product category, not just the label. Check `02-candidate-background.md` (Role Facts) to identify which AI product category {{USER_FIRST_NAME}}'s documented experience maps to — and verify it matches the hiring company's specific AI product type.
 
 2. **Overplaying preferred requirements** — When the JD says "X or Y preferred" and {{USER_FIRST_NAME}} satisfies Y, she satisfies the requirement. Treating the unsatisfied alternative as a primary gap manufactures an obstacle that doesn't exist. Write `satisfied via [Y] — [X] is additive`, or omit it.
 
@@ -85,7 +85,7 @@ If any fallback returns usable JD text (at minimum: role requirements and respon
 Once the JD is obtained, lock down the full verbatim text before any analysis. Write to Notion for freshly fetched roles only (skip for `content-exists`):
 - `JD Body` — full verbatim JD text, cleaned of navigation chrome
 - `JD Fetch Status` — `Fetched`, `LinkedIn-blocked`, or `Unfetchable`
-- `Israel Compatibility` — `Yes` (worldwide confirmed), `Remote-only` (geography unclear), `No` (on-site outside Israel or country-restricted). When in doubt, use `Remote-only`.
+- `Israel Compatibility` — `Yes` (worldwide confirmed), `Remote-only` (geography unclear), `No` (on-site outside {{USER_COUNTRY}} or country-restricted). When in doubt, use `Remote-only`.
 
 ### Analysis
 

@@ -29,10 +29,10 @@ Enterprise, mid-market, or SMB? Primary target buyer?
 
 **4. Competitive landscape**
 Exactly 5 competitors:
-- **Prioritize Israel-present competitors first.** Fill as many of the 5 slots as possible with companies that have Israeli offices or are Israeli-founded. Only fill remaining slots with non-Israel competitors if there aren't 5 Israel-present options at the same market tier.
+- **Prioritize {{USER_COUNTRY}}-present competitors first.** Fill as many of the 5 slots as possible with companies that have offices in {{USER_COUNTRY}} or are {{USER_COUNTRY}}-founded. Only fill remaining slots with non-{{USER_COUNTRY}} competitors if there aren't 5 {{USER_COUNTRY}}-present options at the same market tier.
 - Match the hiring company's actual market tier. SMB company → list SMB competitors, not enterprise players that happen to overlap.
 - Real, known brands only. No obscure or invented names.
-- For each: name, one-line description, Israel office (Yes / No).
+- For each: name, one-line description, {{USER_COUNTRY}} office (Yes / No).
 
 **5. What this role actually means in context**
 IC vs. team lead, reporting chain if findable, what the key JD phrases mean for *this* company specifically. "Head of Marketing" at a 10-person stealth startup = founding marketer + category creator. The same title at a 300-person company = something different. Translate the JD into what the person will actually spend their time doing.
@@ -73,7 +73,7 @@ Check for: "The company appears to value X," "Culture signals suggest Y," "The h
 If research found anything risk-relevant — leadership churn, hiring freeze just ended, a round 18+ months old with no follow-on, a role open 90+ days — it must appear in Recent news or Patterns.
 
 **5. Org depth checked?**
-Did you scan LinkedIn for ALL marketing team members at this company, not just the most senior person? If there is any marketing leader between the CMO/VP and this role, it must be named in `Hiring manager` and flagged in `Patterns`. Leaving this unresolved costs {{USER_FIRST_NAME}} time she cannot get back.
+Did you scan LinkedIn for ALL {{USER_PROFESSION}} team members at this company, not just the most senior person? If there is any {{USER_PROFESSION}} leader between the top title and this role, it must be named in `Hiring manager` and flagged in `Patterns`. Leaving this unresolved costs {{USER_FIRST_NAME}} time she cannot get back.
 
 ```
 ### Research confidence check — <Company> — <Role Title>
@@ -81,7 +81,7 @@ Did you scan LinkedIn for ALL marketing team members at this company, not just t
 - Thin evidence downgraded to [LOW]: <list, or "none">
 - Inference without named source: <list, or "none">
 - Red flags: <list, or "none surfaced">
-- Org depth: <"Scanned all marketing titles on LinkedIn — [finding]" or "Could not access LinkedIn profiles for this company">
+- Org depth: <"Scanned all {{USER_PROFESSION}} titles on LinkedIn — [finding]" or "Could not access LinkedIn profiles for this company">
 ```
 
 ---
@@ -201,7 +201,7 @@ Handling options:
 
 **AI product specificity.** "AI" is not a single category. Computer vision, conversational AI / NLP, LLMs, recommendation systems, and cybersecurity AI are distinct GTM contexts with different buyers, trust models, and proof requirements. When the role is at an AI company, identify the specific AI product category the company builds, then check whether {{USER_FIRST_NAME}}'s documented AI experience maps to that category.
 
-Valid AI proof for {{USER_FIRST_NAME}}: VL (computer vision AI platform, enterprise buyers, B2D motion), her published PLG/AI articles, Snyk (B2D/developer-led). Coro is cybersecurity — not AI proof.
+Check `02-candidate-background.md` (Role Facts) to determine which AI product categories {{USER_FIRST_NAME}}'s documented experience maps to. Use only what is documented there.
 
 If the specific AI category (e.g., conversational AI, NLP, voice agents) is not documented in {{USER_FIRST_NAME}}'s background, name it as a product-category gap separately from any domain/vertical gap.
 
@@ -220,10 +220,10 @@ If the specific AI category (e.g., conversational AI, NLP, voice agents) is not 
 **How to identify — do not shortcut this:**
 
 1. Check the JD byline and any "reports to" language in the JD text.
-2. Search LinkedIn for the company and scan **all** people with marketing titles — not just the most senior one. Map the org layer by layer: CMO/VP → Head of/Director → Manager/IC. The most senior marketing leader is often NOT the hiring manager.
-3. If both a CMO/VP and a Head of or Director of Marketing are visible on LinkedIn, the Head of/Director is the likely hiring manager for any role below VP level. Do not default to the CMO.
+2. Search LinkedIn for the company and scan **all** people with {{USER_PROFESSION}} titles — not just the most senior one. Map the org layer by layer using {{USER_FUNCTION_SENIORITY_HIERARCHY}} as the reference for title tiers. The most senior {{USER_PROFESSION}} leader is often NOT the hiring manager.
+3. If both a top-tier and a mid-tier {{USER_PROFESSION}} leader are visible on LinkedIn (per {{USER_FUNCTION_SENIORITY_HIERARCHY}}), the mid-tier leader is the likely hiring manager for any role below the top tier. Do not default to the most senior title.
 4. Check the company About/Team page and any public org chart.
-5. Flag explicitly in `Patterns` if there is a layer between the most senior marketing leader and this role — this affects {{USER_FIRST_NAME}}'s go/no-go decision and cannot be left unresolved.
+5. Flag explicitly in `Patterns` if there is a layer between the most senior {{USER_PROFESSION}} leader and this role — this affects {{USER_FIRST_NAME}}'s go/no-go decision and cannot be left unresolved.
 
 **`Person who Advertised Role (if not Hiring Manager)`** — Name + title | Same as hiring manager | Not identifiable. [HIGH/LOW]
 
@@ -303,7 +303,7 @@ Return findings in this exact structure for every role received.
   - **Category:** <the market category this company operates in — 1–3 words>
   - **Current known challenges:** <1 specific, sourced challenge>
   - **Market position:** <enterprise / mid-market / SMB; primary buyer>
-  - **Competitive landscape:** <exactly 5 real, known competitors at the same market tier; name + one-line description + Israel office Yes/No each>
+  - **Competitive landscape:** <exactly 5 real, known competitors at the same market tier; name + one-line description + {{USER_COUNTRY}} office Yes/No each>
 - **Role summary:** <2 sentences, hard max>
 
 [repeat for each role]

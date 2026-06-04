@@ -80,9 +80,9 @@ These use {{USER_FIRST_NAME}}'s documented experience. Every claim in the strong
 
 | Weak (duty statement) | Strong (XYZ formula) |
 |---|---|
-| Responsible for managing the PMM team at Coro. | Built and led a 13-person PMM function — PR/analyst, social, field, PMM, technical writing — during 300% YoY revenue growth and $1M+ quarterly ACV. |
-| Managed documentation for the Camtek integration. | Delivered five production-grade integration guides for two distinct audiences (Camtek internal engineers and end customers) — the complete knowledge transfer infrastructure for a multi-million-dollar acquisition. |
-| Worked on developer portal at Lytx. | Built a 300-page developer portal that reduced partner onboarding time by 35%. |
+| Responsible for managing the [function] team at [Company]. | Built and led a [N]-person [function] team — [sub-disciplines] — during [metric: growth/revenue/etc.]. |
+| Managed documentation for the [integration/product]. | Delivered [specific deliverable] for [audiences] — [named outcome or scope of impact]. |
+| Worked on [project] at [Company]. | Built [specific output] that [named, measurable outcome]. |
 
 ### Rules for new bullet composition
 

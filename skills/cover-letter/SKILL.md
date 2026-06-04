@@ -157,8 +157,8 @@ An analyst describes the market. A candidate tells you what the opportunity did 
 The opener has one job: within the first two sentences, the reader must know exactly why this specific person is writing to this specific company right now. That context must be non-transferable — it could not appear in a letter to a different company.
 
 How it achieves that varies. Delivered letters have used:
-- A genuine emotional reaction + the credential that earns it ("I nearly screamed when I saw this role. Because I was just doing it at Visual Layer...")
-- An existing relationship ("I've worked for XM Cyber already when I was freelancing...")
+- A genuine emotional reaction + the credential that earns it ("I nearly screamed when I saw this role. Because I was just doing it at [Company]...")
+- An existing relationship ("I've worked for [Company] already when I was freelancing...")
 - A personal tension that explains the application ("I daydream about consumer campaigns. I've spent 15 years in B2B...")
 - A value claim that names their mandate and pivots to Rachel's answer ("You're looking for a strategic builder — that's the work I do.")
 - A warm connection that sets human context first ("Thanks for the WhatsApp chat...")
@@ -233,7 +233,7 @@ A bullet list is appropriate in exactly two situations:
 
 3. **Proof paragraph(s) — one job each.** One to three paragraphs, each doing exactly one thing: a pattern of experience across companies, a specific story that adds something the CV doesn't say, or documented product/company familiarity.
 
-   **The central failure to avoid:** VL exit details and Coro credentials have appeared as verbatim, unchanged standalone paragraphs across many letters — producing 60–70% identical prose. These facts belong in sentences doing a specific job for THIS letter, connected to why this role at this company is the right next move.
+   **The central failure to avoid:** Key credentials from recent roles have appeared as verbatim, unchanged standalone paragraphs across many letters — producing 60–70% identical prose. These facts belong in sentences doing a specific job for THIS letter, connected to why this role at this company is the right next move.
 
    **No restatement with different adjectives.** "Established, structured team" followed by "stable, mature organization where the foundational infrastructure is already built" is one idea said twice. Pick the sharper phrasing and cut the other. Each sentence should introduce something the previous one didn't.
 
@@ -287,7 +287,7 @@ These rules apply to every claim and every framing decision in the letter body.
 **"I'm passionate about..."** — not banned, but do not overdo it. Once per letter at most.
 
 **Voice mechanics for self-description:** When describing {{USER_FIRST_NAME}}'s approach or working style, use first-person direct construction — not analysis from outside. "In my work, I emphasize..." not "My approach emphasizes..." / "I tend to..." not "My style involves..." The content is the same; the subject is {{USER_FIRST_NAME}}, not a description of {{USER_FIRST_NAME}}.
-- **Approach-announcement via label — forbidden:** "My approach is deliberately X: Y, Z, W." / "I take a research-first approach to positioning." These announce the methodology as a named label before demonstrating it. Show the approach in action. **Fail:** "My thought leadership approach is deliberately slow-is-the-winner: every deliverable I produce is backed by a thinking process I can stand behind." **Fix:** "At Visual Layer, I spent the first three weeks interviewing buyers before writing a line of copy."
+- **Approach-announcement via label — forbidden:** "My approach is deliberately X: Y, Z, W." / "I take a research-first approach to positioning." These announce the methodology as a named label before demonstrating it. Show the approach in action. **Fail:** "My thought leadership approach is deliberately slow-is-the-winner: every deliverable I produce is backed by a thinking process I can stand behind." **Fix:** "At [Company], I spent the first three weeks interviewing buyers before writing a line of copy."
 
 ---
 
@@ -335,8 +335,7 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 **Template:**
 > At [Company], [the buyer insight in plain language — what they actually care about, not features]. [One specific thing you built to respond to that]. [Company/role you're applying to] follows the same logic.
 
-**Example:**
-At Coro, it became abundantly clear to us that the real differentiator for us was that SMB owners and the IT people responsible for their cybersecurity — on top of so many other responsibilities at SMBs — simply can't be caught with their pants down because that's what makes or breaks the business (quite literally at that business size). We didn't open with cybersecurity features ever. The opening was always about compliance and risk mitigation. We built a compliance resource hub with 20+ frameworks, including HIPAA, specifically so procurement had an answer before they asked. Healthcare AI procurement follows the same logic.
+**Example:** [Example from your background — see your worked examples in the personalized version]
 
 ---
 
@@ -349,10 +348,7 @@ At Coro, it became abundantly clear to us that the real differentiator for us wa
 **Template:**
 > [Genuine passion statement — why this work specifically, not "I'm passionate about PLG"]. [First exposure: company, what you did or saw]. [What you've seen since — success, failure, the range]. [Substantive insight: what you know now that you didn't then — when PLG works, what it requires, what kills it.]
 
-**Example:**
-I love PLG because I simply find the work behind it absolutely fascinating and challenging both. I first learned about the PLG motion via Snyk, which is truly one of the best examples of a successful PLG-to-enterprise motion, still an active pipeline for them to this day and still successful after so many years. Since that time, I've also seen other awesome examples in the wild, and I've seen it fail.
-
-I have a deep understanding of the PLG motion from both sides of the table, really internalizing PLG approaches when I see them, as a buyer and as a representative of the vendor. PLG must be data-driven, embedded into the overall Sales strategy and it must include data from across the company. Otherwise, it will be a failure from the start.
+**Example:** [Example from your background — see your worked examples in the personalized version]
 
 ---
 
@@ -428,7 +424,7 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 > [Name the reader's likely question or hesitation — directly, without apology]. [Answer it immediately with named proof — company, outcome, or specific experience that closes the gap].
 
 **Example:**
-> You're probably looking at my background and asking where insurance is. The honest answer: the buying motion is identical to what I built at Coro — compliance first, features second, trust before the sale.
+> [Example from your background — see your worked examples in the personalized version]
 
 ---
 
@@ -445,7 +441,7 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 > I've spent [X] years being the one who [does the thing most marketers don't] — at [Company], at [Company]. [The market observation as context: most marketers don't get there, even for products that look straightforward]. [One sentence: why this role/company is the same problem.]
 
 **Example:**
-> I've spent fifteen years being the one in the room who actually understands what makes a product technically different — at Snyk before AppSec was a category, at Visual Layer, at Coro. Most marketers don't get there, even for products that don't look technical on the surface. That gap is what this role is trying to close.
+> [Example from your background — see your worked examples in the personalized version]
 
 ---
 
@@ -460,8 +456,7 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 **Template:**
 > Reading the [Company] posting, it was clear you're looking for [what they need] — and that's the work I do. [Value proposition in one sentence — what {{USER_FIRST_NAME}} does, what integrity/outcome it produces.] I get there by [HOW in a brief, non-exhaustive clause]. [Domain connection — why this company is the natural next step, grounded in a specific, named thread from {{USER_FIRST_NAME}}'s background.] And I'm confident the team at [Company] won't be sorry.
 
-**Example:** [Lemonade letter — {{USER_FIRST_NAME}}'s own]
-> Reading the Lemonade posting, it was clear you're looking for a strategic builder — and that's the work I do. I turn complex products into clear narratives that land with the right audiences without losing integrity, even under regulatory scrutiny or with skeptical buyers. I get there by immersing myself in the product, learning directly from customers, and running the research myself. After years in regulated, trust-dependent categories — cyber insurance at Coro, fleet insurance at Lytx — where full disclosure and human-in-the-loop accountability are the buying criteria, Lemonade feels to me like the natural next chapter in my career. And I'm confident the team at Lemonade won't be sorry.
+**Example:** [Example from your background — see your worked examples in the personalized version]
 
 **What makes this work:** The company is named twice. The value claim arrives in sentence two. The methodology is named in a clause, not narrated as a case study. The domain connection is specific and earned (insurance → insurance). The close is warm and confident, not a permission-ask.
 
@@ -479,9 +474,9 @@ One paragraph from the Ultralytics letter, annotated for the syntactic choices t
 
 "I" as subject. Short finite verb ("nearly screamed"). The em dash introduces a second independent clause — not a subordinate clause embedded inside the predicate. "When I saw this role" is a short adverbial — not a wh-clause stacked into the predicate object.
 
-> *Because I was just doing it over the last year as the marketing leader at Visual Layer, a direct competitor of Ultralytics that grew ARR from $1M to $3M and was acquired by Camtek (Nasdaq: CAMT) on just $7M in seed.*
+> *Because I was just doing it over the last year as the [function] leader at [Company A], a direct competitor of [Company B] that [key outcome metric] and was [exit/milestone].*
 
-Deliberate causal fragment. "I" as subject. "Was just doing it" — short finite verb, predicate complete in five words. All complexity enters after the predicate via appositives: "as the marketing leader at Visual Layer" (adverbial), "a direct competitor of Ultralytics" (appositive bolted to the noun), "that grew ARR from $1M to $3M" (relative clause on the appositive — not on the main predicate). The main predicate stays clean.
+Deliberate causal fragment. "I" as subject. "Was just doing it" — short finite verb, predicate complete in five words. All complexity enters after the predicate via appositives: "as the [function] leader at [Company A]" (adverbial), "a direct competitor of [Company B]" (appositive bolted to the noun), "that [key outcome]" (relative clause on the appositive — not on the main predicate). The main predicate stays clean.
 
 ---
 
@@ -509,7 +504,7 @@ This pattern appears in the body as often as the opener. It is banned everywhere
 Run before writing the first sentence.
 
 **Q1 — What is the one specific thing {{USER_FIRST_NAME}} reacted to?** Must be specific to THIS role, THIS company, THIS moment. Test: could this sentence appear unchanged in a letter to a different company? If yes, it fails.
-- Pass: "Direct competitor — she just wrapped the exact same job at Visual Layer." / "Compliance is the GTM motion AND build-from-scratch AND PLG — three things she loves, all in one role."
+- Pass: "Direct competitor — she just wrapped the exact same job at [Company]." / "Compliance is the GTM motion AND build-from-scratch AND PLG — three things she loves, all in one role."
 - Fail: "I love building PMM from scratch." (true of every letter)
 
 **Q2 — What makes that reaction credible, in one sentence?** A company name, a number, or a named deliverable. One sentence only.
