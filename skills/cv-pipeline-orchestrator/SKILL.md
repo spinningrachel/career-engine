@@ -104,8 +104,6 @@ Each Notion property in the Job Applications database has a single designated ow
 
 **Letter-writer owns:** `Q&A` (interview questions generated in Step 0.9c). This property must also receive an explicit value or `N/A` — it is never left blank after the letter-writer has run.
 
-**{{USER_FIRST_NAME}} owns exclusively:** `Additional Letter Writer Details`. This field is {{USER_FIRST_NAME}}'s response after reviewing the PMM Expert's positioning analysis from the standalone research pipeline. Agents read it — never write to it. If empty, agents apply the positioning restriction (no company positioning content in the letter). If populated, agents include only what {{USER_FIRST_NAME}} specified.
-
 **The `Note` field is {{USER_FIRST_NAME}}'s space.** Agents may write to it only for context that structured properties cannot carry — never to repeat or summarize content already in a structured property.
 
 ---

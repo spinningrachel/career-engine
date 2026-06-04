@@ -117,8 +117,6 @@ Read the following from Notion for this role:
 
 **Page body content** — Optional additional background {{USER_FIRST_NAME}} may have added (her reaction to the role, any context she wants in the letter). Include if present. If blank, skip — it is not required.
 
-**`Additional Letter Writer Details` property** — {{USER_FIRST_NAME}}'s response to the PMM Expert's positioning analysis from the standalone research pipeline. **The PMM expert agent does NOT run as part of this pipeline — it runs in the standalone intake (coach skill) only.** This field is populated by {{USER_FIRST_NAME}} after she reviews the PMM expert's output there. Read it here and pass it to letter-writer. If populated, the letter may reference the hiring company's positioning per {{USER_FIRST_NAME}}'s instructions. If empty or absent, letter-writer must NOT reference, analyse, or comment on the company's positioning in any part of the letter.
-
 **If both Q&A and page body are empty:** Do NOT proceed to Step 5 for this role. Spawn `letter-writer` with `option=interview-questions` for this role (passing the JD, company name, role title, and coach output), write the returned questions to the `Q&A` property in Notion, and log this role as "Letter skipped — awaiting intake." Then skip to the next role in the pipeline. If this is the only role in the run, end the pipeline after logging and surface this message to {{USER_FIRST_NAME}}:
 
 > **Letter skipped for [Company] — [Role Title].** Q&A and page body are both empty. Intake questions have been written to the Notion row. Answer them there, then re-run the pipeline for this role.
@@ -132,7 +130,7 @@ Read the following from Notion for this role:
 **Before spawning letter-writer:** Read `02-candidate-background.md` (Role Facts) for {{USER_FIRST_NAME}}'s role facts — key proof points from `02-candidate-background.md` (Role Facts). Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
 
 **Before spawning, pass the following for this role:**
-- **Q&A property**, **Page body content**, and **`Additional Letter Writer Details`** — use the values retrieved in Pre-Step 5. Do not re-read from Notion.
+- **Q&A property** and **Page body content** — use the values retrieved in Pre-Step 5. Do not re-read from Notion.
 - **Strategy** property — from the employment coach
 - **Gap handling** property — from the employment coach
 
@@ -148,7 +146,6 @@ Spawn `letter-writer` with `option=cover-letter`, passing:
 - The HM CV verdict from Step 3 — if Conditional, quote the specific condition verbatim so letter-writer knows upfront what the cover letter must address
 - **Q&A** from Notion (read above) — primary content input; include if populated
 - **Page body content** from Notion (read above) — supplementary; include if present
-- **`Additional Letter Writer Details`** from Notion — governs all company positioning content; if empty, include this instruction verbatim: "Additional Letter Writer Details is empty — do not reference, analyse, describe, or comment on the hiring company's positioning anywhere in this letter."
 - **Strategy** and **Gap handling** from Notion (read above) — secondary context; defer to Q&A and page body content on any conflict
 
 **Orchestrator quality read — before passing to gatekeeper:**
@@ -163,7 +160,7 @@ If the answer to any of these is "no," return to `letter-writer` with `option=co
 
 ### Step 5.2 — Gatekeeper (cover letter draft check)
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Q&A answers and page body content (from the Pre-Step 5 read), and whether `Additional Letter Writer Details` is populated or empty. The Q&A and page body content allows the gatekeeper to apply the Q&A exemption correctly — see the exemption rule at the top of Option 2 in `gatekeeper-checks/SKILL.md`.
+Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Q&A answers and page body content (from the Pre-Step 5 read). The Q&A and page body content allows the gatekeeper to apply the Q&A exemption correctly — see the exemption rule at the top of Option 2 in `gatekeeper-checks/SKILL.md`.
 
 **If PASS:** proceed to Step 5.3.
 
@@ -206,7 +203,7 @@ cp /tmp/<coverletter_filename>.md "<output_dir>/<company_dir>/<coverletter_filen
 
 ### Step 5.8 — Gatekeeper (cover letter final check)
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the revised cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Q&A answers and page body content (same as Step 5.2), and whether `Additional Letter Writer Details` is populated or empty.
+Spawn `gatekeeper` with `option=cover-letter`, passing the revised cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Q&A answers and page body content (same as Step 5.2).
 
 **If PASS:** proceed to Step 5.9.
 

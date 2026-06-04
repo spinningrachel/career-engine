@@ -28,7 +28,6 @@ Called by the cv-pipeline-orchestrator after the coach, CV writer, and gatekeepe
 - `Relationship type` — Full time / Part time / Temporary / Fractional
 - `Keywords` — for CV coherence checking only; do not drive letter structure
 - `Q&A` — {{USER_FIRST_NAME}}'s answers to intake questions; both content and tone signal
-- `Additional Letter Writer Details` — PMM research angles {{USER_FIRST_NAME}} chose to include; if empty, do not reference company positioning anywhere in the letter
 
 **From Notion (page body):**
 - Page body content — {{USER_FIRST_NAME}}'s written reaction to the role; treat as a voice sample, not a draft

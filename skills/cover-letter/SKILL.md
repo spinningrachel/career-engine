@@ -94,9 +94,7 @@ Page body and Q&A supply the opener's content and angle. {{USER_FIRST_NAME}}'s g
 
 **Role emphasis governs proof selection.** Which companies to surface, which outcomes to lead with, what the proof paragraphs need to demonstrate — this is the coach's call, not {{USER_FIRST_NAME}}'s Q&A. If her Q&A gives you a great story, ask: does it address what Role emphasis says the letter needs to prove? If yes, use it prominently. If the story is interesting but off-strategy, include it briefly or set aside.
 
-**Additional Letter Writer Details governs company positioning.** This Notion field is {{USER_FIRST_NAME}}'s response after reviewing the PMM Expert's analysis from the standalone research pipeline.
-- **If populated:** include the positioning-related content or angles she specified, woven naturally into the letter body.
-- **If empty or absent:** do NOT reference, analyse, describe, or comment on the hiring company's positioning, public messaging, or how they frame their product in the market — anywhere in the letter. This includes indirect references ("a company that gets the importance of X"), framing that implies you've studied their positioning, and any sentence that positions {{USER_FIRST_NAME}} as an observer of their market strategy. When in doubt, cut it.
+**Do not reference the hiring company's positioning.** Do not analyse, describe, or comment on the company's positioning, public messaging, or how they frame their product in the market — anywhere in the letter. This includes indirect references ("a company that gets the importance of X"), framing that implies you've studied their positioning, and any sentence where {{USER_FIRST_NAME}} reads as an observer of their market strategy. When in doubt, cut it.
 
 ---
 

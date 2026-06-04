@@ -276,24 +276,6 @@ Use this exact section structure for the new coach content. **Keep it scannable 
 
 ---
 
-## Step 5.5 — PMM Positioning Expert
-
-**(Optional — most relevant for product marketing roles; can be skipped for other professions)**
-
-**Always run after Step 5. Do not skip.**
-
-After the competitive intelligence sections are written to Landscape in Step 5, spawn `pmm-positioning-expert` for each role processed this run.
-
-Run all spawns in parallel where possible — one spawn per role.
-
-**Pass only the company name.** Nothing else — no JD, no role title, no research context, no Notion IDs, no pipeline context. The agent researches everything independently from the company name alone.
-
-The agent returns a text block containing the full `## PMM Expert: Positioning Analysis` section. After all spawns return, the orchestrator appends each analysis to the corresponding role's Landscape Notion property using `notion-update-page` (append below whatever is already in the field).
-
-**After all Notion writebacks confirm:** proceed to Step 6.
-
----
-
 ## Step 6 — Confirm
 
 After writing all rows, report:
@@ -301,13 +283,9 @@ After writing all rows, report:
 - Priority assigned for each (or "Priority already set — skipped" if applicable)
 - Coach properties written: Role emphasis, Keywords, Strategy (one line per role)
 - Status updated to `Researched` for each processed role
-- PMM Expert positioning analysis: confirmed appended for each role
 - Any roles where web research was thin or inconclusive
 - Any hard disqualifiers flagged (e.g., US-only requirement, domain mismatch)
 - **View filter note:** the research view filters on `Landscape is empty` — Hold roles with an existing Landscape field were not returned and were not processed this run. If expected roles appear to be missing from this batch, they likely have existing Landscape content. Check the view or process them via a Status=Hold filter.
-
-After delivering the report, add this note:
-> **Next step:** Open the Landscape field for each role in Notion to review the PMM Expert's positioning analysis. If you want any of those insights reflected in your cover letter, record your preferences in the **Additional Letter Writer Details** field on the same Notion row. If that field is left empty, cover letters will not reference the hiring company's positioning at all.
 
 
 ---
