@@ -231,9 +231,17 @@ Load `references/cover-letter-self-check.md` → Option 1 and run every item.
 
 **Load `references/02-candidate-background.md` before generating questions.** For each question you would ask, check if a relevant answer already exists in the bank. If yes: use it directly and do not ask again. Only send genuinely unanswered questions to Notion.
 
+### Mandatory question — always included
+
+**Always ask why {{USER_FIRST_NAME}} wants this role.** This question is required regardless of whether any other questions are needed. Even if the opener could technically be written without it, her motivation is the letter's emotional core — the agent cannot manufacture it. Write it as the first question, every time, no exceptions:
+
+> "Why do you want this role / what draws you to [Company]?"
+
+This question is not subject to the three-part test below. It is not optional. A zero-question output is never valid.
+
 ### The discipline
 
-Start from zero. Ask yourself: can I write a strong, specific, non-generic opener right now, using only what's in the JD, the coach output, and `02-candidate-background.md`? If yes — the question count may be zero. That is a valid answer.
+Start from zero. Ask yourself: can I write a strong, specific, non-generic opener right now, using only what's in the JD, the coach output, and `02-candidate-background.md`? The mandatory motivation question always goes in regardless. Beyond that, the additional question count may be zero.
 
 Only add a question when the answer would **directly change a sentence** in the letter that you cannot write without it. The letter must be the reason for every question. Not curiosity. Not completeness. Not covering gaps.
 

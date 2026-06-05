@@ -7,9 +7,11 @@ description: Complete AI-pattern rule list for the cover-letter-humanizer agent.
 
 This is the complete and only rule list. Every rule lives here. Nothing is elsewhere.
 
+**You cannot return output that contains any violation of any rule in this skill. Not one. If a violation exists, fix it. You are not done until zero violations remain across all five steps.**
+
 **Before running any step:** Read the delivered letters. Go to the delivered letters folder and read the two or three letters closest in domain or role type to this one. These are your positive calibration — what you are rewriting *toward*, not just what you are rewriting away from.
 
-Then work through every step in order. Do not skip steps. Do not run steps in parallel.
+Then work through every step in order. Do not skip steps. Do not run steps in parallel. Do not return output until Step 5 is complete and no violations remain.
 
 ---
 
@@ -22,7 +24,7 @@ Read every sentence in the letter one by one. For each sentence, compare it agai
 | 1 | **Em dashes AND colons — absolute hard ban. Zero.** Before returning output, search the letter for `—` and `:`. Any hit means you are not done. | Any em dash or colon anywhere in the letter. | "[Company] — [descriptor]" / "The narrative: competitive positioning" | Period (new sentence), comma (tight aside), or restructure. |
 | 2 | **Rule of three — max once per letter.** A tricolon may appear once only if it genuinely earns its place. Test: does parallel structure land harder than two items or one strong claim? If no, reduce or rewrite as a single sentence. If a second tricolon exists, remove the weaker one. | Two or more tricolons in one letter; a tricolon that doesn't earn its place. | "the hook that makes someone stop scrolling, the offer architecture that converts, the brand story that turns a first purchase into a second." | Two items, or a single direct claim. |
 | 3 | **-ing phrase appended after a main clause — max once per letter.** "Contributing to," "highlighting," "showcasing," "enabling," "supporting," "building on" tacked onto a sentence that already has a subject and verb. The permitted one must express a real outcome — not interpretive commentary. | More than one -ing appendage; any that adds fake consequence or fake depth. | "I ran the campaign, showcasing expertise." / "I built the GTM motion, contributing to $1M+ ACV." | "I ran the campaign." / "I built the GTM motion. ARR grew to $3M." |
-| 4 | **Subject first — always.** Every sentence starts with "I" or a named entity. Never a gerund, prepositional phrase, or dependent clause. | Any sentence starting with a gerund, prepositional phrase, or dependent clause. | "For most of my career, I've been brought into..." / "Before any of those go live, I run..." / "Building GTM for fifteen years has given me..." | "I've spent most of my career..." / "I run a positioning conversation before any of those go live." / "I've spent fifteen years building GTM..." |
+| 4 | **Subject first — always.** Every sentence starts with "I" or a proper named entity (a company, person, or product name). Never a gerund, prepositional phrase, dependent clause, expletive construction, or abstract label noun phrase. "Named entity" means a real proper name — not a career-phase descriptor, category label, or abstract container. | Any sentence starting with a gerund, prepositional phrase, dependent clause, expletive ("There was / There is / There are"), or abstract label noun phrase. | "For most of my career, I've been brought into..." / "Before any of those go live, I run..." / "Building GTM for fifteen years has given me..." / "There was no team, no playbook, and no budget." / "The founding-marketer part is the work I just finished." | "I've spent most of my career..." / "I run a positioning conversation before any of those go live." / "I've spent fifteen years building GTM..." / "I built the function without a team, a playbook, or a budget." / "I just finished building [specific thing] at [Company]." |
 
 ---
 
@@ -61,6 +63,7 @@ Read every sentence in the letter one by one. For each sentence, compare it agai
 | **Filler phrases — cut, start with the claim.** | These phrases in any context. | "in order to" / "at this point in time" / "it is important to note that" / "due to the fact that" / "has the ability to" / "in the event that" | "to" / "now" / cut / "because" / "can" / "if" |
 | **False range "from X to Y" — banned.** X and Y are not endpoints on a meaningful scale. | Any "from X to Y" where X and Y aren't real endpoints. | "everything from messaging to competitive analysis" | Name the specific things. |
 | **Word-stem echo within three lines — fix.** | The same word root appearing twice within three lines. | "crafted...having crafted" / "designed the design" | Synonym or restructure. |
+| **Additional vocabulary prohibitions** | These phrases in any context. | "I know how to sell x [the company's product, product type, or vertical]", "I knew this was mine" - or any version of this phrase, "I spent the better part of a decade..." | "I have experience marketing x [the company's product, product type, or vertical]", "I knew I have to apply for the [name of role] position at [hiring company name]", "I have over 10 years of experience..." |
 
 ---
 
@@ -90,3 +93,17 @@ Before returning the letter, do all four of the following:
 4. If any sentence sounds assembled rather than spoken — even if it passed every named rule — rewrite it and note it in the change log.
 
 **You are a linguistics expert. The delivered letters are your calibration standard. Trust the instinct; name the fix.**
+
+---
+
+## Final Gate — NON-NEGOTIABLE: Zero violations before output
+
+Before returning anything, run this checklist in order. If any item fails, fix it before continuing.
+
+- [ ] Step 1: No em dashes or colons. No more than one tricolon. No more than one -ing appendage. Every sentence opens with "I" or a proper named entity — no gerunds, no prepositional phrases, no expletives ("There was/is/are"), no abstract label noun phrases.
+- [ ] Step 2: No dangling participles. No long noun phrase subjects. No deeply embedded relative clauses in objects. No wh-clause stacking. No inanimate subjects performing human actions. Parallel structure intact. No "and...and...and..." stacking.
+- [ ] Step 3: No AI vocabulary. Active voice throughout. No "serves/stands/acts as." No approach-announcement labels. No demonstrative declarations. No synonym cycling. No expert-claim openers. No pronouns pointing at abstractions. No methodology narration. No filler phrases. No false ranges. No word-stem echoes. No prohibited vocabulary phrases.
+- [ ] Step 4: Company name in paragraph 1. Role title present. No rhetorical questions in opener. No manufactured opener. No strategy analysis opener. Close is its own paragraph. Greeting format correct.
+- [ ] Step 5: Every sentence sounds like it belongs in the delivered letters. Nothing sounds assembled.
+
+**If any box cannot be checked: fix the violation and rerun the checklist from the top. You are not done until every box passes.**
