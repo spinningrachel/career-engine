@@ -331,7 +331,7 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 2. Write a CSV file to `/tmp/cv-campaign-tracker.csv` containing only the header row with all required columns in order:
 
 ```
-Company,Position,Job URL,Status,Priority,JD Body,Why I Want This Role,Page Body,Role emphasis,JD proof,Keywords,Strategy,Role Type,Relationship type,Gap handling,Role summary,Hiring Manager's Name,Hiring manager's role,Manager role confirmed,Person who Advertised Role (if not Hiring Manager),No incumbents in this function,Landscape,Last Pipeline Run,Link to CV,Draft Directory,CV File Name,Letter File Name,Languages,Edit type,Note
+Company,Position,Job URL,Status,Priority,JD Body,Why I Want This Role,Page Body,Role emphasis,JD proof,Keywords,Strategy,Role Type,Relationship type,Gap handling,Role summary,Hiring Manager's Name,Hiring manager's role,Manager role confirmed,Person who Advertised Role (if not Hiring Manager),No incumbents in this function,Landscape,First Advertised,Last Pipeline Run,Link to CV,Draft Directory,CV File Name,Letter File Name,Languages,Edit type,Note
 ```
 
 3. Tell the user: "Download this file and upload it to Google Sheets (File → Import → Upload). This creates your tracking sheet with all the required columns."
@@ -369,7 +369,7 @@ These values must match exactly — they are hard-coded in the pipeline that rea
 ```
 Create a database/table with the following columns. Do not rename them — they are referenced by exact name by an external pipeline.
 
-Columns: Company, Position, Job URL, Status, Priority, JD Body, Why I Want This Role, Page Body, Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, Gap handling, Role summary, Hiring Manager's Name, Hiring manager's role, Manager role confirmed, Person who Advertised Role (if not Hiring Manager), No incumbents in this function, Landscape, Last Pipeline Run, Link to CV, Draft Directory, CV File Name, Letter File Name, Languages, Edit type, Note
+Columns: Company, Position, Job URL, Status, Priority, JD Body, Why I Want This Role, Page Body, Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, Gap handling, Role summary, Hiring Manager's Name, Hiring manager's role, Manager role confirmed, Person who Advertised Role (if not Hiring Manager), No incumbents in this function, Landscape, First Advertised, Last Pipeline Run, Link to CV, Draft Directory, CV File Name, Letter File Name, Languages, Edit type, Note
 
 Select column values (must match exactly):
 - Status: Hold | Interested | CV Ready for Review | Applied | Researched | Needs editing
