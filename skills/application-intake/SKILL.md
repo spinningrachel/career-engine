@@ -98,17 +98,23 @@ Report the count to {{USER_FIRST_NAME}}: "Found N roles in Hold status. Sending 
 
 ## Step 0.5 — Prepare JD content for the coach
 
-Before passing roles to the coach, check each role's Notion row for existing JD content and normalise it inline. The coach handles all fetching — this step only surfaces what's already there.
+Before passing roles to the coach, check each role's Notion row for existing JD content and normalise it inline.
 
-For each role, in this priority order:
+**Always attempt the URL.** For every role that has a Job URL, fetch it — regardless of whether `JD Body` is already populated. The live posting may contain updated requirements, application instructions, salary information, recruiter name, or other signals not present in a manually copied JD Body. If the fetch succeeds, pass both the fetched content and the existing JD Body to the coach; the coach uses whichever is more complete or resolves any differences.
 
-1. **`JD Body` property is populated** — mark `content-exists`. Pass it to the coach as-is. Do not re-fetch.
+For each role:
 
-2. **`JD Body` is empty but the Notion page body contains a full job description** ({{USER_FIRST_NAME}} manually pasted the JD) — write it to `JD Body` and set `JD Fetch Status` = `Manual-entry` using `notion-update-page`. Mark `content-exists`. This normalises the data so future runs read from `JD Body` directly.
+1. **Job URL is present** — attempt `WebFetch` on the URL.
+   - **Fetch succeeds:** mark `url-fetched`. Pass fetched content to the coach alongside any existing `JD Body`.
+   - **Fetch fails or is blocked (paywalled, login-required, 404):** log the failure. If `JD Body` is populated, mark `content-exists` and proceed on that. If `JD Body` is also empty, mark `needs-manual` and log to the run-level revision log — do not drop the role yet, flag it for {{USER_FIRST_NAME}} to resolve.
 
-3. **Neither** — mark `needs-fetch`. The coach will fetch the URL and handle the result.
+2. **No Job URL — `JD Body` property is populated** — mark `content-exists`. Pass it to the coach as-is.
 
-Pass the full row payload (including `JD Body` content where present) to the employment coach in Step 0.8. The coach fetches, verifies, and writes `JD Body`, `JD Fetch Status`, and `Israel Compatibility` for all `needs-fetch` roles. Roles the coach cannot access are dropped and logged to the run-level revision log.
+3. **No Job URL — `JD Body` is empty but the Notion page body contains a full job description** ({{USER_FIRST_NAME}} manually pasted the JD) — write it to `JD Body` and set `JD Fetch Status` = `Manual-entry` using `notion-update-page`. Mark `content-exists`. This normalises the data so future runs read from `JD Body` directly.
+
+4. **No Job URL and no JD content anywhere** — mark `needs-fetch`. Log to the run-level revision log. Drop from this run.
+
+Pass the full row payload (including `JD Body` content and any fetched URL content) to the employment coach in Step 0.8. The coach writes `JD Body`, `JD Fetch Status`, and `Israel Compatibility`.
 
 Hold all structured JD data in memory. Proceed immediately to Step 0.6.
 
