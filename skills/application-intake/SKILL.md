@@ -76,6 +76,10 @@ If `notion-query-database-view` does not accept a `filter` parameter on a databa
 
 **Important — do not use Bash or Grep on the query result.** The Notion MCP tool may return results as a file path inside its own sandbox, not on the host filesystem. That file is unreachable by host-side tools. Process the result exclusively through the MCP: if the tool returns inline JSON/data, parse it directly from the tool response. If it returns a file reference, use the MCP's own read tools (e.g. `notion-fetch` on the returned URL, or Desktop Commander's `read_file` on the path) to retrieve the content. Never attempt to Grep or Bash-read a file path returned by a Notion MCP tool.
 
+**Never create, update, or modify Notion database views.** This is an absolute prohibition. Do not call `create-database-view`, `update-database-view`, or any equivalent tool under any circumstance — not as a workaround, not to filter results, not to resolve ambiguity. Views belong to {{USER_FIRST_NAME}} and are not pipeline infrastructure.
+
+**If query results are misaligned or unreliable** (e.g. column count doesn't match row count, status values don't align with company names, or the result looks like a malformed table): do not attempt to parse the table. Instead, fall back to fetching each candidate page individually by ID using `notion-fetch`. To get the page IDs, use `notionApi` query with a minimal property request (`page_size: 100`, no filter) and read only the `id` and `properties.Status` fields from each result object — this is a direct JSON response that does not require column alignment. Then fetch only the pages whose Status matches the target, one at a time, using `notion-fetch id="<page_id>"` for the full property set.
+
 The result should contain only rows matching the target status. If the result still contains rows with other statuses (tool returned unfiltered data), filter them out in memory — but log a warning that the filter did not apply. Do not process any row whose Status does not match the target.
 
 Skip any entry where neither a Job URL nor job description details in the RTF body of the record are populated.
