@@ -62,25 +62,26 @@ Extract the SQLite `CREATE TABLE` block from the response. This is your **schema
 
 ---
 
-**Step 0b — Fetch roles using a direct Status filter.** Do NOT use view URL discovery. View-based queries fail for advanced-filter views and return oversized result sets for simple views. Query the database directly with a Status filter.
+**Step 0b — Fetch roles using a direct Status filter.**
+
+**Use `notionApi` query — not `notion-query-database-view`.** `notionApi` returns structured JSON keyed by property name. There is no column alignment to get wrong, no table to parse, no off-by-one risk. `notion-query-database-view` returns a rendered table that is fragile and has caused misalignment failures — do not use it for this step.
 
 Target status by mode:
 - **Standalone mode:** Status = `Hold`
 - **Orchestrator mode:** Status = `Interested`
 
-Run `notion-query-database-view` with:
-- `url`: `https://www.notion.so/{{NOTION_DATABASE_ID}}`
-- `filter`: `{"property": "Status", "status": {"equals": "Hold"}}` (standalone) or `{"property": "Status", "status": {"equals": "Interested"}}` (orchestrator)
+Call `notionApi` `API-query-data-source` (or equivalent database query endpoint) with:
+- database ID: `{{NOTION_DATABASE_ID}}`
+- filter: `{"property": "Status", "status": {"equals": "Hold"}}` (standalone) or `{"property": "Status", "status": {"equals": "Interested"}}` (orchestrator)
+- page_size: 100
 
-If `notion-query-database-view` does not accept a `filter` parameter on a database URL, use the `notionApi` query tool with the same filter expression instead.
+This returns a JSON array of page objects. Each object has an `id` field and a `properties` object with named fields — read property values by name, not by column position.
 
-**Important — do not use Bash or Grep on the query result.** The Notion MCP tool may return results as a file path inside its own sandbox, not on the host filesystem. That file is unreachable by host-side tools. Process the result exclusively through the MCP: if the tool returns inline JSON/data, parse it directly from the tool response. If it returns a file reference, use the MCP's own read tools (e.g. `notion-fetch` on the returned URL, or Desktop Commander's `read_file` on the path) to retrieve the content. Never attempt to Grep or Bash-read a file path returned by a Notion MCP tool.
+**Never create, update, or modify Notion database views.** Do not call `create-database-view`, `update-database-view`, or any equivalent tool under any circumstance.
 
-**Never create, update, or modify Notion database views.** This is an absolute prohibition. Do not call `create-database-view`, `update-database-view`, or any equivalent tool under any circumstance — not as a workaround, not to filter results, not to resolve ambiguity. Views belong to {{USER_FIRST_NAME}} and are not pipeline infrastructure.
+**Do not use Bash or Grep on the query result.** Process it directly from the tool response in context.
 
-**If query results are misaligned or unreliable** (e.g. column count doesn't match row count, status values don't align with company names, or the result looks like a malformed table): do not attempt to parse the table. Instead, fall back to fetching each candidate page individually by ID using `notion-fetch`. To get the page IDs, use `notionApi` query with a minimal property request (`page_size: 100`, no filter) and read only the `id` and `properties.Status` fields from each result object — this is a direct JSON response that does not require column alignment. Then fetch only the pages whose Status matches the target, one at a time, using `notion-fetch id="<page_id>"` for the full property set.
-
-The result should contain only rows matching the target status. If the result still contains rows with other statuses (tool returned unfiltered data), filter them out in memory — but log a warning that the filter did not apply. Do not process any row whose Status does not match the target.
+The result should contain only rows matching the target status. If unfiltered rows appear, discard non-matching ones in memory and log a warning. Do not process any row whose Status does not match the target.
 
 Skip any entry where neither a Job URL nor job description details in the RTF body of the record are populated.
 
