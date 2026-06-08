@@ -74,7 +74,9 @@ Run `notion-query-database-view` with:
 
 If `notion-query-database-view` does not accept a `filter` parameter on a database URL, use the `notionApi` query tool with the same filter expression instead.
 
-The result should contain only rows matching the target status. If the result still contains rows with other statuses (tool returned unfiltered data), filter them out in code — but log a warning that the filter did not apply. Do not process any row whose Status does not match the target.
+**Important — do not use Bash or Grep on the query result.** The Notion MCP tool may return results as a file path inside its own sandbox, not on the host filesystem. That file is unreachable by host-side tools. Process the result exclusively through the MCP: if the tool returns inline JSON/data, parse it directly from the tool response. If it returns a file reference, use the MCP's own read tools (e.g. `notion-fetch` on the returned URL, or Desktop Commander's `read_file` on the path) to retrieve the content. Never attempt to Grep or Bash-read a file path returned by a Notion MCP tool.
+
+The result should contain only rows matching the target status. If the result still contains rows with other statuses (tool returned unfiltered data), filter them out in memory — but log a warning that the filter did not apply. Do not process any row whose Status does not match the target.
 
 Skip any entry where neither a Job URL nor job description details in the RTF body of the record are populated.
 
