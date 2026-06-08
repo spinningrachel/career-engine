@@ -207,3 +207,19 @@ Delivered letters show openers that vary widely in structure — emotional react
 ## QA Agent
 
 See the mandatory stop gate at the top of this file. The QA agent lives at `agents/qa.md`. Run it after every edit session — it checks both plugin versions for drift, stale references, missing files, property name consistency, and structural integrity. The full check list is in the agent file itself.
+
+---
+
+## Known regression checks
+
+These bugs were confirmed in live intake runs, diagnosed, and fixed. Every future edit session that touches the affected files must verify that none of these have regressed. The QA agent checks structural compliance; these are behavioral compliance checks that require reading the relevant sections.
+
+**Rule: when a new bug is found, diagnosed, and fixed in any session, add it here before closing.**
+
+| # | Bug name | Root cause | Confirmed fix | Where to verify |
+|---|---|---|---|---|
+| R-1 | **notionApi JSON query required** | `notion-query-database-view` returned misaligned tabular output — 17 companies, 16 status tags, causing parsing failures | Step 0b must use `notionApi` `API-query-data-source`, not `notion-query-database-view` | `skills/application-intake/SKILL.md` → Step 0b |
+| R-2 | **No Notion view creation or modification** | Agent created `_intake_hold_temp` view as a workaround when query failed, burning tokens and leaving a permanent stale artifact | `create-database-view`, `update-database-view`, and all equivalent tools are prohibited under any circumstance | `skills/application-intake/SKILL.md` → Step 0b prohibition |
+| R-3 | **Indeed URLs must use connector fallback** | Indeed's authentication wall blocks plain `WebFetch`; agent marked roles as unfetchable instead of routing through the Indeed connector | When a Job URL contains `indeed.com`, attempt `search_jobs(keyword="[title] [company]")` before marking as unfetchable | `skills/application-intake/SKILL.md` → Step 0.5 |
+| R-4 | **No Bash/Grep on Notion MCP sandbox files** | Notion MCP saves query results inside its sandbox — the path is unreachable by host-side Bash or Grep, causing silent failures | All Notion result processing must happen through MCP tools in context, never via host-side file reads | `skills/application-intake/SKILL.md` → Step 0b |
+| R-5 | **Always fetch URL even when JD Body is populated** | Agent skipped URL fetch when `JD Body` was already populated, missing updated requirements and recruiter info | Must attempt `WebFetch` on Job URL for every role that has one, regardless of whether `JD Body` is already populated | `skills/application-intake/SKILL.md` → Step 0.5 |

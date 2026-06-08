@@ -113,7 +113,11 @@ For each role:
 
 1. **Job URL is present** — attempt `WebFetch` on the URL.
    - **Fetch succeeds:** mark `url-fetched`. Pass fetched content to the coach alongside any existing `JD Body`.
-   - **Fetch fails or is blocked (paywalled, login-required, 404):** log the failure. If `JD Body` is populated, mark `content-exists` and proceed on that. If `JD Body` is also empty, mark `needs-manual` and log to the run-level revision log — do not drop the role yet, flag it for {{USER_FIRST_NAME}} to resolve.
+   - **Fetch fails on an Indeed URL (`indeed.com` in the URL):** Indeed's authentication wall blocks plain `WebFetch` for all Indeed job postings. Do not mark as unfetchable yet — use the Indeed connector as a fallback:
+     1. Call the Indeed connector's `search_jobs` tool with `keyword` = "[Position title] [Company name]" (use the values captured from the Notion row).
+     2. Scan the results for a title + company match. If a matching result is found, use its job description content — mark `url-fetched-via-connector`.
+     3. If the connector returns no match or the tool call fails, fall through to standard fetch-fail handling (next bullet).
+   - **Fetch fails or is blocked (paywalled, login-required, 404, or Indeed connector also failed):** log the failure. If `JD Body` is populated, mark `content-exists` and proceed on that. If `JD Body` is also empty, mark `needs-manual` and log to the run-level revision log — do not drop the role yet, flag it for {{USER_FIRST_NAME}} to resolve.
 
 2. **No Job URL — `JD Body` property is populated** — mark `content-exists`. Pass it to the coach as-is.
 
@@ -196,7 +200,7 @@ This step is mechanical and runs end-to-end without pausing.
 For each role in the processing queue, apply this rule to:
 - `Priority` — write the coach's value (`1`–`6`) only if currently empty. If the role was coach-skipped (already coach-complete per Step 0.8), do not write at all — leave unchanged. In a mixed batch, apply per role individually.
 - `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Relationship type`, `Role summary`, `Person who Advertised Role (if not Hiring Manager)` — write if empty.
-- `Hiring manager's role`, `Manager role confirmed`, `No incumbents in this function` — write if empty.
+- `Hiring manager's role`, `Manager role confirmed`, `No other Marketing roles employed by company` — write if empty.
 - `First Advertised` — write if empty. Look for the original posting date on the job board page (often shown as "Posted X days ago", "Date posted:", or a visible timestamp). If the URL fetch returned a page with a posting date, parse and write it (format: YYYY-MM-DD). If no date is findable, leave empty — do not guess or approximate.
 - `Gap handling` — write if empty. If gap_handling_mode = disabled, skip entirely.
 - `Company Stage` — write if empty. Exact option values: `Seed`, `Series A`, `Series B`, `Series C`, `Public`, `PE-backed`, `Stealth`, or `N/A`.
