@@ -113,7 +113,7 @@ For each role:
 
 1. **Job URL is present** — attempt `WebFetch` on the URL.
    - **Fetch succeeds:** mark `url-fetched`. Pass fetched content to the coach alongside any existing `JD Body`.
-   - **Fetch fails on an Indeed URL (`indeed.com` in the URL):** Indeed's authentication wall blocks plain `WebFetch` for all Indeed job postings. Do not mark as unfetchable yet — use the Indeed connector as a fallback:
+   - **Fetch fails on an Indeed URL (`indeed.com` in the URL):** Indeed's authentication wall blocks plain `WebFetch` for all Indeed job postings. Do not mark as unfetchable yet — use the Indeed connector as a fallback. Do NOT attempt to extract or pass a `jk` job key from the URL — `jk` values from email-tracking redirect URLs are not valid API job IDs and will error. Go directly to keyword search:
      1. Call the Indeed connector's `search_jobs` tool with `keyword` = "[Position title] [Company name]" (use the values captured from the Notion row).
      2. Scan the results for a title + company match. If a matching result is found, use its job description content — mark `url-fetched-via-connector`.
      3. If the connector returns no match or the tool call fails, fall through to standard fetch-fail handling (next bullet).
