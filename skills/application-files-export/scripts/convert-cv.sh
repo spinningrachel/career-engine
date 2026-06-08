@@ -16,7 +16,7 @@ mkdir -p "${OUTPUT_DIR}"
 
 # Append static Education and Languages sections before conversion
 CV_WITH_FOOTER="/tmp/cv-with-footer-$(basename "${CV_MD}")"
-{ cat "${CV_MD}"; echo; cat "${PLUGIN_DIR}/skills/cv-campaign-export/static-cv-footer.md"; } > "${CV_WITH_FOOTER}"
+{ cat "${CV_MD}"; echo; cat "${PLUGIN_DIR}/skills/application-files-export/static-cv-footer.md"; } > "${CV_WITH_FOOTER}"
 
 pandoc "${CV_WITH_FOOTER}" \
   --reference-doc="${PLUGIN_DIR}/references/rachel-cheyfitz.dotx" \

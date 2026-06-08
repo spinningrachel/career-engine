@@ -1,5 +1,5 @@
 ---
-name: cv-edit-pipeline
+name: application-edit
 description: Editing pipeline for the cv-campaign plugin. Triggers when {{USER_FIRST_NAME}} says "edit CVs", "run CV edits", "process the Needs editing queue", or any similar phrase. Retrieves all Job Applications rows with Status = Needs editing, runs the employment coach first to verify and update its owned properties, then routes each role through the appropriate pipeline agents to improve existing outputs — not to start from scratch. Agents in this pipeline are explicitly informed they are refining existing work, not generating from zero.
 ---
 
@@ -13,7 +13,7 @@ The key difference from the main pipeline: **agents are not starting from scratc
 
 ## Preflight
 
-**Outputs go to the iCloud output folder — never to a session scratchpad.**
+**Outputs go to the configured output folder — never to a session scratchpad.**
 
 The only valid output destination is:
 `{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/`
@@ -23,21 +23,27 @@ Do not create a local output directory inside a session path (`local_*/outputs/`
 Before starting, run this path verification:
 
 ```bash
-# Verify iCloud output root exists — if not, stop immediately
+# Verify output root exists — if not, stop immediately
 ls "{{OUTPUT_FOLDER}}/" 2>/dev/null \
-  && echo "iCloud output path confirmed." \
-  || { echo "ERROR: iCloud output root not found. Aborting."; exit 1; }
+  && echo "Output path confirmed." \
+  || { echo "ERROR: Output dir not found or not accessible. Aborting."; exit 1; }
 ```
 
 If this check fails, **stop the run immediately** and report the error to {{USER_FIRST_NAME}}. Do not fall back to any other path. Do not use `./outputs/`, relative paths, or any path containing "local-agent-mode-sessions" or "Application Support".
 
 Then confirm:
-1. Output folder for each role is the campaign folder from the original run date. **How to identify it:** check the most recent `state.json` in the iCloud campaign folders — find the entry for this role (match by `notion_page_id`) and read the `cv_path` field, which is in the format `cv-campaign-<YYYY-MM-DD>/<filename>.docx`. The folder prefix is the output dir. If no state.json entry exists for this role (e.g., it was added to Notion after the original run), use today's date as the campaign folder and create it if needed.
+1. Output folder for each role is the campaign folder from the original run date. **How to identify it:** check the most recent `state.json` in the output campaign folders — find the entry for this role (match by `notion_page_id`) and read the `cv_path` field, which is in the format `cv-campaign-<YYYY-MM-DD>/<filename>.docx`. The folder prefix is the output dir. If no state.json entry exists for this role (e.g., it was added to Notion after the original run), use today's date as the campaign folder and create it if needed.
 2. File format is DOCX — same as the main pipeline.
-3. `cv-campaign-export` skill is loaded.
-4. All cv-campaign skills are loaded, including 01-candidate-rules.md.
+3. `application-files-export` skill is loaded.
+4. All cv-campaign skills are loaded, including 01-writing-rules.md.
 
 ## Step E0 — Fetch roles for editing
+
+**Guard — check configuration first.** If the database ID value `{{NOTION_DATABASE_ID}}` is still the literal unreplaced placeholder, **stop immediately** and tell the user:
+
+> "The Notion database ID has not been configured. Run `/career-engine:setup` (or `/career-engine:setup --phase 5`) to complete the database integration before running the pipeline."
+
+---
 
 Query the Job Applications database (ID: `{{NOTION_DATABASE_ID}}`). Filter for entries where:
 - Status is `Needs editing`
@@ -47,11 +53,19 @@ For each matching entry, capture the full row payload including:
 - Company name
 - Position title
 - Job URL
+- `Edit type` — required; options: `CV`, `Letter`, `Both`
 - Pipeline (New Applications — from {{USER_FIRST_NAME}}'s chat command)
-- All existing property values — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Additional Letter Writer Details`, `CV File Name`, `Letter File Name`, `Note`, and any other populated fields
+- All existing property values — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Why I Want This Role`, `CV File Name`, `Letter File Name`, `Note`, and any other populated fields
 - Any reviewer feedback or notes already on the row
 
-Report the count to {{USER_FIRST_NAME}}: "Found N roles marked Needs editing." If the count is 0, stop and report that.
+**Skip any entry where `Edit type` is empty or not set.** Log the skipped role: "[Company] — [Role Title]: skipped — Edit type not set. Add CV, Letter, or Both to the Edit type field in Notion."
+
+Report the count to {{USER_FIRST_NAME}}: "Found N roles marked Needs editing (M skipped — Edit type missing)." If the count after skipping is 0, stop and report that.
+
+**Routing by Edit type:**
+- `CV` — run CV editing steps only (E0.7 content check, E3–E6.5, CV DOCX export). Skip all cover letter steps.
+- `Letter` — run cover letter editing steps only (E0.7 cover letter check, E7–E7.5, cover letter DOCX export). Skip all CV steps.
+- `Both` — run all steps.
 
 ## Step E0.5 — Prepare JD content from Notion rows
 
@@ -69,9 +83,9 @@ Run the gatekeeper on all existing outputs in parallel. The goal is a complete p
 
 The employment coach fetches JDs as part of Step E1 — no separate fetch step needed here.
 
-**Content check:** Spawn `gatekeeper` with `option=content`, passing the existing CV text, the structured JD, and the role's `Keywords` property (from the Notion row — required for the ATS pre-check). Returns either PASS or a content violation list.
+**Content check:** Run only if Edit type is `CV` or `Both`. Spawn `gatekeeper` with `option=content`, passing the existing CV text, the structured JD, and the role's `Keywords` property (from the Notion row — required for the ATS pre-check). Returns either PASS or a content violation list.
 
-**Cover letter check:** If a cover letter exists (`Letter File Name` property is populated on the Notion row), spawn `gatekeeper` with `option=cover-letter`, passing the existing cover letter text, the structured JD, and whether `Additional Letter Writer Details` is populated or empty. Returns either PASS or a cover letter violation list. Skip if no cover letter exists.
+**Cover letter check:** Run only if Edit type is `Letter` or `Both`. Skip if no cover letter exists (`Letter File Name` property is empty). Spawn `gatekeeper` with `option=cover-letter`, passing the existing cover letter text and the structured JD. Returns either PASS or a cover letter violation list.
 
 Run both in parallel. Collect results. Do not loop or fix anything yet — this step is diagnosis only.
 
@@ -108,14 +122,14 @@ Process roles sequentially. For each role, branch on the pipeline {{USER_FIRST_N
 Agents in this track are explicitly informed they are improving existing work. Pass each agent:
 - The structured JD from Step E0.5
 - The existing CV text from the Notion row or the existing DOCX (whichever is available)
-- The existing cover letter text (retrieved from the iCloud campaign folder using the filename in `Letter File Name` — extract text using `pandoc "<output_dir>/<letter-filename>.docx" -t plain`; skip if `Letter File Name` is empty)
+- The existing cover letter text (retrieved from the output campaign folder using the filename in `Letter File Name` — extract text using `pandoc "<output_dir>/<letter-filename>.docx" -t plain`; skip if `Letter File Name` is empty)
 - The verified coach properties from Step E1
 - Any reviewer feedback or notes already on the row
 
 **Step E3 — CV writer (revision mode)**
 
 Spawn `cv-writer` with `option=revision`. Pass:
-- The existing CV text as the draft (from the saved markdown backup at the iCloud output path, or extracted using `pandoc "<cv>.docx" -t markdown` if only the DOCX is available)
+- The existing CV text as the draft (from the saved markdown backup at the output path, or extracted using `pandoc "<cv>.docx" -t markdown` if only the DOCX is available)
 - The coach's verified properties as the strategic anchor
 - The baseline content violation list from Step E0.7 (so the cv-writer addresses pre-existing violations immediately, not after another loop)
 - Any recruiter or hiring manager feedback already on the row from the original campaign run
@@ -169,16 +183,15 @@ Spawn `gatekeeper` with `option=content`, passing the final revised CV text, the
 **Step E7 — Cover letter (initial revision)**
 
 **Before spawning letter-writer:** Read the following from the Notion row payload collected in Step E0 (all are part of the full row payload already in memory):
-- **`Q&A` property** — {{USER_FIRST_NAME}}'s answers to the pre-campaign interview questions. Include the full content if populated; skip if empty.
+- **`Why I Want This Role` property** — {{USER_FIRST_NAME}}'s written motivation for this role. Include the full content if populated; skip if empty.
 - **Page body content** — any additional background {{USER_FIRST_NAME}} added to the Notion page body. Include if present; skip if blank.
-- **`Additional Letter Writer Details`** — {{USER_FIRST_NAME}}'s instructions for positioning content. This is {{USER_FIRST_NAME}}'s field — never rewritten by agents.
 
 Spawn `letter-writer` with `option=revision`. Pass:
-- The existing cover letter (from the iCloud campaign folder using the filename in `Letter File Name` — extract text with `pandoc "<output_dir>/<letter-filename>.docx" -t plain`)
+- The existing cover letter (from the output campaign folder using the filename in `Letter File Name` — extract text with `pandoc "<output_dir>/<letter-filename>.docx" -t plain`)
 - The baseline cover letter violation list from Step E0.7
 - The verified coach properties from Step E1, including `Gap handling`
 - The final CV (for context)
-- **`Additional Letter Writer Details` status:** if populated, pass the field content and instruct letter-writer to incorporate the positioning angles {{USER_FIRST_NAME}} specified. If empty or absent, pass this instruction verbatim: "Additional Letter Writer Details is empty — do not reference, analyse, describe, or comment on the hiring company's positioning anywhere in this letter."
+- **`Why I Want This Role`** content: if populated, include it as the primary personal content input.
 
 The letter-writer improves the existing letter — it does not start from scratch unless the strategic positioning changed significantly in Step E1.
 
@@ -201,7 +214,7 @@ Before passing the revised cover letter to the gatekeeper, compare the old and n
 
 **Step E7.3 — Gatekeeper (cover letter check — initial)**
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, the structured JD (including the Company self-characterization section), {{USER_FIRST_NAME}}'s Q&A answers and page body content (retrieved in Step E7 from Notion), and the `Additional Letter Writer Details` status (populated or empty).
+Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, the structured JD (including the Company self-characterization section), {{USER_FIRST_NAME}}'s Why I Want This Role content and page body content (retrieved in Step E7 from Notion).
 
 **If PASS:** proceed to Step E7.4.
 
@@ -227,7 +240,7 @@ Returns the final cover letter and a brief revision log (what changed and why, o
 
 **Step E7.7 — Gatekeeper (cover letter check — final)**
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the final cover letter text, the structured JD, {{USER_FIRST_NAME}}'s Q&A answers and page body content (same as Step E7.3), and the `Additional Letter Writer Details` status (populated or empty).
+Spawn `gatekeeper` with `option=cover-letter`, passing the final cover letter text, the structured JD, {{USER_FIRST_NAME}}'s Why I Want This Role content and page body content (same as Step E7.3).
 
 **If PASS:** proceed to Step E8 (humanizer).
 
@@ -247,9 +260,9 @@ Save the humanizer's output, overwriting the previous cover letter markdown. The
 
 **Step E9 — Produce DOCX**
 
-Follow the same pandoc production protocol as the main pipeline. See `cv-campaign-export` for the full protocol.
+Follow the same pandoc production protocol as the main pipeline. See `application-files-export` for the full protocol.
 
-Derive `<company_dir>` from the Company name using the naming convention in `cv-campaign-export`. The output goes to `<output_dir>/<company_dir>/` — the same subdirectory the original run used. Create the subdirectory if it does not exist; it will already exist for roles that had a prior run.
+Derive `<company_dir>` from the Company name using the naming convention in `application-files-export`. The output goes to `<output_dir>/<company_dir>/` — the same subdirectory the original run used. Create the subdirectory if it does not exist; it will already exist for roles that had a prior run.
 
 Write the final CV markdown and cover letter markdown to `/tmp/`, convert with pandoc using the `.dotx` reference templates, update the CV Subtitle, and copy both files to `<output_dir>/<company_dir>/`. If a file with the same name already exists, overwrite it — this is an edit, not a new file.
 
@@ -259,7 +272,7 @@ Verify both files exist and are nonzero before proceeding to Step E9H.
 
 **Only runs if `Languages` includes `Hebrew`.** Check the `Languages` property on the Notion row fetched in Step E0. If `Hebrew` is not present, skip this step entirely and proceed to Step E10.
 
-Spawn `hebrew-localization` with:
+Spawn `localization` with:
 - The final English CV markdown (from Step E6, in memory)
 - The final English cover letter markdown (from Step E7.6, in memory)
 - The structured JD from Step E0.5
@@ -282,14 +295,14 @@ HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
 
 # Hebrew CV — concatenate with Hebrew footer, then convert
 cat /tmp/he-<cv_filename>.md \
-    "${CLAUDE_PLUGIN_ROOT}/skills/cv-campaign-export/static-cv-footer-he.md" \
+    "${CLAUDE_PLUGIN_ROOT}/skills/application-files-export/static-cv-footer-he.md" \
     > /tmp/he-<cv_filename>-with-footer.md
 
 pandoc /tmp/he-<cv_filename>-with-footer.md \
   --reference-doc="${HE_TEMPLATES}/cvHe.dotm" \
   -o "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx"
 
-python3 "${CLAUDE_PLUGIN_ROOT}/skills/cv-campaign-export/scripts/update-subtitle.py" \
+python3 "${CLAUDE_PLUGIN_ROOT}/skills/application-files-export/scripts/update-subtitle.py" \
   "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx" \
   "<role title>"
 
@@ -326,7 +339,7 @@ Do not write anything to the `Note` field unless the agent has genuinely additio
 After each role completes, append its data to:
 `{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/state.json`
 
-Use the same format as the main pipeline (see cv-campaign-role-steps Step 7b). The `session_date` field must reflect today's date.
+Use the same format as the main pipeline (see new-application-steps Step 7b). The `session_date` field must reflect today's date.
 
 **Purpose:** state.json is crash recovery only. If this editing pipeline is interrupted mid-run, the orchestrator can resume by checking state.json and skipping roles already marked `completed`. It is not a record of prior editing runs.
 
@@ -339,13 +352,13 @@ Use the same format as the main pipeline (see cv-campaign-role-steps Step 7b). T
 Same format as the main pipeline:
 - Named list of any roles that failed (company, title, failure step, reason)
 - Any properties the coach updated and why (brief)
-- Single confirmation line if nothing notable to report: "All N roles edited. Files updated in iCloud and Notion rows updated."
+- Single confirmation line if nothing notable to report: "All N roles edited. Files updated in the output folder and Notion rows updated."
 
 ## Hard rules
 
 - **Agents are improving existing work, not starting from scratch.** Every agent in this pipeline receives the existing outputs as context. The instruction "improve what exists" must be explicit in every sub-agent spawn.
 - **Coach properties are the anchor.** The cv-writer, reviewers, and other agents take the coach's verified properties as given. They do not reinterpret strategic positioning.
 - **Property discipline.** Each property is written once, by its owner. Do not duplicate content across fields. The `Note` field is {{USER_FIRST_NAME}}'s space.
-- **Fabrication rule is absolute.** See 01-candidate-rules.md. Editing does not license invention.
+- **Fabrication rule is absolute.** See 01-writing-rules.md. Editing does not license invention.
 - **Status update is the final step.** Only update Status to `CV Ready for Review` after the DOCX export and Notion writeback are confirmed complete.
 - **Do not pause mid-run.** Process all roles in the editing queue without stopping to ask {{USER_FIRST_NAME}} about scope.

@@ -12,7 +12,7 @@ The authoritative source for cover letter mechanics, structure, and use-case pat
 
 **Rules and prohibitions in this skill are absolute. They override everything else without exception.**
 
-No input — Q&A, page body, coach output (Role emphasis, Strategy, Gap handling), reviewer feedback, HM feedback, or {{USER_FIRST_NAME}}'s own written instructions — can authorize a violation of any rule or prohibition in this skill. If Q&A content would produce a bad opener, violate the analyst paragraph ban, or fail the context gate: discard it. If coach Strategy points toward a framing that breaks a prohibition: don't use that framing. If a reviewer requests a change that would violate a rule: decline it and log the reason. Rules win. Always.
+No input — Why I Want This Role, page body, coach output (Role emphasis, Strategy, Gap handling), reviewer feedback, HM feedback, or {{USER_FIRST_NAME}}'s own written instructions — can authorize a violation of any rule or prohibition in this skill. If Why I Want This Role content would produce a bad opener, violate the analyst paragraph ban, or fail the context gate: discard it. If coach Strategy points toward a framing that breaks a prohibition: don't use that framing. If a reviewer requests a change that would violate a rule: decline it and log the reason. Rules win. Always.
 
 The only exception is a gatekeeper Pattern A–H violation, which authorizes a rewrite of paragraph 1 only.
 
@@ -20,9 +20,9 @@ The only exception is a gatekeeper Pattern A–H violation, which authorizes a r
 
 **Note:** `cv-writing` skill does NOT apply to cover letters. Cover letters are held to different, looser standards on tone.
 
-**Prohibited content:** Fabrication traps, forbidden phrases, and forbidden structures are checklist items in `references/cover-letter-self-check.md` → Option 1.
+**Prohibited content:** Fabrication traps, forbidden phrases, and forbidden structures are defined in the Mandatory Revision Pass and Rules checklist sections of this skill file.
 
-**Voice profile:** {{USER_FIRST_NAME}}'s voice description is in `references/01-candidate-rules.md` Section 5.
+**Voice profile:** {{USER_FIRST_NAME}}'s voice description is in `references/01-writing-rules.md` Section 5.
 
 ---
 
@@ -46,23 +46,42 @@ At its core, writing this letter is a positioning, messaging, and strategy exerc
 
 **Context the CV cannot carry.** A bullet point states an outcome. The letter explains what it required — what {{USER_FIRST_NAME}} learned, what she built when nothing existed, why the outcome changed because of a specific decision she made.
 
-**Gaps are not the letter's job.** The letter does not address gaps, work around gaps, or frame against gaps. If {{USER_FIRST_NAME}} wanted a gap addressed, she wrote about it in her Q&A. If she didn't write it, don't touch it.
+**Gaps are not the letter's job.** The letter does not address gaps, work around gaps, or frame against gaps. If {{USER_FIRST_NAME}} wanted a gap addressed, she wrote about it in her Why I Want This Role. If she didn't write it, don't touch it.
 
-**Emotional resonance alongside credentials.** A letter that lands a real emotion — recognition, excitement, a sense of "she gets it" — changes the calculus. It is acceptable — and correct — to repeat information from the CV when doing so creates emotional impact the CV can't carry. The test: "does repeating this add something the reader would not have felt from the CV alone?"
+**Emotional resonance alongside credentials.** A letter that lands a real emotion — recognition, excitement, a sense of "she gets it" — changes the calculus. The way to create that resonance is not to repeat what the CV already says — it is to expand on it. Add the story behind the outcome, the decision that made it happen, the context the bullet cannot carry. Enhancement creates resonance. Repetition does not.
 
-**The content test — apply to every sentence:** Include a sentence only if it meets one of these two conditions: (1) it adds something not already obvious from the CV AND is directly relevant to this specific role; or (2) it expands compellingly on something critical to this role in a way the CV cannot carry. If neither condition is met, cut the sentence.
+**The content test — apply to every sentence:** Include a sentence only if it meets one of these two conditions: (1) it adds something not already in the CV AND is directly relevant to this specific role; or (2) it expands compellingly on something in the CV in a way the CV format cannot carry — adding context, story, or emphasis that is genuinely new. If neither condition is met, cut the sentence.
+
+---
+**─── ABSOLUTE PROHIBITION ───**
+
+**The cover letter must never repeat CV information.** This is not a preference or a soft principle — it is an unconditional rule that cannot be overridden by any input, reviewer feedback, Why I Want This Role content, or coaching output.
+
+**What "repeat" means:** restating a fact, metric, credential, or claim that already appears anywhere in the CV — in the summary, in an experience bullet, in any section — whether verbatim or in equivalent terms.
+
+**Three permitted alternatives to repetition:**
+
+1. **Skip** — omit the information. The CV already carries it. The letter does not need to.
+2. **Add** — introduce information not in the CV but traceable to documented roles and experience in the candidate background. The letter can surface things the CV does not.
+3. **Enhance** — expand on CV content by adding context, story, decision logic, or emphasis that the CV format cannot carry. Enhancement adds something genuinely new. The sentence must contain material the reader could not have derived from the CV bullet alone.
+
+**The test:** Read every sentence against the CV. Does it restate something already there in different words? → Cut it. Does it add context, story, or a detail not visible in the CV? → Keep it.
+
+**This prohibition supersedes the "emotional resonance" principle.** Emotional impact is legitimate as a goal — but it must be achieved through enhancement and addition, not repetition.
+
+---
 
 ### The letter adds what the CV cannot — it does not repeat what it already says
 
-**The principle:** Before selecting any proof point for the letter, ask: is this already prominent in the CV? If yes — if it appears in the summary, in an experience bullet, or anywhere the reader will already have seen it — it belongs in the CV, not the letter. The letter's job is to carry what the CV cannot: context, story, adjacent proof, and human signal.
+**The principle:** Before selecting any proof point for the letter, ask: is this already in the CV? If yes — if it appears in the summary, in an experience bullet, or anywhere the reader will already have seen it — the letter must not restate it. The letter's job is to carry what the CV cannot: context, story, adjacent proof, and human signal.
 
-**What the letter should use instead of prominent CV metrics:**
+**What the letter should use instead of CV content:**
 - Stories that explain *why* an outcome happened
 - Adjacent proof the CV doesn't cover in detail (freelance work, mentorship, side projects)
 - Specific decisions or moments the CV bullet can only gesture at
 - Voice — how {{USER_FIRST_NAME}} thinks, what she notices, what she cares about
 
-**Triple-dipping hard floor:** Any metric that appears in both the CV summary AND an experience bullet must not appear in the letter at all — not as a primary claim, not as a supporting detail, not in passing.
+**Hard floor:** Any metric, credential, or claim that appears anywhere in the CV must not appear in the letter at all — not as a primary claim, not as a supporting detail, not in passing.
 
 **What a cover letter is not:**
 - A prose version of the CV. Every paragraph must add something the CV cannot carry.
@@ -76,23 +95,23 @@ At its core, writing this letter is a positioning, messaging, and strategy exerc
 
 These rules govern how pipeline inputs interact and which source takes precedence for each decision. Read before writing anything.
 
-**Q&A and page body are optional supplemental material — not mandatory content.**
-They CAN inform the letter. They do not have to. There is no obligation to use anything from Q&A or page body. Whatever IS used must comply fully with every rule and prohibition in this skill — Q&A content does not override or exempt any prohibition. If something {{USER_FIRST_NAME}} wrote in Q&A would produce a bad opener, violate the analyst paragraph ban, break a framing rule, or fail the context gate, set it aside. The rules always win.
+**Why I Want This Role and page body are optional supplemental material — not mandatory content.**
+They CAN inform the letter. They do not have to. There is no obligation to use anything from Why I Want This Role or page body. Whatever IS used must comply fully with every rule and prohibition in this skill — Why I Want This Role content does not override or exempt any prohibition. If something {{USER_FIRST_NAME}} wrote in Why I Want This Role would produce a bad opener, violate the analyst paragraph ban, break a framing rule, or fail the context gate, set it aside. The rules always win.
 
-**The integration model:** Coach output (Role emphasis, Strategy, Gap handling) defines what the letter must accomplish. Q&A and page body are a potential source of voice, angle, and raw material — but only where the content is genuinely usable and compliant. A letter that uses Q&A content but ignores Role emphasis has voice but no direction. A letter that follows Strategy but ignores Q&A sounds like a template — but a letter that forces unusable Q&A content into a compliant shape is worse than either.
+**The integration model:** Coach output (Role emphasis, Strategy, Gap handling) defines what the letter must accomplish. Why I Want This Role and page body are a potential source of voice, angle, and raw material — but only where the content is genuinely usable and compliant. A letter that uses Why I Want This Role content but ignores Role emphasis has voice but no direction. A letter that follows Strategy but ignores Why I Want This Role sounds like a template — but a letter that forces unusable Why I Want This Role content into a compliant shape is worse than either.
 
-**The integration rule:** Read Role emphasis and Strategy first — understand what this letter needs to accomplish. Then read Q&A and page body to find {{USER_FIRST_NAME}}'s voice, her specific angles, and her raw content. Write the letter so her own words are doing the strategic work the coach identified.
+**The integration rule:** Read Role emphasis and Strategy first — understand what this letter needs to accomplish. Then read Why I Want This Role and page body to find {{USER_FIRST_NAME}}'s voice, her specific angles, and her raw content. Write the letter so her own words are doing the strategic work the coach identified.
 
 **Opener source — non-negotiable.**
-Page body and Q&A supply the opener's content and angle. {{USER_FIRST_NAME}}'s genuine reaction to the role, her specific angle on this company, and any raw material she wrote goes first, in her voice. The Use-Case Structures tell you how to frame it — not what to say.
+Page body and Why I Want This Role supply the opener's content and angle. {{USER_FIRST_NAME}}'s genuine reaction to the role, her specific angle on this company, and any raw material she wrote goes first, in her voice. The Use-Case Structures tell you how to frame it — not what to say.
 
-**If the content for the opener is not in {{USER_FIRST_NAME}}'s Q&A or page body: write `[{{USER_FIRST_NAME}} TO FILL IN]`.** Do not construct an opener from your own reasoning about what she would say or what would be strategically effective. This includes expert-claim openers ("I know this buyer," "I understand this market," "This is a motion I've built before") derived from analysis rather than her own words.
+**If the content for the opener is not in {{USER_FIRST_NAME}}'s Why I Want This Role or page body: write `[{{USER_FIRST_NAME}} TO FILL IN]`.** Do not construct an opener from your own reasoning about what she would say or what would be strategically effective. This includes expert-claim openers ("I know this buyer," "I understand this market," "This is a motion I've built before") derived from analysis rather than her own words.
 
 **Do not open with strategy analysis.** No market observations, no industry framing, no role-stakes setup, and no expert claims derived from reading the role — regardless of whether {{USER_FIRST_NAME}} is the grammatical subject. "I know this buyer" is strategy analysis. "I understand this buying motion" is strategy analysis. If she didn't write it, it doesn't belong in the opener.
 
 **Do not open with a plan.** "My first priority at [Company] will be..." / "The first thing I'd do is..." / "Before writing a word of copy, I'd..." — these describe what you'd do if hired, not why you're writing. They answer the wrong question. Plans and approach descriptions belong in the body. The opener answers: why is {{USER_FIRST_NAME}} writing to this company right now?
 
-**Role emphasis governs proof selection.** Which companies to surface, which outcomes to lead with, what the proof paragraphs need to demonstrate — this is the coach's call, not {{USER_FIRST_NAME}}'s Q&A. If her Q&A gives you a great story, ask: does it address what Role emphasis says the letter needs to prove? If yes, use it prominently. If the story is interesting but off-strategy, include it briefly or set aside.
+**Role emphasis governs proof selection.** Which companies to surface, which outcomes to lead with, what the proof paragraphs need to demonstrate — this is the coach's call, not {{USER_FIRST_NAME}}'s Why I Want This Role. If her Why I Want This Role gives you a great story, ask: does it address what Role emphasis says the letter needs to prove? If yes, use it prominently. If the story is interesting but off-strategy, include it briefly or set aside.
 
 **Do not reference the hiring company's positioning.** Do not analyse, describe, or comment on the company's positioning, public messaging, or how they frame their product in the market — anywhere in the letter. This includes indirect references ("a company that gets the importance of X"), framing that implies you've studied their positioning, and any sentence where {{USER_FIRST_NAME}} reads as an observer of their market strategy. When in doubt, cut it.
 
@@ -100,10 +119,12 @@ Page body and Q&A supply the opener's content and angle. {{USER_FIRST_NAME}}'s g
 
 ## Writing Mechanics
 
-**Before writing:** Open 2–3 delivered letters from `references/delivered-letters/` for similar domain, seniority, or situation. Read them for two purposes:
+**Before writing:** Attempt to open 2–3 delivered letters from `{{OUTPUT_FOLDER}}/final-pdfs-delivered` for similar domain, seniority, or situation. Read them for two purposes:
 
 1. **Voice calibration** — sentence patterns, paragraph openers, rhythm, punctuation habits. Your draft must mirror them.
 2. **Content mining** — proof points, phrasings, or framings that worked and could apply here. Approved content from past letters is fair game.
+
+**If the delivered-letters archive does not exist or is empty:** do not block or error. Fall back to `references/03-framework.md` §Voice and tone for voice calibration. Note in the revision log: "No delivered-letters archive found — voice calibrated against 03-framework.md §Voice and tone."
 
 **The full syntax rule list lives with the humanizer agent**, which runs after you. Your job is to write a strong, honest letter. The humanizer's job is to fix the language. Trust the division of labour: you focus on strategy and content, not on policing every sentence structure.
 
@@ -129,7 +150,7 @@ That said — these principles will keep you out of the most egregious patterns:
 **Half the words, twice the examples.** If a paragraph makes a claim, cut half the claim and replace it with a specific named example. Density of proof beats length of argument every time. A three-sentence paragraph with two named companies and a number beats a six-sentence paragraph making the same point in generalities.
 
 **Opener rule — non-negotiable:**
-The opener must express {{USER_FIRST_NAME}}'s genuine reaction to this specific role. If her Q&A or page body doesn't give you content for the opener, write `[{{USER_FIRST_NAME}} TO FILL IN]`. Do not construct an opener from your own reading of the JD. Do not write strategy analysis, expert claims, or methodology descriptions as openers.
+The opener must express {{USER_FIRST_NAME}}'s genuine reaction to this specific role. If her Why I Want This Role or page body doesn't give you content for the opener, write `[{{USER_FIRST_NAME}} TO FILL IN]`. Do not construct an opener from your own reading of the JD. Do not write strategy analysis, expert claims, or methodology descriptions as openers.
 
 ---
 
@@ -175,13 +196,13 @@ There is no required sentence count and no required sequence. The only test: fin
 Run this before and during writing the opener. It is not a post-draft check — it governs composition itself.
 
 **Before writing the first sentence:**
-1. Open the page body and Q&A for this role.
-2. Identify the substance: what angle did {{USER_FIRST_NAME}} take? What did she say she wants to communicate? What specific phrases, comparisons, or ideas did she provide?
+1. Open the page body and Why I Want This Role for this role.
+2. Identify the substance: what angle did {{USER_FIRST_NAME}} take? What specific reactions, comparisons, or ideas did she provide? What is she actually saying she wants from this role?
 3. Your opener must express that angle and those ideas — not a different framing you derived from reading the JD, and not a generic opener that could fit any application.
-4. Key phrases she used belong in the opener. Do not substitute synonyms or paraphrase away her own language choices.
-5. Do not add closing sentences to the opener she did not provide. If she did not write a closing for the opener paragraph, leave it open or close with what she gave you.
+4. **Why I Want This Role is raw material — not a draft paragraph.** It is notes: first-person, often unpolished, written to herself. Your job is to write a paragraph from it, not to copy it. Extract the angle, the specific reaction, the thing she's saying — then write a letter paragraph that expresses that. The paragraph should sound like a letter, not like her notes.
+5. Preserve her specific content: the comparisons she drew, the aspects she named, the reactions she expressed. Do not invent new reactions she didn't write. Do not replace her substance with analysis of the JD. But do write it — craft sentences, create flow, ensure it reads as a coherent opening paragraph.
 
-**The failure mode this prevents:** Reading her Q&A content, then setting it aside and writing a polished version from scratch. That is fabricating her voice. Her answers define the content. Your job is to make them land well.
+**The failure mode this prevents:** Transcribing Why I Want This Role nearly verbatim into the opener. Her notes are not a paragraph. If the opener reads like it was copied from her field rather than written as a letter, it will sound abrupt, unstructured, and out of context. Read the notes. Understand what she's saying. Write a paragraph that says it well.
 
 **After writing the opening sentence:**
 Write the first sentence of the opener. Stop. Read it against the delivered letters from the Voice Gate. Ask: does this sentence sound like it belongs in those letters — same register, same directness, same rhythm? If not, rewrite it. Only when the first sentence sounds like it belongs in those letters: continue drafting the rest of the letter.
@@ -227,7 +248,7 @@ A bullet list is appropriate in exactly two situations:
 
 1. **Greeting.** Always "Hi to the [Company] team!" — or "Hi to [Name]!" if writing directly to a named person. Never "Dear Hiring Manager."
 
-2. **Opener paragraph.** Choose from the Use-Case Structures below. {{USER_FIRST_NAME}}'s reaction or observation comes first. Her background enters in service of that, not as the subject. If no documented reaction exists in `01-candidate-rules.md` or the Q&A bank, write `[{{USER_FIRST_NAME}} TO FILL IN]` — do not manufacture enthusiasm.
+2. **Opener paragraph.** Choose from the Use-Case Structures below. {{USER_FIRST_NAME}}'s reaction or observation comes first. Her background enters in service of that, not as the subject. If no documented reaction exists in `01-writing-rules.md` or the Q&A bank, write `[{{USER_FIRST_NAME}} TO FILL IN]` — do not manufacture enthusiasm.
 
 3. **Proof paragraph(s) — one job each.** One to three paragraphs, each doing exactly one thing: a pattern of experience across companies, a specific story that adds something the CV doesn't say, or documented product/company familiarity.
 
@@ -262,7 +283,7 @@ The test for any close: does it name the outcome and ask for it directly? Or doe
 
 These rules apply to every claim and every framing decision in the letter body.
 
-**Managed-vs-executed:** When {{USER_FIRST_NAME}} managed a team or function, language credits her with management and ownership — not personal execution of every deliverable. "Oversaw analyst relations" not "ran analyst relations." "Managed the AR owner" not "led analyst relations personally." If in doubt, check `01-candidate-rules.md` Section 1 for the approved phrasing.
+**Managed-vs-executed:** When {{USER_FIRST_NAME}} managed a team or function, language credits her with management and ownership — not personal execution of every deliverable. "Oversaw analyst relations" not "ran analyst relations." "Managed the AR owner" not "led analyst relations personally." If in doubt, check `01-writing-rules.md` Section 1 for the approved phrasing.
 
 **Demand-gen framing:** When a JD signals demand-gen ownership, do not frame the absence of a standalone pipeline attribution number as a gap or limitation in the letter. Surface the builder evidence instead: outbound infrastructure at VL, content production, G-CMO Early Stage Marketing training. For seed/early Series A build roles this is a match, not a gap.
 
@@ -283,6 +304,10 @@ These rules apply to every claim and every framing decision in the letter body.
 **"Most of my career has been [gerund]" — forbidden.** "My career" is not a subject. This construction buries {{USER_FIRST_NAME}}. Write "For most of my career, I've [verb]..." — {{USER_FIRST_NAME}} is the subject, the career is the context.
 
 **"I'm passionate about..."** — not banned, but do not overdo it. Once per letter at most.
+
+**Antithesis and pivot formulas — forbidden.** Never write "[Subject] does/has X, but [subject] is Y." If X doesn't need to exist for the sentence to work, cut it. The formula signals that the writer needed a rhetorical move rather than having something direct to say. This includes: "It's not about X, it's about Y." / "This isn't just A, it's B." / "Not X — Y." The fix is always the same: drop the negated half, lead with the affirmative. **The test:** remove the "but" clause and everything before it. If what remains is clearer and stronger, the setup was unnecessary and should be cut.
+
+**Temporal motivation hedges — forbidden.** Phrases like "the seat I want most right now," "at this stage of my career," "what I'm looking for right now" make motivation sound provisional and shopping-among-options. A genuine reaction to a specific role needs no time qualifier. Cut any phrase that implies "…as opposed to what I'll want later." If the motivation is real, state it directly without the temporal hedge.
 
 **Voice mechanics for self-description:** When describing {{USER_FIRST_NAME}}'s approach or working style, use first-person direct construction — not analysis from outside. "In my work, I emphasize..." not "My approach emphasizes..." / "I tend to..." not "My style involves..." The content is the same; the subject is {{USER_FIRST_NAME}}, not a description of {{USER_FIRST_NAME}}.
 - **Approach-announcement via label — forbidden:** "My approach is deliberately X: Y, Z, W." / "I take a research-first approach to positioning." These announce the methodology as a named label before demonstrating it. Show the approach in action. **Fail:** "My thought leadership approach is deliberately slow-is-the-winner: every deliverable I produce is backed by a thinking process I can stand behind." **Fix:** "At [Company], I spent the first three weeks interviewing buyers before writing a line of copy."
@@ -306,7 +331,7 @@ Use these for the opening paragraph when a specific situation calls for it. Each
 **Template:**
 > [Optional: "{{USER_FIRST_NAME}} here." as identity fragment.] [Reaction — why this specific overlap hit differently when you read it]. Because I was just doing it — as [role] at [Company], a [one-phrase descriptor] that [key outcome].
 
-**Example:** [from delivered-letters archive: Ultralytics letter]
+**Example:** [from `{{OUTPUT_FOLDER}}/final-pdfs-delivered`: Ultralytics letter]
 
 ---
 
@@ -523,7 +548,7 @@ After producing the draft, enter revision mode. Read the letter sentence by sent
 
 ### Step 1 — Voice calibration
 
-Before starting the revision, confirm the voice you're editing toward. Open 2–3 delivered letters from `references/delivered-letters/` that are most similar in domain or seniority level. Note these six dimensions:
+Before starting the revision, confirm the voice you're editing toward. Attempt to open 2–3 delivered letters from `{{OUTPUT_FOLDER}}/final-pdfs-delivered` that are most similar in domain or seniority level. **If the archive does not exist or is empty:** fall back to `references/03-framework.md` §Voice and tone — read the voice samples there instead. Note these six dimensions:
 
 1. **Sentence length** — short and punchy? Long and flowing? Mixed?
 2. **Word choice level** — casual? somewhere between?
@@ -597,7 +622,7 @@ Before rewriting, write out the answer to: **"What makes this draft so obviously
 Produce the revised draft. It must:
 - Contain the same number of paragraphs as the original
 - Cover everything the original covered (no facts or proof points dropped)
-- Preserve all meaning, specifics, and Q&A content
+- Preserve all meaning, specifics, and Why I Want This Role content
 - Match the voice calibrated in Step 1
 
 ### Step 5 — Final scan before handing to gatekeeper

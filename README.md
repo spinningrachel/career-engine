@@ -57,9 +57,9 @@ The pipeline has two layers: a set of agents that do the writing and reviewing, 
 
 Three files in `references/` govern everything every agent produces.
 
-**`01-candidate-rules.md`** contains the rules that constrain agent behavior: fabrication guards, attribution rules (which outcomes belong to you vs. the company), framing constraints, JD term mappings, and your contact details and target roles. Every agent reads this first. If a claim can't be traced to this file or to `02-candidate-background.md`, it doesn't go on the page.
+**`01-writing-rules.md`** contains the rules that constrain agent behavior: fabrication guards, attribution rules (which outcomes belong to you vs. the company), framing constraints, JD term mappings, and your contact details and target roles. Every agent reads this first. If a claim can't be traced to this file or to `02-professional-background.md`, it doesn't go on the page.
 
-**`02-candidate-background.md`** contains your career content: role facts (companies, dates, titles, metrics, what you built), approved CV bullets, approved CV summaries by domain, testimonials, portfolio, and the Q&A bank. Agents draw from this file for every bullet, every proof point, and every intake answer. The Q&A bank accumulates automatically — every answer you give to a pipeline question gets promoted here so the same question is never asked twice.
+**`02-professional-background.md`** contains your career content: role facts (companies, dates, titles, metrics, what you built), approved CV bullets, approved CV summaries by domain, testimonials, portfolio, and the Q&A bank. Agents draw from this file for every bullet, every proof point, and every intake answer. The Q&A bank accumulates automatically — every answer you give to a pipeline question gets promoted here so the same question is never asked twice.
 
 **`03-framework.md`** contains your positioning: professional category, voice samples, core positioning statement, value pillars, methodology, domain depth, ICP, messaging by audience, taglines, differentiators, and elevator pitches. The letter-writer and employment coach draw from this file for cover letter strategy and career framing. It's what makes the letters sound like you rather than a generic candidate.
 
@@ -159,7 +159,7 @@ After duplicating, paste the database ID (the 32-character string from your Noti
 
 The three files in `references/` are the most important files in the plugin. Every agent loads one or more of them before writing anything. Understanding what lives where prevents confusion about why the pipeline produces what it produces.
 
-### `01-candidate-rules.md`
+### `01-writing-rules.md`
 
 This file contains agent operating rules and your identity configuration. It answers the question: *how must agents behave when writing about this candidate?*
 
@@ -173,7 +173,7 @@ The identity section (Section 8) contains your contact details, education, and t
 
 Section 1 is the first thing every agent reads. If something in this file contradicts what an agent believes about your background, this file is correct.
 
-### `02-candidate-background.md`
+### `02-professional-background.md`
 
 This file is your career content bank. It answers the question: *what has this candidate actually done, and what language has been approved for describing it?*
 
@@ -355,7 +355,7 @@ After all roles complete:
 
 - **LinkedIn updates** — aggregates Keywords from all coach outputs, counts cross-role frequency, and writes a `linkedin-updates-<date>.md` file with high-signal (3+ roles) and medium-signal (2 roles) terms alongside extracted summary phrases
 - **Revision log** — writes a run-level revision log with cross-run decisions and any technical issues encountered
-- **Q&A promotion** — promotes new Q&A answers from this run into `02-candidate-background.md` so the letter-writer never asks the same question twice
+- **Q&A promotion** — promotes new Q&A answers from this run into `02-professional-background.md` so the letter-writer never asks the same question twice
 - **Bullet approval prompt** — asks which companies from this run you want to lock bullets for (see [How approved bullets work](#how-approved-bullets-work))
 
 ### Final delivery
@@ -457,11 +457,11 @@ You can add as many additional custom properties as you want — for your own no
 | `Relationship type` | Select | Coach | Engagement framing. Values: `Full time`, `Part time`, `Temporary`, `Fractional/Consulting/Freelance` |
 | `Gap handling` | Text | Coach (you may override) | One line per gap: how to handle it. You can edit this before triggering the CV pipeline — your version takes precedence. |
 | `Role summary` | Text | Coach | 2-sentence role fit summary plus culture signal |
-| `Hiring Manager` | Text | Coach | Hiring manager name and title |
+| `Hiring Manager's Name` | Text | Coach | Hiring manager name and title |
 | `Hiring manager's role` | Text | Coach | HM title + what their org position implies for your seniority and accountability |
 | `Manager role confirmed` | Select | Coach | `Yes` = confirmed. `No; this is only a hypothesis` = inferred. |
 | `Person who Advertised Role (if not Hiring Manager)` | Text | Coach | Name and title of the person who posted the role |
-| `No other Marketing roles employed by company` | Select | Coach | `No other marketers employed` or `There's already at least one...`. Drives Builder vs. Scaler framing. |
+| `No incumbents in this function` | Select | Coach | `No incumbent in this function` or `Function is already staffed`. Drives Builder vs. Scaler framing. |
 | `Landscape` | Text | Coach-skills | Competitive landscape from research run |
 | `Last Pipeline Run` | Date | Orchestrator | ISO date of most recent completed run |
 | `Link to CV` | Text | Orchestrator | Local file paths posted after the run |
@@ -538,7 +538,7 @@ At the end of every run, the orchestrator asks:
 
 > "New bullets were written for: Company A, Company B. Which should I add to your approved list? Reply with company names, 'all', or 'none'."
 
-When you approve a company, the bullets from that run are written into `02-candidate-background.md` under that company's role entry. Future runs for the same company start from those bullets rather than generating from scratch.
+When you approve a company, the bullets from that run are written into `02-professional-background.md` under that company's role entry. Future runs for the same company start from those bullets rather than generating from scratch.
 
 ---
 
@@ -575,7 +575,7 @@ Eight agents handle all reasoning and writing. The orchestrator spawns them as s
 
 **gatekeeper** — Quality gate for both CVs and cover letters. CV option checks ATS compliance (keyword coverage thresholds and section headings) plus 13 content rules. Cover letter option checks 13 voice and structure rules. Returns PASS or a specific violation list. Loops silently with the writing agent until PASS. Does not rewrite; only checks.
 
-**hebrew-localization** *(Alpha)* — Produces native Israeli professional Hebrew versions of the CV and cover letter. Runs after the English DOCX export when the role's Languages property includes Hebrew. Localization follows the Israeli tech professional register — hybrid Hebrew-English, direct, not formal. RTL layout requires manual Word setup; full configuration instructions coming.
+**localization** *(Alpha)* — Produces native Israeli professional Hebrew versions of the CV and cover letter. Runs after the English DOCX export when the role's Languages property includes Hebrew. Localization follows the Israeli tech professional register — hybrid Hebrew-English, direct, not formal. RTL layout requires manual Word setup; full configuration instructions coming.
 
 **pmm-positioning-expert** — Analyzes competitive positioning for a company during standalone research runs. Does not run in the main campaign pipeline.
 
@@ -585,17 +585,17 @@ Skills contain the detailed procedures each agent follows. They are loaded by th
 
 | Skill | Loaded by | Purpose |
 |---|---|---|
-| `cv-pipeline-orchestrator` | Orchestrator | Full campaign coordination, Steps 0–9b |
-| `cv-campaign-intake` | Orchestrator | Steps 0–0.9: Notion fetch, coach invocation, queue building |
-| `cv-campaign-role-steps` | Orchestrator | Steps 1–7d: per-role CV and cover letter pipeline |
-| `cv-campaign-export` | Orchestrator | DOCX conversion commands, file naming, copy protocol |
-| `cv-edit-pipeline` | Orchestrator | Editing pipeline for Needs editing roles |
+| `applications-orchestrator` | Orchestrator | Full campaign coordination, Steps 0–9b |
+| `application-intake` | Orchestrator | Steps 0–0.9: Notion fetch, coach invocation, queue building |
+| `new-application-steps` | Orchestrator | Steps 1–7d: per-role CV and cover letter pipeline |
+| `application-files-export` | Orchestrator | DOCX conversion commands, file naming, copy protocol |
+| `application-edit` | Orchestrator | Editing pipeline for Needs editing roles |
 | `coach` | Coach command | Standalone research pipeline for Hold roles |
 | `cover-letter` | letter-writer | Voice rules, structure, use-case patterns, revision pass |
 | `cv-writing` | cv-writer | Bullet formula, ATS rules, forbidden phrases |
 | `gatekeeper-checks` | gatekeeper | Full checklist for both CV and cover letter options |
 | `employment-coach` | employment-coach | Research procedure, priority scoring, strategic property definitions |
-| `cv-campaign-setup` | Setup command | Onboarding phases 1–6 |
+| `career-engine-setup` | Setup command | Onboarding phases 1–6 |
 
 ---
 
@@ -634,7 +634,7 @@ The pipeline always produces two outputs per role: a markdown file and (if pando
 
 The plugin ships with `references/cv-template-default.dotx`, a Word template with custom styles for pandoc DOCX export. The template controls fonts, heading sizes, color scheme, and the header layout. Microsoft Word is not required to use the DOCX — any application that opens `.docx` files works, including LibreOffice (free) and Google Docs.
 
-To use your own template instead, provide the path during setup (`/career-engine:setup --phase 5`). Your template must define the same custom style names — see `skills/cv-campaign-export/SKILL.md` for the full style reference.
+To use your own template instead, provide the path during setup (`/career-engine:setup --phase 5`). Your template must define the same custom style names — see `skills/application-files-export/SKILL.md` for the full style reference.
 
 **Markdown output (no dependencies)**
 
@@ -722,7 +722,7 @@ The Notion MCP connection may have expired or the database ID is wrong. Verify t
 
 ### "Gatekeeper loop exceeded" or run stalls in a loop
 
-The gatekeeper loops with the writing agent until all checks pass. If a loop exceeds its limit, it typically means a check is failing that the writing agent can't resolve within the fabrication constraints — usually because the JD requires experience that isn't documented in your reference files. Check the gatekeeper violation output in chat, and add the relevant experience to `02-candidate-background.md` if it's genuinely there.
+The gatekeeper loops with the writing agent until all checks pass. If a loop exceeds its limit, it typically means a check is failing that the writing agent can't resolve within the fabrication constraints — usually because the JD requires experience that isn't documented in your reference files. Check the gatekeeper violation output in chat, and add the relevant experience to `02-professional-background.md` if it's genuinely there.
 
 ### Cover letter doesn't sound like me
 
@@ -740,7 +740,7 @@ The run either crashed before completing or the state file write failed. Run `/c
 
 **Crash recovery and run resumption.** The CV Campaign pipeline writes `state.json` to the output folder after every role completes. If a run crashes or is interrupted, set the affected role's Status back to `Interested` and re-run — the pipeline picks up from where it left off. You can inspect the state file at any time with `/career-engine --status`.
 
-**CV type handling.** The pipeline handles different CV types (specialist, senior, founding marketer, leadership, etc.) through the Role Type system. The employment coach assigns a Role Type to every role — `Builder`, `Scaler`, `Specialist`, or `Leader` — and the cv-writer uses it to determine the CV's structure, what sections to include, and how to frame bullets. You don't need to specify a CV type manually. Full Role Type documentation in the job tracking database section.
+**CV type handling.** The pipeline handles different CV types (specialist, senior, founding hire, leadership, etc.) through the Role Type system. The employment coach assigns a Role Type to every role — `Builder`, `Scaler`, `Specialist`, or `Leader` — and the cv-writer uses it to determine the CV's structure, what sections to include, and how to frame bullets. You don't need to specify a CV type manually. Full Role Type documentation in the job tracking database section.
 
 **Onboarding pause and resume.** The onboarding interview can be paused and continued in a later session. Run `/career-engine:setup --phase 4` to resume the framework interview. The `[DRAFT]` and `[REVIEW]` markers in `03-framework.md` track what's been confirmed and what still needs work.
 

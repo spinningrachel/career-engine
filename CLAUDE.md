@@ -4,6 +4,26 @@ Working instructions for Claude when editing, extending, or maintaining this plu
 
 ---
 
+## ⛔ MANDATORY STOP — READ BEFORE DOING ANYTHING ELSE
+
+**You are not done with any plugin edit session until the QA agent has run and passed. No exceptions.**
+
+This means: after completing any set of changes — no matter how small — you MUST invoke the QA agent (`agents/qa.md`) before telling the user the work is complete. This is not optional and cannot be skipped because the changes "seem clean" or because you "already checked manually." Manual checking is how drift accumulates silently.
+
+**The QA agent also checks for drift between the two plugin versions.** Every change must be applied to BOTH:
+1. The open-source repo at the path shown in this file
+2. The personal canonical version at `/Users/rachel/.claude/plugins/marketplaces/local-desktop-app-uploads/career-engine/`
+
+If a change was made to one version and not the other, the QA agent will catch it. Do not declare work complete before it does.
+
+**How to invoke:** Spawn the QA agent by reading `agents/qa.md` and following its instructions. Pass it both plugin paths.
+
+This gate applies to: any content edit, any rename, any new file, any property name change, any structural change, any cross-version sync. If you edited even one file, run QA.
+
+---
+
+---
+
 ## Two-version architecture
 
 This plugin exists in two versions that must stay in sync:
@@ -11,7 +31,10 @@ This plugin exists in two versions that must stay in sync:
 | Version | Location | Purpose |
 |---|---|---|
 | **Open-source repo** | `<repo-root>/` | Public distribution. Uses `{{USER_FIRST_NAME}}`, `{{USER_FULL_NAME}}`, `{{OUTPUT_FOLDER}}` placeholders. No personal info. |
-| **Personalized (installed)** | Claude plugin cache — path is machine-specific | Your live installation. Real names, real paths, personal background files, delivered letters archive. |
+| **Personalized (canonical)** | `/Users/rachel/.claude/plugins/marketplaces/local-desktop-app-uploads/career-engine/` | Your live installation. Real names, real paths, personal background files, delivered letters archive. |
+
+> **Canonical personal version:** `/Users/rachel/.claude/plugins/marketplaces/local-desktop-app-uploads/career-engine/`  
+> The cowork session copy at `~/Library/Application Support/Claude/local-agent-mode-sessions/...` is ephemeral — do not maintain it. All personal edits go to the canonical path above.
 
 **The sync rule:** any change to one version must be applied to the other in the same session, with the exceptions below.
 
@@ -20,7 +43,7 @@ This plugin exists in two versions that must stay in sync:
 - Placeholder values in the open-source version (`{{USER_FIRST_NAME}}` etc.) → never replaced with real names in the repo
 - `references/delivered-letters/` — exists in personalized only; historical archive, never edit
 - `references/{{USER_DOTX_FILE}}.dotx` — personalized only (your Word template for DOCX export)
-- `references/02-candidate-background.md`, `references/01-candidate-rules.md`, `references/03-framework.md` — exist in both but contain personal content in personalized version; sync structural/procedural changes only, not personal data
+- `references/02-professional-background.md`, `references/01-writing-rules.md`, `references/03-framework.md` — exist in both but contain personal content in personalized version; sync structural/procedural changes only, not personal data
 
 ---
 
@@ -30,7 +53,7 @@ This plugin exists in two versions that must stay in sync:
 **Orchestration only.** An agent file defines identity (what this agent is), invocation modes, what files to load, what steps to follow, and what to return. It does not contain:
 - Writing craft or doctrine (→ belongs in the relevant skill)
 - Personal examples, company names, or candidate-specific rules (→ belongs in references)
-- Fabrication rules or voice profile (→ `01-candidate-rules.md`)
+- Fabrication rules or voice profile (→ `01-writing-rules.md`)
 
 The agent's Role section should be 3–6 lines max. Everything else is procedure.
 
@@ -40,7 +63,7 @@ The agent's Role section should be 3–6 lines max. Everything else is procedure
 Skills are loaded by agents via `Read` — they are not auto-activated by the platform based on context for pipeline agents. Each agent explicitly instructs itself to load the skills it needs.
 
 ### References (`references/`)
-**Source material.** Background facts, candidate rules, voice profile, self-check checklists, templates, and delivered letters. Agents read references; they never write to them except via explicit pipeline steps (e.g., `02-candidate-background.md` Q&A promotion in Step 0.9).
+**Source material.** Background facts, candidate rules, voice profile, self-check checklists, templates, and delivered letters. Agents read references; they never write to them except via explicit pipeline steps (e.g., `02-professional-background.md` Q&A promotion in Step 0.9).
 
 ### Commands (`commands/`)
 Slash commands. Thin — they invoke skills, not implement logic directly.
@@ -102,7 +125,7 @@ cd <plugin-cache>
 python3 -c "
 import zipfile, os
 exclude = {'.git', '__pycache__', '.DS_Store', '.in_use', '<user-dotx-file>.dotx.bak'}
-with zipfile.ZipFile(os.path.expanduser('~/Downloads/career-engine-personal.plugin'), 'w', zipfile.ZIP_STORED) as zf:
+with zipfile.ZipFile(os.path.expanduser('~/Downloads/career-engine.plugin'), 'w', zipfile.ZIP_STORED) as zf:
     for root, dirs, files in os.walk('.'):
         dirs[:] = [d for d in dirs if d not in exclude]
         for file in files:
@@ -178,3 +201,9 @@ Notion view URLs change when views are reorganised. The intake skill now fetches
 
 **Why the opener rule is a principle, not a template:**
 Delivered letters show openers that vary widely in structure — emotional reaction, existing relationship, personal tension, value claim, warm connection. The common thread is specificity: within two sentences the reader knows why this person is writing to this company right now. A fixed template produces generic letters. The rule is: establish that context; how is up to the Q&A content.
+
+---
+
+## QA Agent
+
+See the mandatory stop gate at the top of this file. The QA agent lives at `agents/qa.md`. Run it after every edit session — it checks both plugin versions for drift, stale references, missing files, property name consistency, and structural integrity. The full check list is in the agent file itself.

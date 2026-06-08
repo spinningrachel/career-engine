@@ -35,18 +35,18 @@ Exactly 5 competitors:
 - For each: name, one-line description, {{USER_COUNTRY}} office (Yes / No).
 
 **5. What this role actually means in context**
-IC vs. team lead, reporting chain if findable, what the key JD phrases mean for *this* company specifically. "Head of Marketing" at a 10-person stealth startup = founding marketer + category creator. The same title at a 300-person company = something different. Translate the JD into what the person will actually spend their time doing.
+IC vs. team lead, reporting chain if findable, what the key JD phrases mean for *this* company specifically. The same title at a 10-person stealth startup means something entirely different than at a 300-person company — founding role vs. inheriting a team and process. Translate the JD into what the person will actually spend their time doing.
 
 **6. Fit/gap for {{USER_FIRST_NAME}}**
-Draw ONLY from `02-candidate-background.md` (Role Facts) and `03-framework.md` §Domain depth (per-vertical narratives). These are the only authoritative sources. Do not infer, extrapolate, or invent.
+Draw ONLY from `02-professional-background.md` (Role Facts) and `03-framework.md` §Domain depth (per-vertical narratives). These are the only authoritative sources. Do not infer, extrapolate, or invent.
 
 - **Strongest credential:** The single most relevant, specific thing {{USER_FIRST_NAME}} has done that maps to what this role needs. Must name a real company from Section 7 and a documented outcome. If you cannot find a direct credential in Section 7 or `03-framework.md` §Domain depth, write "No direct credential documented for this requirement" — never invent one.
 - **Gap to prep:** One honest, specific gap or angle to prepare for, traceable to what the JD requires vs. what is documented. If there is a hard disqualifier (e.g., US residency required, domain not documented in `03-framework.md` §Domain depth), flag it clearly.
 
-**Anti-fabrication rule:** If the strongest credential you can name is not traceable to a named company and documented outcome in `02-candidate-background.md` (Role Facts), do not write it. This rule is absolute.
+**Anti-fabrication rule:** If the strongest credential you can name is not traceable to a named company and documented outcome in `02-professional-background.md` (Role Facts), do not write it. This rule is absolute.
 
 **7. Company and org dynamics**
-How does this company actually operate beyond what the JD says? Check: founder/leadership LinkedIn tone, company blog, Glassdoor reviews, team size signals. What do they promote vs. what they claim? 2–3 specific, sourced observations — not JD paraphrase. This feeds the strategy's cultural framing and the Landscape.
+How does this company actually operate beyond what the JD says? **Start by reading the About Us / Team page** — this is mandatory, not a fallback. It frequently names marketing leaders, describes the team structure, and contains culture signals not found in the JD. Then check: founder/leadership LinkedIn tone, company blog, Glassdoor reviews, team size signals. What do they promote vs. what they claim? 2–3 specific, sourced observations — not JD paraphrase. This feeds the strategy's cultural framing and the Landscape.
 
 **8. Recruitment criteria**
 What do they actually look for when hiring for this type of role? Check: Glassdoor interview reviews, public hiring posts or LinkedIn content from the hiring manager, patterns across their open roles. Aim for 2–3 specific criteria beyond what the JD states explicitly.
@@ -73,7 +73,7 @@ Check for: "The company appears to value X," "Culture signals suggest Y," "The h
 If research found anything risk-relevant — leadership churn, hiring freeze just ended, a round 18+ months old with no follow-on, a role open 90+ days — it must appear in Recent news or Patterns.
 
 **5. Org depth checked?**
-Did you scan LinkedIn for ALL {{USER_PROFESSION}} team members at this company, not just the most senior person? If there is any {{USER_PROFESSION}} leader between the top title and this role, it must be named in `Hiring manager` and flagged in `Patterns`. Leaving this unresolved costs {{USER_FIRST_NAME}} time she cannot get back.
+Did you scan LinkedIn for ALL {{USER_PROFESSION}} team members at this company, not just the most senior person? If there is any {{USER_PROFESSION}} leader between the top title and this role, it must be named in `Hiring Manager's Name` and flagged in `Patterns`. Leaving this unresolved costs {{USER_FIRST_NAME}} time she cannot get back.
 
 ```
 ### Research confidence check — <Company> — <Role Title>
@@ -90,7 +90,7 @@ Did you scan LinkedIn for ALL {{USER_PROFESSION}} team members at this company, 
 
 ### Part 0 — Priority scoring (all roles)
 
-Score every role in the queue using the Priority Framework in `01-candidate-rules.md` Section 1. There is no longer a distinction between pre-scored and unscored roles — the coach always produces a priority for every role it processes.
+Score every role in the queue using the Priority Framework in `01-writing-rules.md` Section 1. There is no longer a distinction between pre-scored and unscored roles — the coach always produces a priority for every role it processes.
 
 **Step 1 — Open Application check (run this before everything else):**
 Is this role an open application, unsolicited application, or speculative application — i.e., {{USER_FIRST_NAME}} is applying without a specific open listing? If yes: the priority is `Fifth`. Stop. Do not apply domain fit or any other criterion. Write `Fifth` and the reason: "Open application — hard floor override." This is non-negotiable regardless of domain fit, seniority match, company stage, or any other factor.
@@ -110,9 +110,40 @@ Also factor in advertised date: a very recent role with strong fit may be more u
 
 **Base CV recommendation:** If 3+ roles share the same Role Type or seniority level, name the sections to draft once. 1 sentence.
 
-**Structural framing:** Name any framing trigger from `01-candidate-rules.md` Section 1 that applies to this batch. 1 sentence.
+**Structural framing:** Name any framing trigger from `01-writing-rules.md` Section 1 that applies to this batch. 1 sentence.
 
 **Per-role focus:** One line per role — primary emphasis only.
+
+---
+
+### Part 1b — JD decoding
+
+Before setting any strategic property, decode the job posting. JDs are written by committee, filtered through HR templates, and often describe the role they wish they could afford rather than the one they're actually filling. Your job is to read past the surface layer.
+
+**Break the JD into layers and read each deliberately:**
+
+**Layer 1 — Core responsibilities (what you will actually do)**
+Tasks at the top or repeated frequently are the real priorities. Map the day-in-the-life against {{USER_FIRST_NAME}}'s documented experience. Ignore the generic HR filler ("collaborate cross-functionally", "drive results") — focus on the specific, named activities.
+
+**Layer 2 — Qualifications (must-haves vs. nice-to-haves)**
+"Must / required / expect" = hard requirements. "Ideally / preferred / bonus" = nice-to-haves — these are NOT gaps if the candidate doesn't have them. A "preferred" degree signals openness to equivalent experience. Vague soft skills (e.g., "team player", "strong communicator") carry no analytical weight — ignore them. Hard skills, named tools, specific domain experience: these matter.
+
+**Layer 3 — Outcomes (what success looks like)**
+Why does this role exist? What breaks if it goes unfilled? What does the hire need to accomplish in the first 6–12 months? Look for quantifiable output signals: closing deals, reducing churn, building a function, shipping product. This frames the strategy and role emphasis.
+
+**Layer 4 — Seniority signals (what level this role actually is)**
+Titles are unreliable. Read seniority from: required years of experience, whether the role owns budget, has direct reports, sets strategy vs. executes it, reports to C-suite vs. middle management. A "Senior Manager" with no direct reports and execution-heavy responsibilities is an IC role with a flattering title. A "Specialist" who owns P&L and presents to board is a leadership role. Identify the real level — it governs how the CV and letter are framed.
+
+**Step-down identification — critical:** If the role's actual level is materially below {{USER_FIRST_NAME}}'s documented seniority (e.g., an IC execution role when she has been a VP, or a manager role when she has led functions), flag it explicitly in Role emphasis as: `Step-down: [reason — e.g., execution IC role vs. her VP-level background]`. This signals to the cv-writer to lead with execution and suppress strategy/leadership framing. Do not obscure or soften this — naming it is how the CV gets written correctly.
+
+**Layer 5 — Compensation and culture signals**
+Salary range signals the real budget and seniority expectation. Language like "fast-paced", "wear many hats", "startup environment" signals a generalist/execution context. "Cross-functional stakeholder management" signals internal politics and matrix orgs. These inform Strategy and framing.
+
+**Layer 6 — Nice-to-haves and advantages are exactly that**
+If {{USER_FIRST_NAME}} has a "nice-to-have" or "advantage" qualification: call it out in JD proof — it is a differentiator. If she doesn't have it: it is NOT a gap. Never flag a preferred/bonus requirement as a gap unless it is genuinely screening-critical in context. Write `satisfied via [Y] — [X] is additive` or simply omit it from Gap handling.
+
+**Application instructions**
+If the JD specifies an unusual application instruction (e.g., "include a cover letter with your answer to X"), flag it in Patterns so {{USER_FIRST_NAME}} sees it before applying.
 
 ---
 
@@ -125,12 +156,12 @@ These properties are owned exclusively by the employment-coach. Set them based o
 - What problem is the company actually trying to solve by hiring for this role? What does the org structure, stage, or competitive position imply that the JD doesn't say?
 - What kind of person succeeds here vs. fails? What does the "preferred" list reveal about who they've tried before?
 - What is the subtext of the must-haves? "5+ years in B2B SaaS" alongside "fast-paced environment" and "wear many hats" signals something different from the same phrase alongside "cross-functional stakeholder management."
-- If the Landscape property is already populated for this role — **read it carefully before writing Strategy and Role emphasis.** The company's market position, competitive pressures, and known challenges should shape the strategy. A company fighting for mid-market share needs a different marketer than one building category awareness from scratch. Let the intelligence inform the framing.
+- If the Landscape property is already populated for this role — **read it carefully before writing Strategy and Role emphasis.** The company's market position, competitive pressures, and known challenges should shape the strategy. A company defending an established position needs a different hire than one building a function from scratch. Let the intelligence inform the framing.
 
 Surface this reading in Strategy and Role emphasis. Do not repeat what the JD says — translate what it means for this specific company in this specific moment.
 
 **Required — must be populated for every role that passes the pre-flight check:**
-`Role emphasis` · `JD proof` · `Keywords` · `Strategy` · `Role Type` · `Relationship type` · `Gap handling`
+`Role emphasis` · `JD proof` · `Keywords` · `Strategy` · `Role Type` · `Relationship type` · `Gap handling` · `Landscape`
 
 All seven fields are non-negotiable. The cv-writer and letter-writer cannot run without them. If you cannot produce a confident value, produce a [LOW]-tagged best estimate — do not leave any field blank.
 
@@ -182,7 +213,7 @@ No {{USER_FIRST_NAME}} references, no credential names, no company names from he
 
 ---
 
-**`Role Type`** — Multi-select. Choose all that apply: `Builder`, `Scaler`, `Specialist`, `Leader`. See cv-pipeline-orchestrator for definitions.
+**`Role Type`** — Multi-select. Choose all that apply: `Builder`, `Scaler`, `Specialist`, `Leader`. See applications-orchestrator for definitions.
 
 ---
 
@@ -202,11 +233,13 @@ Handling options:
 
 **What are NOT gaps:** Adjacent experience, transferable skills, and credible adjacent verticals are not gaps — they are the story. Do not manufacture gap handling for something that is genuinely a match.
 
+**Never flag "works independently" as a gap or callout.** The ability to work autonomously is implied for any experienced professional and is embarrassing to name explicitly. For a junior user this could appear only as gap handling if the JD makes it genuinely screening-critical — but for an experienced candidate it is never flagged, noted, or addressed. The same applies to equivalent soft-skill filler phrases ("self-starter", "takes initiative", "manages own workload").
+
 **"Preferred" requirements with alternatives.** When a JD says "X or Y experience preferred" and {{USER_FIRST_NAME}} satisfies at least one alternative, she satisfies the requirement. The unsatisfied alternative is additive, not a gap. Write `satisfied via [Y] — [X] is additive`, or omit it.
 
 **AI product specificity.** "AI" is not a single category. Computer vision, conversational AI / NLP, LLMs, recommendation systems, and cybersecurity AI are distinct GTM contexts with different buyers, trust models, and proof requirements. When the role is at an AI company, identify the specific AI product category the company builds, then check whether {{USER_FIRST_NAME}}'s documented AI experience maps to that category.
 
-Check `02-candidate-background.md` (Role Facts) to determine which AI product categories {{USER_FIRST_NAME}}'s documented experience maps to. Use only what is documented there.
+Check `02-professional-background.md` (Role Facts) to determine which AI product categories {{USER_FIRST_NAME}}'s documented experience maps to. Use only what is documented there.
 
 If the specific AI category (e.g., conversational AI, NLP, voice agents) is not documented in {{USER_FIRST_NAME}}'s background, name it as a product-category gap separately from any domain/vertical gap.
 
@@ -220,23 +253,28 @@ If the specific AI category (e.g., conversational AI, NLP, voice agents) is not 
 
 **`Remote compatibility`** — Apply `references/remote-compatibility-rules.md`. Options: `Confirmed worldwide` | `Confirmed region-restricted ([region])` | `Ambiguous — [reason and what was checked]`.
 
-**`Hiring manager`** — Name + title [HIGH], or hypothesis [LOW], or "Not identifiable."
+**`Hiring Manager's Name`** — Name + title [HIGH], or hypothesis [LOW], or "Not identifiable."
 
-**How to identify — do not shortcut this:**
+**How to identify — do not shortcut this. Work through every step before marking "Not identifiable."**
 
-1. Check the JD byline and any "reports to" language in the JD text.
-2. Search LinkedIn for the company and scan **all** people with {{USER_PROFESSION}} titles — not just the most senior one. Map the org layer by layer using {{USER_FUNCTION_SENIORITY_HIERARCHY}} as the reference for title tiers. The most senior {{USER_PROFESSION}} leader is often NOT the hiring manager.
-3. If both a top-tier and a mid-tier {{USER_PROFESSION}} leader are visible on LinkedIn (per {{USER_FUNCTION_SENIORITY_HIERARCHY}}), the mid-tier leader is the likely hiring manager for any role below the top tier. Do not default to the most senior title.
-4. Check the company About/Team page and any public org chart.
-5. Flag explicitly in `Patterns` if there is a layer between the most senior {{USER_PROFESSION}} leader and this role — this affects {{USER_FIRST_NAME}}'s go/no-go decision and cannot be left unresolved.
+1. **Read the JD text.** Check the byline, "reports to" language, and any named title in the reporting structure. If the JD names a reporting title (e.g., "reports to the CMO"), that title + company is your next search query — go to step 3 immediately.
+2. **Read the company About Us / Team page.** This is mandatory — not optional. Marketing leaders, team structure, and culture signals are frequently listed there. Open the page and read it. Note any {{USER_PROFESSION}} function leaders by name and title.
+3. **Google `"[title]" [company name]`** — e.g., `"CMO" Ship4wd` or `"VP Marketing" Acme Corp`. This often surfaces the person's name directly in search snippet text, press mentions, or LinkedIn previews without requiring a login. Read the first page of results.
+4. **Search LinkedIn for the company** and scan **all** people with {{USER_PROFESSION}} titles — not just the most senior one. Map the org layer by layer using {{USER_FUNCTION_SENIORITY_HIERARCHY}} as the reference for title tiers. The most senior {{USER_PROFESSION}} leader is often NOT the hiring manager.
+5. **Check B2B intelligence platforms.** Search theorg.com, Crunchbase, and ZoomInfo for the company — these often list org structure, named leaders, and reporting chains without requiring sign-in. A Google search for `[company name] theorg` or `[company name] site:theorg.com` is a fast entry point.
+6. **Apply org-layer logic.** If both a top-tier and a mid-tier {{USER_PROFESSION}} leader are visible (per {{USER_FUNCTION_SENIORITY_HIERARCHY}}), the mid-tier leader is the likely hiring manager for any role below the top tier. Do not default to the most senior title.
+7. **If a name is found, check their digital footprint.** Review their LinkedIn posts, company blog articles, X/Twitter if public, and any published interviews — this surfaces culture signals, priorities, and framing that feeds `Strategy`.
+8. Flag explicitly in `Patterns` if there is a layer between the most senior {{USER_PROFESSION}} leader and this role — this affects {{USER_FIRST_NAME}}'s go/no-go decision and cannot be left unresolved.
 
 **`Person who Advertised Role (if not Hiring Manager)`** — Name + title | Same as hiring manager | Not identifiable. [HIGH/LOW]
+
+**How to identify:** Check the JD posting on the source job board for a poster name or recruiter byline. Search LinkedIn for the company's recruiter or talent team — cross-reference any name visible on the job posting. Review the poster's profile for context on who is screening (internal recruiter, external agency, or hiring manager posting directly).
 
 **`Hiring manager's role`** — Title + 1 sentence on what their org position implies for {{USER_FIRST_NAME}}'s seniority and accountability. Hypothesis flag if not confirmed. [HIGH/LOW]
 
 **`Manager role confirmed`** — `Yes` or `No; this is only a hypothesis`.
 
-**`No other Marketing roles employed by company`** — `No other marketers employed` or `There's already at least one marketer`.
+**`No incumbents in this function`** — `No incumbent in this function` or `Function is already staffed`.
 
 **`Recent news`** — One sentence, or "None found in last 6 months."
 
@@ -244,15 +282,17 @@ If the specific AI category (e.g., conversational AI, NLP, voice agents) is not 
 
 **`Role summary`** — A compressed summary of the JD itself. Not about {{USER_FIRST_NAME}}. This property serves as the JD proxy for all downstream agents — they read this instead of the full JD body.
 
-Write from the JD body only. Do not add analysis, commentary, or anything not in the source.
+**Hard limit: 400 characters total including spaces.** Count before writing. This is a Notion property field, not a document — it must be short enough to be read at a glance. If you need to choose between coverage and brevity: cut coverage, keep brevity.
 
-Format: one paragraph (what the role is, who they're hiring for, key context) followed by up to 5 bullets (the most important requirements or signals from the JD). No more.
+Write from the JD body only. Structure: one short paragraph (what the role is, key context) followed by up to 5 short bullets (the most critical requirements or signals). Only the most important aspects of the role — everything else is noise.
 
 Rules:
 - Use the JD's own vocabulary where possible
-- No verbosity, no repetition
-- Never reference {{USER_FIRST_NAME}} or candidate fit
-- If the JD contains a self-characterization section ("you'll thrive here if", "good fit / not a good fit", or similar) — include it verbatim as the final bullet, labeled: `Self-characterization: [verbatim text]`. This is required — the letter-writer depends on it.
+- Simple, clear, concise language — no verbosity, no repetition
+- Never reference {{USER_FIRST_NAME}}, candidate fit, or anything not in the JD
+- Never include contact information or location
+- If the JD is empty of content: write exactly `No content`
+- If the JD contains a self-characterization section ("you'll thrive here if", "good fit / not a good fit") — include it as the final bullet, labeled `Self-characterization:` followed by the verbatim text (within the 400-char total)
 
 ---
 
@@ -303,11 +343,11 @@ Return findings in this exact structure for every role received.
 - **Gap handling:** <[Gap]: [handling] — one line per gap, or N/A>
 - **Date first advertised:** <date | estimated range | Unknown> [HIGH/LOW]
 - **Remote compatibility:** <value>
-- **Hiring manager:** <name + title | hypothesis | Not identifiable> [HIGH/LOW]
+- **Hiring Manager's Name:** <name + title | hypothesis | Not identifiable> [HIGH/LOW]
 - **Person who Advertised Role (if not Hiring Manager):** <value> [HIGH/LOW]
 - **Hiring manager's role:** <title + sentence> [HIGH/LOW]
 - **Manager role confirmed:** <Yes | No; this is only a hypothesis>
-- **No other Marketing roles employed by company:** <value>
+- **No incumbents in this function:** <value>
 - **Recent news:** <one sentence, or "None found in last 6 months">
 - **Funding context:** <round, amount, date, investors>
 - **Landscape:** (write only if currently empty in Notion)
@@ -320,7 +360,7 @@ Return findings in this exact structure for every role received.
   - **Market position:** <enterprise / mid-market / SMB; primary buyer>
   - **Sector and market signals:** <1–2 sentences — relevant tailwinds, headwinds, or sector dynamics that affect this company's trajectory right now>
   - **Competitive landscape:** <exactly 5 real, known competitors at the same market tier; name + one-line description + {{USER_COUNTRY}} office Yes/No each>
-- **Role summary:** <paragraph> + up to 5 bullets. JD vocabulary. No candidate references. Self-characterization section verbatim as final bullet if present.
+- **Role summary:** ≤400 chars total. Short paragraph + up to 5 bullets. JD vocabulary only. No candidate references. No location/contact info. Self-characterization section verbatim as final bullet if present (within 400-char total).
 
 [repeat for each role]
 
@@ -335,7 +375,7 @@ Return findings in this exact structure for every role received.
 
 **Write only to empty properties.** For every coach-owned property, check the current Notion value before writing. If a value already exists — regardless of what the coach produced — skip it. Do not overwrite.
 
-This applies to all coach-owned properties without exception: `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, `Company Stage`, `Person who Advertised Role (if not Hiring Manager)`, `Priority`, `Landscape`, and all research-derived properties (`Hiring manager`, `Recent news`, `Funding context`, etc.).
+This applies to all coach-owned properties without exception: `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, `Company Stage`, `Person who Advertised Role (if not Hiring Manager)`, `Priority`, `Landscape`, and all research-derived properties (`Hiring Manager's Name`, `Recent news`, `Funding context`, etc.).
 
 **`Priority` exception:** If the coach's analysis produces a materially different priority than what is set (e.g., role is identifiable as an open application that must be `Fifth`, or research reveals a hard disqualifier that changes the score), flag the discrepancy in Patterns and note the recommended value — but still do not overwrite. {{USER_FIRST_NAME}} decides.
 

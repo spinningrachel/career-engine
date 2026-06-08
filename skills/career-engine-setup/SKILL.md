@@ -1,5 +1,5 @@
 ---
-name: cv-campaign-setup
+name: career-engine-setup
 description: >
   Onboarding wizard for the cv-campaign plugin. Triggered when the user
   runs /cv-campaign:setup, says "set up the plugin", "start onboarding",
@@ -23,13 +23,13 @@ allowed-tools:
 
 This skill sets up the plugin for a new user. It builds the three reference files that all pipeline agents read before writing anything:
 
-- `01-candidate-rules.md` — fabrication guards, attribution rules, framing constraints, contact details
-- `02-candidate-background.md` — role facts, approved content, portfolio, Q&A answers
+- `01-writing-rules.md` — fabrication guards, attribution rules, framing constraints, contact details
+- `02-professional-background.md` — role facts, approved content, portfolio
 - `03-framework.md` — positioning, voice, methodology, domain narratives
 
 **How onboarding works:** You send your existing career materials. The agent reads them and synthesizes `03-framework.md`. You review it and respond — with feedback or approval. That response triggers a targeted interview that fills gaps and captures what the materials didn't fully show. Integration (Notion, output path) comes after.
 
-**Run order matters.** Phase 1 (identity) → Phase 2 (content submission) → Phase 3 (synthesis) → Phase 4 (review and interview) → Phase 5 (integration) → Phase 6 (permissions). Phases 5–6 can be deferred — the pipeline can run with Phases 1–4 complete.
+**Run order matters.** Phase 1 (identity) → Phase 2 (content submission) → Phase 3 (synthesis) → Phase 4 (review and interview) → Phase 5 (integration) → Phase 6 (permissions) → Phase 7 (remote-compatibility). Phases 5–7 can be deferred — the pipeline can run with Phases 1–4 complete.
 
 **Onboarding can be paused and resumed.** The Phase 4 interview in particular can take time. If the user needs to stop, they can resume later by running `/career-engine:setup --phase 4`. The state of `03-framework.md` is preserved between sessions — sections already confirmed have no `[DRAFT]` or `[REVIEW]` markers; sections still needing work do. The pre-flight check uses this to report progress accurately.
 
@@ -79,7 +79,37 @@ Ask for the following. Use the placeholder name as the prompt — "What's your `
 | `{{USER_COUNTRY}}` | Country you are based in |
 | `{{USER_FUNCTION_SENIORITY_HIERARCHY}}` | Typical title tiers in your function from most senior to IC (e.g., for marketing: "CMO → VP → Head/Director → Manager → IC") |
 
-Write answers into `01-candidate-rules.md` Section 8. Write `{{USER_FIRST_NAME}}`, `{{USER_FULL_NAME}}`, and `{{USER_LAST_NAME}}` into every occurrence across all three reference files. Write `{{USER_PROFESSION}}`, `{{USER_CITY}}`, `{{USER_COUNTRY}}`, and `{{USER_FUNCTION_SENIORITY_HIERARCHY}}` into every occurrence across all skill and agent files.
+Write answers into `01-writing-rules.md` Section 8. Write `{{USER_FIRST_NAME}}`, `{{USER_FULL_NAME}}`, and `{{USER_LAST_NAME}}` into every occurrence across all three reference files. Write `{{USER_PROFESSION}}`, `{{USER_CITY}}`, `{{USER_COUNTRY}}`, and `{{USER_FUNCTION_SENIORITY_HIERARCHY}}` into every occurrence across all skill and agent files.
+
+---
+
+### Language configuration
+
+Ask:
+
+> "What language(s) do your applications need to be in?
+> (a) English only
+> (b) Hebrew + English — bilingual; English is your default
+> (c) Hebrew only — Hebrew is your default
+> (d) Other — specify your default language and second language (or 'none' if single-language)"
+
+Then ask: "What is your **default** language — the language you write in naturally and that the pipeline should produce first?"
+
+Based on their answers:
+
+1. Write `{{USER_DEFAULT_LANGUAGE}}` and `{{USER_SECOND_LANGUAGE}}` (or `none`) into `01-writing-rules.md` Section 8.
+
+2. Write `{{USER_DEFAULT_LANGUAGE}}` and `{{USER_SECOND_LANGUAGE}}` into `agents/localization.md` and `skills/localization/SKILL.md` (replacing placeholders).
+
+3. **If Hebrew is one of their languages:**
+   > ⚠️ **RTL template required.** Hebrew text in a left-to-right Word template will render incorrectly — characters appear in the wrong order and alignment breaks. You will need a separate `.dotx` template configured for right-to-left layout before running the pipeline for Hebrew-output roles. See `skills/application-files-export/SKILL.md` for template setup instructions.
+
+4. **Database reminder:** Tell the user:
+   > "Add all languages you configured to the **Languages** column in your Notion (or tracking) database for each role. The pipeline reads this column to decide whether to run localization. Use the exact values you configured: `{{USER_DEFAULT_LANGUAGE}}`, `{{USER_SECOND_LANGUAGE}}` (or both). A role with Languages = `{{USER_DEFAULT_LANGUAGE}}` only gets one set of outputs. A role with Languages = `{{USER_DEFAULT_LANGUAGE}}, {{USER_SECOND_LANGUAGE}}` gets both."
+
+5. **If default language is not English:** update `skills/localization/SKILL.md` per the setup instruction at the bottom of its Opening section — rewrite the Default Language column to reflect the user's default language. See that skill for the exact algorithm.
+
+---
 
 Confirm: "Done. Let's move to your career materials."
 
@@ -91,18 +121,18 @@ Confirm: "Done. Let's move to your career materials."
 
 Tell the user:
 
-> "Send me whatever you have from the list below. The more you share, the better the output. I'll read everything and build your positioning framework from it. I will **not store your files** — I'll use them to synthesize your reference files and then they're gone. The only exception is cover letters: if you tell me they're good representations of your voice, I'll keep those in your delivered-letters folder as voice calibration anchors for future runs."
+> "Send me whatever you have from the list below. The more you share, the better the output. I'll read everything and build your positioning framework from it. I will **not store your files** — I'll use them to synthesize your reference files and then they're gone. The only exception is cover letters: if you tell me they're good representations of your voice, I'll keep those in your output folder's `final-pdfs-delivered` subfolder as voice calibration anchors for future runs."
 
 List of useful content and what each feeds:
 
 | Content | What it feeds | Notes |
 |---|---|---|
-| Current CV(s) | `02-candidate-background.md` — role facts (company, dates, titles, metrics, scope) | Used for facts only. Your old CV bullet language is **not** treated as approved bullets — those emerge from pipeline iterations. |
-| Approved sent cover letters | `delivered-letters/` folder — voice calibration | Only kept if you confirm they're good representations of your voice. Ask explicitly before storing. |
+| Current CV(s) | `02-professional-background.md` — role facts (company, dates, titles, metrics, scope) | Used for facts only. Your old CV bullet language is **not** treated as approved bullets — those emerge from pipeline iterations. |
+| Approved sent cover letters | `{{OUTPUT_FOLDER}}/final-pdfs-delivered/` — voice calibration | Only kept if you confirm they're good representations of your voice. Ask explicitly before storing. |
 | LinkedIn export or profile text | `03-framework.md` — testimonials, voice samples, domain context | Not stored. |
 | Performance reviews or peer feedback | `03-framework.md` — peer-attributed qualities, testimonials | Not stored. |
-| Portfolio pieces or writing samples | `02-candidate-background.md` Section 10 — portfolio | Not stored after synthesis. |
-| Old job descriptions you were hired for | `01-candidate-rules.md` — attribution rules, scope framing | Used to understand what was personal contribution vs. company-level. Not stored. |
+| Portfolio pieces or writing samples | `02-professional-background.md` Section 10 — portfolio | Not stored after synthesis. |
+| Old job descriptions you were hired for | `01-writing-rules.md` — attribution rules, scope framing | Used to understand what was personal contribution vs. company-level. Not stored. |
 
 Ask the user to send files. Wait for submission before proceeding.
 
@@ -116,9 +146,9 @@ Ask the user to send files. Wait for submission before proceeding.
 
 Before reading anything, ask:
 
-> "You shared cover letters. Are these good representations of your voice — the kind of letters you'd be happy to send today? If yes, I'll keep them in your delivered-letters folder so future pipeline runs can use them for voice calibration. If no, I'll read them for context and then they're gone."
+> "You shared cover letters. Are these good representations of your voice — the kind of letters you'd be happy to send today? If yes, I'll keep them in your output folder's `final-pdfs-delivered` subfolder so future pipeline runs can use them for voice calibration. If no, I'll read them for context and then they're gone."
 
-- If yes: copy approved cover letters to `${CLAUDE_PLUGIN_ROOT}/references/delivered-letters/`
+- If yes: copy approved cover letters to `{{OUTPUT_FOLDER}}/final-pdfs-delivered/`
 - If no: read them for context only, do not store
 
 ### Read all submitted content carefully
@@ -170,7 +200,7 @@ Present `03-framework.md` to the user and say:
 
 > "Here's your positioning framework, built from what you sent me. Review it — especially the sections marked `[REVIEW]` or `[DRAFT]`. When you're ready, tell me what needs changing or say it looks right. Either way, I'll follow up with a few questions to fill gaps and check things your materials didn't fully capture.
 >
-> **A note on your files:** I've used your submitted content to build this but have not stored it. [If cover letters were kept: "Your approved cover letters are in your delivered-letters folder."] Everything else has been read and synthesised — the original files are not in the plugin."
+> **A note on your files:** I've used your submitted content to build this but have not stored it. [If cover letters were kept: "Your approved cover letters are in your output folder's `final-pdfs-delivered` subfolder."] Everything else has been read and synthesised — the original files are not in the plugin."
 
 Wait for the user's response. Whether they give feedback or say it's fine, proceed to the interview.
 
@@ -184,7 +214,7 @@ The interview has two purposes: fill gaps the materials left, and surface things
 
 **Run the interview as a natural conversation, not a form.** Ask 2–3 questions at a time, grouped by theme. Do not read out all questions at once. Adjust based on what the materials already covered — skip questions where you already have strong evidence.
 
-**Track what's missing from each section of `03-framework.md` and `02-candidate-background.md`. Ask about the most important gaps first.**
+**Track what's missing from each section of `03-framework.md` and `02-professional-background.md`. Ask about the most important gaps first.**
 
 Core areas to cover:
 
@@ -206,12 +236,12 @@ Write the answers into `03-framework.md` §Voice and tone and §Voice samples. I
 - What's the problem you exist to solve that most people in your field don't solve as well?
 - What would colleagues say about you that you'd never say about yourself?
 
-**Career facts (for `02-candidate-background.md`)**
+**Career facts (for `02-professional-background.md`)**
 - For each major role: confirm title, dates, direct reports, key metrics, what you specifically built or changed
-- Attribution check: for any significant outcome, ask "was that company-level or something you drove specifically?" — this shapes attribution rules in `01-candidate-rules.md`
+- Attribution check: for any significant outcome, ask "was that company-level or something you drove specifically?" — this shapes attribution rules in `01-writing-rules.md`
 - Consulting/fractional work: any client engagements not in the CV?
 
-**Scope and framing (for `01-candidate-rules.md`)**
+**Scope and framing (for `01-writing-rules.md`)**
 - Were there any outcomes in your CV that were team-delivered or company-level that you want to make sure agents don't overclaim? (e.g., "300% YoY growth" as a company metric vs. a marketing attribution)
 - Any roles where the title understates the scope, or overstates it?
 - Any engagement that was fractional/consulting that needs specific scope framing?
@@ -220,7 +250,7 @@ Write the answers into `03-framework.md` §Voice and tone and §Voice samples. I
 - What's the one thing that makes your background genuinely unusual — that you'd have a hard time finding in another candidate?
 - What have you worked on that most people in your field haven't touched?
 
-**Target search (for `01-candidate-rules.md` Section 2)**
+**Target search (for `01-writing-rules.md` Section 2)**
 - What roles are you targeting — title, seniority, function?
 - What company stage and size? Any strong preferences or hard nos?
 - Geographic constraints or preferences?
@@ -239,7 +269,7 @@ Ask about these specifically if they haven't come up naturally:
 
 **Update `03-framework.md`:** Apply all interview answers to the relevant sections. Remove all `[REVIEW]` and `[DRAFT]` markers from sections that are now fully confirmed.
 
-**Populate `02-candidate-background.md`:**
+**Populate `02-professional-background.md`:**
 
 For each role confirmed in the interview, write into Section 7:
 ```
@@ -259,7 +289,7 @@ Approved CV bullets:
 Populate Section 10 (portfolio) from any portfolio materials submitted.
 Populate Section 9 (testimonials) from LinkedIn recommendations or peer feedback confirmed in the interview.
 
-**Update `01-candidate-rules.md`:**
+**Update `01-writing-rules.md`:**
 
 Write attribution rules into Section 1 for any outcomes confirmed as company-level rather than personal contribution. Write framing rules for any scope limitations confirmed in the interview. Write the target role information into Section 2.
 
@@ -301,7 +331,7 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 2. Write a CSV file to `/tmp/cv-campaign-tracker.csv` containing only the header row with all required columns in order:
 
 ```
-Company,Position,Job URL,Status,Priority,JD Body,Q&A,Page Body,Role emphasis,JD proof,Keywords,Strategy,Role Type,Relationship type,Gap handling,Role summary,Hiring Manager,Hiring manager's role,Manager role confirmed,Person who Advertised Role (if not Hiring Manager),No other Marketing roles employed by company,Landscape,Last Pipeline Run,Link to CV,Draft Directory,CV File Name,Letter File Name,Languages,Note
+Company,Position,Job URL,Status,Priority,JD Body,Why I Want This Role,Page Body,Role emphasis,JD proof,Keywords,Strategy,Role Type,Relationship type,Gap handling,Role summary,Hiring Manager's Name,Hiring manager's role,Manager role confirmed,Person who Advertised Role (if not Hiring Manager),No incumbents in this function,Landscape,Last Pipeline Run,Link to CV,Draft Directory,CV File Name,Letter File Name,Languages,Edit type,Note
 ```
 
 3. Tell the user: "Download this file and upload it to Google Sheets (File → Import → Upload). This creates your tracking sheet with all the required columns."
@@ -317,6 +347,7 @@ Set up data validation (dropdown lists) on the following columns in my Google Sh
 - Column "Relationship type": allow only these exact values: Full time, Part time, Temporary, Fractional/Consulting/Freelance
 - Column "Manager role confirmed": allow only these exact values: Yes, No; this is only a hypothesis
 - Column "Languages": allow multiple selections from: English, Hebrew
+- Column "Edit type": allow only these exact values: CV, Letter, Both
 
 These values must match exactly — they are hard-coded in the pipeline that reads this sheet.
 ```
@@ -338,7 +369,7 @@ These values must match exactly — they are hard-coded in the pipeline that rea
 ```
 Create a database/table with the following columns. Do not rename them — they are referenced by exact name by an external pipeline.
 
-Columns: Company, Position, Job URL, Status, Priority, JD Body, Q&A, Page Body, Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, Gap handling, Role summary, Hiring Manager, Hiring manager's role, Manager role confirmed, Person who Advertised Role (if not Hiring Manager), No other Marketing roles employed by company, Landscape, Last Pipeline Run, Link to CV, Draft Directory, CV File Name, Letter File Name, Languages, Note
+Columns: Company, Position, Job URL, Status, Priority, JD Body, Why I Want This Role, Page Body, Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, Gap handling, Role summary, Hiring Manager's Name, Hiring manager's role, Manager role confirmed, Person who Advertised Role (if not Hiring Manager), No incumbents in this function, Landscape, Last Pipeline Run, Link to CV, Draft Directory, CV File Name, Letter File Name, Languages, Edit type, Note
 
 Select column values (must match exactly):
 - Status: Hold | Interested | CV Ready for Review | Applied | Researched | Needs editing
@@ -347,25 +378,33 @@ Select column values (must match exactly):
 - Relationship type: Full time | Part time | Temporary | Fractional/Consulting/Freelance
 - Manager role confirmed: Yes | No; this is only a hypothesis
 - Languages (multi-select): English | Hebrew
+- Edit type: CV | Letter | Both
 ```
 
 4. Once set up, ask for the access URL or connection details. Write to `.claude/settings.json` under `job_tracking.source`.
 
 **Output folder**
-Ask: "Where do you want your DOCX files saved?"
-- Default: iCloud — ask them to confirm their iCloud path or provide a custom subfolder name
-- Custom: any local absolute path
+Ask the user for their output folder path. This is where all pipeline output (CVs, cover letters, feedback files) will be saved. Approved cover letters go to a `final-pdfs-delivered/` subfolder inside this folder.
 
-Write the path to every `{{OUTPUT_FOLDER}}` placeholder across all skill files.
-
-If cover letters were NOT kept during Phase 3, ask: "Do you have an existing folder of approved sent cover letters for voice calibration? If so, where is it?" Write the path to `{{ICLOUD_DELIVERED_LETTERS_PATH}}` if provided.
+Write the path to every `{{OUTPUT_FOLDER}}` placeholder across all skill files. The delivered letters path is always `{{OUTPUT_FOLDER}}/final-pdfs-delivered/` — it is not a separate configurable path.
 
 **CV template**
 Ask: "Do you want to use the included CV template (`cv-template-default.dotx`) or provide your own `.dotx` file?"
 - If own file: ask for the path → write to `{{CV_TEMPLATE_FILE}}` placeholders
 - If default: write `${CLAUDE_PLUGIN_ROOT}/references/cv-template-default.dotx` to all `{{CV_TEMPLATE_FILE}}` placeholders
 
-Confirm: "Phase 5 complete. Job tracking, output folder, and CV template are configured."
+**Gap handling**
+Ask: "Should the pipeline run gap analysis for every role? Gap handling identifies where your background doesn't fully match the JD and gives the coach and writers a strategy for handling each gap.
+
+- **Enable (recommended if unsure):** The coach identifies and documents gaps for every role. You can suppress it for a specific role at any time by adding 'no gap handling' to your prompt when starting a run.
+- **Disable:** Gap handling is skipped entirely for every run. Strategy and framing only — faster, but no gap analysis.
+
+If you're not sure, leave it enabled. You can always turn it off per-role when it isn't relevant."
+
+- If enabled: write `"gap_handling": "enabled"` to `.claude/settings.json`
+- If disabled: write `"gap_handling": "disabled"` to `.claude/settings.json`
+
+Confirm: "Phase 5 complete. Job tracking, output folder, CV template, and gap handling preference are configured."
 
 ---
 
@@ -423,6 +462,50 @@ Confirm: "Phase 6 complete. The pipeline will run without approval prompts."
 
 ---
 
+## Phase 7 — Remote-compatibility configuration
+
+**Purpose:** The pipeline produces CVs and cover letters. By default, it writes content in the first person and uses phrasing calibrated for direct applications. Some users submit through recruiters, apply to roles where the CV is read without the candidate present, or operate in contexts (international applications, platform submissions, agency placements) where different conventions apply. This phase asks whether remote-compatibility rules are needed and, if so, whether the defaults are appropriate.
+
+Ask: "Does your job search involve any of the following? (You can select more than one, or say none):
+1. Applications submitted through a recruiter or agency (you won't see the JD before they do)
+2. Roles in a country or market where you're based remotely
+3. Platform submissions (LinkedIn Easy Apply, Workday, Greenhouse) where formatting and length rules differ
+4. Applications in a language other than your primary language
+
+If none of these apply, skip this phase."
+
+**If none apply:** confirm and move on. No remote-compatibility rules are needed.
+
+**If any apply:** present the default remote-compatibility rules and ask whether they are appropriate:
+
+---
+
+**Default remote-compatibility rules (present these to the user):**
+
+> 1. **Recruiter-submitted applications:** Remove all first-person pronouns from the CV (no "I", "my", "me"). Use action verb openings instead. Cover letters may retain first person — confirm with the recruiter.
+> 2. **Remote location:** If the role lists a country/city as required and you are remote, add "(Remote)" after your location in the contact header. Do not fabricate a local address.
+> 3. **Platform submissions:** Respect character or word limits if stated. Where a rich-text letter is not accepted, omit the cover letter rather than pasting into a plain-text field.
+> 4. **Language:** If a role's `Languages` field includes a second language, run the localization agent after the English pipeline. The localized output is the submission copy.
+
+---
+
+Ask: "Do these rules match how you work, or do you need to change any of them? You can also add rules for contexts not listed here."
+
+If the user confirms the defaults: write them to a `remote-compat` block in `.claude/settings.json` as:
+```json
+"remote_compat": {
+  "remove_first_person_cv": true,
+  "add_remote_location_label": true,
+  "omit_letter_on_plain_text_platforms": true
+}
+```
+
+If the user changes or adds rules: capture the custom rules in plain language and write them to `references/01-writing-rules.md` under a new section **§ Remote-compatibility rules**. Also write any boolean flags that changed to `.claude/settings.json`.
+
+Confirm: "Phase 7 complete. Remote-compatibility rules are configured."
+
+---
+
 ## Verification
 
 Run after Phases 1–5 are complete.
@@ -435,7 +518,14 @@ Run after Phases 1–5 are complete.
 
 If Phases 1–5 are complete and dependencies are installed:
 
-"Onboarding complete. You're ready to run `/cv-campaign`. Before your first run: add roles to your Notion database (or CSV), set their Status to `Interested`, and run `/cv-campaign`. The pipeline will pick them up automatically."
+"Onboarding complete. You're ready to run `/cv-campaign`. Before your first run:
+
+- Add roles to your Notion database (or CSV) and set their Status to `Interested`.
+- **Why I Want This Role:** For each role you want a cover letter for, fill in the `Why I Want This Role` field in Notion before running the pipeline. Write your genuine motivation — a sentence or two is enough. If this field is empty when the pipeline runs, the cover letter will be skipped and only the CV will be delivered. The pipeline will never generate this for you.
+- **Edit type (for editing runs):** When using the edit pipeline (`/cv-campaign --edit`), set the `Edit type` field to `CV`, `Letter`, or `Both` for each role before running. Roles without this field set will be skipped.
+- **Gap handling:** Configured in Phase 5. If enabled, you can suppress it for a specific role by adding "no gap handling" to your prompt when starting a run.
+
+Run `/cv-campaign` to start. The pipeline will pick up all `Interested` roles automatically."
 
 ---
 

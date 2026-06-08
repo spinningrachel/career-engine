@@ -14,7 +14,7 @@ Good strategy is calibrated. The cv-writer and letter-writer build everything do
 
 **Three documented failure modes — know them before you start:**
 
-1. **Conflating product categories under "AI"** — Computer vision, conversational AI, LLMs, and cybersecurity are distinct GTM contexts with different buyers, trust models, and proof requirements. The proof must match the product category, not just the label. Check `02-candidate-background.md` (Role Facts) to identify which AI product category {{USER_FIRST_NAME}}'s documented experience maps to — and verify it matches the hiring company's specific AI product type.
+1. **Conflating product categories under "AI"** — Computer vision, conversational AI, LLMs, and cybersecurity are distinct GTM contexts with different buyers, trust models, and proof requirements. The proof must match the product category, not just the label. Check `02-professional-background.md` (Role Facts) to identify which AI product category {{USER_FIRST_NAME}}'s documented experience maps to — and verify it matches the hiring company's specific AI product type.
 
 2. **Overplaying preferred requirements** — When the JD says "X or Y preferred" and {{USER_FIRST_NAME}} satisfies Y, she satisfies the requirement. Treating the unsatisfied alternative as a primary gap manufactures an obstacle that doesn't exist. Write `satisfied via [Y] — [X] is additive`, or omit it.
 
@@ -29,9 +29,9 @@ Strategy is not a gap inventory. It is the arc the writers build the document fr
 Load before doing anything. All live at `${CLAUDE_PLUGIN_ROOT}/references/`.
 
 **Mandatory:**
-- `01-candidate-rules.md` — Section 1 (fabrication rule + framing rules — read first). This file supersedes anything you believe about {{USER_FIRST_NAME}} from prior context.
-- `02-candidate-background.md` — role facts, approved CV bullets, approved summaries, testimonials, and portfolio. Load for any CV or credential-checking task.
-- `03-framework.md` — professional philosophy, methodology, voice, POV, and domain narratives. Section: §Professional methodology and POV for frameworks. §Domain depth for per-vertical narratives. Load alongside 01-candidate-rules.md for any role assessment or coaching output.
+- `01-writing-rules.md` — Section 1 (fabrication rule + framing rules — read first). This file supersedes anything you believe about {{USER_FIRST_NAME}} from prior context.
+- `02-professional-background.md` — role facts, approved CV bullets, approved summaries, testimonials, and portfolio. Load for any CV or credential-checking task.
+- `03-framework.md` — professional philosophy, methodology, voice, POV, and domain narratives. Section: §Professional methodology and POV for frameworks. §Domain depth for per-vertical narratives. Load alongside 01-writing-rules.md for any role assessment or coaching output.
 - `remote-compatibility-rules.md` — load before scoring priority on any role.
 
 ---
@@ -42,7 +42,7 @@ Load before doing anything. All live at `${CLAUDE_PLUGIN_ROOT}/references/`.
 
 **Triggers:** "Should I apply to this role?", "What's my angle for [role type]?", "Is [company] a good fit?", "How should I frame my background for [X]?"
 
-**What to load:** `01-candidate-rules.md`. Fetch the JD if {{USER_FIRST_NAME}} provides a URL.
+**What to load:** `01-writing-rules.md`. Fetch the JD if {{USER_FIRST_NAME}} provides a URL.
 
 **Output:** Conversational. No structured Notion property blocks. Give {{USER_FIRST_NAME}} a direct fit assessment, a priority recommendation using the Priority Framework in Section 1, and the specific framing angle or interview pivot she should lead with. If comparing two roles, compare directly using the priority criteria.
 

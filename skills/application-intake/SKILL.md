@@ -1,11 +1,11 @@
 ---
-name: cv-campaign-intake
+name: application-intake
 description: >
   Dual-mode intake pipeline for the CV campaign. In **standalone mode** (triggered
   directly via "run intake" or similar): processes Hold roles — fetches JDs, runs the
-  employment coach for strategic properties and priority scoring, generates Q&A
-  interview questions, writes all results to Notion, updates Status to Researched.
-  In **orchestrator mode** (called by cv-pipeline-orchestrator): processes Interested
+  employment coach for strategic properties and priority scoring,
+  writes all results to Notion, updates Status to Researched.
+  In **orchestrator mode** (called by applications-orchestrator): processes Interested
   roles using the Interested view — same steps, but Status is managed by the
   orchestrator, not this skill.
   Run standalone with: "run intake", "build the CV queue", "prep my Hold roles",
@@ -17,25 +17,15 @@ description: >
 
 This skill covers Steps 0 through 0.9 of the cv-campaign pipeline. All of these steps run before any per-role CV work begins. The goal of this pipeline is to give the employment coach complete information — full JD data for every role — before it makes any prioritization or writing decisions.
 
-## Step −1 — Gap handling preference
+## Step −1 — Gap handling mode
 
-**Before doing anything else**, ask {{USER_FIRST_NAME}} one question using this exact visualization:
+Read `gap_handling` from `.claude/settings.json`. Set `gap_handling_mode` as follows:
 
-```
-How should the pipeline handle gap analysis?
+- `"gap_handling": "disabled"` → `gap_handling_mode = disabled`
+- `"gap_handling": "enabled"` → `gap_handling_mode = enabled`
+- Key missing or any other value → `gap_handling_mode = enabled` (default)
 
-  [A] ✅ Include gap handling
-      The coach identifies gaps between the JD and your background
-      and recommends how to address each one in the CV and letter.
-
-  [B] ⏭️  Skip gap handling
-      Gap handling is omitted entirely. Strategy and framing only.
-      (Faster — good if you already know your fit well.)
-```
-
-Wait for her answer before proceeding. Store the choice as `gap_handling_mode`:
-- Answer A → `gap_handling_mode = enabled`
-- Answer B → `gap_handling_mode = disabled`
+Do not ask {{USER_FIRST_NAME}} about this. The preference was set during setup (Phase 5). If she wants to change the default, she updates `.claude/settings.json`. To suppress gap handling for a single run without changing the setting, she can add "no gap handling" to her prompt — check for that phrase in the current prompt and override to `disabled` if found.
 
 **If `gap_handling_mode = disabled`:**
 - Instruct the coach (in Step 0.8) to skip the `Gap handling` property entirely — do not populate it, do not write `N/A`.
@@ -48,7 +38,17 @@ Wait for her answer before proceeding. Store the choice as `gap_handling_mode`:
 
 ## Step 0 — Fetch Notion schema and roles
 
-**First — fetch the database schema.** Run `notion-fetch` on the Job Applications database before doing anything else:
+**Guard — check configuration first.** Look at the database ID value immediately below. If it still reads the literal text `{{NOTION_DATABASE_ID}}` (unreplaced placeholder), **stop immediately** and tell the user:
+
+> "The Notion database ID has not been configured. Run `/career-engine:setup` (or `/career-engine:setup --phase 5`) to complete the database integration before running the pipeline."
+
+Do not attempt to search for the database. Do not proceed.
+
+The database ID for this installation: `{{NOTION_DATABASE_ID}}`
+
+---
+
+**Step 0a — Fetch the database schema.** Run `notion-fetch` on the configured database ID:
 
 ```
 notion-fetch id="{{NOTION_DATABASE_ID}}"
@@ -62,11 +62,19 @@ Extract the SQLite `CREATE TABLE` block from the response. This is your **schema
 
 ---
 
-**Then — fetch roles.** From the `notion-fetch` response, read the list of available database views. Find the view whose name matches the current mode:
-- **Standalone mode:** find the view named `Hold`
-- **Orchestrator mode:** find the view named `Interested`
+**Step 0b — Fetch roles using a direct Status filter.** Do NOT use view URL discovery. View-based queries fail for advanced-filter views and return oversized result sets for simple views. Query the database directly with a Status filter.
 
-Use `notion-query-database-view` with that view's URL. Do not construct your own filter — use the view directly. Verify that returned rows have the expected Status before processing — skip any row with a different status.
+Target status by mode:
+- **Standalone mode:** Status = `Hold`
+- **Orchestrator mode:** Status = `Interested`
+
+Run `notion-query-database-view` with:
+- `url`: `https://www.notion.so/{{NOTION_DATABASE_ID}}`
+- `filter`: `{"property": "Status", "status": {"equals": "Hold"}}` (standalone) or `{"property": "Status", "status": {"equals": "Interested"}}` (orchestrator)
+
+If `notion-query-database-view` does not accept a `filter` parameter on a database URL, use the `notionApi` query tool with the same filter expression instead.
+
+The result should contain only rows matching the target status. If the result still contains rows with other statuses (tool returned unfiltered data), filter them out in code — but log a warning that the filter did not apply. Do not process any row whose Status does not match the target.
 
 Skip any entry where neither a Job URL nor job description details in the RTF body of the record are populated.
 
@@ -76,7 +84,7 @@ Skip any entry where neither a Job URL nor job description details in the RTF bo
 
 **Data quality skip condition:** Skip any entry where Company is empty, "Unknown", or appears to contain a job title embedded in the company name field (e.g., "VP Marketing @ Company") AND Position is also empty AND the page title provides no usable signal — flag these in the Step 0.9b briefing as data quality issues requiring correction before they can be processed.
 
-**Hold roles are processed fresh each intake run** — JD fetched (or read from JD Body if already populated), coach spawned unless already coach-complete, Q&A generated unless already populated. Hold roles that are already coach-complete are likely holdovers from a prior intake run where Status writeback to Researched failed — the pipeline completes their Status update in Step 0.9c.
+**Hold roles are processed fresh each intake run** — JD fetched (or read from JD Body if already populated), coach spawned unless already coach-complete. Hold roles that are already coach-complete are likely holdovers from a prior intake run where Status writeback to Researched failed — the pipeline completes their Status update in Step 0.9d.
 
 For each matching entry, capture the full row payload including:
 - Page ID
@@ -136,7 +144,7 @@ All roles not selected are deferred. Proceed immediately to Step 0.8.
 
 ## Step 0.8 — Employment coach
 
-Before spawning, check each role in the queue: a role is `coach-complete` only if **all seven** of the following fields are populated — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, and `Gap handling`. Partial population (any field missing) is not coach-complete and the role must be sent to the coach. `Gap handling` is always required — the coach must populate it for every role, even if only to confirm no material gaps exist.
+Before spawning, check each role in the queue: a role is `coach-complete` only if **all eight** of the following fields are populated — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, and `Landscape`. Partial population (any field missing) is not coach-complete and the role must be sent to the coach. `Gap handling` and `Landscape` are always required — the coach must populate both for every role, even if only to confirm no material gaps or no new landscape intelligence exists.
 
 - **All roles are `coach-complete`:** skip the coach spawn entirely. Proceed directly to Step 0.9 using existing values.
 - **Any role has one or more fields missing:** spawn the coach with every role that is not fully complete. Carry existing values forward for coach-complete roles only.
@@ -156,11 +164,11 @@ Hold the coach output in memory. Proceed immediately to Step 0.8.5.
 
 Spawn `gatekeeper` with `option=coach-output`, passing:
 - The full coach output for all roles (Role emphasis, Strategy, Gap handling, Role summary per role)
-- `01-candidate-rules.md` is already in memory — confirm it is loaded before spawning
+- `01-writing-rules.md` is already in memory — confirm it is loaded before spawning
 
 **If PASS:** proceed to Step 0.9.
 
-**If FAIL:** the gatekeeper returns a list of specific unverifiable claims per role and per property. Return those claims to the employment coach with this instruction: "The following claims in your output cannot be traced to `01-candidate-rules.md`. Revise the affected properties to remove or correct them. Do not substitute alternative fabrications — if a claim cannot be grounded in the reference file, omit it." Spawn the coach with only the affected roles and properties.
+**If FAIL:** the gatekeeper returns a list of specific unverifiable claims per role and per property. Return those claims to the employment coach with this instruction: "The following claims in your output cannot be traced to `01-writing-rules.md`. Revise the affected properties to remove or correct them. Do not substitute alternative fabrications — if a claim cannot be grounded in the reference file, omit it." Spawn the coach with only the affected roles and properties.
 
 **Cap: 2 revision passes.** If still failing after pass 2, strip the unverifiable claims from the affected properties (replace with `[UNVERIFIABLE — removed]`), log all removed claims in the run-level revision log under `## Coach Fact Check — Unverifiable Claims Removed`, flag for {{USER_FIRST_NAME}} in final delivery, and proceed to Step 0.9.
 
@@ -175,7 +183,7 @@ This step is mechanical and runs end-to-end without pausing.
 For each role in the processing queue, apply this rule to:
 - `Priority` — write the coach's value (`1`–`6`) only if currently empty. If the role was coach-skipped (already coach-complete per Step 0.8), do not write at all — leave unchanged. In a mixed batch, apply per role individually.
 - `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Relationship type`, `Role summary`, `Person who Advertised Role (if not Hiring Manager)` — write if empty.
-- `Hiring manager's role`, `Manager role confirmed`, `No other Marketing roles employed by company` — write if empty.
+- `Hiring manager's role`, `Manager role confirmed`, `No incumbents in this function` — write if empty.
 - `Gap handling` — write if empty. If gap_handling_mode = disabled, skip entirely.
 - `Company Stage` — write if empty. Exact option values: `Seed`, `Series A`, `Series B`, `Series C`, `Public`, `PE-backed`, `Stealth`, or `N/A`.
 - `Role Type` — write if empty. Multi-select exact values: `Builder`, `Scaler`, `Specialist`, `Leader`, or `N/A`.
@@ -191,30 +199,7 @@ Report to {{USER_FIRST_NAME}}:
 - Per-role Strategy and focus recommendations from the coach.
 - Patterns and notes from the coach.
 
-This is the one moment {{USER_FIRST_NAME}} sees the coach's reasoning before per-role processing begins. Do not wait for a response — proceed immediately to Step 0.9c.
-
-### 0.9c — Interview questions
-
-Q&A questions are only generated for roles that were **already researched before this session** (i.e., marked `coach-complete` in Step 0.8 before the coach ran). Roles where the coach ran fresh in this session are skipped — the full campaign will run without Q&A for those roles, and the letter-writer will work with what it has.
-
-For each role in the processing queue:
-
-1. **If the role was NOT `coach-complete` before this session** (coach ran fresh in Step 0.8): skip. Do not generate Q&A questions.
-
-2. **If the role WAS `coach-complete` before this session AND `Q&A` is already populated:** skip — do not overwrite {{USER_FIRST_NAME}}'s existing content.
-
-3. **If the role WAS `coach-complete` before this session AND `Q&A` is empty or null:** Spawn `letter-writer` with `option=interview-questions`, passing:
-   - Company name and role title
-   - `Role summary` (the compressed JD proxy — contains key requirements and self-characterization section if present)
-   - The coach's output for this role: Role emphasis, Strategy, Gap handling, Relationship type
-
-4. **Write the returned questions to Notion** using `notion-update-page`, writing to the `Q&A` property.
-
-Run all eligible spawns in parallel. Do not wait for one to complete before spawning the next.
-
-After all writes complete, report to {{USER_FIRST_NAME}}:
-
-> "Interview questions written to Notion Q&A for N roles. [M roles already had Q&A content and were skipped. K roles were not pre-researched and will proceed without Q&A.] Review and answer each role's Q&A in Notion before running the full campaign."
+This is the one moment {{USER_FIRST_NAME}} sees the coach's reasoning before per-role processing begins. Do not wait for a response — proceed immediately to Step 0.9d.
 
 ### 0.9d — Status writeback (standalone mode only)
 
@@ -224,26 +209,4 @@ For every role in the processing queue, write `Status = Researched` using `notio
 
 After all writes complete, confirm in chat: "Status updated to Researched for N roles."
 
-### 0.9e — Q&A Bank Promotion (standalone mode only)
-
-**Skip when running as a sub-step of the cv-campaign orchestrator.** The orchestrator handles Q&A bank promotion in its own Step 9a after all pipeline stages complete.
-
-This step captures any Q&A answers {{USER_FIRST_NAME}} has already written into Notion (from a prior intake run) and promotes them into `references/02-candidate-background.md` so the letter-writer never asks {{USER_FIRST_NAME}} the same question twice.
-
-For each role in the processing queue:
-
-1. Read the `Q&A` property from Notion for this role (re-read from Notion or pull from memory if retained). If Q&A is empty, null, or contains only unanswered questions (no text after any question), skip this role.
-
-2. Parse Q&A content into question/answer pairs: split on blank lines or labelled question patterns (`Q:`, `Question:`, numbered items). Treat the first line of each block as the question and everything after as the answer. Skip any pair where the answer is missing or fewer than 10 characters. Skip any pair where the question contains the company name or role title verbatim — those are role-specific and not reusable.
-
-3. Read `references/02-candidate-background.md` and extract existing questions from the table. For each candidate pair, check for duplicates using keyword overlap: extract 4+ character words from both questions, exclude noise words (`what`, `have`, `your`, `does`, `with`, `that`, `this`, `from`, `been`, `are`, `you`, `the`, `and`, `for`, `any`, `how`, `do`), compute overlap ratio against the shorter set. If overlap ≥ 0.5, it's a duplicate — skip it.
-
-4. For each non-duplicate pair, append a new row to the 02-candidate-background.md table:
-   ```
-   | <question> | <answer> | Auto-promoted from Notion Q&A — <YYYY-MM-DD>. Review and edit if role-specific context should be stripped. |
-   ```
-   Write all new rows in a single append operation.
-
-5. Log in the chat summary: "Q&A bank: N new answers promoted to references/02-candidate-background.md." (Or: "No new Q&A answers to promote.")
-
-Do not wait for {{USER_FIRST_NAME}} to respond. Intake is complete.
+Intake is complete.

@@ -1,5 +1,5 @@
 ---
-name: cv-campaign-export
+name: application-files-export
 description: DOCX production rules for the cv-campaign pipeline. Contains the pandoc conversion protocol, custom-style annotation reference, cover letter styles, and file naming conventions. Load this skill before any DOCX export step in the cv-campaign pipeline. Both the CV pipeline.
 ---
 
@@ -69,7 +69,7 @@ Filename convention: lowercase, no spaces, hyphens between words, `.md` extensio
 Run the conversion script:
 
 ```bash
-bash "${CLAUDE_PLUGIN_ROOT}/skills/cv-campaign-export/scripts/convert-cv.sh" \
+bash "${CLAUDE_PLUGIN_ROOT}/skills/application-files-export/scripts/convert-cv.sh" \
   "/tmp/<cv_filename>.md" \
   "/tmp/<cl_filename>.md" \
   "<output_dir>/<company_dir>" \
@@ -83,7 +83,7 @@ Pandoc inherits the header/footer from the reference template. {{USER_FIRST_NAME
 Run the subtitle script on the file in the output directory (convert-cv.sh writes DOCX directly to output_dir, not /tmp):
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/skills/cv-campaign-export/scripts/update-subtitle.py" \
+python3 "${CLAUDE_PLUGIN_ROOT}/skills/application-files-export/scripts/update-subtitle.py" \
   "<output_dir>/<company_dir>/<cv_filename>.docx" \
   "<role title>"
 ```
@@ -160,7 +160,7 @@ Full path: `{{WORD_TEMPLATES_PATH}}/`
 
 Both Hebrew templates support RTL formatting. Use `--reference-doc` with these templates — do not use pandoc's default template for Hebrew output.
 
-**YAML front matter:** Hebrew markdown files must include the following front matter at the very top (before any content). The hebrew-localization agent includes this in its output. Do not strip it:
+**YAML front matter:** Hebrew markdown files must include the following front matter at the very top (before any content). The localization agent includes this in its output. Do not strip it:
 
 ```yaml
 ---
@@ -176,7 +176,7 @@ HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
 
 # 1. Concatenate Hebrew CV markdown with Hebrew footer
 cat /tmp/he-<cv_filename>.md \
-    "${CLAUDE_PLUGIN_ROOT}/skills/cv-campaign-export/static-cv-footer-he.md" \
+    "${CLAUDE_PLUGIN_ROOT}/skills/application-files-export/static-cv-footer-he.md" \
     > /tmp/he-<cv_filename>-with-footer.md
 
 # 2. Convert with pandoc using Hebrew CV template
@@ -185,7 +185,7 @@ pandoc /tmp/he-<cv_filename>-with-footer.md \
   -o "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx"
 
 # 3. Update subtitle
-python3 "${CLAUDE_PLUGIN_ROOT}/skills/cv-campaign-export/scripts/update-subtitle.py" \
+python3 "${CLAUDE_PLUGIN_ROOT}/skills/application-files-export/scripts/update-subtitle.py" \
   "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx" \
   "<role title>"
 ```
@@ -249,6 +249,7 @@ Head of [Function] | [Company Name]{custom-style="BlueFont"} | {{USER_CITY}}, {{
 
 Notes:
 - Company name uses the `BlueFont` inline span for one word/phrase
+- **BlueFont bracket rule — MANDATORY:** The span MUST be written as `[Company Name]{custom-style="BlueFont"}` — square brackets around the text, curly braces after. Writing `Company Name{custom-style="BlueFont"}` (no brackets) is a hard error: pandoc renders the literal text `{custom-style="BlueFont"}` into the DOCX instead of applying the style.
 - Dates (after the last `|`) are italicized with standard markdown `*italic*` — the style applies italic locally
 - Use `--` for en-dashes in date ranges
 
@@ -342,7 +343,7 @@ All cover letters are limited to a single page, 230–290 words (not counting gr
 
 ### Voice constraints
 
-**Load `skills/cover-letter/SKILL.md` before writing any cover letter.** It defines writing mechanics, letter structure, and use-case patterns. **Also load `references/cover-letter-self-check.md`** — forbidden phrases, forbidden structures, and fabrication traps are now there. Both are non-negotiable.
+**Load `skills/cover-letter/SKILL.md` before writing any cover letter.** It defines writing mechanics, letter structure, and use-case patterns. It defines writing mechanics, letter structure, use-case patterns, forbidden phrases, forbidden structures, and fabrication traps. Non-negotiable.
 
 Every claim about the company must be traceable to the JD or brief. Do not infer the company's strategy, culture, or operating model from category signals. If a sentence about them cannot be sourced, cut it or rewrite it as an observation about the role.
 

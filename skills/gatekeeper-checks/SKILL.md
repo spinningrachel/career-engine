@@ -45,12 +45,14 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 - Special character bullet markers (✓, →, ◆, ★, ••)
 - Text boxes or sidebars
 
+**BlueFont annotation check — FAIL if triggered:** Scan the full CV markdown for any occurrence of the pattern `[^]]{custom-style="BlueFont"}` — i.e., `{custom-style="BlueFont"}` not immediately preceded by `]`. This indicates an unbracketed span. Pandoc will render the literal annotation string `{custom-style="BlueFont"}` as body text in the DOCX. Flag every unbracketed occurrence as: "Unbracketed BlueFont span: `[text here]` — wrap text in square brackets: `[text here]{custom-style=\"BlueFont\"}`." FAIL if any are found.
+
 ---
 
 ### Content Checks
 
 **Summary**
-- No company, client, or conference names — descriptors only (prohibited list in `01-candidate-rules.md` Section 1)
+- No company, client, or conference names — descriptors only (prohibited list in `01-writing-rules.md` Section 1)
 - The summary should open with language most relevant to the hiring manager and the role being applied for. No specific role is required to appear — the summary's job is to lead with {{USER_FIRST_NAME}}'s strongest, most relevant credentials for this opening. Do not fail on the absence of any particular role, including the most recent one.
 - ≤120 words, 1 paragraph, ≤4 sentences
 - No tool/platform names, consulting client names, or metrics not documented as summary-appropriate
@@ -59,17 +61,17 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 **Experience**
 - `## EXPERIENCE` contains full-time employment only, in reverse-chronological order by end date
 - Any consulting/fractional practice appears in `## CONSULTING`, not `## EXPERIENCE` — flag if found in the Experience section
-- Any consulting entry flagged as mandatory in `02-candidate-background.md` appears somewhere in the CV — either as a standalone entry in `## CONSULTING` or as a bullet within the main consulting section — FAIL if absent entirely
+- Any consulting entry flagged as mandatory in `02-professional-background.md` appears somewhere in the CV — either as a standalone entry in `## CONSULTING` or as a bullet within the main consulting section — FAIL if absent entirely
 - The "Earlier:" line appears as the final entry inside `## EXPERIENCE`, before the `## CONSULTING` section header — FAIL if Earlier appears after CONSULTING
-- Claims about target market match `02-candidate-background.md` (Role Facts)
-- No app/tool names inside bullets: HubSpot, Salesforce, Salesloft, Moosend, Webflow, Mintlify, Chameleon, HeyReach, ZoomInfo, Chorus.ai, Notion, Jira, Slack — approved bullets from `02-candidate-background.md` are exempt
+- Claims about target market match `02-professional-background.md` (Role Facts)
+- No app/tool names inside bullets: HubSpot, Salesforce, Salesloft, Moosend, Webflow, Mintlify, Chameleon, HeyReach, ZoomInfo, Chorus.ai, Notion, Jira, Slack — approved bullets from `02-professional-background.md` are exempt
 - Every named role has a RoleOverview immediately below its RoleTitle — count must match (Earlier: exempt)
 
 **Structure**
 - No years on the Earlier line (Education/Languages are script-injected — skip them)
 - No header or label between the SUMMARY banner and the summary text
 - No opening verb appears 3+ times — common offenders: Built, Led, Developed, Created, Managed, Drove, Owned
-- No 4+ word verbatim JD phrases in new bullets; standard terms like "go-to-market" are fine; approved bullets from `02-candidate-background.md` exempt; quote both phrases when flagging
+- No 4+ word verbatim JD phrases in new bullets; standard terms like "go-to-market" are fine; approved bullets from `02-professional-background.md` exempt; quote both phrases when flagging
 
 ---
 
@@ -80,12 +82,18 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 - Sign-off: "Looking forward to next steps," then "{{USER_FULL_NAME}}" — nothing after the name
 - Body: 230–290 words (excluding greeting and sign-off)
 
-**Q&A exemption — read before running any content check**
+**Personal-content exemption — read before running any content check**
 
-If {{USER_FIRST_NAME}}'s Q&A answers or page body reactions were passed alongside the cover letter, those are {{USER_FIRST_NAME}}'s own first-person statements — not letter-writer invention. Do not fail on content checks for passages that clearly originate from her Q&A or page body answers. The signal: Q&A-derived content sounds like a personal reaction or genuine first-person opinion; copywriting-fabricated content sounds assembled and polished. When a specific personal claim about the company or role matches phrasing that could plausibly be {{USER_FIRST_NAME}} speaking in her own voice, treat it as Q&A-derived and exempt it from Pattern C, Pattern H, and the company character claims check. Apply the exemption only to plausibly personal statements — not to analytical claims about the company's strategy, market, or positioning.
+If {{USER_FIRST_NAME}}'s Why I Want This Role content or page body reactions were passed alongside the cover letter, those are {{USER_FIRST_NAME}}'s own first-person statements — not letter-writer invention. Do not fail on content checks for passages that clearly originate from her Why I Want This Role field or page body. The signal: personal-content-derived text sounds like a personal reaction or genuine first-person opinion; copywriting-fabricated content sounds assembled and polished. When a specific personal claim about the company or role matches phrasing that could plausibly be {{USER_FIRST_NAME}} speaking in her own voice, treat it as personal-content-derived and exempt it from Pattern C, Pattern H, and the company character claims check. Apply the exemption only to plausibly personal statements — not to analytical claims about the company's strategy, market, or positioning.
+
+**CV repetition check — FAIL if triggered**
+
+This check requires the final revised CV to be in scope. If the CV was not passed alongside the cover letter, skip this check and note it.
+
+Read every substantive claim, metric, credential, and fact in the letter body. For each one, check whether the same information already appears anywhere in the CV — in the summary, in any experience bullet, or in any other section. Flag as: "Letter repeats CV content: '[sentence or phrase]' restates '[location in CV]'." A sentence fails if it makes the same claim in different words — paraphrase is not a loophole. Enhancement is permitted: if the letter sentence contains material the CV bullet does not (context, story, decision logic, or new detail), it passes. Pure restatement fails.
 
 **Content**
-- Key proof signals from the most recent role in `02-candidate-background.md` are woven naturally into the body (not as a standalone boilerplate sentence)
+- Key proof signals from the most recent role in `02-professional-background.md` are woven naturally into the body (not as a standalone boilerplate sentence)
 - No fit claims: "this role has my name on it", "I was made for this role", "I'm the perfect candidate", "perfect fit", "couldn't be a better fit"
 - No gap volunteering: "Full disclosure:" + scope claims; "whether that's the fit you need"; any sentence pre-empting a concern the hiring manager hasn't raised
 - No analyst paragraph in the body: any paragraph describing the company's product, positioning, or market back to them; any market observation from outside ("in a crowded X market", "a genuinely differentiated story"); any capability announcement without named proof ("that translation is where I live", "that's the work I do", "that's where I operate"). {{USER_FIRST_NAME}} must be the subject of every paragraph, speaking from named experience. FAIL if any paragraph reads as {{USER_FIRST_NAME}} analysing the company rather than demonstrating her own work.
@@ -167,14 +175,16 @@ Note any of these in the end-of-pipeline feedback note. Do not return as a viola
 - Negation-then-assertion: "Don't just X. [Subject] Y."
 - Staccato fragments substituting for full sentences
 - "X isn't always about Y" / "X should be Y, not Z"
+- Antithesis/pivot formula: "[Subject] does/has X, but [subject] is Y" where X is unnecessary context that adds nothing. Also: "It's not about X, it's about Y." / "This isn't just A, it's B." / "Not X — Y." Test: if removing the negated half makes the sentence clearer, it should be cut.
+- Temporal motivation hedges: "the seat I want most right now" / "at this stage of my career" / "what I'm looking for right now" / any phrase implying the motivation is provisional or time-qualified. A genuine reaction to a specific role needs no time qualifier.
 
 ---
 
 ## Option 3 — Coach Output Fact Check
 
-For each role in the coach's output, identify every specific factual claim about {{USER_FIRST_NAME}}'s background, experience, skills, or accomplishments. Find the supporting line in `01-candidate-rules.md`.
+For each role in the coach's output, identify every specific factual claim about {{USER_FIRST_NAME}}'s background, experience, skills, or accomplishments. Find the supporting line in `01-writing-rules.md`.
 
-**Verifiable:** directly traceable to a named section, sentence, or bullet in `01-candidate-rules.md`.
+**Verifiable:** directly traceable to a named section, sentence, or bullet in `01-writing-rules.md`.
 
 **Unverifiable:**
 - Names a company, client, product, or tool {{USER_FIRST_NAME}} worked with that does not appear in the reference file

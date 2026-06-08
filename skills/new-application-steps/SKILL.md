@@ -1,6 +1,6 @@
 ---
-name: cv-campaign-role-steps
-description: 'Per-role pipeline for the cv-campaign orchestrator. Handles Step 0.10 (warm-up role selection) and Steps 1 through 7 for New Applications pipeline roles: CV draft, gatekeeper, recruiter review, HM review, CV revision, cover letter draft, cover letter gatekeeper, cover letter recruiter review, cover letter HM review, cover letter revision, cover letter gatekeeper (post-revision), DOCX export for both files, and Notion writeback. The structured JD for each role is already in memory from the queue pipeline — do not re-fetch. Load this skill as part of the cv-campaign pipeline, after cv-campaign-intake.'
+name: new-application-steps
+description: 'Per-role pipeline for the cv-campaign orchestrator. Handles Step 0.10 (warm-up role selection) and Steps 1 through 7 for New Applications pipeline roles: CV draft, gatekeeper, recruiter review, HM review, CV revision, cover letter draft, cover letter gatekeeper, cover letter recruiter review, cover letter HM review, cover letter revision, cover letter gatekeeper (post-revision), DOCX export for both files, and Notion writeback. The structured JD for each role is already in memory from the queue pipeline — do not re-fetch. Load this skill as part of the cv-campaign pipeline, after application-intake.'
 ---
 
 # CV Campaign — Per-Role Pipeline
@@ -79,10 +79,10 @@ cat > /tmp/<cv_filename>.md << 'MARKDOWN_EOF'
 <full CV markdown>
 MARKDOWN_EOF
 
-# Save CV markdown to iCloud output dir (company subdir) as crash-recovery backup
+# Save CV markdown to output dir (company subdir) as crash-recovery backup
 cp /tmp/<cv_filename>.md "<output_dir>/<company_dir>/<cv_filename>.md"
 
-# Save revision log to iCloud output dir (company subdir)
+# Save revision log to output dir (company subdir)
 cat > "<output_dir>/<company_dir>/revision-log-<roletitle>-<company>-<monYYYY>.md" << 'MARKDOWN_EOF'
 # Revision Log — <Role Title> at <Company> — <YYYY-MM-DD>
 
@@ -97,7 +97,7 @@ Spawn `gatekeeper` with `option=content`, passing the revised CV text, `Role sum
 
 **If PASS:** proceed to Step 5.
 
-**If FAIL:** spawn `cv-writer` with `option=revision`, passing the revised CV and the gatekeeper's full violation list. After revision, re-save the updated markdown to `/tmp/` and the iCloud backup path before spawning `gatekeeper` again. Repeat until PASS. Log all violation rounds internally.
+**If FAIL:** spawn `cv-writer` with `option=revision`, passing the revised CV and the gatekeeper's full violation list. After revision, re-save the updated markdown to `/tmp/` and the output backup path before spawning `gatekeeper` again. Repeat until PASS. Log all violation rounds internally.
 
 **Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 4.5)` section in the revision log, proceed to Step 5, and flag for {{USER_FIRST_NAME}} in the final delivery that this CV needs manual review before sending.
 
@@ -113,13 +113,13 @@ The cover letter receives the **final revised CV** as input. letter-writer uses 
 
 Read the following from Notion for this role:
 
-**Q&A property** — Contains letter-writer-generated questions and {{USER_FIRST_NAME}}'s answers to them. If populated, include the full content in the letter-writer prompt as the primary content input. If empty, proceed without it.
+**Why I Want This Role property** — {{USER_FIRST_NAME}}'s written motivation for this role, filled in manually in Notion. If populated, include the full content in the letter-writer prompt as the primary content input.
 
 **Page body content** — Optional additional background {{USER_FIRST_NAME}} may have added (her reaction to the role, any context she wants in the letter). Include if present. If blank, skip — it is not required.
 
-**If both Q&A and page body are empty:** Do NOT proceed to Step 5 for this role. Spawn `letter-writer` with `option=interview-questions` for this role (passing the JD, company name, role title, and coach output), write the returned questions to the `Q&A` property in Notion, and log this role as "Letter skipped — awaiting intake." Then skip to the next role in the pipeline. If this is the only role in the run, end the pipeline after logging and surface this message to {{USER_FIRST_NAME}}:
+**If Why I Want This Role is empty:** Do NOT proceed to Step 5 for this role. Skip the cover letter entirely. Deliver the CV only. Log this role as "Letter skipped — Why I Want This Role is empty." Do NOT generate questions. Do NOT spawn letter-writer. Surface this message to {{USER_FIRST_NAME}}:
 
-> **Letter skipped for [Company] — [Role Title].** Q&A and page body are both empty. Intake questions have been written to the Notion row. Answer them there, then re-run the pipeline for this role.
+> **Letter skipped for [Company] — [Role Title].** The "Why I Want This Role" field in Notion is empty. Fill it in and re-run the pipeline for this role to get a cover letter.
 
 **This gate applies only to this role.** Other roles in the batch are not affected — continue processing them normally.
 
@@ -127,14 +127,14 @@ Read the following from Notion for this role:
 
 ### Step 5 — Cover letter (draft)
 
-**Before spawning letter-writer:** Read `02-candidate-background.md` (Role Facts) for {{USER_FIRST_NAME}}'s role facts — key proof points from `02-candidate-background.md` (Role Facts). Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
+**Before spawning letter-writer:** Read `02-professional-background.md` (Role Facts) for {{USER_FIRST_NAME}}'s role facts — key proof points from `02-professional-background.md` (Role Facts). Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
 
 **Before spawning, pass the following for this role:**
-- **Q&A property** and **Page body content** — use the values retrieved in Pre-Step 5. Do not re-read from Notion.
+- **Why I Want This Role property** and **Page body content** — use the values retrieved in Pre-Step 5. Do not re-read from Notion.
 - **Strategy** property — from the employment coach
 - **Gap handling** property — from the employment coach
 
-**Priority rule:** Q&A and page body content take precedence over Strategy and Gap handling. If there is any conflict between them on what content to prioritise or how to organise the letter, Q&A and page body content win.
+**Priority rule:** Why I Want This Role and page body content take precedence over Strategy and Gap handling. If there is any conflict between them on what content to prioritise or how to organise the letter, Why I Want This Role and page body content win.
 
 **Include this verbatim at the front of the letter-writer prompt:**
 > STRUCTURE IS NON-NEGOTIABLE. Regardless of any reviewer feedback you receive, the letter structure defined in `cover-letter/SKILL.md` must be observed in full — in particular the tone, voice, and content of the opening paragraph. Reviewer feedback informs what proof to include or emphasise; it does not change how the letter is structured or how the opening is written.
@@ -144,9 +144,9 @@ Spawn `letter-writer` with `option=cover-letter`, passing:
 - `Role summary` (contains the role context, key requirements, and Company self-characterization section verbatim if present — this is the JD proxy for the letter-writer)
 - The coach's Relationship type
 - The HM CV verdict from Step 3 — if Conditional, quote the specific condition verbatim so letter-writer knows upfront what the cover letter must address
-- **Q&A** from Notion (read above) — primary content input; include if populated
+- **Why I Want This Role** from Notion (read above) — primary content input; include if populated
 - **Page body content** from Notion (read above) — supplementary; include if present
-- **Strategy** and **Gap handling** from Notion (read above) — secondary context; defer to Q&A and page body content on any conflict
+- **Strategy** and **Gap handling** from Notion (read above) — secondary context; defer to Why I Want This Role and page body content on any conflict
 
 **Orchestrator quality read — before passing to gatekeeper:**
 
@@ -160,7 +160,7 @@ If the answer to any of these is "no," return to `letter-writer` with `option=co
 
 ### Step 5.2 — Gatekeeper (cover letter draft check)
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Q&A answers and page body content (from the Pre-Step 5 read). The Q&A and page body content allows the gatekeeper to apply the Q&A exemption correctly — see the exemption rule at the top of Option 2 in `gatekeeper-checks/SKILL.md`.
+Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Why I Want This Role content and page body content (from the Pre-Step 5 read). The Why I Want This Role and page body content allows the gatekeeper to apply the personal-content exemption correctly — see the exemption rule at the top of Option 2 in `gatekeeper-checks/SKILL.md`.
 
 **If PASS:** proceed to Step 5.3.
 
@@ -203,11 +203,11 @@ cp /tmp/<coverletter_filename>.md "<output_dir>/<company_dir>/<coverletter_filen
 
 ### Step 5.8 — Gatekeeper (cover letter final check)
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the revised cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Q&A answers and page body content (same as Step 5.2).
+Spawn `gatekeeper` with `option=cover-letter`, passing the revised cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Why I Want This Role content and page body content (same as Step 5.2).
 
 **If PASS:** proceed to Step 5.9.
 
-**If FAIL:** spawn `letter-writer` with `option=revision`, passing the revised cover letter and the gatekeeper's full violation list. After revision, re-save the updated markdown to `/tmp/` and the iCloud backup path before spawning `gatekeeper` again. Repeat until PASS. Log all violation rounds internally.
+**If FAIL:** spawn `letter-writer` with `option=revision`, passing the revised cover letter and the gatekeeper's full violation list. After revision, re-save the updated markdown to `/tmp/` and the output backup path before spawning `gatekeeper` again. Repeat until PASS. Log all violation rounds internally.
 
 **Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 5.8)` section in the revision log, proceed to Step 5.9, and flag for {{USER_FIRST_NAME}} in the final delivery that this cover letter needs manual review before sending.
 
@@ -221,7 +221,7 @@ The humanizer is a writing editor and linguistics expert. It loads `skills/cover
 
 **Wait for the humanizer to return** the corrected letter and its change log before proceeding.
 
-Save the humanizer's output to `/tmp/` and the iCloud backup path, overwriting the previous cover letter markdown. The change log goes into the revision log under `## Humanizer changes`.
+Save the humanizer's output to `/tmp/` and the output backup path, overwriting the previous cover letter markdown. The change log goes into the revision log under `## Humanizer changes`.
 
 This step is non-blocking — if the humanizer returns no changes, proceed normally. If the humanizer fails, log the failure and proceed with the pre-humanizer version.
 
@@ -231,7 +231,7 @@ This step is non-blocking — if the humanizer returns no changes, proceed norma
 
 Both the CV and the cover letter are now final markdown files saved to `/tmp/`. Convert both to `.docx` using pandoc with the `.dotx` reference templates. Run bash directly — no agent spawn needed.
 
-Follow the `cv-campaign-export` skill's Step 6 production protocol exactly — it is the single authoritative source for pandoc commands, script paths, subtitle update, and verification. Do not substitute your own abbreviated steps. Both files must exist and be nonzero in the iCloud output folder before proceeding to Step 7.
+Follow the `application-files-export` skill's Step 6 production protocol exactly — it is the single authoritative source for pandoc commands, script paths, subtitle update, and verification. Do not substitute your own abbreviated steps. Both files must exist and be nonzero in the output folder before proceeding to Step 7.
 
 **Subtitle argument:** Pass the exact role title from the JD as the subtitle argument to `update-subtitle.py` — the job title {{USER_FIRST_NAME}} is applying for (e.g., "[Role Title from JD]"). This is the ONLY text that should appear in the subtitle slot under {{USER_FIRST_NAME}}'s name. Do not pass a generic descriptor, {{USER_FIRST_NAME}}'s background framing, or anything not directly taken from the JD role title field.
 
@@ -243,7 +243,7 @@ Follow the `cv-campaign-export` skill's Step 6 production protocol exactly — i
 
 ### 6H.1 — Spawn Hebrew localization agent
 
-Spawn `hebrew-localization` with:
+Spawn `localization` with:
 - The final English CV markdown (from Step 4/4.5, already in memory)
 - The final English cover letter markdown (from Step 5.7, already in memory)
 - The structured JD
@@ -253,7 +253,7 @@ The agent returns a Hebrew CV markdown block and a Hebrew cover letter markdown 
 
 ### 6H.2 — Export Hebrew DOCX files
 
-Write the Hebrew markdown files to `/tmp/` **and** copy them to the iCloud output folder:
+Write the Hebrew markdown files to `/tmp/` **and** copy them to the output folder:
 
 ```bash
 cat > /tmp/he-<cv_filename>.md << 'MARKDOWN_EOF'
@@ -269,14 +269,14 @@ cp /tmp/he-<cv_filename>.md "<output_dir>/"
 cp /tmp/he-<cl_filename>.md "<output_dir>/"
 ```
 
-Convert using the Hebrew DOCX production protocol from `cv-campaign-export`:
+Convert using the Hebrew DOCX production protocol from `application-files-export`:
 
 ```bash
 HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
 
 # Hebrew CV — concatenate with Hebrew footer, then convert
 cat /tmp/he-<cv_filename>.md \
-    "${CLAUDE_PLUGIN_ROOT}/skills/cv-campaign-export/static-cv-footer-he.md" \
+    "${CLAUDE_PLUGIN_ROOT}/skills/application-files-export/static-cv-footer-he.md" \
     > /tmp/he-<cv_filename>-with-footer.md
 
 pandoc /tmp/he-<cv_filename>-with-footer.md \
@@ -284,7 +284,7 @@ pandoc /tmp/he-<cv_filename>-with-footer.md \
   -o "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx"
 
 # Hebrew CV subtitle
-python3 "${CLAUDE_PLUGIN_ROOT}/skills/cv-campaign-export/scripts/update-subtitle.py" \
+python3 "${CLAUDE_PLUGIN_ROOT}/skills/application-files-export/scripts/update-subtitle.py" \
   "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx" \
   "<role title>"
 
@@ -335,7 +335,7 @@ If the Notion writeback itself fails after files are confirmed, log it and surfa
 Append this role's data to:
 `{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/state.json`
 
-Create the file on the first role; append on subsequent ones. Use the `/tmp→iCloud` copy protocol from `cv-campaign-export`. Use the shortened path format for all paths — `cv-campaign-<YYYY-MM-DD>/<filename>` only, never the full iCloud path.
+Create the file on the first role; append on subsequent ones. Use the `/tmp→output folder` copy protocol from `application-files-export`. Use the shortened path format for all paths — `cv-campaign-<YYYY-MM-DD>/<filename>` only, never the full output folder path.
 
 **To append (role 2+):** Read the existing state.json, parse the `roles` array, push the new role object, and write the full updated JSON back. Do not use `cat >` on a file that already exists — that overwrites the file and loses all previous role entries.
 
@@ -395,13 +395,13 @@ Write the following properties using `notion-update-page`. All values are alread
 | `Person who Advertised Role (if not Hiring Manager)` | Employment coach output — verbatim. |
 | `Hiring manager's role` | Employment coach output — verbatim. |
 | `Manager role confirmed` | Employment coach output — verbatim. |
-| `No other Marketing roles employed by company` | Employment coach output — verbatim. |
+| `No incumbents in this function` | Employment coach output — verbatim. |
 
 **Pipeline-derived properties**
 
 | Property | What to write |
 |---|---|
-| `Hiring Manager` | Hiring manager name and title from the coach's research. Write "Not identified" if none found. |
+| `Hiring Manager's Name` | Hiring manager name and title from the coach's research. Write "Not identified" if none found. |
 | `Last Pipeline Run` | Today's date in ISO format (YYYY-MM-DD). |
 | `Status` | `CV Ready for Review` — set once DOCX export and writeback are confirmed complete. |
 | `Draft Directory` | The Draft Directory URL for this role's directory (generated in export Step 7). Written in Step 7a. |
@@ -415,7 +415,7 @@ If any writeback fails, log it and surface it in the final chat delivery. The st
 
 ### Step 7d — Save reviewer feedback file
 
-Write a single markdown file to the iCloud output folder. This is the one file {{USER_FIRST_NAME}} reads — it contains reviewer feedback from all four review passes plus the cv-writer's change log.
+Write a single markdown file to the output folder. This is the one file {{USER_FIRST_NAME}} reads — it contains reviewer feedback from all four review passes plus the cv-writer's change log.
 
 **Filename:** `feedback-<roletitle>-<company>-<monYYYY>.md`  
 (Use the same slug format as the CV and cover letter files for this role.)
@@ -460,7 +460,7 @@ Write a single markdown file to the iCloud output folder. This is the one file {
 <If any reviewer (recruiter or HM) flagged the cover letter opening paragraph negatively, quote their exact feedback here — even if it was not acted on. If letter-writer's revision log includes "opener feedback noted — not revised per pipeline rules", paste that note here too. If no opener feedback exists, write "None.">
 ```
 
-Write this file directly to the role's company subdir using the same `/tmp → iCloud` copy protocol as the DOCX files:
+Write this file directly to the role's company subdir using the same `/tmp → output folder` copy protocol as the DOCX files:
 
 ```bash
 cat > /tmp/<feedback_filename>.md << 'MARKDOWN_EOF'

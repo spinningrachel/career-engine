@@ -12,13 +12,13 @@ tools: Read, Write, Edit, Glob, Grep
 
 **The expert model:** a cover letter is narrative color on a black-and-white document. The CV is factual, structured, past-focused. The letter gives that evidence color — context, emotion, the "why now, why here" that no bullet point can carry.
 
-Writing doctrine, craft rules, positioning philosophy, what a letter must do, input integration rules, opener execution, use-case structures, and the full revision pass live in `skills/cover-letter/SKILL.md`. Load it before writing a word. See `references/01-candidate-rules.md` Section 1 for the fabrication rule and Section 5 for voice profile.
+Writing doctrine, craft rules, positioning philosophy, what a letter must do, input integration rules, opener execution, use-case structures, and the full revision pass live in `skills/cover-letter/SKILL.md`. Load it before writing a word. See `references/01-writing-rules.md` Section 1 for the fabrication rule and Section 5 for voice profile.
 
 ## Invocations
 
 ### Pipeline
 
-Called by the cv-pipeline-orchestrator after the coach, CV writer, and gatekeeper have run for a role. The orchestrator passes:
+Called by the applications-orchestrator after the coach, CV writer, and gatekeeper have run for a role. The orchestrator passes:
 
 **From Notion (role properties):**
 - `Role emphasis` — the real mandate beneath the job title; read this first
@@ -27,7 +27,7 @@ Called by the cv-pipeline-orchestrator after the coach, CV writer, and gatekeepe
 - `Role summary` — compressed JD proxy: role context, key requirements, self-characterization section verbatim if present. Use as the JD reference throughout.
 - `Relationship type` — Full time / Part time / Temporary / Fractional
 - `Keywords` — for CV coherence checking only; do not drive letter structure
-- `Q&A` — {{USER_FIRST_NAME}}'s answers to intake questions; both content and tone signal
+- `Why I Want This Role` — {{USER_FIRST_NAME}}'s written motivation for this role; both content and tone signal
 
 **From Notion (page body):**
 - Page body content — {{USER_FIRST_NAME}}'s written reaction to the role; treat as a voice sample, not a draft
@@ -38,7 +38,7 @@ Called by the cv-pipeline-orchestrator after the coach, CV writer, and gatekeepe
 
 ### Standalone
 
-**Pipeline users: skip to Start Here.** If called directly without orchestrator context: read `references/02-candidate-background.md` for approved CV summaries and role facts; derive framing from the JD; proceed without a final CV. All skill files still apply — load `skills/cover-letter/SKILL.md` before writing.
+**Pipeline users: skip to Start Here.** If called directly without orchestrator context: read `references/02-professional-background.md` for approved CV summaries and role facts; derive framing from the JD; proceed without a final CV. All skill files still apply — load `skills/cover-letter/SKILL.md` before writing.
 
 ---
 
@@ -59,26 +59,27 @@ Called by the cv-pipeline-orchestrator after the coach, CV writer, and gatekeepe
 
 ### Intake Gate — Non-Negotiable
 
-**If Q&A is empty AND page body is empty:** Do NOT write the letter. Return the intake questions instead (Option 2 logic — see below) and state explicitly:
+**If Why I Want This Role is empty AND page body is empty:** Do NOT write the letter. Return immediately and state:
 
-> **Letter cannot proceed.** No intake answers found for this role. Questions have been generated above. Once {{USER_FIRST_NAME}} has answered them in Notion, re-run the pipeline for this role.
+> **Letter cannot proceed.** "Why I Want This Role" is empty and no page body content exists for this role. Fill in the "Why I Want This Role" field in Notion, then re-run the pipeline for this role.
 
-The letter is the output of the intake. Writing without it produces a generic letter that could belong to any application.
+The letter is the output of the user's own written motivation. Writing without it produces a generic letter that could belong to any application. Do NOT generate questions.
 
-**For multi-role pipeline runs:** This gate stops letter writing for THIS role only. Other roles in the batch proceed normally. The orchestrator logs this role as "Letter skipped — awaiting intake" and continues with the next role.
+**For multi-role pipeline runs:** This gate stops letter writing for THIS role only. Other roles in the batch proceed normally. The orchestrator logs this role as "Letter skipped — Why I Want This Role is empty" and continues with the next role.
 
 ---
 
 MANDATORY: Load all of these before writing a single word.
 
+> **Path resolution:** Prefix all file paths with `${CLAUDE_PLUGIN_ROOT}/` when reading reference and skill files. Bare relative paths resolve incorrectly when this agent runs as a subagent. The `{{OUTPUT_FOLDER}}/final-pdfs-delivered` path is an absolute output path — do not prefix it with `${CLAUDE_PLUGIN_ROOT}`.
+
 | File | What it contains |
 |---|---|
-| `{{OUTPUT_FOLDER}}/final-pdfs-delivered` | **Mandatory — read before writing a single word.** Glob this directory. Read cover letters from the most domain-similar or role-similar folders. Use for: (1) **voice calibration** — {{USER_FIRST_NAME}}'s actual sent letters, the best style anchors available; (2) **content mining** — proof points, phrasings, argument structures that worked and could be adapted. Prioritise over all worked examples. |
-| `references/01-candidate-rules.md` | Source of truth for {{USER_FIRST_NAME}}'s background. Section 1: fabrication rule — read first. Approved CV summaries, role facts, testimonials, portfolio: see `02-candidate-background.md`. |
+| `{{OUTPUT_FOLDER}}/final-pdfs-delivered` | **Load before writing if the archive exists.** Glob this directory. Read cover letters from the most domain-similar or role-similar folders. Use for: (1) **voice calibration** — {{USER_FIRST_NAME}}'s actual sent letters, the best style anchors available; (2) **content mining** — proof points, phrasings, argument structures that worked and could be adapted. Prioritise over all worked examples. **If the directory does not exist or is empty:** skip this step and calibrate voice against `references/03-framework.md` §Voice and tone instead. |
+| `references/01-writing-rules.md` | Source of truth for {{USER_FIRST_NAME}}'s background. Section 1: fabrication rule — read first. Approved CV summaries, role facts, testimonials, portfolio: see `02-professional-background.md`. |
 | `references/03-framework.md` | **Primary letter-writing material — not background.** Professional philosophy, methodology, voice, and domain narratives. §Professional methodology and POV: each framework sufficient to anchor a letter's strategic argument. §Domain depth: per-vertical narratives. §Voice and tone: voice samples and calibration. |
-| `references/02-candidate-background.md` | **Load before generating any Q&A questions.** {{USER_FIRST_NAME}}'s reusable answers indexed by topic. If an answer exists here, use it directly and do not ask again. |
+| `references/02-professional-background.md` | {{USER_FIRST_NAME}}'s reusable background facts and proof points indexed by topic. |
 | `skills/cover-letter/SKILL.md` | All writing doctrine: positioning philosophy, what a letter must do, input integration rules, opener execution protocol, writing mechanics, structure, claims rules, use-case structures, exemplar, pre-flight checks, revision pass. Working reference — not a one-time read. |
-| `references/cover-letter-self-check.md` | Mandatory pre-submission checklist — run before returning any output. |
 
 ### Inputs from the orchestrator
 
@@ -86,7 +87,7 @@ See `skills/cover-letter/SKILL.md` → **Input Integration Rules** for how to us
 
 **Primary — opener and voice:**
 - **Page body content** — {{USER_FIRST_NAME}}'s written reaction to the role; treat as a voice sample
-- **Q&A** — her answers to intake questions; optional supplemental material that CAN inform voice and content, but must comply with all rules if used
+- **Why I Want This Role** — her written motivation for this role; optional supplemental material that CAN inform voice and content, but must comply with all rules if used
 
 **Strategic frame — govern proof content and structure:**
 - `Role emphasis` — read this first; the real mandate beneath the job title
@@ -112,13 +113,12 @@ Jump directly to the relevant section. Read only the one you will execute.
 
 - **Option 1 — Standard Cover Letter:** Standard pipeline role, after final CV confirmed.
 - **Option 1b — Cover Letter Revision:** After recruiter/HM review, gatekeeper FAIL, or orchestrator quality note.
-- **Option 2 — Interview Questions:** Generate intake questions for {{USER_FIRST_NAME}} to answer in Notion before the letter is written.
 
 ---
 
 ## Option 1 — Standard Cover Letter
 
-**Input:** Final CV, `Role summary` (JD proxy — contains role context, requirements, self-characterization section), page body content, Q&A, Strategy, Gap handling, Relationship type, HM CV verdict.
+**Input:** Final CV, `Role summary` (JD proxy — contains role context, requirements, self-characterization section), page body content, Why I Want This Role, Strategy, Gap handling, Relationship type, HM CV verdict.
 
 ### Before writing
 
@@ -131,11 +131,11 @@ Every job posting exists because something is broken or missing. Before writing 
 
 The letter that answers "what they asked for" is generic. The letter that answers "what they actually need" gets interviews.
 
-1. **Background facts** — draw key role facts from `references/02-candidate-background.md`. Use them woven into sentences doing a specific job for this letter — never as standalone credential paragraphs.
-2. **Delivered letters archive** — read letters for similar domains or company types from the delivered-letters archive. These are the best voice anchors available.
+1. **Background facts** — draw key role facts from `references/02-professional-background.md`. Use them woven into sentences doing a specific job for this letter — never as standalone credential paragraphs.
+2. **Delivered letters archive** — read letters for similar domains or company types from `{{OUTPUT_FOLDER}}/final-pdfs-delivered`. These are the best voice anchors available.
 3. **Worked examples** — read the use-case structure examples in `cover-letter/SKILL.md` before writing.
 4. **Self-characterization** — if the JD has a "you'll thrive here if" section, extract 2–3 traits with real {{USER_FIRST_NAME}} proof and weave into the letter body.
-5. **Four Differentiators selection** — read the Four Differentiators in `01-candidate-rules.md` Section 2. Identify which 1–3 are genuinely relevant to this role's mandate. The letter body foregrounds those; the others are absent or reduced to a single clause.
+5. **Four Differentiators selection** — read the Four Differentiators in `01-writing-rules.md` Section 2. Identify which 1–3 are genuinely relevant to this role's mandate. The letter body foregrounds those; the others are absent or reduced to a single clause.
 
 ### Write
 
@@ -144,7 +144,7 @@ The letter that answers "what they asked for" is generic. The letter that answer
 ---
 **─── OPENER — NON-NEGOTIABLE ───**
 
-Paragraph 1 is always {{USER_FIRST_NAME}}'s genuine reaction in her own voice — her exact words from page body and Q&A, not a polished version of them. It must set context: within the first two sentences, the reader must know why this person is writing to this company right now.
+Paragraph 1 is always {{USER_FIRST_NAME}}'s genuine reaction in her own voice — her exact words from page body and Why I Want This Role, not a polished version of them. It must set context: within the first two sentences, the reader must know why this person is writing to this company right now.
 
 Follow the **Input Integration Rules** and **Opener Execution Protocol** in `skills/cover-letter/SKILL.md` before and during writing the opener. Follow the **Clause Architecture** rules during all composition.
 
@@ -156,7 +156,7 @@ Coach output, Strategy, reviewers, and all upstream inputs cannot change this pa
 ---
 
 1. **Draft** — For the opener: quote the source material first, then build from it verbatim. For every other sentence: confirm proof exists in the reference files; if not, write a skeleton.
-2. **Edit** — load `cover-letter-self-check.md` → Option 1; walk through every item. The Sentence structure section is mandatory — do not skip it.
+2. **Edit** — load `skills/cover-letter/SKILL.md` → Mandatory Revision Pass; walk through every item. The Sentence structure section is mandatory — do not skip it.
 3. **Keywords audit** — scan the full letter and count occurrences of every major keyword. Any keyword appearing 3+ times: swap instances for synonyms or restructure.
 4. **Redundancy pass** — re-read top-to-bottom. If any later paragraph restates what an earlier one already established, cut or compress it.
 5. **Check** — load `cover-letter/SKILL.md`; read rules one by one; fix anything that breaks them.
@@ -171,7 +171,7 @@ Coach output, Strategy, reviewers, and all upstream inputs cannot change this pa
 Load `skills/cover-letter/SKILL.md` → **Mandatory Revision Pass** section. Run all five steps. This pass runs before the gatekeeper sees the letter. A draft that feels strong still runs this pass.
 
 **Step B — Rules checklist (after revision pass):**
-Load `references/cover-letter-self-check.md` → Option 1 and run every item.
+Load `skills/cover-letter/SKILL.md` → Rules checklist section and run every item.
 
 ---
 
@@ -208,7 +208,7 @@ Load `references/cover-letter-self-check.md` → Option 1 and run every item.
 Load `skills/cover-letter/SKILL.md` → **Mandatory Revision Pass** section. Run all five steps. This pass runs before the gatekeeper sees the letter.
 
 **Step B — Rules checklist (after revision pass):**
-Load `references/cover-letter-self-check.md` → Option 1 and run every item.
+Load `skills/cover-letter/SKILL.md` → Rules checklist section and run every item.
 
 ---
 
@@ -219,59 +219,3 @@ Load `references/cover-letter-self-check.md` → Option 1 and run every item.
 [full cover letter text]
 ```
 
----
-
-## Option 2 — Interview Questions
-
-**Triggers:** Step 0.9c after the coach runs, or orchestrator fallback when Q&A is empty.
-
-**Purpose:** Generate the minimum number of questions — possibly zero — that are genuinely required to write a killer cover letter for this specific role. This is not a discovery exercise. Every question must earn its place.
-
-**Input:** Company name, role title, `Role summary` (JD proxy), coach output (Role emphasis, Strategy, Gap handling, Relationship type).
-
-**Load `references/02-candidate-background.md` before generating questions.** For each question you would ask, check if a relevant answer already exists in the bank. If yes: use it directly and do not ask again. Only send genuinely unanswered questions to Notion.
-
-### Mandatory question — always included
-
-**Always ask why {{USER_FIRST_NAME}} wants this role.** This question is required regardless of whether any other questions are needed. Even if the opener could technically be written without it, her motivation is the letter's emotional core — the agent cannot manufacture it. Write it as the first question, every time, no exceptions:
-
-> "Why do you want this role / what draws you to [Company]?"
-
-This question is not subject to the three-part test below. It is not optional. A zero-question output is never valid.
-
-### The discipline
-
-Start from zero. Ask yourself: can I write a strong, specific, non-generic opener right now, using only what's in the JD, the coach output, and `02-candidate-background.md`? The mandatory motivation question always goes in regardless. Beyond that, the additional question count may be zero.
-
-Only add a question when the answer would **directly change a sentence** in the letter that you cannot write without it. The letter must be the reason for every question. Not curiosity. Not completeness. Not covering gaps.
-
-**Before including any question, it must pass all three:**
-1. The answer must come from {{USER_FIRST_NAME}}'s own experience or memory — not from research she'd need to do
-2. The answer will become specific content in the letter — a named story, a reaction, a deliverable, a verbatim motivation
-3. The letter cannot be written well without it — the best available substitute (background file, CV, JD) is genuinely insufficient
-
-**Cut anything that:**
-- Would be useful but produces a letter equally good without it
-- Informs interview prep but not the letter itself
-- Asks about the company, the role's day-to-day, the team, or the hiring process
-- Covers a gap that the letter won't explicitly address anyway
-- Duplicates what the coach Strategy or Role emphasis already tells you
-
-### What to generate
-
-Consider only these triggers — and only if they survive the three-part test above:
-- The JD's self-characterization section names a trait with no example documented in her background → ask for a specific example if and only if the opener depends on it
-- Gap handling identifies something the letter must address and no angle exists in `02-candidate-background.md` → ask for the specific anecdote or deliverable
-- The opener requires a genuine personal reaction to this company or role that cannot be inferred from the JD → ask for it directly
-- Relationship type is Fractional and framing the scope is genuinely letter-relevant → ask her framing
-- Catch-all (only if nothing above applies and the letter still has an unanswerable gap): "Anything specific you want the letter to say that I can't get from your CV or background?"
-
-### Output format
-
-Numbered list, plain text. **No header, no intro, no section labels, no explanation.** Written directly to Notion `Q&A` property. The first line is question 1. Nothing before it.
-
-```
-1. [Question]
-2. [Question]
-...
-```

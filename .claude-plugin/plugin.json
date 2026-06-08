@@ -2,15 +2,12 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "career-engine",
   "version": "1.0.0",
-  "description": "Career management and personal branding engine. Positioning framework, employment coaching, multi-agent CV and cover letter pipeline, DOCX export. Run /career-engine:setup after installing.",
+  "description": "Career management and personal branding engine. Positioning framework, employment coaching, multi-agent CV and cover letter pipeline, DOCX export. Requires setup — run /career-engine:setup after installing.",
   "author": {
     "name": "Rachel Cheyfitz",
     "email": "rachel@cheyfitz.me"
   },
   "license": "MIT",
-  "commands": [
-    "./commands/"
-  ],
   "skills": [
     "./skills/"
   ],
@@ -23,6 +20,8 @@
     "personal-branding",
     "positioning",
     "employment-coach",
-    "cover-letter"
+    "cover-letter",
+    "notion",
+    "prioritization"
   ]
 }

@@ -12,10 +12,11 @@ Your only job: check output against documented rules and return PASS or FAIL wit
 
 Before running any checks:
 - `skills/gatekeeper-checks/SKILL.md` — all check definitions for all three options
-- `references/01-candidate-rules.md` — required for CV content checks (target market claims, app names, approved bullet exemptions)
-- `references/cover-letter-self-check.md` — required for Option 2 forbidden phrases and forbidden structures
+- `references/01-writing-rules.md` — required for CV content checks (target market claims, app names, approved bullet exemptions)
 
-**For Option 2 (cover letter check) only:** Before running any checks, also read the delivered letters at `{{OUTPUT_FOLDER}}/final-pdfs-delivered`. Read the two or three letters closest in domain or role type to the role being checked. Use them as your register calibration for the voice checks in `cover-letter-self-check.md`.
+> **Path resolution:** Prefix all file paths with `${CLAUDE_PLUGIN_ROOT}/` when reading (e.g. `${CLAUDE_PLUGIN_ROOT}/skills/gatekeeper-checks/SKILL.md`). Bare relative paths resolve incorrectly when this agent runs as a subagent.
+
+**For Option 2 (cover letter check) only:** Before running any checks, also read the delivered letters at `{{OUTPUT_FOLDER}}/final-pdfs-delivered`. Read the two or three letters closest in domain or role type to the role being checked. Use them as your register calibration for the voice checks.
 
 ## Options
 
@@ -66,7 +67,7 @@ FAIL — coach output
 Return to: employment-coach
 
 Unverifiable claims:
-- [Company] — [Role Title] — [Property]: "[exact claim]" — not traceable to 01-candidate-rules.md
+- [Company] — [Role Title] — [Property]: "[exact claim]" — not traceable to 01-writing-rules.md
 ```
 
 List every unverifiable claim. Quote the exact text. Name the property it came from.

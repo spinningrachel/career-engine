@@ -11,10 +11,9 @@ description: CV writing reference for {{USER_FIRST_NAME}}'s job search pipeline.
 
 | File | Purpose | When to load |
 |---|---|---|
-| `references/cv-example.pdf` | Approved full CV (HoneyBook application, May 2026) | Always — calibrate layout, bullet density, summary length, and quality standard against this. Do not copy content. |
 | `references/{{CV_TEMPLATE_FILE}}` | The Word template used for DOCX export | Reference when formatting output or checking style annotations |
-| `02-candidate-background.md` (Portfolio) | Portfolio — work samples with direct PDF links | When the role signals that demonstrated output would strengthen the application |
-| `02-candidate-background.md` (Testimonials) | Testimonials — client endorsements | For freelance, consulting, or fractional roles where third-party validation is relevant |
+| `02-professional-background.md` (Portfolio) | Portfolio — work samples with direct PDF links | When the role signals that demonstrated output would strengthen the application |
+| `02-professional-background.md` (Testimonials) | Testimonials — client endorsements | For freelance, consulting, or fractional roles where third-party validation is relevant |
 
 ---
 
@@ -62,7 +61,7 @@ ATS systems identify sections by heading name. Non-standard names cause misclass
 
 ## Bullet Writing Formula
 
-Use this when writing a new bullet — i.e., when no approved bullet in `02-candidate-background.md` (Role Facts) maps to a JD requirement. The approved bullets are always the first choice; this formula governs new composition only.
+Use this when writing a new bullet — i.e., when no approved bullet in `02-professional-background.md` (Role Facts) maps to a JD requirement. The approved bullets are always the first choice; this formula governs new composition only.
 
 ### The XYZ formula
 
@@ -76,7 +75,7 @@ Not every bullet will have all three elements. Y is optional when the outcome is
 
 ### Weak → strong transformations
 
-These use {{USER_FIRST_NAME}}'s documented experience. Every claim in the strong version traces to `01-candidate-rules.md`.
+These use {{USER_FIRST_NAME}}'s documented experience. Every claim in the strong version traces to `01-writing-rules.md`.
 
 | Weak (duty statement) | Strong (XYZ formula) |
 |---|---|
@@ -87,7 +86,7 @@ These use {{USER_FIRST_NAME}}'s documented experience. Every claim in the strong
 ### Rules for new bullet composition
 
 - **Lead with the outcome, not the action.** "Reduced partner onboarding by 35% by building a 300-page developer portal" > "Built a 300-page developer portal that reduced onboarding by 35%." Both are acceptable; outcome-first is stronger.
-- **Every metric must trace to `01-candidate-rules.md`.** If a number is not documented, do not write it. Write the named outcome without the number.
+- **Every metric must trace to `01-writing-rules.md`.** If a number is not documented, do not write it. Write the named outcome without the number.
 - **One bullet, one job.** If a bullet is doing two things, split it or cut one.
 - **Third person, no "I".** "Led," not "I led."
 
@@ -101,6 +100,49 @@ These use {{USER_FIRST_NAME}}'s documented experience. Every claim in the strong
 | **No tool names** | HubSpot, Salesforce, Salesloft, Moosend, Webflow, Mintlify, Chameleon, HeyReach, ZoomInfo, Chorus.ai, Notion, Jira, Slack — banned inside bullets. Approved Section 7 bullets are exempt — do not alter them. |
 | **Verb tally** | No opening verb may appear 3 or more times across all bullets. Tally before returning. |
 | **No repetition** | No phrase may appear verbatim in more than one bullet. |
+
+---
+
+## SKILLS Section
+
+### Always include it
+
+The SKILLS section is never optional. Every CV {{USER_FIRST_NAME}} produces must contain a `## SKILLS` (or `## SKILLS & EXPERTISE`) section. Do not omit it because the JD feels execution-focused or because the experience bullets seem self-sufficient — the section serves ATS matching, skim-reading, and positioning simultaneously.
+
+### Strategic framing, not a keyword dump
+
+The SKILLS section is a positioning tool, not a checklist. A raw list of keywords reads as filler and leaves no impression. The section must be written with intent: what picture does it build of this candidate, and does that picture serve this specific role?
+
+**For executive and leadership roles this matters most.** A VP of Marketing or CMO candidate who lists "Email Marketing · HubSpot · Demand Generation" looks like a practitioner, not a leader. The section should reflect the scope and strategic nature of the role being applied for — disciplines owned, functions built, domains led — not the tools used to execute them.
+
+### Rules by role seniority
+
+**Leadership / executive roles (VP, SVP, CMO, or equivalent):**
+- Lead with functional ownership and scope: categories like "Revenue Marketing", "Brand & Positioning", "GTM Strategy", "Team Building & Org Design", "Board & Exec Communication"
+- Execution-layer keywords still belong, but they sit behind or below strategic ones — they signal range, not primary identity
+- Avoid leading with tool names, task-level skills, or anything that would appear on an IC's CV as a primary credential
+- Use `## SKILLS & EXPERTISE` heading when the role is at this level — it signals seniority over the plain `## SKILLS` heading
+
+**Mid-level / senior IC roles:**
+- Mix of functional disciplines, key methodologies, and high-signal tools is appropriate
+- Lead with the capabilities most relevant to the JD, not alphabetically or by familiarity
+- Group related terms together rather than listing them flat — clusters signal coherence
+
+**All roles:**
+- Keywords from the `Keywords` property (Critical and Important tiers) must appear here if they aren't already in the summary or bullets — this is the ATS catch-all
+- No hollow terms: "Results-driven", "Strategic thinker", "Passionate about marketing" — banned entirely
+- No tool names that appear nowhere else in the CV as primary credentials — use `## TOOLS` for those instead
+- Sequence intentionally: strongest, most role-relevant credentials first
+
+### Format
+
+Use a pipe-separated single line or short comma-separated groups. Do not use bullet points inside the SKILLS section — they visually compete with Experience bullets and collapse the section's skimmability.
+
+Example for a senior marketing leader role:
+```
+## SKILLS & EXPERTISE
+GTM Strategy · Revenue Marketing · Brand & Positioning · Product Marketing · Pipeline Programs · Content & Thought Leadership · Partner Marketing · Team Building · Budget Ownership · Exec & Board Communication
+```
 
 ---
 
@@ -118,9 +160,11 @@ These apply to all CV copy — bullets, summaries, and skills sections.
 
 ## Words and Phrases to Avoid
 
-These apply to CV bullets and summaries. For every generic claim removed, replace it with what {{USER_FIRST_NAME}} actually did — a specific role, outcome, or named result from `01-candidate-rules.md`. Never invent replacement metrics.
+These apply to CV bullets and summaries. For every generic claim removed, replace it with what {{USER_FIRST_NAME}} actually did — a specific role, outcome, or named result from `01-writing-rules.md`. Never invent replacement metrics.
 
 Do not eliminate industry-specific terminology. "SEO" or "content strategy" are legitimate descriptors in the right context. The test: does the phrase describe something specific {{USER_FIRST_NAME}} did, or does it describe a generic ideal candidate?
+
+**Never mention "works independently" or equivalent soft-skill filler.** Any experienced professional can work independently — stating it wastes a line and signals that the candidate has nothing more specific to say. The same applies to: "self-starter", "takes initiative", "manages own workload", "strong communicator" (unless communication is the literal product of the role), "team player" used as a standalone claim. If the JD requires independent work, the CV demonstrates it through the substance of the bullets — it never states it.
 
 ### Terms to avoid outright in CV copy
 
