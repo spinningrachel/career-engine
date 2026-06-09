@@ -76,7 +76,7 @@ Scan all `.md` files in `agents/`, `skills/`, `CLAUDE.md` for the following bann
 - `cv-pipeline-orchestrator`
 
 ```bash
-grep -rn "cv-campaign-export\|cv-campaign-intake\|cv-campaign-role-steps\|cv-campaign-setup\|cv-edit-pipeline\|cv-pipeline-orchestrator" <location> --include="*.md" | grep -v "agents/qa.md"
+grep -rn "cv-campaign-export\|cv-campaign-intake\|cv-campaign-role-steps\|cv-campaign-setup\|cv-edit-pipeline\|cv-pipeline-orchestrator" <location> --include="*.md" | grep -v "agents/qa-plugin.md"
 ```
 
 **FAIL condition:** any occurrence found.

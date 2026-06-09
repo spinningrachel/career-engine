@@ -8,7 +8,7 @@ Working instructions for Claude when editing, extending, or maintaining this plu
 
 **You are not done with any plugin edit session until the QA agent has run and passed. No exceptions.**
 
-This means: after completing any set of changes — no matter how small — you MUST invoke the QA agent (`agents/qa.md`) before telling the user the work is complete. This is not optional and cannot be skipped because the changes "seem clean" or because you "already checked manually." Manual checking is how drift accumulates silently.
+This means: after completing any set of changes — no matter how small — you MUST invoke the QA agent (`agents/qa-plugin.md`) before telling the user the work is complete. This is not optional and cannot be skipped because the changes "seem clean" or because you "already checked manually." Manual checking is how drift accumulates silently.
 
 **The QA agent also checks for drift between the two plugin versions.** Every change must be applied to BOTH:
 1. The open-source repo at the path shown in this file
@@ -16,7 +16,7 @@ This means: after completing any set of changes — no matter how small — you 
 
 If a change was made to one version and not the other, the QA agent will catch it. Do not declare work complete before it does.
 
-**How to invoke:** Spawn the QA agent by reading `agents/qa.md` and following its instructions. Pass it both plugin paths.
+**How to invoke:** Spawn the QA agent by reading `agents/qa-plugin.md` and following its instructions. Pass it both plugin paths.
 
 This gate applies to: any content edit, any rename, any new file, any property name change, any structural change, any cross-version sync. If you edited even one file, run QA.
 
@@ -206,7 +206,7 @@ Delivered letters show openers that vary widely in structure — emotional react
 
 ## QA Agent
 
-See the mandatory stop gate at the top of this file. The QA agent lives at `agents/qa.md`. Run it after every edit session — it checks both plugin versions for drift, stale references, missing files, property name consistency, and structural integrity. The full check list is in the agent file itself.
+See the mandatory stop gate at the top of this file. The QA agent lives at `agents/qa-plugin.md`. Run it after every edit session — it checks both plugin versions for drift, stale references, missing files, property name consistency, and structural integrity. The full check list is in the agent file itself.
 
 ---
 

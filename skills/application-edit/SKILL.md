@@ -58,13 +58,16 @@ For each matching entry, capture the full row payload including:
 - All existing property values — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Why I Want This Role`, `CV File Name`, `Letter File Name`, `Note`, and any other populated fields
 - Any reviewer feedback or notes already on the row
 
-**Skip any entry where `Edit type` is empty or not set.** Log the skipped role: "[Company] — [Role Title]: skipped — Edit type not set. Add CV, Letter, or Both to the Edit type field in Notion."
+**Edit type is mandatory. It controls everything.** After fetching, immediately inspect the `Edit type` value for every role before any other work begins — before spawning the coach, before loading JDs, before any pipeline step.
 
-Report the count to {{USER_FIRST_NAME}}: "Found N roles marked Needs editing (M skipped — Edit type missing)." If the count after skipping is 0, stop and report that.
+- **`Edit type` is empty or not one of `CV`, `Letter`, `Both`:** do not proceed with this role under any circumstances. Do not default to `Both`. Log the skip: "[Company] — [Role Title]: skipped — Edit type not set. Add CV, Letter, or Both to the Edit type field in Notion." No subagent is spawned for this role.
+- **`Edit type` is `CV`, `Letter`, or `Both`:** proceed with that role using the routing below.
 
-**Routing by Edit type:**
-- `CV` — run CV editing steps only (E0.7 content check, E3–E6.5, CV DOCX export). Skip all cover letter steps.
-- `Letter` — run cover letter editing steps only (E0.7 cover letter check, E7–E7.5, cover letter DOCX export). Skip all CV steps.
+Report the count to {{USER_FIRST_NAME}}: "Found N roles marked Needs editing (M skipped — Edit type missing)." If the count after skipping is 0, **stop immediately and report that.** Do not continue the pipeline.
+
+**Routing by Edit type — hard gate, checked again before each subagent spawn:**
+- `CV` — run CV editing steps only (E0.7 content check, E3–E6.5, CV DOCX export). Skip ALL cover letter steps. Do not spawn letter-writer, do not run cover letter gatekeeper.
+- `Letter` — run cover letter editing steps only (E0.7 cover letter check, E7–E7.5, cover letter DOCX export). Skip ALL CV steps. Do not spawn cv-writer, do not run CV gatekeeper.
 - `Both` — run all steps.
 
 ## Step E0.5 — Prepare JD content from Notion rows
