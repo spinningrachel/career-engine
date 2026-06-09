@@ -32,6 +32,35 @@ LIVE = `/Users/rachel/.claude/plugins/marketplaces/local-desktop-app-uploads/car
 
 ---
 
+## Two-version architecture — read before running any check
+
+**These two versions are intentionally different. Do not treat their differences as drift unless a check specifically says so.**
+
+| What | REPO | LIVE |
+|---|---|---|
+| Purpose | Public open-source distribution | Rachel's live personal installation |
+| Names | `{{USER_FIRST_NAME}}` placeholder | `Rachel` |
+| Output folder | `{{OUTPUT_FOLDER}}` placeholder | Real iCloud path |
+| Notion DB ID | `{{NOTION_DATABASE_ID}}` placeholder | Real database ID |
+| Other placeholders | All `{{...}}` placeholders intact | All `{{...}}` placeholders replaced with real values |
+| `.dotx` templates in references/ | Absent (personal file, not synced) | `rachel-cheyfitz.dotx` present |
+| `02-professional-background.md` | Generic or omitted personal data | Rachel's real background facts |
+| `CLAUDE.md` | Uses `{{USER_FIRST_NAME}}` in some places | Uses "Rachel" |
+
+**Expected differences are not bugs.** A check that looks at both versions and finds REPO has `{{USER_FIRST_NAME}}` where LIVE has `Rachel` should report PASS on both — each version is correct for what it is.
+
+**What IS a bug:**
+- LIVE contains any `{{...}}` placeholder that should have been replaced (Check 6)
+- REPO contains any real personal value where a placeholder should be (Check 6c)
+- Either version has structural divergence: missing files, wrong agent/skill counts, stale skill names (Checks 1–5, 11–15)
+- Logic or behavioral rules in a skill differ between versions beyond expected personalisation (drift that isn't placeholder-substitution)
+
+**Checks that apply to both versions:** 1–5, 8–15, 16–29
+**Checks that apply to LIVE only:** 6, 6b, 7
+**Checks that apply to REPO only:** 6c
+
+---
+
 ## Check Procedure
 
 Run ALL checks in order. Never skip. Report PASS or FAIL per check.
@@ -123,6 +152,20 @@ Verify the following files exist in `LIVE/references/`:
 - `rachel-cheyfitz.dotx`
 
 **FAIL condition:** any file missing from LIVE references.
+
+### Check 6c — REPO must not contain real personal values (REPO only)
+
+The REPO is the open-source distribution. It must not contain Rachel's real personal data. Scan REPO for the following strings — none should appear:
+
+```bash
+grep -rn "Rachel\|Cheyfitz\|3465ef1aa63480a283cfdf847cb47404\|CVs jobsearch and hiring\|rachel@cheyfitz" \
+  /Users/rachel/cv-campaign-plugin/ --include="*.md" \
+  | grep -v "CLAUDE.md\|README\|qa-plugin.md"
+```
+
+**FAIL condition:** any real personal name, Notion database ID, real output path, or personal email found in REPO skill or agent files. These must be placeholders in REPO.
+
+**Note:** `Rachel` and `Cheyfitz` may appear in `CLAUDE.md` and `README.md` as documentation — those are excluded above. They must NOT appear in `agents/` or `skills/` files.
 
 ### Check 7 — 02-professional-background.md sync
 
