@@ -89,7 +89,32 @@ Common skill names to expect: `application-intake`, `new-application-steps`, `ap
 
 **FAIL condition:** a referenced skill name has no matching directory.
 
-### Check 6 — References files present in LIVE
+### Check 6 — No unreplaced placeholders in LIVE
+
+Scan all `.md` files in LIVE for any remaining `{{...}}` placeholders that should have been replaced during setup or personalisation. The LIVE version must have real values everywhere the REPO has placeholders.
+
+```bash
+grep -rn "{{" <LIVE> --include="*.md" \
+  | grep -v "README\|career-engine-setup\|CLAUDE.md" \
+  | grep -v "{{USER_ANSWER_\|{{USER_EMAIL\|{{USER_PHONE\|{{USER_LINKEDIN\|{{USER_WEBSITE\|{{USER_LOCATION\|{{USER_CITIZENSHIP\|{{USER_CITY\|{{USER_FUNCTION\|{{USER_FULL_NAME\|{{USER_DOTX\|{{CV_TEMPLATE"
+```
+
+The excluded patterns are intentional: `career-engine-setup` and `README` contain instructional text about what placeholders mean (correct), `{{USER_ANSWER_*}}` is a fill-in-the-blank pattern used in `02-professional-background.md` (correct), and personal-info contact placeholders are only filled during initial user setup of a fresh install.
+
+**FAIL condition:** any `{{...}}` placeholder found outside the excluded files/patterns. Every hit is a value that must be replaced before the pipeline can run.
+
+**Note for this installation:** the following real values are correct for LIVE and must NOT appear as placeholders:
+- `NOTION_DATABASE_ID` → `3465ef1aa63480a283cfdf847cb47404`
+- `OUTPUT_FOLDER` → `/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring`
+- `USER_FIRST_NAME` → `Rachel`
+- `USER_LAST_NAME` → `Cheyfitz`
+- `USER_COUNTRY` → `Israel`
+- `USER_PROFESSION` → `marketing`
+- `WORD_TEMPLATES_PATH` → `/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized`
+
+---
+
+### Check 6b — References files present in LIVE
 
 Verify the following files exist in `LIVE/references/`:
 - `01-writing-rules.md`
