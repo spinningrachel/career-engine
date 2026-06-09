@@ -200,9 +200,15 @@ Run this before and during writing the opener. It is not a post-draft check — 
 2. Identify the substance: what angle did {{USER_FIRST_NAME}} take? What specific reactions, comparisons, or ideas did she provide? What is she actually saying she wants from this role?
 3. Your opener must express that angle and those ideas — not a different framing you derived from reading the JD, and not a generic opener that could fit any application.
 4. **Why I Want This Role is raw material — not a draft paragraph.** It is notes: first-person, often unpolished, written to herself. Your job is to write a paragraph from it, not to copy it. Extract the angle, the specific reaction, the thing she's saying — then write a letter paragraph that expresses that. The paragraph should sound like a letter, not like her notes.
-5. Preserve her specific content: the comparisons she drew, the aspects she named, the reactions she expressed. Do not invent new reactions she didn't write. Do not replace her substance with analysis of the JD. But do write it — craft sentences, create flow, ensure it reads as a coherent opening paragraph.
+5. Preserve her specific content AND her specific language. The comparisons she drew, the aspects she named, the reactions she expressed — and the words she used to express them. Where her phrasing can function as letter language, carry it forward. Do not replace her vocabulary with polished alternatives. Do not invent new reactions she didn't write. Do not replace her substance with analysis of the JD. Do write it — craft sentences, create flow, ensure it reads as a coherent opening paragraph — but shape the structure, not the words.
 
-**The failure mode this prevents:** Transcribing Why I Want This Role nearly verbatim into the opener. Her notes are not a paragraph. If the opener reads like it was copied from her field rather than written as a letter, it will sound abrupt, unstructured, and out of context. Read the notes. Understand what she's saying. Write a paragraph that says it well.
+**The balance:** shape the structure; preserve the language. Notes become a paragraph through connectors, sequence, and flow — not by replacing her words with generic professional vocabulary.
+
+**Failure mode A — verbatim paste:** Transcribing Why I Want This Role nearly verbatim into the opener. Her notes are not a paragraph. If the opener reads like it was copied from her field rather than written as a letter, it will sound abrupt, unstructured, and out of context.
+
+**Failure mode B — full rewrite:** Extracting only the topic or angle from her notes and then writing entirely fresh sentences in polished professional language that removes all traces of how she actually said it. The result sounds well-crafted but carries none of her voice. This is not a better outcome than failure mode A — it is the same failure in the opposite direction.
+
+The fix is the same in both cases: read her notes, understand what she's saying AND how she's saying it, then write a paragraph that says it well in her words.
 
 **After writing the opening sentence:**
 Write the first sentence of the opener. Stop. Read it against the delivered letters from the Voice Gate. Ask: does this sentence sound like it belongs in those letters — same register, same directness, same rhythm? If not, rewrite it. Only when the first sentence sounds like it belongs in those letters: continue drafting the rest of the letter.

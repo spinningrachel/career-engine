@@ -27,7 +27,7 @@ Called by the applications-orchestrator after the coach, CV writer, and gatekeep
 - `Role summary` — compressed JD proxy: role context, key requirements, self-characterization section verbatim if present. Use as the JD reference throughout.
 - `Relationship type` — Full time / Part time / Temporary / Fractional
 - `Keywords` — for CV coherence checking only; do not drive letter structure
-- `Why I Want This Role` — {{USER_FIRST_NAME}}'s written motivation for this role; both content and tone signal
+- `Why I Want This Role` — {{USER_FIRST_NAME}}'s written motivation for this role; both content AND language signal. Her specific words and phrasings are raw material to carry forward, not just the topic or angle. See Input Integration Rules and Opener Execution Protocol in the skill.
 
 **From Notion (page body):**
 - Page body content — {{USER_FIRST_NAME}}'s written reaction to the role; treat as a voice sample, not a draft
