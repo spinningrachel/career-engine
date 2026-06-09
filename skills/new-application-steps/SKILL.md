@@ -229,6 +229,8 @@ This step is non-blocking — if the humanizer returns no changes, proceed norma
 
 ## Step 6 — Produce DOCX
 
+**Before executing this step:** confirm `application-files-export` is loaded. If it is not already in context, load it now — read `skills/application-files-export/SKILL.md` before proceeding. Do not execute Step 6 without it.
+
 Both the CV and the cover letter are now final markdown files saved to `/tmp/`. Convert both to `.docx` using pandoc with the `.dotx` reference templates. Run bash directly — no agent spawn needed.
 
 Follow the `application-files-export` skill's Step 6 production protocol exactly — it is the single authoritative source for pandoc commands, script paths, subtitle update, and verification. Do not substitute your own abbreviated steps. Both files must exist and be nonzero in the output folder before proceeding to Step 7.

@@ -101,7 +101,7 @@ For each matching entry, capture the full row payload including:
 - Every other property set on the row (notes, tags, source, and any existing priority value) — pass these through verbatim; do not interpret them yet
 - In orchestrator mode only: the pipeline {{USER_FIRST_NAME}} is running (New Applications) — from her chat command, not from a Notion property. Default is `New Applications` unless {{USER_FIRST_NAME}} specifies otherwise. Not applicable in standalone intake mode.
 
-Report the count to {{USER_FIRST_NAME}}: "Found N roles in Hold status. Sending to the employment coach." If the count is 0, stop and report that. Do not wait for a response — proceed immediately to the next step.
+Report the count to {{USER_FIRST_NAME}}: "Found N roles in Hold status. Sending to the employment coach." If the count is 0, stop and report that. If the query call returns a tool error or an unparseable response rather than a result array, stop and report the error to {{USER_FIRST_NAME}} — do not treat it as zero results. Do not wait for a response — proceed immediately to the next step.
 
 ## Step 0.5 — Prepare JD content for the coach
 
@@ -161,7 +161,9 @@ All roles not selected are deferred. Proceed immediately to Step 0.8.
 
 ## Step 0.8 — Employment coach
 
-Before spawning, check each role in the queue: a role is `coach-complete` only if **all eight** of the following fields are populated — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, and `Landscape`. Partial population (any field missing) is not coach-complete and the role must be sent to the coach. `Gap handling` and `Landscape` are always required — the coach must populate both for every role, even if only to confirm no material gaps or no new landscape intelligence exists.
+**Pre-coach filter — run before any coach-complete check:** Remove any role marked `needs-manual` from the coach queue. A role with no usable JD content cannot be meaningfully analysed by the coach. Log the removal in the revision log: "[Company] — [Position]: removed from coach queue, JD content unavailable (needs-manual). Resolve manually then re-run intake." Do not send a `needs-manual` role to the coach under any circumstances.
+
+Before spawning, check each remaining role in the queue: a role is `coach-complete` only if **all eight** of the following fields are populated — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, and `Landscape`. Partial population (any field missing) is not coach-complete and the role must be sent to the coach. `Gap handling` and `Landscape` are always required — the coach must populate both for every role, even if only to confirm no material gaps or no new landscape intelligence exists.
 
 - **All roles are `coach-complete`:** skip the coach spawn entirely. Proceed directly to Step 0.9 using existing values.
 - **Any role has one or more fields missing:** spawn the coach with every role that is not fully complete. Carry existing values forward for coach-complete roles only.

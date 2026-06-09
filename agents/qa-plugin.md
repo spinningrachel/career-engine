@@ -260,6 +260,110 @@ grep -c "R-5" <location>/CLAUDE.md
 
 ---
 
+## Pipeline logic simulation
+
+These checks go beyond file existence and rule presence. For each pipeline skill, you read every step in order and reason about what an agent would actually do — as if you were about to execute it yourself. The goal is to catch failure points before they occur in a live run.
+
+**This is not a grep check.** You must read the full skill and reason through it. It is expensive. It is required.
+
+For each finding, report: the step reference, the failure type (from the list below), the exact quote that triggers it, and a specific fix recommendation.
+
+**Failure types:**
+
+| Type | Name | Description |
+|---|---|---|
+| F1 | **Input dependency gap** | A step requires input, context, or a property not established by any prior step |
+| F2 | **Ambiguous completion** | The step has no clear "done" condition — an agent could finish early, loop indefinitely, or not know when to proceed |
+| F3 | **Missing error path** | A step can fail (network call, empty result, missing property, tool error) with no defined fallback or recovery |
+| F4 | **Mandatory reads as optional** | Phrasing like "you may," "if available," "where possible," or "consider" on something that must be non-negotiable |
+| F5 | **Cross-step contradiction** | Step N asserts X; step M earlier (or a rule in the same file) asserts not-X |
+| F6 | **Tool unavailable at this stage** | A step calls for a tool or capability the agent at this pipeline stage does not have |
+| F7 | **Behavioral drift risk** | An instruction that — based on how agents behave in practice — is likely to be misread, skipped, or partially executed. Advisory, not FAIL. |
+
+**FAIL condition:** any finding of type F1–F6. Type F7 is advisory — report it, do not FAIL on it.
+
+### Check 23 — Intake pipeline logic review
+
+Read `skills/application-intake/SKILL.md` from Step −1 through Step 0.9d. Walk every step in order. Apply all seven failure type checks to each step. Report every finding.
+
+Pay particular attention to:
+- Step 0b: does the notionApi query path have a defined fallback if the query returns zero results vs returns an error?
+- Step 0.5: is the Indeed fallback path unambiguous — would an agent know exactly when to invoke it vs proceed?
+- Step 0.8: is the coach-complete definition exhaustive — could an agent disagree on whether a role is coach-complete?
+- Step 0.9a: is the "write only to empty properties" rule checkable by the agent, or does it require a prior read step that isn't explicitly specified?
+
+### Check 24 — New application steps logic review
+
+Read `skills/new-application-steps/SKILL.md` from Step 1 through the final step. Walk every step in order. Apply all seven failure type checks.
+
+Pay particular attention to:
+- Step sequencing: does each step's output cleanly feed the next step's required input?
+- Gatekeeper loops: are the loop caps and fallback conditions unambiguous?
+- DOCX export: does the export step have all inputs it needs, or does it depend on context that may have been lost across subagent boundaries?
+- Notion writeback: are property names verified against the schema before writing, or assumed?
+
+### Check 25 — Edit pipeline logic review
+
+Read `skills/application-edit/SKILL.md` from Preflight through Step E10. Walk every step in order. Apply all seven failure type checks.
+
+Pay particular attention to:
+- Edit type gate: does it truly block all pipeline work for a role, or does any step proceed before the gate fires?
+- JD content path (Step E0.5): if JD Body is empty AND the URL fetch fails, is the role definitively dropped or does it silently proceed with no JD?
+- Quality comparison gates (E3.25, E7.25): are the pass/fail criteria specific enough that an agent would reach the same verdict consistently?
+- State file interaction: is crash recovery unambiguous — could an agent re-process a role that was already completed?
+
+### Check 26 — Orchestrator logic review
+
+Read `skills/applications-orchestrator/SKILL.md`. Walk every step. Apply all seven failure type checks.
+
+Pay particular attention to:
+- Queue selection logic: is the priority ordering unambiguous when two roles share the same priority value?
+- Role routing: is the handoff to intake and new-application-steps clean — no context lost between orchestrator and sub-pipeline?
+- Error propagation: if one role fails mid-pipeline, does the orchestrator continue correctly or does it risk aborting the batch?
+
+---
+
+## Trace simulation
+
+This is the closest achievable equivalent to a sandboxed execution. You cannot call real tools, but you can reason through what would happen step-by-step with synthetic data — and that reasoning will surface instruction gaps that grep and logic review miss.
+
+**How to run a trace:**
+
+Use this synthetic role for the intake trace:
+- Company: TestCorp
+- Position: Head of Marketing
+- Job URL: `https://il.indeed.com/viewjob?jk=abc123redirect`
+- JD Body: empty
+- Status: Hold
+- Edit type: (not set)
+- All coach properties: empty
+
+Narrate what you (the QA agent) would do at each step if you received this role in the intake pipeline. At each step, state: what action you take, what you expect the result to be, and whether the instructions give you enough information to proceed without ambiguity. When you hit a gap — a step where you would pause, guess, or take a path not explicitly instructed — stop and flag it.
+
+Use this synthetic role for the edit trace:
+- Same role as above, but Status: Needs editing, Edit type: (not set)
+- Run through the edit pipeline preflight and Step E0
+
+### Check 27 — Intake trace (synthetic data)
+
+Run the intake trace with the synthetic role above. Report every step where you would:
+- Pause or be uncertain what to do next
+- Make an assumption not explicitly authorized by the instructions
+- Produce an output that doesn't match what the next step expects
+- Skip a step because the instructions could be read as conditional when they are mandatory
+
+### Check 28 — Edit trace (synthetic data, missing Edit type)
+
+Run the edit trace with Edit type unset. Verify that the pipeline hard-stops at the Edit type gate and does not proceed to spawn any subagent. Report whether the instructions are unambiguous enough that you stop immediately, or whether there is any reading of the instructions that would let you continue.
+
+---
+
+## Sandbox note
+
+A full sandbox — real mock Notion API, real mock MCP tools, real file path simulation — would catch more than the trace simulation above. It is not implemented because it requires mock infrastructure for every external dependency (Notion, Indeed connector, file system, pandoc). The trace simulation gets approximately 70% of the benefit with none of that overhead. When the pipeline has stabilized and live run failures have dropped significantly, consider building out full mock infrastructure. Until then, the trace simulation plus logic review is the highest-value investment.
+
+---
+
 ## Output Format
 
 ```
@@ -289,8 +393,10 @@ X checks passed. Y checks failed.
 
 ## Scope note
 
-This agent checks two categories:
+This agent checks three categories:
 
 **Structural/referential integrity (Checks 1–15):** file existence, cross-version sync, stale references, plugin.json validity. As new skills and agents are added, Checks 11–14 will evolve. Note any skills/agents that cannot be categorized rather than hard-failing on unknown additions.
 
-**Behavioral rule presence (Checks 16–22):** verifies that key rules confirmed through live runs are actually written in the correct files. These are content/grep checks — not runtime verification. They confirm the rule exists and is in place; they cannot confirm whether a live agent followed it. As new behavioral rules are added to the plugin, a new check must be added here in the same session.
+**Behavioral rule presence (Checks 16–22):** verifies that key rules confirmed through live runs are actually written in the correct files. These are content/grep checks. They confirm the rule exists and is in place; they cannot confirm whether a live agent followed it. As new behavioral rules are added to the plugin, a new check must be added here in the same session.
+
+**Pipeline logic simulation and trace (Checks 23–28):** reads each pipeline skill step-by-step and reasons about what an agent would actually do — flagging input dependency gaps, ambiguous completion conditions, missing error paths, mandatory instructions that read as optional, cross-step contradictions, and tool availability mismatches. Checks 27–28 are trace simulations using synthetic data: narrated step-by-step walkthroughs that surface instruction gaps before they cause live failures. These checks are expensive — they require reading full skill files and doing qualitative reasoning, not just grepping. They are still required.
