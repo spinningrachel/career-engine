@@ -177,6 +177,89 @@ Verify `.claude-plugin/plugin.json` exists in both REPO and LIVE. Read and valid
 
 ---
 
+## Behavioral rule presence checks
+
+These checks verify that key rules confirmed in live runs are actually present in the correct files. They are content checks — grep for specific strings. Run on both REPO and LIVE.
+
+**Rule: when a new behavioral rule is added to the plugin (e.g. from a bug fix or user feedback session), add a corresponding presence check here before closing the session.**
+
+### Check 16 — Humanizer Final Gate is explicit in agent procedure
+
+In `agents/cover-letter-humanizer.md`: verify the file contains "Final Gate".
+
+```bash
+grep -c "Final Gate" <location>/agents/cover-letter-humanizer.md
+```
+
+**FAIL condition:** string not found (count = 0).
+
+### Check 17 — Edit type hard gate present in application-edit skill
+
+In `skills/application-edit/SKILL.md`: verify the file contains "Edit type is mandatory".
+
+```bash
+grep -c "Edit type is mandatory" <location>/skills/application-edit/SKILL.md
+```
+
+**FAIL condition:** string not found.
+
+### Check 18 — Why I Want This Role voice-preservation rule present (both failure modes)
+
+In `skills/cover-letter/SKILL.md`: verify the file contains both "Failure mode A" and "Failure mode B".
+
+```bash
+grep -c "Failure mode A" <location>/skills/cover-letter/SKILL.md
+grep -c "Failure mode B" <location>/skills/cover-letter/SKILL.md
+```
+
+**FAIL condition:** either string not found.
+
+### Check 19 — Indeed connector fallback present in intake skill
+
+In `skills/application-intake/SKILL.md`: verify the file contains "indeed.com" and "search_jobs".
+
+```bash
+grep -c "indeed.com" <location>/skills/application-intake/SKILL.md
+grep -c "search_jobs" <location>/skills/application-intake/SKILL.md
+```
+
+**FAIL condition:** either string not found.
+
+### Check 20 — Notion view creation prohibition present in intake skill
+
+In `skills/application-intake/SKILL.md`: verify the file contains "create-database-view".
+
+```bash
+grep -c "create-database-view" <location>/skills/application-intake/SKILL.md
+```
+
+**FAIL condition:** string not found.
+
+### Check 21 — notionApi query required (not notion-query-database-view) present in intake skill
+
+In `skills/application-intake/SKILL.md`: verify the file contains "notion-query-database-view" (the prohibition names the banned tool) AND "API-query-data-source" (the required replacement).
+
+```bash
+grep -c "notion-query-database-view" <location>/skills/application-intake/SKILL.md
+grep -c "API-query-data-source" <location>/skills/application-intake/SKILL.md
+```
+
+**FAIL condition:** either string not found.
+
+### Check 22 — Known regression checks present in CLAUDE.md
+
+In `CLAUDE.md` (both REPO and LIVE): verify the file contains "Known regression checks" and at least "R-1" through "R-5".
+
+```bash
+grep -c "Known regression checks" <location>/CLAUDE.md
+grep -c "R-1" <location>/CLAUDE.md
+grep -c "R-5" <location>/CLAUDE.md
+```
+
+**FAIL condition:** any string not found in either file.
+
+---
+
 ## Output Format
 
 ```
@@ -206,4 +289,8 @@ X checks passed. Y checks failed.
 
 ## Scope note
 
-This agent checks structural and referential integrity only — not content quality or pipeline logic. As new skills and agents are added to the plugin, Checks 11–14 will evolve. The agent should note any skills/agents it cannot categorize rather than hard-failing on unknown additions.
+This agent checks two categories:
+
+**Structural/referential integrity (Checks 1–15):** file existence, cross-version sync, stale references, plugin.json validity. As new skills and agents are added, Checks 11–14 will evolve. Note any skills/agents that cannot be categorized rather than hard-failing on unknown additions.
+
+**Behavioral rule presence (Checks 16–22):** verifies that key rules confirmed through live runs are actually written in the correct files. These are content/grep checks — not runtime verification. They confirm the rule exists and is in place; they cannot confirm whether a live agent followed it. As new behavioral rules are added to the plugin, a new check must be added here in the same session.
