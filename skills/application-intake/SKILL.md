@@ -17,6 +17,10 @@ description: >
 
 This skill covers Steps 0 through 0.9 of the cv-campaign pipeline. All of these steps run before any per-role CV work begins. The goal of this pipeline is to give the employment coach complete information — full JD data for every role — before it makes any prioritization or writing decisions.
 
+**Before any step:** Read `${CLAUDE_PLUGIN_ROOT}/references/01-writing-rules.md`. This file contains the fabrication rule and attribution constraints enforced at Step 0.8.5. It must be in context before the gatekeeper runs — even when this skill runs in standalone mode.
+
+---
+
 ## Step −1 — Gap handling mode
 
 Read `gap_handling` from `.claude/settings.json`. Set `gap_handling_mode` as follows:

@@ -88,12 +88,11 @@ Write answers into `01-writing-rules.md` Section 8. Write `{{USER_FIRST_NAME}}`,
 Ask:
 
 > "What language(s) do your applications need to be in?
-> (a) English only
-> (b) Hebrew + English — bilingual; English is your default
-> (c) Hebrew only — Hebrew is your default
-> (d) Other — specify your default language and second language (or 'none' if single-language)"
-
-Then ask: "What is your **default** language — the language you write in naturally and that the pipeline should produce first?"
+> (a) One language only — all applications in the same language
+> (b) Two languages — some roles may need outputs in a second language (e.g., bilingual markets, international applications)
+>
+> If (a): what is your primary application language? (e.g., English, French, German, Spanish — or whatever you write in naturally)
+> If (b): what is your primary language, and what is your second language?"
 
 Based on their answers:
 
@@ -101,13 +100,13 @@ Based on their answers:
 
 2. Write `{{USER_DEFAULT_LANGUAGE}}` and `{{USER_SECOND_LANGUAGE}}` into `agents/localization.md` and `skills/localization/SKILL.md` (replacing placeholders).
 
-3. **If Hebrew is one of their languages:**
-   > ⚠️ **RTL template required.** Hebrew text in a left-to-right Word template will render incorrectly — characters appear in the wrong order and alignment breaks. You will need a separate `.dotx` template configured for right-to-left layout before running the pipeline for Hebrew-output roles. See `skills/application-files-export/SKILL.md` for template setup instructions.
+3. **If either language is right-to-left (RTL)** — this includes Hebrew, Arabic, Persian/Farsi, Urdu, and others:
+   > ⚠️ **RTL template required.** RTL text in a left-to-right Word template will render incorrectly — characters appear in the wrong order and alignment breaks. You will need a separate `.dotx` template configured for right-to-left layout before running the pipeline for RTL-language roles. See `skills/application-files-export/SKILL.md` for template setup instructions.
 
 4. **Database reminder:** Tell the user:
    > "Add all languages you configured to the **Languages** column in your Notion (or tracking) database for each role. The pipeline reads this column to decide whether to run localization. Use the exact values you configured: `{{USER_DEFAULT_LANGUAGE}}`, `{{USER_SECOND_LANGUAGE}}` (or both). A role with Languages = `{{USER_DEFAULT_LANGUAGE}}` only gets one set of outputs. A role with Languages = `{{USER_DEFAULT_LANGUAGE}}, {{USER_SECOND_LANGUAGE}}` gets both."
 
-5. **If default language is not English:** update `skills/localization/SKILL.md` per the setup instruction at the bottom of its Opening section — rewrite the Default Language column to reflect the user's default language. See that skill for the exact algorithm.
+5. **If the user has a second language:** update `skills/localization/SKILL.md` per the setup instruction at the bottom of its Opening section — confirm the Default Language and Second Language columns reflect the user's configured languages. See that skill for the exact algorithm.
 
 ---
 
@@ -338,6 +337,8 @@ Company,Position,Job URL,Status,Priority,JD Body,Why I Want This Role,Page Body,
 
 4. Provide the following prompt for them to run in a Google Sheets agent or Claude to set up data validation on the select columns:
 
+Before giving this prompt to the user, substitute `{{USER_DEFAULT_LANGUAGE}}` and `{{USER_SECOND_LANGUAGE}}` with the actual values configured in Phase 1. If the user is single-language, omit `{{USER_SECOND_LANGUAGE}}` from the Languages row entirely.
+
 ```
 Set up data validation (dropdown lists) on the following columns in my Google Sheet named "cv-campaign-tracker":
 
@@ -346,7 +347,8 @@ Set up data validation (dropdown lists) on the following columns in my Google Sh
 - Column "Role Type": allow multiple selections from: Builder, Scaler, Specialist, Leader
 - Column "Relationship type": allow only these exact values: Full time, Part time, Temporary, Fractional/Consulting/Freelance
 - Column "Manager role confirmed": allow only these exact values: Yes, No; this is only a hypothesis
-- Column "Languages": allow multiple selections from: English, Hebrew
+- Column "Languages": allow multiple selections from: {{USER_DEFAULT_LANGUAGE}}, {{USER_SECOND_LANGUAGE}}
+  (If single-language, allow only: {{USER_DEFAULT_LANGUAGE}})
 - Column "Edit type": allow only these exact values: CV, Letter, Both
 
 These values must match exactly — they are hard-coded in the pipeline that reads this sheet.
@@ -377,7 +379,8 @@ Select column values (must match exactly):
 - Role Type (multi-select): Builder | Scaler | Specialist | Leader
 - Relationship type: Full time | Part time | Temporary | Fractional/Consulting/Freelance
 - Manager role confirmed: Yes | No; this is only a hypothesis
-- Languages (multi-select): English | Hebrew
+- Languages (multi-select): {{USER_DEFAULT_LANGUAGE}} | {{USER_SECOND_LANGUAGE}}
+  (If single-language, only: {{USER_DEFAULT_LANGUAGE}})
 - Edit type: CV | Letter | Both
 ```
 
@@ -464,15 +467,16 @@ Confirm: "Phase 6 complete. The pipeline will run without approval prompts."
 
 ## Phase 7 — Remote-compatibility configuration
 
-**Purpose:** The pipeline produces CVs and cover letters. By default, it writes content in the first person and uses phrasing calibrated for direct applications. Some users submit through recruiters, apply to roles where the CV is read without the candidate present, or operate in contexts (international applications, platform submissions, agency placements) where different conventions apply. This phase asks whether remote-compatibility rules are needed and, if so, whether the defaults are appropriate.
+**Purpose:** Some job searches involve geographic friction — applying internationally, working through recruiters, or submitting through platforms with strict formatting rules. This phase configures rules to handle those situations correctly. **Skip this phase entirely if the user is applying only to roles in the country they live in, in one language, submitted directly by themselves.**
 
-Ask: "Does your job search involve any of the following? (You can select more than one, or say none):
+Ask: "Does your job search involve any of the following? Say 'none' to skip this phase entirely.
+
 1. Applications submitted through a recruiter or agency (you won't see the JD before they do)
-2. Roles in a country or market where you're based remotely
-3. Platform submissions (LinkedIn Easy Apply, Workday, Greenhouse) where formatting and length rules differ
+2. Applying to roles in a country or market different from where you're based
+3. Platform submissions (LinkedIn Easy Apply, Workday, Greenhouse) where formatting and length rules differ from a direct application
 4. Applications in a language other than your primary language
 
-If none of these apply, skip this phase."
+If none of these apply, say 'none' and I'll skip to verification."
 
 **If none apply:** confirm and move on. No remote-compatibility rules are needed.
 

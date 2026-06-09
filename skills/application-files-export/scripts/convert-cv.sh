@@ -19,7 +19,7 @@ CV_WITH_FOOTER="/tmp/cv-with-footer-$(basename "${CV_MD}")"
 { cat "${CV_MD}"; echo; cat "${PLUGIN_DIR}/skills/application-files-export/static-cv-footer.md"; } > "${CV_WITH_FOOTER}"
 
 pandoc "${CV_WITH_FOOTER}" \
-  --reference-doc="${PLUGIN_DIR}/references/rachel-cheyfitz.dotx" \
+  --reference-doc="${PLUGIN_DIR}/references/{{USER_DOTX_FILE}}.dotx" \
   -o "${CV_DOCX}"
 
 pandoc "${CL_MD}" \

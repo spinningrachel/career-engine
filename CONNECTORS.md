@@ -22,6 +22,24 @@ Do not hardcode the full absolute path (e.g., `/Users/.../local-agent-mode-sessi
 | File system | Desktop Commander | Yes | MacOS-MCP |
 | Job search | Indeed, Dice, ZipRecruiter | Yes | LinkedIn |
 | Document conversion | pandoc (CLI tool) | n/a — not an MCP server | — |
+| LinkedIn research | stickerdaniel/linkedin-mcp-server | No (user-installed) | — |
+
+### LinkedIn MCP (stickerdaniel/linkedin-mcp-server) — Optional
+
+When configured, the employment-coach agent uses this MCP for company and hiring manager research. Install it separately — it is not bundled with the plugin.
+
+**Install:**
+```bash
+uvx linkedin-scraper-mcp@latest --login
+```
+
+**Configure in Claude Code settings** with server name `linkedin-mcp`. The employment coach will then have access to:
+- `mcp__linkedin-mcp__get_company_profile` — company about page, posts, jobs
+- `mcp__linkedin-mcp__get_company_employees` — employee demographics and profiles
+- `mcp__linkedin-mcp__get_person_profile` — individual profile with experience, education
+- `mcp__linkedin-mcp__search_people` — search by keywords, company, connection degree
+
+The coach falls back to WebSearch if this MCP is not connected.
 
 ## Notion setup
 

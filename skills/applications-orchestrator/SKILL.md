@@ -65,7 +65,7 @@ This rule governs every agent that touches cover letter content:
 
 ## Configuration
 
-**Job Applications database:** Notion database ID `3465ef1aa63480a283cfdf847cb47404`. Source of job descriptions and destination for per-role updates.
+**Job Applications database:** Notion database ID `{{NOTION_DATABASE_ID}}`. Source of job descriptions and destination for per-role updates.
 
 **Output folder:** `{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/`
 

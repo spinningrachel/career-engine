@@ -46,13 +46,56 @@ Draw ONLY from `02-professional-background.md` (Role Facts) and `03-framework.md
 **Anti-fabrication rule:** If the strongest credential you can name is not traceable to a named company and documented outcome in `02-professional-background.md` (Role Facts), do not write it. This rule is absolute.
 
 **7. Company and org dynamics**
-How does this company actually operate beyond what the JD says? **Start by reading the About Us / Team page** — this is mandatory, not a fallback. It frequently names marketing leaders, describes the team structure, and contains culture signals not found in the JD. Then check: founder/leadership LinkedIn tone, company blog, Glassdoor reviews, team size signals. What do they promote vs. what they claim? 2–3 specific, sourced observations — not JD paraphrase. This feeds the strategy's cultural framing and the Landscape.
+How does this company actually operate beyond what the JD says? **Start with the LinkedIn company profile** — `get_company_profile(company_name, sections="posts,jobs")` if the LinkedIn MCP is connected; otherwise start with the About Us / Team page on the company website (this is mandatory, not a fallback). It frequently names marketing leaders, describes the team structure, and contains culture signals not found in the JD. Then check: founder/leadership LinkedIn tone, company blog, Glassdoor reviews, team size signals. What do they promote vs. what they claim? 2–3 specific, sourced observations — not JD paraphrase. This feeds the strategy's cultural framing and the Landscape.
 
 **8. Recruitment criteria**
 What do they actually look for when hiring for this type of role? Check: Glassdoor interview reviews, public hiring posts or LinkedIn content from the hiring manager, patterns across their open roles. Aim for 2–3 specific criteria beyond what the JD states explicitly.
 
 **9. Career path**
 Where does this role typically go? LinkedIn alumni search for this company if possible. For the sector broadly: what's the standard trajectory from this role type and seniority? One or two sentences.
+
+**10. Hiring manager and team research (LinkedIn MCP)**
+
+Only run this step if the LinkedIn MCP is connected. If it is not, skip and note: "LinkedIn MCP not connected — HM research skipped."
+
+1. Identify the hiring manager: check the JD for a named contact, the company's LinkedIn Jobs page via `get_company_profile(company_name, sections="jobs")`, or the company About/Team page.
+2. If a hiring manager is found, run `get_person_profile(linkedin_username, sections="experience,education,posts")`. Extract: current title, tenure at this company, background before this company, any recent posts about hiring priorities or team direction.
+3. Run `get_company_employees(company_name, keywords="[relevant function keyword for the role]")`. Skim demographics — team size, seniority distribution, recent hires.
+4. Produce a 3–5 line Hiring Manager and Team snapshot. Include: HM background relevance, tenure signal (new HM = flux; long-tenure = established culture), any public statements about what they value, team composition signal.
+5. This snapshot feeds directly into the Strategy output and the `Strategy` Notion property.
+
+---
+
+### JD Signal Analysis (Red and Green Flags)
+
+After completing all research dimensions, analyse the JD text itself for non-obvious signals. This is separate from fit/gap analysis — it assesses the quality and health of the opportunity itself.
+
+**Red flag patterns (language signals):**
+- "Wear many hats", "rockstar", "ninja", "self-starter in a fast-paced environment", "work hard play hard" — indicators of unclear scope or burn-out culture
+- "Results-driven" with no metrics anywhere in the JD — performance expectations undefined
+- Constant hiring for the same role type — check if the same role appeared multiple times in 12 months on LinkedIn; if so, flag it
+- No salary range — negotiating leverage gap
+- Vague responsibilities with over-complicated requirements — misaligned expectation vs. actual budget
+- "Family-like atmosphere" — culture warning label
+
+**Green flag patterns:**
+- Essential vs. preferred requirements clearly distinguished
+- Specific measurable goals in the JD ("build X, achieve Y in first 90 days")
+- Transparent hiring process described (number of stages, timeline)
+- Long-tenured employees visible on LinkedIn
+- Hiring manager has been in role 2+ years (stability signal)
+- Company blog or HM posts show substantive thinking about the domain
+
+**Output:** Include a "Signals" block in the research output:
+
+```
+**Signals:**
+- Red: [list any, or "None identified"]
+- Green: [list any, or "None identified"]
+- Net: [Proceed with caution | Neutral | Positive signals]
+```
+
+This feeds into Priority scoring and the Strategy Notion property.
 
 ---
 
@@ -206,6 +249,20 @@ Priority 3: [third screening criterion]
 Each priority is a noun phrase, not a sentence. Name the capability or signal precisely. "PLG execution credibility — activation frameworks, PQL design, in-product lifecycle" is correct. "Someone who can drive growth through product-led strategies" is not.
 
 No {{USER_FIRST_NAME}} references, no credential names, no company names from her background. The cv-writer and letter-writer read her background separately — Strategy tells them what the HM is screening for, not what to write. These three priorities ARE the summary direction: the cv-writer leads with the strongest match to Priority 1, anchors the middle on Priority 2, and closes on Priority 3.
+
+**Strategic framing — GTM lens:**
+
+The best strategies treat the application as a go-to-market problem: {{USER_FIRST_NAME}} is the product, the hiring manager is the buyer, the JD is the RFP. Frame the strategy around three questions:
+
+1. **Why you** — what unique proof makes {{USER_FIRST_NAME}} the credible choice? Not a list of skills — a specific, traceable result.
+2. **Why them** — what specifically about this company, this stage, this team makes this the right move? Business logic, not flattery.
+3. **Why now** — what makes this the right moment for both parties?
+
+These questions anchor the opening of the cover letter and the interview narrative. The cv-writer and letter-writer should receive the answers as strategic inputs, not generic positioning.
+
+**Weighted prioritization model:**
+
+When scoring priority across multiple roles, weight: Company culture and stage fit (40%) + {{USER_FIRST_NAME}}'s documented credential match (40%) + role level and growth trajectory (20%). A role that scores high on culture and credentials but offers a lateral move ranks above a role with a step up but culture misalignment or credential stretch.
 
 ---
 

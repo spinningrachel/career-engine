@@ -101,6 +101,7 @@ pandoc and python-docx are only required if you want formatted DOCX output. The 
 | Notion | Yes (for Notion tracking) | Reads job roles and writes results back |
 | Desktop Commander | Yes | File system operations for output folder management |
 | Indeed, Dice, ZipRecruiter | Recommended | JD fetching and job search; the coach uses these to research roles |
+| LinkedIn (stickerdaniel/linkedin-mcp-server) | Optional | Company profiles, hiring manager research, team mapping; also required for `/career-engine:job-search` and `/career-engine:linkedin-coach` |
 
 ---
 
@@ -546,7 +547,9 @@ When you approve a company, the bullets from that run are written into `02-profe
 
 ### Commands
 
-All pipeline invocations go through the `cv-campaign` command, which routes to the appropriate skill based on flags and chat context.
+The plugin has two groups of commands: pipeline commands that run against your job tracking database, and standalone skills that operate independently of any active job search.
+
+**Pipeline commands** — these run the multi-agent campaign and require Notion (or CSV) to be configured.
 
 | Command | Behavior |
 |---|---|
@@ -559,11 +562,19 @@ All pipeline invocations go through the `cv-campaign` command, which routes to t
 | `/career-engine --write-letter` | Cover letter only, no pipeline |
 | `/career-engine --status` | Read state.json, no agents |
 
+**Standalone skills** — these run independently. No job tracking database required.
+
+| Command | Behavior |
+|---|---|
+| `/career-engine:job-search` | Multi-source job search across LinkedIn and Hacker News Who's Hiring; scores results against your saved preferences; surfaces hiring manager signals. Requires LinkedIn MCP. |
+| `/career-engine:personal-brand` | Build or refresh your positioning using the Why You / Why Them / Why Now framework; produces a positioning statement, audience and channel map, content pillars, and bio library. |
+| `/career-engine:linkedin-coach` | LinkedIn profile audit, content review, content strategy, headline optimization, and video introduction scripting — five modes to choose from. |
+
 ### Agents
 
 Eight agents handle all reasoning and writing. The orchestrator spawns them as subagents — they return text only and do not write files directly.
 
-**employment-coach** — The pipeline's research and prioritization engine. Fetches JDs, researches companies, assigns priorities, and writes strategic properties. Two modes: Pipeline (full analysis + Notion writeback) and Direct coaching (conversational, no writeback). Sole owner of Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, and Gap handling.
+**employment-coach** — The pipeline's research and prioritization engine. Fetches JDs, researches companies (including LinkedIn company profiles, hiring manager profiles, and team composition when the LinkedIn MCP is connected), assigns priorities, and writes strategic properties using a red/green flag methodology that weights GTM fit, funding trajectory, and team signals. Two modes: Pipeline (full analysis + Notion writeback) and Direct coaching (conversational, no writeback). Sole owner of Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, and Gap handling.
 
 **cv-writer** — Writes and revises CVs. Two options: Draft and Revision. CV structure is driven by Role Type. The fabrication rule is absolute — claims that can't be grounded in documented experience are left out, not invented.
 
@@ -594,8 +605,11 @@ Skills contain the detailed procedures each agent follows. They are loaded by th
 | `cover-letter` | letter-writer | Voice rules, structure, use-case patterns, revision pass |
 | `cv-writing` | cv-writer | Bullet formula, ATS rules, forbidden phrases |
 | `gatekeeper-checks` | gatekeeper | Full checklist for both CV and cover letter options |
-| `employment-coach` | employment-coach | Research procedure, priority scoring, strategic property definitions |
+| `employment-coach` | employment-coach | Research procedure, priority scoring, strategic property definitions, LinkedIn research protocol, red/green flag methodology |
 | `career-engine-setup` | Setup command | Onboarding phases 1–6 |
+| `job-search` | `career-engine:job-search` command | Multi-source job search, preference management, scoring and ranking |
+| `personal-brand` | `career-engine:personal-brand` command | Why You / Why Them / Why Now positioning, bio library, content pillars |
+| `linkedin-coach` | `career-engine:linkedin-coach` command | Profile audit, content review, content strategy, headline optimization |
 
 ---
 

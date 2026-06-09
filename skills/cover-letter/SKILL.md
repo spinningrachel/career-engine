@@ -179,10 +179,10 @@ How it achieves that varies. Delivered letters have used:
 - A genuine emotional reaction + the credential that earns it ("I nearly screamed when I saw this role. Because I was just doing it at [Company]...")
 - An existing relationship ("I've worked for [Company] already when I was freelancing...")
 - A personal tension that explains the application ("I daydream about consumer campaigns. I've spent 15 years in B2B...")
-- A value claim that names their mandate and pivots to Rachel's answer ("You're looking for a strategic builder — that's the work I do.")
+- A value claim that names their mandate and pivots to {{USER_FIRST_NAME}}'s answer ("You're looking for a strategic builder — that's the work I do.")
 - A warm connection that sets human context first ("Thanks for the WhatsApp chat...")
 
-There is no required sentence count and no required sequence. The only test: finish reading the opener and ask — does the reader now know why Rachel, why here, why now? If not, rewrite it.
+There is no required sentence count and no required sequence. The only test: finish reading the opener and ask — does the reader now know why {{USER_FIRST_NAME}}, why here, why now? If not, rewrite it.
 
 **The opener is never:**
 - Generic enthusiasm that could apply to any company ("I am excited to apply")
@@ -204,11 +204,21 @@ Run this before and during writing the opener. It is not a post-draft check — 
 
 **The balance:** shape the structure; preserve the language. Notes become a paragraph through connectors, sequence, and flow — not by replacing her words with generic professional vocabulary.
 
+**Hard stop — invention is fabrication. No exceptions.**
+
+Step 4 says "write a paragraph from it." That means: from what she actually wrote — the words, phrases, reactions, and comparisons that appear in Why I Want This Role or the page body. It does not mean: use her notes as a prompt and construct a paragraph using your own reasoning about what she would say or feel.
+
+**Sparse notes are not a gap to fill. They are a signal to stop.** If Why I Want This Role is sparse — one sentence, a few words, no specific angle or reaction — write `[{{USER_FIRST_NAME}} TO FILL IN]` for the opener. Do not expand sparse notes into a full paragraph. The notes either contain enough to write from, or they do not. If they do not: placeholder, not invention.
+
+**The traceability test — run before finalising the opener:** Can you point to a specific word, phrase, or reaction in Why I Want This Role or the page body that every sentence of the opener is built from? If you cannot trace a sentence directly back to something she wrote, that sentence is invented. Delete it, or replace the opener with `[{{USER_FIRST_NAME}} TO FILL IN]`.
+
 **Failure mode A — verbatim paste:** Transcribing Why I Want This Role nearly verbatim into the opener. Her notes are not a paragraph. If the opener reads like it was copied from her field rather than written as a letter, it will sound abrupt, unstructured, and out of context.
 
 **Failure mode B — full rewrite:** Extracting only the topic or angle from her notes and then writing entirely fresh sentences in polished professional language that removes all traces of how she actually said it. The result sounds well-crafted but carries none of her voice. This is not a better outcome than failure mode A — it is the same failure in the opposite direction.
 
-The fix is the same in both cases: read her notes, understand what she's saying AND how she's saying it, then write a paragraph that says it well in her words.
+**Failure mode C — expansion of sparse notes:** Why I Want This Role contains one sentence or a few words. The opener is a full paragraph expressing enthusiasm, specific reactions, and personal observations she did not write. This is fabrication. The model treated sparse notes as permission to invent what she would have said. It is not "helping" — it is putting words in her mouth and calling them her voice. The correct output when notes are this sparse is `[{{USER_FIRST_NAME}} TO FILL IN]`.
+
+The fix for A and B: read her notes, understand what she's saying AND how she's saying it, then write a paragraph that says it well in her words. The fix for C: write the placeholder.
 
 **After writing the opening sentence:**
 Write the first sentence of the opener. Stop. Read it against the delivered letters from the Voice Gate. Ask: does this sentence sound like it belongs in those letters — same register, same directness, same rhythm? If not, rewrite it. Only when the first sentence sounds like it belongs in those letters: continue drafting the rest of the letter.
