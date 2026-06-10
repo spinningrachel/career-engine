@@ -65,17 +65,17 @@ Three files in `references/` govern everything every agent produces.
 
 ### How a run works
 
-The plugin has three pipelines. A complete job search uses all three in sequence. For full descriptions of each, see [Pipelines and modes](#pipelines-and-modes) and [Agents and skills](#agents-and-skills).
+The plugin has three application pipelines, plus a sourcing tool for finding new roles. For full descriptions of each, see [Pipelines and modes](#pipelines-and-modes) and [Agents and skills](#agents-and-skills).
 
-**Intake → CV Campaign → CV Edit**
+**Intake → New Application → Application Edit**
 
 1. Add a role to your job tracking database with Status = `Hold`
 2. Run **Intake**: the employment coach researches the company, writes strategic properties to your database, and generates Q&A intake questions tailored to the role
 3. Open the role in your database and answer the Q&A questions in the Page Body field
 4. Change Status to `Interested`
-5. Run **CV Campaign**: the pipeline fetches all `Interested` roles, builds a priority queue of up to five, and routes each one through the full CV and cover letter pipeline — employment coach → cv-writer → gatekeeper → recruiter reviewer → hiring manager reviewer → letter-writer → gatekeeper → DOCX export → writeback
+5. Run **New Application**: the pipeline fetches all `Interested` roles, builds a priority queue of up to five, and routes each one through the full CV and cover letter pipeline — employment coach → cv-writer → gatekeeper → recruiter reviewer → hiring manager reviewer → letter-writer → gatekeeper → DOCX export → writeback
 6. Review your documents. If anything needs improving, change Status to `Needs editing`
-7. Run **CV Edit**: the editing pipeline improves existing outputs without starting from scratch
+7. Run **Application Edit**: the editing pipeline improves existing outputs without starting from scratch
 
 ---
 
@@ -101,7 +101,34 @@ pandoc and python-docx are only required if you want formatted DOCX output. The 
 | Notion | Yes (for Notion tracking) | Reads job roles and writes results back |
 | Desktop Commander | Yes | File system operations for output folder management |
 | Indeed, Dice, ZipRecruiter | Recommended | JD fetching and job search; the coach uses these to research roles |
-| LinkedIn (stickerdaniel/linkedin-mcp-server) | Optional | Company profiles, hiring manager research, team mapping; also required for `/career-engine:job-search` and `/career-engine:linkedin-coach` |
+| LinkedIn (stickerdaniel/linkedin-mcp-server) | Optional | Company profiles, hiring manager research, team mapping; also required for `/career-engine:source-open-roles` and `/career-engine:linkedin-coach` |
+
+**LinkedIn MCP setup (stickerdaniel/linkedin-mcp-server):**
+
+The LinkedIn MCP uses your real logged-in browser session — it controls a Chromium browser in the background while agents run. This has two implications:
+
+1. **Do not use your browser while LinkedIn agents are running.** Concurrent browser sessions can trigger LinkedIn security checks, log you out, or cause tool calls to fail. Leave your computer alone for the duration of any run that uses LinkedIn tools (employment-coach with full research, source-open-roles, linkedin-coach).
+
+2. **Do not use your LinkedIn browser tab.** Even if Chrome is your default browser, navigating to LinkedIn manually while the MCP server is active shares the same session — this can interfere with the agent mid-run.
+
+Install with `uv` (install uv first if needed: `curl -LsSf https://astral.sh/uv/install.sh | sh`):
+
+```bash
+# First-time login — opens a browser window for you to sign in
+uvx linkedin-scraper-mcp@latest --login
+```
+
+Add to your `~/.mcp.json` under `mcpServers`:
+
+```json
+"linkedin-mcp": {
+  "command": "uvx",
+  "args": ["linkedin-scraper-mcp@latest"],
+  "env": { "UV_HTTP_TIMEOUT": "300" }
+}
+```
+
+The server name must be `linkedin-mcp` — the plugin's tool declarations depend on this exact key. After adding it, restart Claude Code and verify the tools appear before running any LinkedIn-dependent pipeline.
 
 ---
 
@@ -328,11 +355,11 @@ The cover letter loop mirrors the CV loop:
 
 **What happens if you skipped Q&A or Intake:**
 
-If you skipped Intake entirely (no company research, no Q&A questions generated), the letter-writer has no strategic properties (Role emphasis, Keywords, Strategy) and no Q&A answers to draw from. It produces a letter based on the JD, your reference files, and general framing — valid, but generic. The letter won't reflect your specific angle on the role or the company-specific research the coach produces. Running Intake before CV Campaign is strongly recommended for any role you genuinely want.
+If you skipped Intake entirely (no company research, no Q&A questions generated), the letter-writer has no strategic properties (Role emphasis, Keywords, Strategy) and no Q&A answers to draw from. It produces a letter based on the JD, your reference files, and general framing — valid, but generic. The letter won't reflect your specific angle on the role or the company-specific research the coach produces. Running Intake before New Application is strongly recommended for any role you genuinely want.
 
-If Intake ran but you didn't answer the Q&A questions in the Notion page body, the letter-writer proceeds without your specific angle for that role. It uses the coach's Strategy field and your reference files, which produces a reasonable letter but one that won't capture what drew you to this specific opportunity. Filling in the Q&A and Page Body fields before running CV Campaign produces noticeably better letters.
+If Intake ran but you didn't answer the Q&A questions in the Notion page body, the letter-writer proceeds without your specific angle for that role. It uses the coach's Strategy field and your reference files, which produces a reasonable letter but one that won't capture what drew you to this specific opportunity. Filling in the Q&A and Page Body fields before running New Application produces noticeably better letters.
 
-To skip the cover letter entirely for a run, say "no letter" in your chat command when triggering CV Campaign.
+To skip the cover letter entirely for a run, say "no letter" in your chat command when triggering New Application.
 
 ### Step 6 — DOCX export
 
@@ -373,7 +400,7 @@ The plugin has three pipelines, each serving a distinct phase of the job search.
 
 The Intake pipeline runs market intelligence on roles you're researching but haven't committed to applying for. It operates on roles with Status = `Hold`, researches each company (competitive landscape, funding, hiring manager, culture signals), writes coach properties to your database, generates Q&A intake questions for each role, and updates Status to `Researched`. No CVs are produced.
 
-**Intake is a mandatory prerequisite for CV Campaign.** The letter-writer needs two inputs that only exist after Intake runs: the strategic properties the coach writes (Role emphasis, Keywords, Strategy, Gap handling) and the Q&A answers you provide in the page body after Intake generates the questions. Without these, the letter-writer falls back to generic framing.
+**Intake is a mandatory prerequisite for New Application.** The letter-writer needs two inputs that only exist after Intake runs: the strategic properties the coach writes (Role emphasis, Keywords, Strategy, Gap handling) and the Q&A answers you provide in the page body after Intake generates the questions. Without these, the letter-writer falls back to generic framing.
 
 Trigger Intake with the coach command or natural language:
 
@@ -382,9 +409,9 @@ Research my Hold roles.
 Run market intelligence.
 ```
 
-### CV Campaign
+### New Application
 
-The CV Campaign pipeline produces tailored CVs and cover letters. It runs against roles with Status = `Interested`, processes up to five per run in priority order, and writes results back to your database when each role completes. To skip the cover letter for a specific run, say "no letter" in your chat command.
+The New Application pipeline produces tailored CVs and cover letters. It runs against roles with Status = `Interested`, processes up to five per run in priority order, and writes results back to your database when each role completes. To skip the cover letter for a specific run, say "no letter" in your chat command.
 
 The `--now` flag runs the pipeline against a single role without a job tracking database. Pass a URL or paste a JD directly. No database writeback occurs.
 
@@ -392,9 +419,9 @@ The `--now` flag runs the pipeline against a single role without a job tracking 
 /career-engine --now https://jobs.example.com/head-of-marketing
 ```
 
-### CV Edit
+### Application Edit
 
-The CV Edit pipeline improves existing outputs for roles you've flagged for revision. It never starts from scratch — it reads the existing CV text, cover letter text, and coach properties from the database row, runs the employment coach to verify and update its strategic properties, then routes the role through the appropriate writing agents to improve what's there.
+The Application Edit pipeline improves existing outputs for roles you've flagged for revision. It never starts from scratch — it reads the existing CV text, cover letter text, and coach properties from the database row, runs the employment coach to verify and update its strategic properties, then routes the role through the appropriate writing agents to improve what's there.
 
 Trigger it with the `--edit` flag or by saying "edit my CVs" in chat. The pipeline processes all roles with Status = `Needs editing`.
 
@@ -410,9 +437,9 @@ Status determines which pipeline processes a role and encodes where it sits in t
 |---|---|---|---|
 | `Hold` | You | Intake | Company research; Q&A questions generated; coach properties written; Status → `Researched` |
 | `Researched` | Intake | — | Awaiting your Q&A answers and decision to apply |
-| `Interested` | You | CV Campaign | Full CV + cover letter pipeline; Status → `CV Ready for Review` |
-| `CV Ready for Review` | CV Campaign | — | Awaiting your review of the output |
-| `Needs editing` | You | CV Edit | Existing outputs improved; Status → `CV Ready for Review` |
+| `Interested` | You | New Application | Full CV + cover letter pipeline; Status → `CV Ready for Review` |
+| `CV Ready for Review` | New Application | — | Awaiting your review of the output |
+| `Needs editing` | You | Application Edit | Existing outputs improved; Status → `CV Ready for Review` |
 | `Applied` | You | — | Complete |
 
 ---
@@ -486,7 +513,7 @@ The `Note` field belongs to you. Agents must **never** write to this field to su
 
 ## Output files
 
-All files from a run land in a campaign folder named by date: `<output_folder>/cv-campaign-<YYYY-MM-DD>/`. Each role gets its own subdirectory named after the company in kebab-case.
+All files from a run land in a campaign folder named by date: `<output_folder>/applications-<YYYY-MM-DD>/`. Each role gets its own subdirectory named after the company in kebab-case.
 
 `<output_folder>` is the path you configure during onboarding (`/career-engine:setup --phase 5`). It can be any local directory — iCloud, Dropbox, a standard folder, or anything else your filesystem allows. The placeholder `{{OUTPUT_FOLDER}}` in plugin files is replaced with your actual path during setup.
 
@@ -566,7 +593,7 @@ The plugin has two groups of commands: pipeline commands that run against your j
 
 | Command | Behavior |
 |---|---|
-| `/career-engine:job-search` | Multi-source job search across LinkedIn and Hacker News Who's Hiring; scores results against your saved preferences; surfaces hiring manager signals. Requires LinkedIn MCP. |
+| `/career-engine:source-open-roles` | Multi-source role sourcing across LinkedIn, remote boards, startup boards, and general job boards. Scores results against your saved preferences, deduplicates against your Notion pipeline, and surfaces hiring manager signals. Six modes: `quick` (LinkedIn only), `remote`, `startup`, `broad`, `ai`, `full`. Optional time range override. Requires LinkedIn MCP for LinkedIn searches. |
 | `/career-engine:personal-brand` | Build or refresh your positioning using the Why You / Why Them / Why Now framework; produces a positioning statement, audience and channel map, content pillars, and bio library. |
 | `/career-engine:linkedin-coach` | LinkedIn profile audit, content review, content strategy, headline optimization, and video introduction scripting — five modes to choose from. |
 
@@ -607,7 +634,7 @@ Skills contain the detailed procedures each agent follows. They are loaded by th
 | `gatekeeper-checks` | gatekeeper | Full checklist for both CV and cover letter options |
 | `employment-coach` | employment-coach | Research procedure, priority scoring, strategic property definitions, LinkedIn research protocol, red/green flag methodology |
 | `career-engine-setup` | Setup command | Onboarding phases 1–6 |
-| `job-search` | `career-engine:job-search` command | Multi-source job search, preference management, scoring and ranking |
+| `source-open-roles` | `career-engine:source-open-roles` command | Multi-source role sourcing, search modes, site catalog, scoring rubric, deduplication rules |
 | `personal-brand` | `career-engine:personal-brand` command | Why You / Why Them / Why Now positioning, bio library, content pillars |
 | `linkedin-coach` | `career-engine:linkedin-coach` command | Profile audit, content review, content strategy, headline optimization |
 
@@ -752,7 +779,7 @@ The run either crashed before completing or the state file write failed. Run `/c
 
 ### Confirmed features — better documentation coming
 
-**Crash recovery and run resumption.** The CV Campaign pipeline writes `state.json` to the output folder after every role completes. If a run crashes or is interrupted, set the affected role's Status back to `Interested` and re-run — the pipeline picks up from where it left off. You can inspect the state file at any time with `/career-engine --status`.
+**Crash recovery and run resumption.** The New Application pipeline writes `state.json` to the output folder after every role completes. If a run crashes or is interrupted, set the affected role's Status back to `Interested` and re-run — the pipeline picks up from where it left off. You can inspect the state file at any time with `/career-engine --status`.
 
 **CV type handling.** The pipeline handles different CV types (specialist, senior, founding hire, leadership, etc.) through the Role Type system. The employment coach assigns a Role Type to every role — `Builder`, `Scaler`, `Specialist`, or `Leader` — and the cv-writer uses it to determine the CV's structure, what sections to include, and how to frame bullets. You don't need to specify a CV type manually. Full Role Type documentation in the job tracking database section.
 

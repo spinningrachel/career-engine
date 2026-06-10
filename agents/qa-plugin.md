@@ -39,18 +39,26 @@ LIVE = `/Users/rachel/.claude/plugins/marketplaces/local-desktop-app-uploads/car
 | What | REPO | LIVE |
 |---|---|---|
 | Purpose | Public open-source distribution | Rachel's live personal installation |
-| Names | `{{USER_FIRST_NAME}}` placeholder | `Rachel` |
-| Output folder | `{{OUTPUT_FOLDER}}` placeholder | Real iCloud path |
-| Notion DB ID | `{{NOTION_DATABASE_ID}}` placeholder | Real database ID |
-| Other placeholders | All `{{...}}` placeholders intact | All `{{...}}` placeholders replaced with real values |
+| First/last name | `{{USER_FIRST_NAME}}`, `{{USER_LAST_NAME}}`, `{{USER_FULL_NAME}}` placeholders | `Rachel`, `Cheyfitz`, `Rachel Cheyfitz` (real values) |
+| Output folder | `{{OUTPUT_FOLDER}}` placeholder | Real iCloud path (see Note for this installation) |
+| Notion DB ID | `{{NOTION_DATABASE_ID}}` placeholder | Real database ID (see Note for this installation) |
+| Country/city | `{{USER_COUNTRY}}`, `{{USER_CITY}}` placeholders | `Israel`, `Tel Aviv` |
+| Language config | `{{USER_DEFAULT_LANGUAGE}}`, `{{USER_SECOND_LANGUAGE}}`, `{{USER_SECOND_LANGUAGE_UPPER}}` placeholders | `English`, `Hebrew`, `HEBREW` |
+| Profession/seniority | `{{USER_PROFESSION}}`, `{{USER_FUNCTION_SENIORITY_HIERARCHY}}` placeholders | `marketing`, full hierarchy string |
+| Word templates path | `{{WORD_TEMPLATES_PATH}}` placeholder | Real path (see Note for this installation) |
+| CV template file | `{{CV_TEMPLATE_FILE}}` placeholder | `rachel-cheyfitz.dotx` |
+| Intentional template syntax | `{{PLACEHOLDER}}` (in linkedin-coach, personal-brand) — literal agent instruction syntax, kept in both versions | Same — `{{PLACEHOLDER}}` is NEVER a setup value; it is a literal instruction telling the agent to write `{{PLACEHOLDER}}` in its output |
+| Localization table fill-ins | `{{COMPANY_1}}`, `{{COMPANY_2}}`, `{{COMPANY_1_HEBREW}}`, `{{COMPANY_2_HEBREW}}` in localization skill — user-fill table templates, kept in both versions | Same — these are user-fill table cells, not setup placeholders |
 | `.dotx` templates in references/ | Absent (personal file, not synced) | `rachel-cheyfitz.dotx` present |
 | `02-professional-background.md` | Generic or omitted personal data | Rachel's real background facts |
-| `CLAUDE.md` | Uses `{{USER_FIRST_NAME}}` in some places | Uses "Rachel" |
+| `CLAUDE.md` and `README.md` | Placeholder-aware documentation | Placeholder-aware documentation |
 
-**Expected differences are not bugs.** A check that looks at both versions and finds REPO has `{{USER_FIRST_NAME}}` where LIVE has `Rachel` should report PASS on both — each version is correct for what it is.
+**Expected differences are not bugs.** REPO having `{{USER_FULL_NAME}}` where LIVE has `Rachel Cheyfitz` is correct. LIVE having `Rachel Cheyfitz` where REPO has `{{USER_FULL_NAME}}` is correct. These are the intended states.
+
+**CRITICAL RULE — Direction is always REPO→LIVE, never the reverse.** The QA agent must NEVER suggest, recommend, or write replacing real personal values in LIVE with `{{...}}` placeholder strings. The direction of substitution is one-way: REPO keeps placeholders, LIVE has real values. If you see `Rachel Cheyfitz` in a LIVE file, that is CORRECT. Do not flag it as a problem. Do not suggest replacing it with `{{USER_FULL_NAME}}`.
 
 **What IS a bug:**
-- LIVE contains any `{{...}}` placeholder that should have been replaced (Check 6)
+- LIVE contains any setup `{{...}}` placeholder that should have been replaced (Check 6)
 - REPO contains any real personal value where a placeholder should be (Check 6c)
 - Either version has structural divergence: missing files, wrong agent/skill counts, stale skill names (Checks 1–5, 11–15)
 - Logic or behavioral rules in a skill differ between versions beyond expected personalisation (drift that isn't placeholder-substitution)
@@ -97,15 +105,15 @@ For each subdirectory in `skills/`, verify it contains either:
 ### Check 4 — No stale skill/command name references
 
 Scan all `.md` files in `agents/`, `skills/`, `CLAUDE.md` for the following banned names:
-- `cv-campaign-export`
-- `cv-campaign-intake`
-- `cv-campaign-role-steps`
-- `cv-campaign-setup`
-- `cv-edit-pipeline`
-- `cv-pipeline-orchestrator`
+- `application-files-export`
+- `application-intake`
+- `new-application-steps`
+- `career-engine-setup`
+- `application-edit`
+- `applications-orchestrator`
 
 ```bash
-grep -rn "cv-campaign-export\|cv-campaign-intake\|cv-campaign-role-steps\|cv-campaign-setup\|cv-edit-pipeline\|cv-pipeline-orchestrator" <location> --include="*.md" | grep -v "agents/qa-plugin.md"
+grep -rn "application-files-export\|application-intake\|new-application-steps\|career-engine-setup\|application-edit\|applications-orchestrator" <location> --include="*.md" | grep -v "agents/qa-plugin.md"
 ```
 
 **FAIL condition:** any occurrence found.
@@ -118,28 +126,59 @@ Common skill names to expect: `application-intake`, `new-application-steps`, `ap
 
 **FAIL condition:** a referenced skill name has no matching directory.
 
-### Check 6 — No unreplaced placeholders in LIVE
+### Check 6 — No unreplaced setup placeholders in LIVE
 
-Scan all `.md` files in LIVE for any remaining `{{...}}` placeholders that should have been replaced during setup or personalisation. The LIVE version must have real values everywhere the REPO has placeholders.
+Scan all `.md` files in LIVE for any remaining `{{...}}` placeholders that should have been replaced during setup or personalisation. The LIVE version must have real values everywhere the REPO has setup placeholders.
 
 ```bash
-grep -rn "{{" <LIVE> --include="*.md" \
-  | grep -v "README\|career-engine-setup\|CLAUDE.md" \
-  | grep -v "{{USER_ANSWER_\|{{USER_EMAIL\|{{USER_PHONE\|{{USER_LINKEDIN\|{{USER_WEBSITE\|{{USER_LOCATION\|{{USER_CITIZENSHIP\|{{USER_CITY\|{{USER_FUNCTION\|{{USER_FULL_NAME\|{{USER_DOTX\|{{CV_TEMPLATE"
+grep -rn "{{" \
+  "/Users/rachel/.claude/plugins/marketplaces/local-desktop-app-uploads/career-engine" \
+  --include="*.md" \
+  | grep -v "/skills/career-engine-setup/" \
+  | grep -v "/README\.md" \
+  | grep -v "/CLAUDE\.md" \
+  | grep -v "/agents/qa-plugin\.md" \
+  | grep -v "/references/02-professional-background\.md" \
+  | grep -v "/references/01-writing-rules\.md" \
+  | grep -v "/references/03-framework\.md" \
+  | grep -v "/references/REFERENCES\.md" \
+  | grep -v "/docs/superpowers/" \
+  | grep -v "{{PLACEHOLDER}}" \
+  | grep -v "{{COMPANY_1}}\|{{COMPANY_2}}\|{{COMPANY_1_HEBREW}}\|{{COMPANY_2_HEBREW}}" \
+  | grep -v "{{USER_ANSWER_"
 ```
 
-The excluded patterns are intentional: `career-engine-setup` and `README` contain instructional text about what placeholders mean (correct), `{{USER_ANSWER_*}}` is a fill-in-the-blank pattern used in `02-professional-background.md` (correct), and personal-info contact placeholders are only filled during initial user setup of a fresh install.
+**What this grep excludes and why:**
+- `career-engine-setup/` — setup instructions that describe what placeholders to fill; correct to keep `{{...}}` here
+- `README.md`, `CLAUDE.md`, `qa-plugin.md` — documentation files; may describe placeholders in prose
+- `references/02-professional-background.md`, `01-writing-rules.md`, `03-framework.md` — personal reference files with their own content; not subject to setup substitution
+- `references/REFERENCES.md` — table of file descriptions; contains the literal text "fill in all `{{...}}` placeholders" as meta-documentation prose, not an actual placeholder
+- `docs/superpowers/` — historical planning documents from past development sessions; not runtime files; may contain `{{...}}` as examples in plan text
+- `{{PLACEHOLDER}}` — **intentional template syntax** in `skills/linkedin-coach/SKILL.md` and `skills/personal-brand/SKILL.md`; this is a literal instruction telling the agent to write `{{PLACEHOLDER}}` in its output when a fact is unconfirmed. It is NOT a setup value. It must remain as `{{PLACEHOLDER}}` in both REPO and LIVE.
+- `{{COMPANY_1}}`, `{{COMPANY_2}}`, `{{COMPANY_1_HEBREW}}`, `{{COMPANY_2_HEBREW}}` — **user-fill table cells** in `skills/localization/SKILL.md`; these are columns in a translation table that the user fills in at runtime. They are not setup values.
+- `{{USER_ANSWER_*}}` — fill-in-the-blank Q&A patterns in reference files; correct to keep in both versions
 
-**FAIL condition:** any `{{...}}` placeholder found outside the excluded files/patterns. Every hit is a value that must be replaced before the pipeline can run.
+**FAIL condition:** any `{{...}}` placeholder found in the grep output above. Every hit is a value that should have been replaced and must be fixed before the pipeline can run correctly.
 
-**Note for this installation:** the following real values are correct for LIVE and must NOT appear as placeholders:
-- `NOTION_DATABASE_ID` → `3465ef1aa63480a283cfdf847cb47404`
-- `OUTPUT_FOLDER` → `/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring`
-- `USER_FIRST_NAME` → `Rachel`
-- `USER_LAST_NAME` → `Cheyfitz`
-- `USER_COUNTRY` → `Israel`
-- `USER_PROFESSION` → `marketing`
-- `WORD_TEMPLATES_PATH` → `/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized`
+**Note for this installation — complete value mapping for LIVE:**
+All of the following must appear as real values (not `{{...}}` strings) in LIVE files:
+
+| Placeholder | Real value in LIVE |
+|---|---|
+| `{{NOTION_DATABASE_ID}}` | `3465ef1aa63480a283cfdf847cb47404` |
+| `{{OUTPUT_FOLDER}}` | `/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring` |
+| `{{USER_FULL_NAME}}` | `Rachel Cheyfitz` |
+| `{{USER_FIRST_NAME}}` | `Rachel` (appears in REPO skill files — verify replaced everywhere in LIVE) |
+| `{{USER_LAST_NAME}}` | `cheyfitz` in filename patterns (e.g. `cv-cheyfitz-...`, `rachel-cheyfitz.dotx`); `Cheyfitz` in display/signature contexts (e.g. `Rachel Cheyfitz`) |
+| `{{USER_COUNTRY}}` | `Israel` |
+| `{{USER_CITY}}` | `Tel Aviv` |
+| `{{USER_DEFAULT_LANGUAGE}}` | `English` |
+| `{{USER_SECOND_LANGUAGE}}` | `Hebrew` |
+| `{{USER_SECOND_LANGUAGE_UPPER}}` | `HEBREW` |
+| `{{USER_PROFESSION}}` | `marketing` |
+| `{{USER_FUNCTION_SENIORITY_HIERARCHY}}` | `CMO → VP Marketing → Head of Marketing / Director of Marketing → Senior Marketing Manager → Marketing Manager → IC` |
+| `{{WORD_TEMPLATES_PATH}}` | `/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized` |
+| `{{CV_TEMPLATE_FILE}}` | `rachel-cheyfitz.dotx` |
 
 ---
 
@@ -169,17 +208,9 @@ grep -rn "Rachel\|Cheyfitz\|3465ef1aa63480a283cfdf847cb47404\|CVs jobsearch and 
 
 ### Check 7 — 02-professional-background.md sync
 
-Read both:
-- LIVE: `/Users/rachel/.claude/plugins/marketplaces/local-desktop-app-uploads/career-engine/references/02-professional-background.md`
-- COWORK source: `/Users/rachel/Library/Application Support/Claude/local-agent-mode-sessions/11906df4-9f28-4511-8085-4befd04174cb/2b278ad5-82b4-467a-850f-c4b08857f38c/rpm/plugin_01MMSuwGKBmo5Ycms6qVdW6N/references/02-professional-background.md`
+**Mark SKIP unconditionally.** The COWORK session path that this check referenced is a per-session ephemeral path that no longer exists. There is no stable external canonical source for `02-professional-background.md` — the authoritative copy IS the LIVE references file. This check has no valid source to diff against.
 
-If the COWORK source no longer exists (session deleted), note it and mark SKIP.
-
-```bash
-diff "<COWORK path>" "<LIVE path>"
-```
-
-**FAIL condition:** diff is non-empty (when COWORK source exists).
+If a future session establishes a new stable sync source, this check can be updated with the new path.
 
 ### Check 8 — No old.md exists
 
@@ -218,12 +249,13 @@ The following skill directories must exist in `REPO/skills/`:
 - `cv-writing`
 - `employment-coach`
 - `gatekeeper-checks`
+- `source-open-roles`
 
 **FAIL condition:** any directory missing.
 
 ### Check 12 — Pipeline skill chain integrity (LIVE)
 
-Same check for LIVE. Additionally: if `pipeline-export` directory exists, note it as a legacy skill to evaluate but do not FAIL on it.
+Same list as Check 11 (including `source-open-roles`). Additionally: if `pipeline-export` directory exists, note it as a legacy skill to evaluate but do not FAIL on it.
 
 ### Check 13 — Agent count parity
 
@@ -316,12 +348,13 @@ grep -c "API-query-data-source" <location>/skills/application-intake/SKILL.md
 
 ### Check 22 — Known regression checks present in CLAUDE.md
 
-In `CLAUDE.md` (both REPO and LIVE): verify the file contains "Known regression checks" and at least "R-1" through "R-5".
+In `CLAUDE.md` (both REPO and LIVE): verify the file contains "Known regression checks" and entries "R-1" through "R-6".
 
 ```bash
 grep -c "Known regression checks" <location>/CLAUDE.md
 grep -c "R-1" <location>/CLAUDE.md
 grep -c "R-5" <location>/CLAUDE.md
+grep -c "R-6" <location>/CLAUDE.md
 ```
 
 **FAIL condition:** any string not found in either file.

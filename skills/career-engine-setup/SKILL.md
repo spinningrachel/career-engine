@@ -1,8 +1,8 @@
 ---
 name: career-engine-setup
 description: >
-  Onboarding wizard for the cv-campaign plugin. Triggered when the user
-  runs /cv-campaign:setup, says "set up the plugin", "start onboarding",
+  Onboarding wizard for the career-engine plugin. Triggered when the user
+  runs /career-engine:setup, says "set up the plugin", "start onboarding",
   "configure the plugin", "initialize my profile", "I just installed this",
   or any variant asking to get the plugin ready to use.
   Collects existing career materials, synthesizes framework.md, conducts
@@ -19,7 +19,7 @@ allowed-tools:
   - WebFetch
 ---
 
-# cv-campaign Onboarding
+# Career Engine Onboarding
 
 This skill sets up the plugin for a new user. It builds the three reference files that all pipeline agents read before writing anything:
 
@@ -29,7 +29,7 @@ This skill sets up the plugin for a new user. It builds the three reference file
 
 **How onboarding works:** You send your existing career materials. The agent reads them and synthesizes `03-framework.md`. You review it and respond — with feedback or approval. That response triggers a targeted interview that fills gaps and captures what the materials didn't fully show. Integration (Notion, output path) comes after.
 
-**Run order matters.** Phase 1 (identity) → Phase 2 (content submission) → Phase 3 (synthesis) → Phase 4 (review and interview) → Phase 5 (integration) → Phase 6 (permissions) → Phase 7 (remote-compatibility). Phases 5–7 can be deferred — the pipeline can run with Phases 1–4 complete.
+**Run order matters.** Phase 1 (identity) → Phase 2 (content submission) → Phase 3 (synthesis) → Phase 4 (review and interview) → Phase 5 (integration) → Phase 6 (permissions) → Phase 7 (job-preferences). Phases 5–7 can be deferred — the pipeline can run with Phases 1–4 complete.
 
 **Onboarding can be paused and resumed.** The Phase 4 interview in particular can take time. If the user needs to stop, they can resume later by running `/career-engine:setup --phase 4`. The state of `03-framework.md` is preserved between sessions — sections already confirmed have no `[DRAFT]` or `[REVIEW]` markers; sections still needing work do. The pre-flight check uses this to report progress accurately.
 
@@ -327,7 +327,7 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
    
    **A note on column names: do not rename them.** The pipeline writes to these columns by exact name. Renaming any column will break the integration silently."
 
-2. Write a CSV file to `/tmp/cv-campaign-tracker.csv` containing only the header row with all required columns in order:
+2. Write a CSV file to `/tmp/career-engine-tracker.csv` containing only the header row with all required columns in order:
 
 ```
 Company,Position,Job URL,Status,Priority,JD Body,Why I Want This Role,Page Body,Role emphasis,JD proof,Keywords,Strategy,Role Type,Relationship type,Gap handling,Role summary,Hiring Manager's Name,Hiring manager's role,Manager role confirmed,Person who Advertised Role (if not Hiring Manager),No incumbents in this function,Landscape,First Advertised,Last Pipeline Run,Link to CV,Draft Directory,CV File Name,Letter File Name,Languages,Edit type,Note
@@ -340,7 +340,7 @@ Company,Position,Job URL,Status,Priority,JD Body,Why I Want This Role,Page Body,
 Before giving this prompt to the user, substitute `{{USER_DEFAULT_LANGUAGE}}` and `{{USER_SECOND_LANGUAGE}}` with the actual values configured in Phase 1. If the user is single-language, omit `{{USER_SECOND_LANGUAGE}}` from the Languages row entirely.
 
 ```
-Set up data validation (dropdown lists) on the following columns in my Google Sheet named "cv-campaign-tracker":
+Set up data validation (dropdown lists) on the following columns in my Google Sheet named "career-engine-tracker":
 
 - Column "Status": allow only these exact values: Hold, Interested, CV Ready for Review, Applied, Researched, Needs editing
 - Column "Priority": allow only these exact values: Highest, First, Second, Third, Fourth, Fifth
@@ -404,8 +404,19 @@ Ask: "Should the pipeline run gap analysis for every role? Gap handling identifi
 
 If you're not sure, leave it enabled. You can always turn it off per-role when it isn't relevant."
 
-- If enabled: write `"gap_handling": "enabled"` to `.claude/settings.json`
-- If disabled: write `"gap_handling": "disabled"` to `.claude/settings.json`
+- If enabled: run the following bash command (substituting `enabled`):
+  ```bash
+  python3 -c "
+  import json, os
+  path = os.path.expanduser('~/.claude/settings.json')
+  with open(path) as f: s = json.load(f)
+  s['gap_handling'] = 'enabled'
+  with open(path, 'w') as f: json.dump(s, f, indent=2)
+  print('gap_handling: enabled written to settings.json')
+  "
+  ```
+- If disabled: run the same command with `'disabled'` instead.
+- Verify by running `python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/settings.json'))).get('gap_handling'))"` and confirm the output matches the user's choice. If the file doesn't exist yet, create it as `{}` first.
 
 Confirm: "Phase 5 complete. Job tracking, output folder, CV template, and gap handling preference are configured."
 
@@ -465,7 +476,7 @@ Confirm: "Phase 6 complete. The pipeline will run without approval prompts."
 
 ---
 
-## Phase 7 — Remote-compatibility configuration
+## Phase 7 — Job-preferences configuration
 
 **Purpose:** Some job searches involve geographic friction — applying internationally, working through recruiters, or submitting through platforms with strict formatting rules. This phase configures rules to handle those situations correctly. **Skip this phase entirely if the user is applying only to roles in the country they live in, in one language, submitted directly by themselves.**
 
@@ -478,13 +489,13 @@ Ask: "Does your job search involve any of the following? Say 'none' to skip this
 
 If none of these apply, say 'none' and I'll skip to verification."
 
-**If none apply:** confirm and move on. No remote-compatibility rules are needed.
+**If none apply:** confirm and move on. No job-preferences rules are needed for application submission.
 
-**If any apply:** present the default remote-compatibility rules and ask whether they are appropriate:
+**If any apply:** present the default job-preferences rules and ask whether they are appropriate:
 
 ---
 
-**Default remote-compatibility rules (present these to the user):**
+**Default job-preferences rules (present these to the user):**
 
 > 1. **Recruiter-submitted applications:** Remove all first-person pronouns from the CV (no "I", "my", "me"). Use action verb openings instead. Cover letters may retain first person — confirm with the recruiter.
 > 2. **Remote location:** If the role lists a country/city as required and you are remote, add "(Remote)" after your location in the contact header. Do not fabricate a local address.
@@ -504,9 +515,63 @@ If the user confirms the defaults: write them to a `remote-compat` block in `.cl
 }
 ```
 
-If the user changes or adds rules: capture the custom rules in plain language and write them to `references/01-writing-rules.md` under a new section **§ Remote-compatibility rules**. Also write any boolean flags that changed to `.claude/settings.json`.
+If the user changes or adds rules: capture the custom rules in plain language and write them to `references/01-writing-rules.md` under a new section **§ Job-preferences rules**. Also write any boolean flags that changed to `.claude/settings.json`.
 
-Confirm: "Phase 7 complete. Remote-compatibility rules are configured."
+Confirm: "Phase 7 complete. Job-preferences rules are configured."
+
+---
+
+## Pipeline Orientation
+
+Before completing onboarding, walk the user through how the pipeline works. Present this as a briefing, not a list to read.
+
+---
+
+### The two pipelines
+
+**New Application pipeline** (`/career-engine` or `/career-engine`)
+The main pipeline. Picks up all roles in your tracking database with Status = `Interested`, and for each one:
+1. Coach analysis — reads the JD, writes Role emphasis, Strategy, Keywords, Gap handling
+2. CV writer — drafts a tailored CV
+3. Gatekeeper — checks the CV for rule violations
+4. Recruiter + hiring manager review — evaluates the CV
+5. Cover letter writer — writes the letter (if Why I Want This Role is filled in)
+6. Cover letter gatekeeper + recruiter/HM review
+7. Humanizer — removes AI writing patterns from the letter
+8. Export — produces DOCX files
+
+**Edit pipeline** (`/career-engine --edit`)
+For roles where you already have a CV and/or letter and want targeted revisions. Set `Edit type` to `CV`, `Letter`, or `Both` in your tracking database before running. Only runs the relevant sub-pipeline for each role.
+
+---
+
+### What is mandatory for each pipeline
+
+| Input | New Application pipeline | Edit pipeline |
+|---|---|---|
+| Job URL or JD Body | Required — pipeline cannot run without one | Required |
+| Status = Interested | Required | Status = any active status |
+| Edit type field | Not used | Required — CV / Letter / Both |
+| Why I Want This Role | **Required for a cover letter.** If empty, CV is produced but the letter step is skipped entirely. | Required if Edit type = Letter or Both |
+
+---
+
+### Why I Want This Role — what "good" looks like
+
+This field is the only source the letter-writer uses for the opener. The opener is the most important paragraph in the letter — it is what makes a letter yours rather than a template. The agent cannot invent your motivation, your specific reaction, or your angle on this company. If it does, that is fabrication.
+
+**Good:** Specific. Your actual reaction when you read the JD. What you noticed, what excited you, what connected to something you've done or want to do. A few sentences is enough. Examples of what works:
+- "The thing that grabbed me was that they're building agentic SecOps — I spent two years marketing exactly this layer and I've been watching this space evolve. I want to be the person building the story for the next platform."
+- "I daydream about consumer campaigns. I've spent my whole career in B2B and I'm genuinely ready to apply what I know to products people actually want."
+- "I worked at [Company] for five years and I know exactly how the enterprise buying cycle moves. This role is why I'd come back."
+
+**Not enough:** "I think this role is a great fit." / "I'm excited about this opportunity." / "This company does interesting work." These give the agent nothing to work from. The letter will be a placeholder until you fill in more.
+
+**The hard rule:** If Why I Want This Role is empty when the pipeline runs, the cover letter step is skipped. The agent will not generate motivation on your behalf — that would not be your letter. Fill in this field before running the pipeline for any role where you want a cover letter.
+
+---
+
+Present this to the user and ask: "Any questions before we do a final verification check?"
 
 ---
 
@@ -522,14 +587,14 @@ Run after Phases 1–5 are complete.
 
 If Phases 1–5 are complete and dependencies are installed:
 
-"Onboarding complete. You're ready to run `/cv-campaign`. Before your first run:
+"Onboarding complete. You're ready to run `/career-engine`. Before your first run:
 
 - Add roles to your Notion database (or CSV) and set their Status to `Interested`.
 - **Why I Want This Role:** For each role you want a cover letter for, fill in the `Why I Want This Role` field in Notion before running the pipeline. Write your genuine motivation — a sentence or two is enough. If this field is empty when the pipeline runs, the cover letter will be skipped and only the CV will be delivered. The pipeline will never generate this for you.
-- **Edit type (for editing runs):** When using the edit pipeline (`/cv-campaign --edit`), set the `Edit type` field to `CV`, `Letter`, or `Both` for each role before running. Roles without this field set will be skipped.
+- **Edit type (for editing runs):** When using the edit pipeline (`/career-engine --edit`), set the `Edit type` field to `CV`, `Letter`, or `Both` for each role before running. Roles without this field set will be skipped.
 - **Gap handling:** Configured in Phase 5. If enabled, you can suppress it for a specific role by adding "no gap handling" to your prompt when starting a run.
 
-Run `/cv-campaign` to start. The pipeline will pick up all `Interested` roles automatically."
+Run `/career-engine` to start. The pipeline will pick up all `Interested` roles automatically."
 
 ---
 

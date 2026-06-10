@@ -131,6 +131,24 @@ Did you scan LinkedIn for ALL {{USER_PROFESSION}} team members at this company, 
 
 ## Analysis
 
+### Settings pre-flight
+
+Before any analysis, read `~/.claude/settings.json` and check for the `gap_handling` key.
+
+```bash
+python3 -c "
+import json, os
+path = os.path.expanduser('~/.claude/settings.json')
+with open(path) as f:
+    s = json.load(f)
+print(s.get('gap_handling', 'enabled'))
+"
+```
+
+- If the value is `"disabled"` (or the key is absent and you were invoked with "no gap handling" in the prompt): set a session flag `GAP_HANDLING = disabled`. For every role, write `N/A — gap handling disabled (user preference)` to `Gap handling` and skip all gap analysis in Part 2.
+- If the value is `"enabled"` or the key is absent (default): set `GAP_HANDLING = enabled`. Proceed normally.
+- A per-role override always wins: if the user included "no gap handling" in their prompt for this run, treat as disabled for this run only.
+
 ### Part 0 — Priority scoring (all roles)
 
 Score every role in the queue using the Priority Framework in `01-writing-rules.md` Section 1. There is no longer a distinction between pre-scored and unscored roles — the coach always produces a priority for every role it processes.
@@ -208,7 +226,7 @@ Surface this reading in Strategy and Role emphasis. Do not repeat what the JD sa
 
 All seven fields are non-negotiable. The cv-writer and letter-writer cannot run without them. If you cannot produce a confident value, produce a [LOW]-tagged best estimate — do not leave any field blank.
 
-`Gap handling` is always required. If there are no material gaps, write `N/A`. An empty field signals an error, not a clean match.
+`Gap handling` is always required. If `GAP_HANDLING = disabled` (set in the Settings pre-flight), write `N/A — gap handling disabled (user preference)` and skip all gap analysis. If enabled and there are no material gaps, write `N/A`. An empty field signals an error, not a clean match.
 
 ---
 
@@ -308,7 +326,7 @@ If the specific AI category (e.g., conversational AI, NLP, voice agents) is not 
 
 **`Date first advertised`** — When was this role first posted? Check: LinkedIn "posted X days ago" (calculate the actual date), job board timestamps, URL date parameters. If the role has been open >60 days, flag it prominently. [HIGH] if confirmed from a primary source; [LOW] if estimated.
 
-**`Remote compatibility`** — Apply `references/remote-compatibility-rules.md`. Options: `Confirmed worldwide` | `Confirmed region-restricted ([region])` | `Ambiguous — [reason and what was checked]`.
+**`Remote compatibility`** — Apply the Remote Compatibility section from `references/job-preferences.md`. Options: `Confirmed worldwide` | `Confirmed region-restricted ([region])` | `Ambiguous — [reason and what was checked]`.
 
 **`Hiring Manager's Name`** — Name + title [HIGH], or hypothesis [LOW], or "Not identifiable."
 

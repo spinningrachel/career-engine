@@ -13,9 +13,9 @@ description: >
   Does NOT write CVs or cover letters.
 ---
 
-# CV Campaign — Queue Pipeline
+# New Application — Queue Pipeline
 
-This skill covers Steps 0 through 0.9 of the cv-campaign pipeline. All of these steps run before any per-role CV work begins. The goal of this pipeline is to give the employment coach complete information — full JD data for every role — before it makes any prioritization or writing decisions.
+This skill covers Steps 0 through 0.9 of the career-engine pipeline. All of these steps run before any per-role CV work begins. The goal of this pipeline is to give the employment coach complete information — full JD data for every role — before it makes any prioritization or writing decisions.
 
 **Before any step:** Read `${CLAUDE_PLUGIN_ROOT}/references/01-writing-rules.md`. This file contains the fabrication rule and attribution constraints enforced at Step 0.8.5. It must be in context before the gatekeeper runs — even when this skill runs in standalone mode.
 
@@ -29,7 +29,7 @@ Read `gap_handling` from `.claude/settings.json`. Set `gap_handling_mode` as fol
 - `"gap_handling": "enabled"` → `gap_handling_mode = enabled`
 - Key missing or any other value → `gap_handling_mode = enabled` (default)
 
-Do not ask {{USER_FIRST_NAME}} about this. The preference was set during setup (Phase 5). If she wants to change the default, she updates `.claude/settings.json`. To suppress gap handling for a single run without changing the setting, she can add "no gap handling" to her prompt — check for that phrase in the current prompt and override to `disabled` if found.
+Do not ask Rachel about this. The preference was set during setup (Phase 5). If she wants to change the default, she updates `.claude/settings.json`. To suppress gap handling for a single run without changing the setting, she can add "no gap handling" to her prompt — check for that phrase in the current prompt and override to `disabled` if found.
 
 **If `gap_handling_mode = disabled`:**
 - Instruct the coach (in Step 0.8) to skip the `Gap handling` property entirely — do not populate it, do not write `N/A`.
@@ -42,20 +42,20 @@ Do not ask {{USER_FIRST_NAME}} about this. The preference was set during setup (
 
 ## Step 0 — Fetch Notion schema and roles
 
-**Guard — check configuration first.** Look at the database ID value immediately below. If it still reads the literal text `{{NOTION_DATABASE_ID}}` (unreplaced placeholder), **stop immediately** and tell the user:
+**Guard — check configuration first.** Look at the database ID value immediately below. If it still reads the literal text `3465ef1aa63480a283cfdf847cb47404` (unreplaced placeholder), **stop immediately** and tell the user:
 
 > "The Notion database ID has not been configured. Run `/career-engine:setup` (or `/career-engine:setup --phase 5`) to complete the database integration before running the pipeline."
 
 Do not attempt to search for the database. Do not proceed.
 
-The database ID for this installation: `{{NOTION_DATABASE_ID}}`
+The database ID for this installation: `3465ef1aa63480a283cfdf847cb47404`
 
 ---
 
 **Step 0a — Fetch the database schema.** Run `notion-fetch` on the configured database ID:
 
 ```
-notion-fetch id="{{NOTION_DATABASE_ID}}"
+notion-fetch id="3465ef1aa63480a283cfdf847cb47404"
 ```
 
 Extract the SQLite `CREATE TABLE` block from the response. This is your **schema reference** for the entire run — the authoritative list of property names and valid select option values. Keep it in context.
@@ -70,12 +70,20 @@ Extract the SQLite `CREATE TABLE` block from the response. This is your **schema
 
 **Use `notionApi` query — not `notion-query-database-view`.** `notionApi` returns structured JSON keyed by property name. There is no column alignment to get wrong, no table to parse, no off-by-one risk. `notion-query-database-view` returns a rendered table that is fragile and has caused misalignment failures — do not use it for this step.
 
+**Tool availability — load before calling.** The `notionApi` tools are deferred and their schemas are not pre-loaded. Before calling any `notionApi` tool, run a ToolSearch to load the schema:
+```
+ToolSearch query="select:notionApi__API-query-data-source"
+```
+If ToolSearch returns a schema, proceed. If it returns nothing, use `mcp__notionApi__API-query-data-source` directly — deferred tools are still callable by their full name even if ToolSearch doesn't surface them. The tool's full name is `mcp__notionApi__API-query-data-source`. Do NOT fall back to a view-based query — that is R-1 territory and has caused misalignment failures.
+
+If the direct call also fails or returns a tool-not-found error, stop immediately and report: **"The notionApi tool is unavailable. Ensure the Notion MCP is connected and retry."** Do not attempt any fallback — especially not a view-based query.
+
 Target status by mode:
 - **Standalone mode:** Status = `Hold`
 - **Orchestrator mode:** Status = `Interested`
 
-Call `notionApi` `API-query-data-source` (or equivalent database query endpoint) with:
-- database ID: `{{NOTION_DATABASE_ID}}`
+Call `notionApi` `API-query-data-source` (full tool name: `mcp__notionApi__API-query-data-source`) with:
+- database ID: `3465ef1aa63480a283cfdf847cb47404`
 - filter: `{"property": "Status", "status": {"equals": "Hold"}}` (standalone) or `{"property": "Status", "status": {"equals": "Interested"}}` (orchestrator)
 - page_size: 100
 
@@ -103,9 +111,9 @@ For each matching entry, capture the full row payload including:
 - Position title (use inferred value if Position field is empty, per the rules above)
 - Job URL
 - Every other property set on the row (notes, tags, source, and any existing priority value) — pass these through verbatim; do not interpret them yet
-- In orchestrator mode only: the pipeline {{USER_FIRST_NAME}} is running (New Applications) — from her chat command, not from a Notion property. Default is `New Applications` unless {{USER_FIRST_NAME}} specifies otherwise. Not applicable in standalone intake mode.
+- In orchestrator mode only: the pipeline Rachel is running (New Applications) — from her chat command, not from a Notion property. Default is `New Applications` unless Rachel specifies otherwise. Not applicable in standalone intake mode.
 
-Report the count to {{USER_FIRST_NAME}}: "Found N roles in Hold status. Sending to the employment coach." If the count is 0, stop and report that. If the query call returns a tool error or an unparseable response rather than a result array, stop and report the error to {{USER_FIRST_NAME}} — do not treat it as zero results. Do not wait for a response — proceed immediately to the next step.
+Report the count to Rachel: "Found N roles in Hold status. Sending to the employment coach." If the count is 0, stop and report that. If the query call returns a tool error or an unparseable response rather than a result array, stop and report the error to Rachel — do not treat it as zero results. Do not wait for a response — proceed immediately to the next step.
 
 ## Step 0.5 — Prepare JD content for the coach
 
@@ -117,15 +125,21 @@ For each role:
 
 1. **Job URL is present** — attempt `WebFetch` on the URL.
    - **Fetch succeeds:** mark `url-fetched`. Pass fetched content to the coach alongside any existing `JD Body`.
+   - **Fetch fails on a LinkedIn URL (`linkedin.com` in the URL):** LinkedIn blocks plain `WebFetch` with an auth wall. Do not mark as unfetchable yet — use the LinkedIn MCP as a fallback:
+     1. Extract the numeric job ID from the URL. LinkedIn job URLs follow the pattern `linkedin.com/jobs/view/JOBID` — extract the trailing number.
+     2. Call `mcp__linkedin-mcp__get_job_details` with that job ID.
+     3. If the tool returns job description content, mark `url-fetched-via-linkedin-mcp`.
+     4. If the LinkedIn MCP tool is unavailable or errors, fall through to keyword search: call `mcp__linkedin-mcp__search_jobs` with `keyword` = "[Position title] [Company name]" and scan results for a matching title + company. If found, use that job description content.
+     5. If both LinkedIn MCP calls fail, fall through to standard fetch-fail handling (next bullet).
    - **Fetch fails on an Indeed URL (`indeed.com` in the URL):** Indeed's authentication wall blocks plain `WebFetch` for all Indeed job postings. Do not mark as unfetchable yet — use the Indeed connector as a fallback. Do NOT attempt to extract or pass a `jk` job key from the URL — `jk` values from email-tracking redirect URLs are not valid API job IDs and will error. Go directly to keyword search:
      1. Call the Indeed connector's `search_jobs` tool with `keyword` = "[Position title] [Company name]" (use the values captured from the Notion row).
      2. Scan the results for a title + company match. If a matching result is found, use its job description content — mark `url-fetched-via-connector`.
      3. If the connector returns no match or the tool call fails, fall through to standard fetch-fail handling (next bullet).
-   - **Fetch fails or is blocked (paywalled, login-required, 404, or Indeed connector also failed):** log the failure. If `JD Body` is populated, mark `content-exists` and proceed on that. If `JD Body` is also empty, mark `needs-manual` and log to the run-level revision log — do not drop the role yet, flag it for {{USER_FIRST_NAME}} to resolve.
+   - **Fetch fails or is blocked (paywalled, login-required, 404, or all connectors also failed):** log the failure. If `JD Body` is populated, mark `content-exists` and proceed on that. If `JD Body` is also empty, mark `needs-manual` and log to the run-level revision log — do not drop the role yet, flag it for Rachel to resolve.
 
 2. **No Job URL — `JD Body` property is populated** — mark `content-exists`. Pass it to the coach as-is.
 
-3. **No Job URL — `JD Body` is empty but the Notion page body contains a full job description** ({{USER_FIRST_NAME}} manually pasted the JD) — write it to `JD Body` and set `JD Fetch Status` = `Manual-entry` using `notion-update-page`. Mark `content-exists`. This normalises the data so future runs read from `JD Body` directly.
+3. **No Job URL — `JD Body` is empty but the Notion page body contains a full job description** (Rachel manually pasted the JD) — write it to `JD Body` and set `JD Fetch Status` = `Manual-entry` using `notion-update-page`. Mark `content-exists`. This normalises the data so future runs read from `JD Body` directly.
 
 4. **No Job URL and no JD content anywhere** — mark `needs-fetch`. Log to the run-level revision log. Drop from this run.
 
@@ -167,7 +181,11 @@ All roles not selected are deferred. Proceed immediately to Step 0.8.
 
 **Pre-coach filter — run before any coach-complete check:** Remove any role marked `needs-manual` from the coach queue. A role with no usable JD content cannot be meaningfully analysed by the coach. Log the removal in the revision log: "[Company] — [Position]: removed from coach queue, JD content unavailable (needs-manual). Resolve manually then re-run intake." Do not send a `needs-manual` role to the coach under any circumstances.
 
-Before spawning, check each remaining role in the queue: a role is `coach-complete` only if **all eight** of the following fields are populated — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, and `Landscape`. Partial population (any field missing) is not coach-complete and the role must be sent to the coach. `Gap handling` and `Landscape` are always required — the coach must populate both for every role, even if only to confirm no material gaps or no new landscape intelligence exists.
+Before spawning, check each remaining role in the queue: a role is `coach-complete` only if all required fields are populated. The required count depends on `gap_handling_mode`:
+- **When `gap_handling_mode = enabled` (default):** all eight fields must be populated — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, and `Landscape`.
+- **When `gap_handling_mode = disabled`:** seven fields — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, and `Landscape`. `Gap handling` is NOT required and must NOT block coach-complete status.
+
+Partial population (any required field missing) is not coach-complete and the role must be sent to the coach. `Landscape` is always required — the coach must populate it for every role, even if only to confirm no new landscape intelligence exists.
 
 - **All roles are `coach-complete`:** skip the coach spawn entirely. Proceed directly to Step 0.9 using existing values.
 - **Any role has one or more fields missing:** spawn the coach with every role that is not fully complete. Carry existing values forward for coach-complete roles only.
@@ -179,7 +197,7 @@ The coach returns:
 - Priority scores for all roles (Part 0 of the coach's output) — always
 - Batch analysis and per-role writing guidance (Part 1)
 - Strategic Notion properties: Role emphasis, JD proof, Keywords, Strategy, Company Stage, Role Type, Relationship type, Gap handling (Part 2)
-- Patterns and notes for {{USER_FIRST_NAME}} (Part 3)
+- Patterns and notes for Rachel (Part 3)
 
 Hold the coach output in memory. Proceed immediately to Step 0.8.5.
 
@@ -193,7 +211,7 @@ Spawn `gatekeeper` with `option=coach-output`, passing:
 
 **If FAIL:** the gatekeeper returns a list of specific unverifiable claims per role and per property. Return those claims to the employment coach with this instruction: "The following claims in your output cannot be traced to `01-writing-rules.md`. Revise the affected properties to remove or correct them. Do not substitute alternative fabrications — if a claim cannot be grounded in the reference file, omit it." Spawn the coach with only the affected roles and properties.
 
-**Cap: 2 revision passes.** If still failing after pass 2, strip the unverifiable claims from the affected properties (replace with `[UNVERIFIABLE — removed]`), log all removed claims in the run-level revision log under `## Coach Fact Check — Unverifiable Claims Removed`, flag for {{USER_FIRST_NAME}} in final delivery, and proceed to Step 0.9.
+**Cap: 2 revision passes.** If still failing after pass 2, strip the unverifiable claims from the affected properties (replace with `[UNVERIFIABLE — removed]`), log all removed claims in the run-level revision log under `## Coach Fact Check — Unverifiable Claims Removed`, flag for Rachel in final delivery, and proceed to Step 0.9.
 
 ## Step 0.9 — Writeback and briefing
 
@@ -215,19 +233,19 @@ For each role in the processing queue, apply this rule to:
 
 Confirm in chat: "Writeback complete: K roles updated, M properties skipped (already populated)."
 
-### 0.9b — Brief {{USER_FIRST_NAME}}
+### 0.9b — Brief Rachel
 
-Report to {{USER_FIRST_NAME}}:
+Report to Rachel:
 - Queue list: company, title, priority source (existing / generated), and coach's reason for each.
 - Batch analysis and base CV recommendation from the coach.
 - Per-role Strategy and focus recommendations from the coach.
 - Patterns and notes from the coach.
 
-This is the one moment {{USER_FIRST_NAME}} sees the coach's reasoning before per-role processing begins. Do not wait for a response — proceed immediately to Step 0.9d.
+This is the one moment Rachel sees the coach's reasoning before per-role processing begins. Do not wait for a response — proceed immediately to Step 0.9d.
 
 ### 0.9d — Status writeback (standalone mode only)
 
-**Skip this step entirely when running as a sub-step of the cv-campaign orchestrator.** The orchestrator manages Status separately. This step runs only in standalone intake mode.
+**Skip this step entirely when running as a sub-step of the career-engine orchestrator.** The orchestrator manages Status separately. This step runs only in standalone intake mode.
 
 For every role in the processing queue, write `Status = Researched` using `notion-update-page`. Run all writes in parallel.
 

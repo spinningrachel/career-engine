@@ -12,7 +12,7 @@ This means: after completing any set of changes — no matter how small — you 
 
 **The QA agent also checks for drift between the two plugin versions.** Every change must be applied to BOTH:
 1. The open-source repo at the path shown in this file
-2. The personal canonical version at `/Users/rachel/.claude/plugins/marketplaces/local-desktop-app-uploads/career-engine/`
+2. The personal canonical version at `~/Downloads/career-engine.plugin` (a zip archive — extract to edit, repackage when done)
 
 If a change was made to one version and not the other, the QA agent will catch it. Do not declare work complete before it does.
 
@@ -31,17 +31,17 @@ This plugin exists in two versions that must stay in sync:
 | Version | Location | Purpose |
 |---|---|---|
 | **Open-source repo** | `<repo-root>/` | Public distribution. Uses `{{USER_FIRST_NAME}}`, `{{USER_FULL_NAME}}`, `{{OUTPUT_FOLDER}}` placeholders. No personal info. |
-| **Personalized (canonical)** | `/Users/rachel/.claude/plugins/marketplaces/local-desktop-app-uploads/career-engine/` | Your live installation. Real names, real paths, personal background files, delivered letters archive. |
+| **Personalized (canonical)** | `~/Downloads/career-engine.plugin` | Your live installation. Real names, real paths, personal background files, delivered letters archive. Maintained as a zip — extract to edit, repackage when done. |
 
-> **Canonical personal version:** `/Users/rachel/.claude/plugins/marketplaces/local-desktop-app-uploads/career-engine/`  
-> The cowork session copy at `~/Library/Application Support/Claude/local-agent-mode-sessions/...` is ephemeral — do not maintain it. All personal edits go to the canonical path above.
+> **Canonical personal version:** `~/Downloads/career-engine.plugin`  
+> This is a zip archive. To edit: extract to a temp directory, make changes, repackage. The session copy at `~/Library/Application Support/Claude/local-agent-mode-sessions/...` is ephemeral — do not maintain it.
 
 **The sync rule:** any change to one version must be applied to the other in the same session, with the exceptions below.
 
 **Exceptions — do NOT sync:**
 - Personal info in the personalized version (real names, real paths, personal candidate rules and company-specific examples) → stays in personalized only
 - Placeholder values in the open-source version (`{{USER_FIRST_NAME}}` etc.) → never replaced with real names in the repo
-- `references/delivered-letters/` — exists in personalized only; historical archive, never edit
+- `references/delivered-letters/` — exists in both versions; personalized version contains real sent letters; open-source version contains only INDEX.md with placeholder guidance. Managed via Option 3 of the letter-writer agent. Cap: 6 letters.
 - `references/{{USER_DOTX_FILE}}.dotx` — personalized only (your Word template for DOCX export)
 - `references/02-professional-background.md`, `references/01-writing-rules.md`, `references/03-framework.md` — exist in both but contain personal content in personalized version; sync structural/procedural changes only, not personal data
 
@@ -223,3 +223,4 @@ These bugs were confirmed in live intake runs, diagnosed, and fixed. Every futur
 | R-3 | **Indeed URLs must use connector fallback** | Indeed's authentication wall blocks plain `WebFetch`; agent marked roles as unfetchable instead of routing through the Indeed connector | When a Job URL contains `indeed.com`, attempt `search_jobs(keyword="[title] [company]")` before marking as unfetchable | `skills/application-intake/SKILL.md` → Step 0.5 |
 | R-4 | **No Bash/Grep on Notion MCP sandbox files** | Notion MCP saves query results inside its sandbox — the path is unreachable by host-side Bash or Grep, causing silent failures | All Notion result processing must happen through MCP tools in context, never via host-side file reads | `skills/application-intake/SKILL.md` → Step 0b |
 | R-5 | **Always fetch URL even when JD Body is populated** | Agent skipped URL fetch when `JD Body` was already populated, missing updated requirements and recruiter info | Must attempt `WebFetch` on Job URL for every role that has one, regardless of whether `JD Body` is already populated | `skills/application-intake/SKILL.md` → Step 0.5 |
+| R-6 | **Edit pipeline JD-unavailable hard-drop** | Step E0.5 said "log the failure and skip this role" but did not explicitly remove the role from subsequent steps, leaving the agent free to silently continue with no JD | When JD Body is empty AND coach cannot access the URL, the role must be **hard-dropped from E0.7 onward** with a specific log message; E0.5 now reads "Remove from all subsequent steps (E0.7 onward)" | `skills/application-edit/SKILL.md` → Step E0.5, point 2 |

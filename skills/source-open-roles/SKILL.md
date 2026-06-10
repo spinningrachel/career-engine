@@ -1,0 +1,200 @@
+---
+name: source-open-roles
+description: Logic for sourcing open roles across LinkedIn, remote-focused boards, startup boards, general job boards, and freelance platforms. Defines search modes, site-by-site fetch methods, scoring rubric, and deduplication rules. Load before running any source-open-roles search.
+---
+
+# Source Open Roles — Search Logic
+
+---
+
+## What This Skill Is For
+
+Sourcing surfaces open roles that match the user's preferences — it is the top-of-funnel step that feeds the application pipeline. It does not research, coach, write, or score fit. Its job is to return a ranked list of roles that are (a) worth looking at and (b) not already in the pipeline.
+
+---
+
+## Preferences Schema
+
+Preferences are stored in `~/.career-engine-job-prefs.json`. The full schema:
+
+```json
+{
+  "preferences": {
+    "targetTitles": ["Head of Marketing", "VP Marketing"],
+    "minSalary": "no minimum",
+    "remotePreference": "remote only",
+    "excludePatterns": ["junior", "intern", "contract"],
+    "defaultTimeRange": "last week",
+    "location": "Tel Aviv, Israel",
+    "notionDatabaseId": "3465ef1a-a634-80ef-8f43-000b75686c29"
+  }
+}
+```
+
+`notionDatabaseId` is set during setup. If absent, deduplication against Notion is skipped and the agent notes this.
+
+---
+
+## Search Modes
+
+The mode determines which sources are searched. It is resolved in this order:
+1. Explicit override in the invocation prompt (e.g., "quick", "remote", "startup", "broad", "ai", "full", "contract")
+2. Default derived from `remotePreference`:
+   - `remote only` → `remote`
+   - `hybrid` → `broad`
+   - `open to all` → `broad`
+
+| Mode | Sources searched |
+|---|---|
+| `quick` | LinkedIn only |
+| `remote` | LinkedIn + all Remote-focused sites |
+| `startup` | LinkedIn + all Startup/tech sites |
+| `broad` | LinkedIn + General boards + HN Who's Hiring + ATS/company career pages |
+| `ai` | LinkedIn + AI/tech-specific sites |
+| `full` | All sources across all categories |
+| `contract` | Upwork + BeBee |
+
+---
+
+## Site Catalog
+
+### LinkedIn (MCP)
+
+**Gate:** Requires `mcp__linkedin-mcp__search_jobs` to be connected. If unavailable, skip and report.
+
+For each target title:
+```
+search_jobs(
+  keywords = "[title]",
+  location = preferences.location,
+  date_posted = [map: "last week"→"past_week", "2 weeks"→"past_month", "month"→"past_month"],
+  work_type = [map: "remote only"→"remote", "hybrid"→"hybrid", "open to all"→null],
+  sort_by = "date"
+)
+```
+Collect all `job_ids`. Deduplicate across title searches. Fetch up to 30 job details via `get_job_details(job_id)`. A result is usable only if it contains role requirements or responsibilities — metadata-only responses (applicant stats only) are not usable.
+
+---
+
+### Remote-focused sites
+
+All fetched via `WebSearch` using the pattern: `site:<domain> "[title]" [time signal]` where time signal is "posted this week" or "new" depending on the site. Extract all listings that contain at minimum a title, company, and apply URL or description.
+
+| Site | Fetch method |
+|---|---|
+| Working Nomads | `WebFetch("https://www.workingnomads.com/jobs?category=marketing&tag=[title-slug]")` |
+| TrulyRemote | `WebSearch("site:trulyremote.co [title]")` |
+| RemoteJobs.org | `WebSearch("site:remotejobs.org [title]")` |
+| WeAreDistributed | `WebFetch("https://wearedistributed.org/remote-jobs/")` — parse listings on page |
+| OpenToWorkRemote | `WebFetch("https://www.opentoworkremote.com/")` — WebSearch `site:opentoworkremote.com [title]` if direct fetch is sparse |
+| WorkEW | `WebSearch("site:workew.com [title]")` |
+| JobRack | `WebFetch("https://jobrack.eu/jobs?q=[title-urlencoded]")` |
+| Jobgether | `WebFetch("https://jobgether.com/remote-jobs")` — parse listings, then `WebSearch("site:jobgether.com [title] remote")` for deeper coverage |
+| PitchMeAI | `WebFetch("https://pitchmeai.com/jobs")` — filter by title after fetch |
+
+---
+
+### Startup / tech sites
+
+| Site | Fetch method |
+|---|---|
+| startup.jobs | `WebFetch("https://startup.jobs/?q=[title-urlencoded]&remote=true")` |
+| BuiltIn | `WebSearch("site:builtin.com [title] remote")` — BuiltIn blocks direct fetch |
+| MoaiJobs | `WebFetch("https://www.moaijobs.com/")` + `WebSearch("site:moaijobs.com [title]")` |
+| CareerVault | `WebFetch("https://careervault.io/")` + `WebSearch("site:careervault.io [title]")` |
+
+---
+
+### General boards
+
+| Site | Fetch method |
+|---|---|
+| Indeed | `WebSearch("site:indeed.com [title] [location or remote] job")` — do not attempt direct WebFetch (auth wall). If `mcp__140d3f8f-6ad4-4b39-9df9-84514cae0207__search_jobs` is connected, prefer it. |
+| ZipRecruiter | `WebSearch("site:ziprecruiter.com [title] remote")` |
+| BeBee | `WebSearch("site:bebee.com [title]")` |
+| Workable Jobs | `WebSearch("site:jobs.workable.com [title]")` |
+| Hacker News Who's Hiring | WebSearch for `"Ask HN: Who is hiring?" site:news.ycombinator.com [current month] [current year]`. Fetch thread via `https://hacker-news.firebaseio.com/v0/item/{THREAD_ID}.json`. Fetch up to 100 comment items. Parse `text` field of each. Filter by title fuzzy-match. |
+
+---
+
+### ATS / company career pages
+
+Use these to surface roles posted directly on company career pages via their ATS. These often appear earlier than aggregators and are not always indexed on general boards.
+
+| Site | Fetch method |
+|---|---|
+| Greenhouse | `WebSearch("site:boards.greenhouse.io [title]")` + `WebSearch("site:job-boards.greenhouse.io [title]")` |
+| Lever | `WebSearch("site:jobs.lever.co [title]")` |
+| Workday | `WebSearch("site:myworkdayjobs.com [title] remote")` |
+| Ashby | `WebSearch("site:jobs.ashbyhq.com [title]")` |
+| Rippling | `WebSearch("site:job.rippling.com [title]")` |
+
+---
+
+### AI / tech-specific sites
+
+| Site | Fetch method |
+|---|---|
+| MoaiJobs | See Startup section |
+| CareerVault | See Startup section |
+| PitchMeAI | See Remote section |
+| TheirStack | Requires `mcp__theirstack__*` tools. Gate: if not connected, skip and note. |
+
+---
+
+### Contract / freelance
+
+| Site | Fetch method |
+|---|---|
+| Upwork | Requires `mcp__1cb44f76-c627-45b2-8050-35e78e7f15c8__upwork_search_freelancers`. **Note:** Upwork searches for freelancers, not job postings — results represent active demand for this skill type, not open positions. Surface as "Contract signals" in a separate section, not as ranked roles. |
+
+---
+
+## Deduplication
+
+Before scoring and displaying results, filter out any role that already exists in the Notion database.
+
+**How to check:** Query the Notion database using `notionApi` `API-query-data-source` with `notionDatabaseId` from preferences. Extract all `Company` + `Position` pairs. For each search result: if `(company name, role title)` matches any existing pair (case-insensitive, substring match on title), exclude it from results. Log the count of excluded duplicates.
+
+If `notionDatabaseId` is not set, skip dedup and display a warning: "Notion deduplication skipped — no database ID configured. Run /career-engine:setup to configure."
+
+---
+
+## Scoring Rubric
+
+Score every result (0–100) after deduplication.
+
+| Signal | Points |
+|---|---|
+| Title — exact match to a target title | 20 |
+| Title — partial / fuzzy match | 10 |
+| Posted ≤ 3 days ago | 8 |
+| Posted 4–7 days ago | 4 |
+| Remote match (matches `remotePreference` exactly) | 10 |
+| Salary meets or exceeds `minSalary` (only when listed) | 10 |
+| Salary listed (any amount) | 5 |
+| Applicant count < 50 (LinkedIn only) | 8 |
+| Hiring manager identified (LinkedIn only) | 15 |
+| Easy Apply available (LinkedIn only) | 4 |
+| Apply URL present (non-LinkedIn sources) | 6 |
+
+Cap at 100. Sort descending. Roles without a title match should not appear unless no matches exist.
+
+---
+
+## Exclusion Rules
+
+Exclude any result where:
+- The title contains any `excludePatterns` value (case-insensitive substring match)
+- The role is already in the Notion database (see Deduplication)
+- The role was already surfaced in a previous search session saved to `/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/sourcing/` (check saved search files from the last 14 days — skip roles that appeared with the same company + title)
+
+---
+
+## What Is Not a Role
+
+Do not surface:
+- Aggregator "job alert" pages (no actual company or description)
+- Roles with no company name
+- Roles where the only content is a stub or redirect
+- Upwork listings (surface separately as contract signals, never as ranked roles)

@@ -51,7 +51,7 @@ Reference files live at: `${CLAUDE_PLUGIN_ROOT}/references/`
 **Mandatory load:**
 - `01-writing-rules.md` — Section 1 contains rules and guardrails. This supersedes anything you think you know about {{USER_FIRST_NAME}} from prior context. Role facts and approved bullets are in `02-professional-background.md`.
 - `03-framework.md` — professional philosophy, methodology, and domain narratives. §Professional methodology and POV for frameworks. §Domain depth for per-vertical narratives and the fast-learning argument. Load alongside 01-writing-rules.md for every role assessment.
-- `references/remote-compatibility-rules.md` — load before assessing any role's geographic fit.
+- `references/job-preferences.md` — load before any sourcing, scoring, or coaching step. Contains remote compatibility rules, target role criteria, and coaching prioritization guidance.
 
 Do not proceed to Step 3 without this context.
 
