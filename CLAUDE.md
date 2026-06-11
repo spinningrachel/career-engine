@@ -45,6 +45,7 @@ This plugin exists in two versions that must stay in sync:
 - `references/delivered-letters/` — exists in both versions; personalized version contains real sent letters; open-source version contains only INDEX.md with placeholder guidance. Managed via Option 3 of the letter-writer agent. Cap: 6 letters.
 - `references/{{USER_DOTX_FILE}}.dotx` — personalized only (your Word template for DOCX export)
 - `references/02-professional-background.md`, `references/01-writing-rules.md`, `references/03-framework.md` — exist in both but contain personal content in personalized version; sync structural/procedural changes only, not personal data
+- `references/linkedin-profile.md` — exists in both; the repo ships the placeholder template, the personalized version carries the user's real LinkedIn snapshot (replaced wholesale via update-refs from a fresh LinkedIn PDF export). Sync template/structure changes only, never profile content. Optional by design — agents fall back when missing or templated.
 
 ---
 
@@ -94,7 +95,7 @@ When you notice a drift, resolve it before making further changes. Establish whi
 
 When making a content change:
 
-1. Edit the **open-source repo** first — write with `{{USER_FULL_NAME}}` / `{{USER_FIRST_NAME}}` etc. placeholders
+1. Edit the **open-source repo** first — write with `{{USER_FULL_NAME}}` / `{{USER_FIRST_NAME}}` etc. placeholders. **Carve-out:** the `update-refs` skill legitimately applies the personalized version first (the user's materials arrive personal); its structural slice still syncs to the repo with placeholders in the same session, and Check 6c backstops leaks.
 2. Apply the **same change** to the personalized version — substitute real names/paths, add personal specifics where appropriate
 3. If the change involves personal data (e.g., candidate rules, background facts) — edit the personalized version only
 4. After a batch of changes, **repackage both .plugin files** (see below)

@@ -66,6 +66,7 @@ The complete list of pipelines this plugin can run. Before taking any action, co
 | 7 | Localization | automatic when `Languages` includes the second language | `localization` | English DOCX files complete | none | Translation only — never drafts, revises, or evaluates |
 | 8 | LinkedIn coach | "review my LinkedIn", "optimise my profile" | `linkedin-coach` | none | none | Never writes to Notion |
 | 9 | Personal brand | "build my personal brand", "refresh my bio" | `personal-brand` | none | none | Never writes to Notion |
+| 10 | Update references | "update my references", "update refs", "here's my updated CV", any shared career material to fold into references | `update-refs` | none | none | Never writes application content; never writes to Notion; never writes a reference without explicit approval |
 
 **One-pass utility modes** (no loops, no Notion writeback): `--coach` (conversational fit assessment), `--check` (single gatekeeper pass on pasted text), `--review` (single recruiter + HM pass), `--write-letter` (standalone letter draft), `--status` (read state.json and report).
 

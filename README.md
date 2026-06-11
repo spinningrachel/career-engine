@@ -219,6 +219,10 @@ The letter-writer and employment coach draw from this file for every cover lette
 
 `03-framework.md` ships as a blank template. Onboarding builds it from your submitted materials and interview answers. You can edit it directly at any time — it is a living document.
 
+### Keeping references current
+
+Say "update my references" (or just share a material — an updated CV, a new testimonial, a portfolio piece, changed role facts) and the `update-refs` skill folds it in. It classifies each item against the reference map, proposes update / replace / add operations with a before/after preview, and writes nothing without your approval. It never assumes: ambiguous items and brand-new reference files trigger clarifying questions — a new file is only created once you've said what it's for, which tasks should load it, and when, and it gets wired into the agents' loading tables in the same session. Approved CV bullets and validated summaries are protected — conflicts are surfaced, never silently overwritten.
+
 ---
 
 ## Running the pipeline
@@ -381,7 +385,7 @@ After export, the orchestrator:
 
 After all roles complete:
 
-- **LinkedIn updates** — aggregates Keywords from all coach outputs, counts cross-role frequency, and writes a `linkedin-updates-<date>.md` file with high-signal (3+ roles) and medium-signal (2 roles) terms alongside extracted summary phrases
+- **LinkedIn updates** — aggregates Keywords from all coach outputs, counts cross-role frequency, and analyses the signals against your actual LinkedIn profile (`references/linkedin-profile.md`): which terms are genuinely missing, which are buried, which are already covered, and which summary phrases would strengthen your real About section. Without a profile on file it falls back to raw signal lists and tells you how to provide one
 - **Revision log** — writes a run-level revision log with cross-run decisions and any technical issues encountered
 - **Why I Want This Role promotion** — new durable content from each role's Why I Want This Role field is promoted verbatim into the motivation bank in `02-professional-background.md` (Step 7f), so your angles and phrasings are reusable in future letters
 - **Bullet approval prompt** — asks which companies from this run you want to lock bullets for (see [How approved bullets work](#how-approved-bullets-work))
@@ -559,7 +563,7 @@ Files use a consistent slug format: `<roletitle>-<company>-<monYYYY>`. Role titl
 
 **Revision log (per run)** — cross-run decisions, orchestration issues, and any roles that failed or were dropped.
 
-**LinkedIn updates file** — high-frequency keywords across all roles processed in the run, with extracted summary phrases. Use this to refresh your LinkedIn headline and About section after a batch run.
+**LinkedIn updates file** — high-frequency keywords across all roles processed in the run, analysed against your LinkedIn profile snapshot (`references/linkedin-profile.md`): genuinely-missing terms with the section to add them to, buried terms worth surfacing, and About-section phrase upgrades paired with the sentence they'd replace. Recommendations follow `03-framework.md` as background guidance — a single career-shift role never drives a profile change unless it also strengthens your overall positioning. Provide the profile at onboarding or any time later (export your LinkedIn PDF and say "update my references"); a fresh export replaces the snapshot whenever you change your profile.
 
 **State file** (`state.json`) — machine-readable record of every role processed, including file paths, Notion page IDs, verdicts, and coach properties. Used by `--status` and crash recovery.
 

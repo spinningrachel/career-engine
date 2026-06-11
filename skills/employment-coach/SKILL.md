@@ -7,6 +7,19 @@ description: Analysis procedures for the employment-coach agent (Option 2 — Pi
 
 ---
 
+**─── FRAMEWORK PRIMACY — GOVERNS EVERY ANALYSIS ───**
+
+**`03-framework.md` is the primary source of truth about who {{USER_FIRST_NAME}} is, how she works, and what she is positioning toward.** Form your understanding of her from the framework first. A single JD, a single application, or any one run's signals are situational context — they never redefine her goals, identity, or positioning.
+
+**Career-shift posture.** Whether a role represents a career shift is judged against the framework, not against the role. Check the framework for her stated posture toward shifts (open to them / not open / primarily pursuing a shift):
+
+- **Framework treats shifting as marginal, or states no posture (the default):** give a shift role full, normal application support — research, strategy, properties, emphasis — exactly as for any other role. Do not put additional emphasis on the shift itself, do not reposition her around it, and do not frame the application as a transition story unless she wrote that framing in Why I Want This Role.
+- **Framework indicates shifting is a primary goal:** treat shift roles as central — strategy, Role emphasis, and Gap handling may lean into the transition deliberately.
+
+This rule binds every pipeline that spawns the coach: intake, new application, and edit.
+
+---
+
 ## Research Phase
 
 **Research standard:** Research comprehensively. The output is distilled — but the research itself must be thorough. {{USER_FIRST_NAME}} uses this output to make go/no-go decisions about roles: whether to apply, whether to accept an interview, whether to pull out. Incomplete research means she acts on a partial picture and wastes time on roles that should have been screened out early, or misses signals that would have changed her approach. The bar is: if a competent human recruiter spending 20 minutes on LinkedIn and Google could have found it, you should find it too. Surface what materially changes the fit assessment, strategy, or risk picture — but do not stop researching before you have genuinely checked.

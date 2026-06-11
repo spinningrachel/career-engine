@@ -446,6 +446,15 @@ Run after all roles complete. Inline — no agent spawn. Produces one file per r
 
 **Purpose:** Surface what the run's collective intelligence implies for {{USER_FIRST_NAME}}'s permanent LinkedIn profile — specifically, which keywords and framing choices recur across multiple JDs in this session, making them stronger signals than anything optimized for a single application.
 
+**Framework primacy.** `03-framework.md` is the primary source of truth about {{USER_FIRST_NAME}}'s goals and positioning; LinkedIn is a tool the plugin helps her improve, never a source of truth about her. Treat the framework as background guidance for every recommendation. The profile is permanent and serves her whole positioning: this run's roles — including any role that represents a career shift — must not pull recommendations toward themselves unless the change also strengthens her overall positioning. Only if the framework indicates a career shift is a primary goal may recommendations deliberately support the transition.
+
+### Step 8-pre — Load the LinkedIn profile reference
+
+Read `${CLAUDE_PLUGIN_ROOT}/references/linkedin-profile.md`.
+
+- **Profile available** (file exists and its content does not still contain the characters `{{` and `}}`): run Steps 8a–8c in **gap-analysis mode** — every recommendation is grounded in what the profile actually says today.
+- **Profile not provided** (file missing or still templated): run Steps 8a–8c in **fallback mode** — keyword aggregation without profile comparison. Open the output file with the note: "No LinkedIn profile on file — these are raw market signals, not a profile analysis. Provide a LinkedIn PDF export (say 'update my references') to get recommendations based on your actual profile."
+
 ### Step 8a — Aggregate keywords
 
 The coach returned a tiered `Keywords` string for each role processed this run (format: `Critical: ... | Important: ... | Nice-to-have: ...`). Collect all of them.
@@ -458,6 +467,11 @@ For each role, split on `|` to extract the three tier strings, then split each t
 - 1 role → omit — JD-specific, not a profile signal
 
 Note: With a 5-role cap per run, "2 roles" = 40% of the batch. That is a meaningful pattern, not noise.
+
+**Gap-analysis mode (profile available):** after building the frequency map, check every high- and medium-signal term against the actual profile content — headline, About, Skills list, and experience entries. Sort each term into:
+- **Already covered** — the term (or a direct equivalent) appears in the profile. Report where it appears; no action needed. Do not recommend adding what is already there.
+- **Genuinely missing** — the term appears nowhere in the profile. Recommend it, and name the specific profile section where it would do the most work (headline, About, Skills, or a specific experience entry).
+- **Present but buried** — the term appears only deep in an old experience entry while the JDs treat it as central. Recommend surfacing it (e.g., into the headline, About, or Skills).
 
 ### Step 8b — Extract summary phrases
 
@@ -472,6 +486,8 @@ This extracts the first non-empty paragraph after the `## SUMMARY` heading — w
 
 If a markdown file is missing (role used a different path or failed), skip that role's summary and note it.
 
+**Gap-analysis mode (profile available):** compare each extracted summary phrase against the profile's actual About section and headline. Only surface a phrase as a recommendation when it says something the About section doesn't already say, or says it meaningfully better — and state which existing About sentence it would strengthen or replace. Phrases that merely restate the current About are dropped, not listed.
+
 ### Step 8c — Write the file
 
 ```bash
@@ -485,37 +501,39 @@ MARKDOWN_EOF
 ```markdown
 # LinkedIn Updates — <YYYY-MM-DD> — <N> roles
 
-*Accumulated across <N> roles this session. Terms appearing in multiple JDs are profile signals — they indicate what recruiters in your current target market are searching for.*
+*Accumulated across <N> roles this session, analysed against your LinkedIn profile snapshot of <profile snapshot date>. Terms appearing in multiple JDs are profile signals — they indicate what recruiters in your current target market are searching for.*
+*(Fallback mode: replace the line above with the no-profile note from Step 8-pre and use the raw signal lists without the profile-comparison columns.)*
 
 ---
 
 ## Keywords
 
-### High signal — appeared in 3+ roles this session
+### Genuinely missing from your profile — add these
 
-- **<term>** — <N> roles: <Company A>, <Company B>, <Company C>
+- **<term>** — <N> roles: <Company A>, <Company B> → add to: <specific profile section>
 - ...
 
-*If a term here is not in your LinkedIn About section, headline, or Skills list, add it.*
+### Present but buried — surface these
 
-### Medium signal — appeared in 2 roles this session
-
-- **<term>** — <Company A>, <Company B>
+- **<term>** — <N> roles — currently only in <where it appears> → surface in: <headline / About / Skills>
 - ...
 
-*Worth adding if it fits naturally. Less urgent than high-signal terms.*
+### Already covered — no action
+
+- **<term>** — appears in <profile section>
+- ...
+
+*Career-shift guard: a term is only recommended if adding it strengthens the overall positioning per `03-framework.md` — not because a single role this run pointed at it.*
 
 ---
 
-## Summary phrases — review against your LinkedIn About section
+## About section — phrase upgrades
 
-First 1–2 sentences from each tailored CV summary this session. If any of these are stronger than what you currently have in your LinkedIn About section, adapt them.
-
-**<Company> — <Role Title>:**
-> <first 1–2 sentences of the CV summary>
+Tailored summary phrases from this run that say something your current About section doesn't — each paired with the existing About sentence it would strengthen or replace. Phrases that merely restate your About are omitted.
 
 **<Company> — <Role Title>:**
-> <first 1–2 sentences of the CV summary>
+> <phrase>
+*vs. your current:* "<existing About sentence>" — <one line on why the new phrasing is stronger>
 
 ---
 
