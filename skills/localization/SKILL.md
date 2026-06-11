@@ -12,6 +12,8 @@ description: >
 
 # Localization Skill
 
+> **Registry:** this pipeline is listed in the Pipeline Registry in `skills/career-engine/SKILL.md`. Actions owned by another pipeline's registry row are out of scope here — route to that pipeline instead of improvising.
+
 ## Opening
 
 ### What this skill governs

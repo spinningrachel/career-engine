@@ -21,6 +21,8 @@ allowed-tools:
 
 # Career Engine Onboarding
 
+> **Registry:** this pipeline is listed in the Pipeline Registry in `skills/career-engine/SKILL.md`. Actions owned by another pipeline's registry row are out of scope here — route to that pipeline instead of improvising.
+
 This skill sets up the plugin for a new user. It builds the three reference files that all pipeline agents read before writing anything:
 
 - `01-writing-rules.md` — fabrication guards, attribution rules, framing constraints, contact details
@@ -101,7 +103,7 @@ Based on their answers:
 2. Write `{{USER_DEFAULT_LANGUAGE}}` and `{{USER_SECOND_LANGUAGE}}` into `agents/localization.md` and `skills/localization/SKILL.md` (replacing placeholders).
 
 3. **If either language is right-to-left (RTL)** — this includes Hebrew, Arabic, Persian/Farsi, Urdu, and others:
-   > ⚠️ **RTL template required.** RTL text in a left-to-right Word template will render incorrectly — characters appear in the wrong order and alignment breaks. You will need a separate `.dotx` template configured for right-to-left layout before running the pipeline for RTL-language roles. See `skills/application-files-export/SKILL.md` for template setup instructions.
+   > ⚠️ **RTL template required.** RTL text in a left-to-right Word template will render incorrectly — characters appear in the wrong order and alignment breaks. You will need a separate `.dotx` template configured for right-to-left layout before running the pipeline for RTL-language roles. See `skills/career-engine-export/SKILL.md` for template setup instructions.
 
 4. **Database reminder:** Tell the user:
    > "Add all languages you configured to the **Languages** column in your Notion (or tracking) database for each role. The pipeline reads this column to decide whether to run localization. Use the exact values you configured: `{{USER_DEFAULT_LANGUAGE}}`, `{{USER_SECOND_LANGUAGE}}` (or both). A role with Languages = `{{USER_DEFAULT_LANGUAGE}}` only gets one set of outputs. A role with Languages = `{{USER_DEFAULT_LANGUAGE}}, {{USER_SECOND_LANGUAGE}}` gets both."
@@ -330,7 +332,7 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 2. Write a CSV file to `/tmp/career-engine-tracker.csv` containing only the header row with all required columns in order:
 
 ```
-Company,Position,Job URL,Status,Priority,JD Body,Why I Want This Role,Page Body,Role emphasis,JD proof,Keywords,Strategy,Role Type,Relationship type,Gap handling,Role summary,Hiring Manager's Name,Hiring manager's role,Manager role confirmed,Person who Advertised Role (if not Hiring Manager),No incumbents in this function,Landscape,First Advertised,Last Pipeline Run,Link to CV,Draft Directory,CV File Name,Letter File Name,Languages,Edit type,Note
+Company,Position,Job URL,Status,Priority,JD Body,Why I Want This Role,Role emphasis,JD proof,Keywords,Strategy,Role Type,Relationship type,Gap handling,Role summary,Hiring Manager's Name,Hiring manager's role,Manager role confirmed,Person who Advertised Role (if not Hiring Manager),No incumbents in this function,Landscape,First Advertised,Last Pipeline Run,Link to CV,Draft Directory,CV File Name,Letter File Name,Languages,Edit type,Note
 ```
 
 3. Tell the user: "Download this file and upload it to Google Sheets (File → Import → Upload). This creates your tracking sheet with all the required columns."
@@ -371,7 +373,7 @@ These values must match exactly — they are hard-coded in the pipeline that rea
 ```
 Create a database/table with the following columns. Do not rename them — they are referenced by exact name by an external pipeline.
 
-Columns: Company, Position, Job URL, Status, Priority, JD Body, Why I Want This Role, Page Body, Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, Gap handling, Role summary, Hiring Manager's Name, Hiring manager's role, Manager role confirmed, Person who Advertised Role (if not Hiring Manager), No incumbents in this function, Landscape, First Advertised, Last Pipeline Run, Link to CV, Draft Directory, CV File Name, Letter File Name, Languages, Edit type, Note
+Columns: Company, Position, Job URL, Status, Priority, JD Body, Why I Want This Role, Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, Gap handling, Role summary, Hiring Manager's Name, Hiring manager's role, Manager role confirmed, Person who Advertised Role (if not Hiring Manager), No incumbents in this function, Landscape, First Advertised, Last Pipeline Run, Link to CV, Draft Directory, CV File Name, Letter File Name, Languages, Edit type, Note
 
 Select column values (must match exactly):
 - Status: Hold | Interested | CV Ready for Review | Applied | Researched | Needs editing
@@ -396,6 +398,11 @@ Ask: "Do you want to use the included CV template (`cv-template-default.dotx`) o
 - If own file: ask for the path → write to `{{CV_TEMPLATE_FILE}}` placeholders
 - If default: write `${CLAUDE_PLUGIN_ROOT}/references/cv-template-default.dotx` to all `{{CV_TEMPLATE_FILE}}` placeholders
 
+**Draft Directory link base**
+Ask: "Do you use a cloud file-share (Anchorpoint, Dropbox, Google Drive) that produces a stable folder URL for your output folder? If yes, paste the base URL up to (and including) the separator before the date folder. If not, answer `skip`."
+- Write the answer (or the literal word `skip`) to every `{{DRAFT_DIR_URL_BASE}}` placeholder across skill files.
+- When the value is `skip`, the pipeline leaves the `Draft Directory` Notion property empty (see the unconfigured link base guard in `career-engine-export`).
+
 **Gap handling**
 Ask: "Should the pipeline run gap analysis for every role? Gap handling identifies where your background doesn't fully match the JD and gives the coach and writers a strategy for handling each gap.
 
@@ -404,19 +411,16 @@ Ask: "Should the pipeline run gap analysis for every role? Gap handling identifi
 
 If you're not sure, leave it enabled. You can always turn it off per-role when it isn't relevant."
 
-- If enabled: run the following bash command (substituting `enabled`):
-  ```bash
-  python3 -c "
-  import json, os
-  path = os.path.expanduser('~/.claude/settings.json')
-  with open(path) as f: s = json.load(f)
-  s['gap_handling'] = 'enabled'
-  with open(path, 'w') as f: json.dump(s, f, indent=2)
-  print('gap_handling: enabled written to settings.json')
-  "
+- Write the choice to the plugin's preferences file — this file ships inside the plugin, so the setting is visible in every environment (Claude Code, Cowork, anywhere the plugin runs). Write `${CLAUDE_PLUGIN_ROOT}/references/pipeline-preferences.json` with exactly:
+  ```json
+  {
+    "gap_handling": "enabled"
+  }
   ```
-- If disabled: run the same command with `'disabled'` instead.
-- Verify by running `python3 -c "import json,os; print(json.load(open(os.path.expanduser('~/.claude/settings.json'))).get('gap_handling'))"` and confirm the output matches the user's choice. If the file doesn't exist yet, create it as `{}` first.
+  (or `"disabled"`, matching the user's choice). Preserve any other keys already present in the file.
+- Do NOT write this preference to `~/.claude/settings.json` — that location is reachable only from the user's own machine and silently falls back to the default everywhere else. The pipeline still reads it as a legacy fallback, but the plugin file is the authority.
+- Verify by reading the file back and confirming the value matches the user's choice.
+- **Repackage reminder:** the preference must survive reinstalls — after setup completes, the personal `.plugin` zip must be rebuilt so the file travels with the plugin.
 
 Confirm: "Phase 5 complete. Job tracking, output folder, CV template, and gap handling preference are configured."
 

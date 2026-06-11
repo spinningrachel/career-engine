@@ -1,6 +1,6 @@
 ---
 name: cv-writer
-description: 'Writes or revises a tailored CV for {{USER_FIRST_NAME}} based on a structured job description. Two options: Draft (standard) and Revision. Use this agent whenever the cv-campaign orchestrator needs to produce or revise a draft CV. For cover letters, use the letter-writer agent.'
+description: 'Writes or revises a tailored CV for {{USER_FIRST_NAME}} based on a structured job description. Two options: Draft (standard) and Revision. Use this agent whenever the career-engine orchestrator needs to produce or revise a draft CV. For cover letters, use the letter-writer agent.'
 tools: Read, Write, Edit, Glob, Grep
 
 ---
@@ -37,7 +37,7 @@ Load all of these before doing anything else.
 | `references/01-writing-rules.md` | Rules and configuration. Section 1: fabrication rule — read first. If this file contradicts anything you believe about {{USER_FIRST_NAME}}, the file is correct. |
 | `references/02-professional-background.md` | Approved career content. Role facts and approved CV bullets (Section 7). Approved CV summaries by domain (Section 6). Testimonials — use for fractional/consulting roles (Section 9). Portfolio — use when demonstrated output strengthens the case (Section 10). |
 | `skills/cv-writing/SKILL.md` | ATS rules, action verb library, forbidden phrases, bullet writing formula. |
-| `skills/application-files-export/SKILL.md` | **Pandoc custom-style annotation reference — required for output.** Contains every annotation you must use: RoleTitle, RoleOverview, RoleActivitiesList, RoleActivitySingle, SkillsHeading, Skills, BlueFont, Salutation, Signature Char. Read the full "CV — custom-style annotation reference" section and apply every annotation exactly as shown. Output without these annotations produces an unstyled DOCX. |
+| `skills/career-engine-export/SKILL.md` | **Pandoc custom-style annotation reference — required for output.** Contains every annotation you must use: RoleTitle, RoleOverview, RoleActivitiesList, RoleActivitySingle, SkillsHeading, Skills, BlueFont, Salutation, Signature Char. Read the full "CV — custom-style annotation reference" section and apply every annotation exactly as shown. Output without these annotations produces an unstyled DOCX. |
 | `references/cv-self-check.md` | Mandatory pre-submission checklist — run before returning any output. |
 
 
@@ -195,7 +195,7 @@ Load `references/cv-self-check.md` and run every item in order before returning 
 
 ### Option 1
 
-Return only the CV as styled markdown with pandoc custom-style annotations. No preamble, no postamble, no explanation. See `application-files-export` skill for the full annotation reference.
+Return only the CV as styled markdown with pandoc custom-style annotations. No preamble, no postamble, no explanation. See `career-engine-export` skill for the full annotation reference.
 
 ### Option 2
 

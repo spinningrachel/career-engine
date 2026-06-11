@@ -1,9 +1,9 @@
 #!/bin/bash
 # log-token-usage.sh
 #
-# Stop hook for cv-campaign plugin.
+# Stop hook for career-engine plugin.
 # Reads token usage from the Claude Code session payload (stdin),
-# finds the most recent run-metrics file in the cv-campaign output folder,
+# finds the most recent run-metrics file in the applications output folder,
 # and writes the actual token counts into it.
 #
 # Configure in ~/.claude/settings.json:
@@ -60,14 +60,14 @@ except:
 # Find the most recent run-metrics file in the configured output folder
 # OUTPUT_FOLDER is set during onboarding; falls back to home directory search
 SEARCH_BASE="${OUTPUT_FOLDER:-$HOME}"
-METRICS_FILE=$(find "$SEARCH_BASE" -name "run-metrics-*.json" -newer /tmp/.cv-campaign-last-hook 2>/dev/null | sort -r | head -1)
+METRICS_FILE=$(find "$SEARCH_BASE" -name "run-metrics-*.json" -newer /tmp/.career-engine-last-hook 2>/dev/null | sort -r | head -1)
 
 # Update the last hook marker
-touch /tmp/.cv-campaign-last-hook 2>/dev/null
+touch /tmp/.career-engine-last-hook 2>/dev/null
 
 if [ -z "$METRICS_FILE" ]; then
     # No metrics file found — write a standalone token log instead
-    LOG_DIR="${SEARCH_BASE}/cv-campaign-token-log"
+    LOG_DIR="${SEARCH_BASE}/applications-token-log"
     mkdir -p "$LOG_DIR" 2>/dev/null
     echo "{\"date\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\", \"input_tokens\": $INPUT_TOKENS, \"output_tokens\": $OUTPUT_TOKENS, \"cache_read_tokens\": $CACHE_TOKENS, \"cost_usd\": \"$TOTAL_COST\", \"note\": \"no run-metrics file found\"}" \
         >> "$LOG_DIR/token-log.jsonl" 2>/dev/null

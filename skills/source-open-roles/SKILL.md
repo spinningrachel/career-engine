@@ -5,6 +5,8 @@ description: Logic for sourcing open roles across LinkedIn, remote-focused board
 
 # Source Open Roles — Search Logic
 
+> **Registry:** this pipeline is listed in the Pipeline Registry in `skills/career-engine/SKILL.md`. Actions owned by another pipeline's registry row are out of scope here — route to that pipeline instead of improvising.
+
 ---
 
 ## What This Skill Is For
@@ -154,7 +156,7 @@ Use these to surface roles posted directly on company career pages via their ATS
 
 Before scoring and displaying results, filter out any role that already exists in the Notion database.
 
-**How to check:** Query the Notion database using `notionApi` `API-query-data-source` with `notionDatabaseId` from preferences. Extract all `Company` + `Position` pairs. For each search result: if `(company name, role title)` matches any existing pair (case-insensitive, substring match on title), exclude it from results. Log the count of excluded duplicates.
+**How to check:** Query the Notion database using `notionApi` `API-query-data-source` with `notionDatabaseId` from preferences. If the `notionApi` server is not connected in the current session (e.g. Cowork, which provides only the standard Notion connector), use `notion-query-database-view` on the database URL instead and extract the same pairs — but if the returned table is misaligned (row/column counts don't match, cells empty where neighbours are not), do not parse it: log a warning, skip dedup for this run, and note in the results that duplicates were not filtered. A skipped dedup is recoverable; a mispaired Company/Position exclusion silently hides a real role. Extract all `Company` + `Position` pairs. For each search result: if `(company name, role title)` matches any existing pair (case-insensitive, substring match on title), exclude it from results. Log the count of excluded duplicates.
 
 If `notionDatabaseId` is not set, skip dedup and display a warning: "Notion deduplication skipped — no database ID configured. Run /career-engine:setup to configure."
 
@@ -187,7 +189,7 @@ Cap at 100. Sort descending. Roles without a title match should not appear unles
 Exclude any result where:
 - The title contains any `excludePatterns` value (case-insensitive substring match)
 - The role is already in the Notion database (see Deduplication)
-- The role was already surfaced in a previous search session saved to `/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring/sourcing/` (check saved search files from the last 14 days — skip roles that appeared with the same company + title)
+- The role was already surfaced in a previous search session saved to `{{OUTPUT_FOLDER}}/sourcing/` (check saved search files from the last 14 days — skip roles that appeared with the same company + title)
 
 ---
 

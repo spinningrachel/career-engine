@@ -1,11 +1,11 @@
 ---
-name: application-files-export
-description: DOCX production rules for the cv-campaign pipeline. Contains the pandoc conversion protocol, custom-style annotation reference, cover letter styles, and file naming conventions. Load this skill before any DOCX export step in the cv-campaign pipeline. Both the CV pipeline.
+name: career-engine-export
+description: DOCX production rules for the career-engine pipeline. Contains the pandoc conversion protocol, custom-style annotation reference, cover letter styles, and file naming conventions. Load this skill before any DOCX export step in the career-engine pipeline. Both the CV pipeline.
 ---
 
-# CV Campaign — DOCX Production
+# New Application — DOCX Production
 
-This skill governs all DOCX production in the cv-campaign pipeline. Load it before any DOCX export step. Output files are `.docx`, opened directly in Word. {{USER_FIRST_NAME}} exports to PDF before sending.
+This skill governs all DOCX production in the career-engine pipeline. Load it before any DOCX export step. Output files are `.docx`, opened directly in Word. {{USER_FIRST_NAME}} exports to PDF before sending.
 
 **The templates own all fonts, sizes, and colors — never hand-set these.**
 
@@ -34,9 +34,11 @@ Neither template should be read into context. Use them only as pandoc `--referen
 
 Run these steps in sequence. All bash commands run directly — no agent spawn needed.
 
+**Environment note (R-30):** the commands below assume Path A (direct filesystem access — see the orchestrator's Mandatory path verification). On Path B (sandboxed environment with host-bridge MCP access), run every command in this protocol through the host process tool (e.g. Desktop Commander `start_process`) and write files through the host file tools. Sandbox `/tmp/` is not visible to host-side pandoc — write intermediate markdown through the host tool to the output company directory (or a host temp path) instead.
+
 **Plugin dir:** the directory containing `agents/`, `skills/`, and `references/` — typically the plugin root.
 
-**Output dir:** `{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/`
+**Output dir:** `{{OUTPUT_FOLDER}}/applications-<YYYY-MM-DD>/`
 
 **Company directory:** Each role's files go in a subdirectory named after the hiring company. The subdirectory name is derived from the Company property: lowercase, spaces replaced with hyphens, non-alphanumeric-or-hyphen characters stripped, consecutive hyphens collapsed. If the result is empty or the company is unknown, use `unknown-company`.
 
@@ -69,7 +71,7 @@ Filename convention: lowercase, no spaces, hyphens between words, `.md` extensio
 Run the conversion script:
 
 ```bash
-bash "${CLAUDE_PLUGIN_ROOT}/skills/application-files-export/scripts/convert-cv.sh" \
+bash "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/convert-cv.sh" \
   "/tmp/<cv_filename>.md" \
   "/tmp/<cl_filename>.md" \
   "<output_dir>/<company_dir>" \
@@ -83,7 +85,7 @@ Pandoc inherits the header/footer from the reference template. {{USER_FIRST_NAME
 Run the subtitle script on the file in the output directory (convert-cv.sh writes DOCX directly to output_dir, not /tmp):
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/skills/application-files-export/scripts/update-subtitle.py" \
+python3 "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/update-subtitle.py" \
   "<output_dir>/<company_dir>/<cv_filename>.docx" \
   "<role title>"
 ```
@@ -120,11 +122,14 @@ After cv-writer returns a revised draft, re-run the full export protocol from St
 After both files are verified, construct the Draft Directory URL for this role's directory. Hold it in memory — the pipeline writes it to the `Draft Directory` Notion property in the writeback step.
 
 ```bash
-DATE_FOLDER=$(basename "<output_dir>")  # e.g. cv-campaign-2026-05-26
-DRAFT_DIR_URL="https://anchorpoint.app/link?p=projects%2F83fe790c-6170-462d-a560-ad639af051c6%2F${DATE_FOLDER}%2F${COMPANY_DIR}%2F"
+DATE_FOLDER=$(basename "<output_dir>")  # e.g. applications-2026-05-26
+DRAFT_DIR_URL="{{DRAFT_DIR_URL_BASE}}${DATE_FOLDER}%2F${COMPANY_DIR}%2F"
 ```
 
-Example: `https://anchorpoint.app/link?p=projects%2F83fe790c-6170-462d-a560-ad639af051c6%2Fcv-campaign-2026-05-26%2Fnuvoton%2F`
+**Unconfigured link base guard:** if the Draft Directory link base is the word `skip` or still contains the characters `{{` and `}}`, leave the `Draft Directory` property empty and continue — do not write a malformed URL.
+
+
+Example: `{{DRAFT_DIR_URL_BASE}}applications-2026-05-26%2Fnuvoton%2F`
 
 ---
 
@@ -176,7 +181,7 @@ HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
 
 # 1. Concatenate Hebrew CV markdown with Hebrew footer
 cat /tmp/he-<cv_filename>.md \
-    "${CLAUDE_PLUGIN_ROOT}/skills/application-files-export/static-cv-footer-he.md" \
+    "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/static-cv-footer-he.md" \
     > /tmp/he-<cv_filename>-with-footer.md
 
 # 2. Convert with pandoc using Hebrew CV template
@@ -185,7 +190,7 @@ pandoc /tmp/he-<cv_filename>-with-footer.md \
   -o "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx"
 
 # 3. Update subtitle
-python3 "${CLAUDE_PLUGIN_ROOT}/skills/application-files-export/scripts/update-subtitle.py" \
+python3 "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/update-subtitle.py" \
   "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx" \
   "<role title>"
 ```
@@ -201,7 +206,7 @@ pandoc /tmp/he-<cl_filename>.md \
 ```
 
 All files save to the role's company subdirectory:
-`{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/<company_dir>/`
+`{{OUTPUT_FOLDER}}/applications-<YYYY-MM-DD>/<company_dir>/`
 
 ---
 

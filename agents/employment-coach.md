@@ -62,19 +62,19 @@ Run for every role before any analysis. Process all roles in parallel.
 
 Check in this order:
 - `JD Body` property is populated → use it directly. Mark `content-exists`.
-- `JD Body` is empty but the Notion page body contains a full job description → use the page body as the JD text. Write it to `JD Body`, set `JD Fetch Status` = `Manual-entry`. Mark `content-exists`.
 
 **Step 2 — Fetch if no existing content.**
 
 For roles not marked `content-exists`, attempt to fetch the JD in this order — stop as soon as you get usable JD text (at minimum: role requirements and responsibilities):
 
 0. **LinkedIn MCP** — If the Job URL is a LinkedIn jobs URL (`linkedin.com/jobs/view/`), extract the job ID from the URL and call `mcp__linkedin-mcp__get_job_details(job_id)`. The tool returns the page content but sometimes only returns metadata (applicant stats, seniority breakdown) without the description text. **A result is usable only if it contains role requirements or responsibilities.** If the output contains only stats/metadata with no description, treat this as a failed fetch and continue to step 1.
-1. **WebFetch** — Try the Job URL directly. If blocked (LinkedIn login wall, gated portal, 403/redirect), continue to step 2.
-2. **Company careers page** — WebSearch for `site:<company-domain> <role title> careers` or `<company name> careers <role title>`. Try the company's own site before job boards.
-3. **Job board mirrors** — WebSearch for `"<role title>" "<company name>" site:greenhouse.io OR site:lever.co OR site:workday.com OR site:indeed.com OR site:glassdoor.com`. Try each board separately if the combined search yields nothing.
-4. **Exact title + company search** — WebSearch `"<exact role title>" "<company name>" job description`. This catches postings mirrored to news aggregators, LinkedIn public previews, or company blog announcements.
+1. **WebFetch** — Try the Job URL directly. If blocked (LinkedIn login wall, gated portal, 403/redirect) or the page returns without JD content (JavaScript-rendered shell), continue to step 2.
+2. **Rendering-capable extraction** — `WebFetch` is the weakest fetcher in any session. Check for stronger extraction tools with `ToolSearch` (keywords: `extract`, `crawl`, `scrape`, `browser`). Server-side extractors (e.g. a Tavily extract tool with `extract_depth: "advanced"`, or an Exa fetch tool) render pages that defeat WebFetch — including JavaScript-rendered career pages and LinkedIn auth-walled postings. Call the strongest available on the Job URL. If usable JD text returns, stop. If no such tool is connected or it also fails, continue to step 3 — and use this extractor (not WebFetch) on any candidate URL the search steps below surface.
+3. **Company careers page** — WebSearch for `site:<company-domain> <role title> careers` or `<company name> careers <role title>`. Try the company's own site before job boards.
+4. **Job board mirrors** — WebSearch for `"<role title>" "<company name>" site:greenhouse.io OR site:lever.co OR site:workday.com OR site:indeed.com OR site:glassdoor.com`. The `site:` list is a starting point, not a boundary — also check investor career boards (the lead VC's portfolio jobs page), BuiltIn boards, and regional aggregators via one open search. Try each board separately if the combined search yields nothing.
+5. **Exact title + company search** — WebSearch `"<exact role title>" "<company name>" job description`. This catches postings mirrored to news aggregators, LinkedIn public previews, or company blog announcements.
 
-If any fallback returns usable JD text (at minimum: role requirements and responsibilities), use it. Write `JD Body` and set `JD Fetch Status` = `Fetched-alternative` (not `Fetched`) so the pipeline knows the source was indirect.
+If any fallback returns usable JD text (at minimum: role requirements and responsibilities), use it. Write `JD Body` — when the source URL differs from the saved Job URL, record the actual source URL on the first line of `JD Body` — and set `JD Fetch Status` = `Fetched`. (`Fetched-alternative` is not a valid option in the Notion schema; the source-URL note in `JD Body` carries the indirect-source signal.)
 
 **If all fallbacks fail:** Do **not** drop this role. Instead:
 - Write `JD Fetch Status` = `Unfetchable`

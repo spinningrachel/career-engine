@@ -1,6 +1,6 @@
 ---
 name: career-engine
-description: "Run the career-engine pipeline. Main entry point for all campaign commands."
+description: "Run the career-engine pipeline. Main entry point for all career-engine commands."
 argument-hint: "[--edit | --coach-skills | --coach | --now <url> | --check | --review | --write-letter]"
 allowed-tools:
   # Core tools
@@ -29,19 +29,19 @@ allowed-tools:
   # Bash handles all file system operations (output folder copy, script execution) — no additional tool needed
 ---
 
-# CV Campaign
+# New Application
 
 ## What This Does
 
-This command runs {{USER_FIRST_NAME}}'s multi-agent CV campaign from start to finish. It fetches roles from her Notion Job Applications database, runs the employment coach for prioritization and writing guidance, generates tailored CVs and cover letters through a staged review pipeline, converts them to DOCX using pandoc, and saves files to the configured output folder. Per-role results are written back to Notion.
+This command runs {{USER_FIRST_NAME}}'s multi-agent career engine from start to finish. It fetches roles from her Notion Job Applications database, runs the employment coach for prioritization and writing guidance, generates tailored CVs and cover letters through a staged review pipeline, converts them to DOCX using pandoc, and saves files to the configured output folder. Per-role results are written back to Notion.
 
-Without arguments, the command runs the main campaign against all roles with Status = `Interested`. Two flags shift the mode.
+Without arguments, the command runs the main run against all roles with Status = `Interested`. Two flags shift the mode.
 
 ## Arguments
 
 | Flag | What runs |
 |---|---|
-| *(none)* | Main campaign — full pipeline for all `Interested` roles |
+| *(none)* | Main run — full pipeline for all `Interested` roles |
 | `--edit` | Editing pipeline — refine existing outputs for all `Needs editing` roles |
 | `--coach-skills` | Market intelligence only — research companies and assign priorities; no CVs generated |
 | `--coach` | Direct coaching — employment coach responds conversationally to a role question, fit assessment, or strategic framing question; no Notion writeback |
@@ -51,31 +51,49 @@ Without arguments, the command runs the main campaign against all roles with Sta
 | `--review` | Run recruiter and hiring manager review on a CV or cover letter {{USER_FIRST_NAME}} provides. Paste the document and JD in chat. Returns both reviews in sequence. Treats prior verdicts as N/A when none exist. One pass only. |
 | `--write-letter` | Write a cover letter for a single role without the full pipeline. Provide a URL or JD text. Spawns `letter-writer` in standalone mode — no CV required, no reviewers, no gatekeeper loop. Returns a cover letter draft. |
 
+## Pipeline Registry
+
+The complete list of pipelines this plugin can run. Before taking any action, confirm it belongs to the pipeline you are running — anything owned by another pipeline's row is out of scope and must not be improvised.
+
+| # | Pipeline | Trigger | Entry skill | Hard preconditions | Status transitions owned | Never does |
+|---|---|---|---|---|---|---|
+| 1 | Setup | `/career-engine:setup`, "set up the plugin" | `career-engine-setup` | none | none | Writes no application content |
+| 2 | Sourcing | "find open roles", "source roles" | `source-open-roles` | preferences saved | creates rows (new roles enter as `Hold`) | Never writes CVs or letters |
+| 3 | Intake | "run intake", `--coach-skills` | `career-engine-intake` | database configured | `Hold` → `Researched` (standalone mode only) | Never writes CVs or letters; never creates or modifies Notion views |
+| 4 | New Application | career-engine command, no flag | `career-engine-orchestrator` + `career-engine-new-application` | Intake has run; `Why I Want This Role` filled for any role needing a letter | `Interested` → downstream statuses per orchestrator | Orchestrator never authors document content |
+| 5 | Fast track | `--now <url or JD>` | `career-engine-orchestrator` → --now Mode | Why I Want This Role collected in chat, else CV-only | none — no Notion row | Never reads or writes Notion |
+| 6 | Edit | "edit CVs", `--edit`, Status = `Needs editing` | `career-engine-edit` | `Edit type` set; `Why I Want This Role` populated for the letter track | `Needs editing` → `CV Ready for Review` | Never starts from scratch; always edits the existing Notion-documented outputs |
+| 7 | Localization | automatic when `Languages` includes the second language | `localization` | English DOCX files complete | none | Translation only — never drafts, revises, or evaluates |
+| 8 | LinkedIn coach | "review my LinkedIn", "optimise my profile" | `linkedin-coach` | none | none | Never writes to Notion |
+| 9 | Personal brand | "build my personal brand", "refresh my bio" | `personal-brand` | none | none | Never writes to Notion |
+
+**One-pass utility modes** (no loops, no Notion writeback): `--coach` (conversational fit assessment), `--check` (single gatekeeper pass on pasted text), `--review` (single recruiter + HM pass), `--write-letter` (standalone letter draft), `--status` (read state.json and report).
+
 ## Running the Pipeline
 
 Load the following skills in order before doing anything. Do not spawn any sub-agent until all required skills are loaded.
 
-**Main campaign (no flag):**
+**Main run (no flag):**
 1. `01-writing-rules.md` — core constraints governing every agent; load first
-2. `applications-orchestrator` — queue cap, queue selection logic, Role Type and Priority Definitions, Notion property ownership, Steps 8–9 (LinkedIn updates file, run-level revision log), Post-Run Validation, State File and crash recovery
-3. `application-intake` — Steps 0 through 0.10: fetch roles, run employment coach, build queue, warm-up role selection
-4. `new-application-steps` — Step 0.10 and Steps 1 through 7d: CV draft, gatekeeper, recruiter review, HM review, CV revision, cover letter draft through final gatekeeper, DOCX export, Notion writeback, reviewer feedback file
-6. `application-files-export` — DOCX production protocol, pandoc commands, template styles, page count verification
+2. `career-engine-orchestrator` — queue cap, queue selection logic, Role Type and Priority Definitions, Notion property ownership, Steps 8–9 (LinkedIn updates file, run-level revision log), Post-Run Validation, State File and crash recovery
+3. `career-engine-intake` — Steps 0 through 0.9d: fetch roles, run employment coach, build queue
+4. `career-engine-new-application` — Step 0.10 and Steps 1 through 7d: CV draft, gatekeeper, recruiter review, HM review, CV revision, cover letter draft through final gatekeeper, DOCX export, Notion writeback, reviewer feedback file
+5. `career-engine-export` — DOCX production protocol, pandoc commands, template styles, page count verification
 
 **`--edit` flag:**
-Load in order: `01-writing-rules.md`, `application-files-export`, `application-edit`. Follow the editing pipeline as written in that skill.
+Load in order: `01-writing-rules.md`, `career-engine-export`, `career-engine-edit`. Follow the editing pipeline as written in that skill.
 
 **`--coach-skills` flag:**
-Load `coach` only. Follow that skill and stop.
+Load `career-engine-coach` only. Follow that skill and stop.
 
 **`--coach` flag:**
 Load `01-writing-rules.md` first. Then spawn `employment-coach` in direct coaching mode. Pass {{USER_FIRST_NAME}}'s question, role URL, or JD text as the input. The coach responds conversationally — no structured output format, no Notion writeback.
 
 **`--now <url or JD text>` flag:**
-Load in order: `01-writing-rules.md`, `applications-orchestrator` (read the `--now` mode section), `new-application-steps`, `application-files-export`. Follow the `--now` flow defined in `applications-orchestrator`.
+Load in order: `01-writing-rules.md`, `career-engine-orchestrator` (read the `--now` mode section), `career-engine-new-application`, `career-engine-export`. Follow the `--now` flow defined in `career-engine-orchestrator`.
 
 **`--status` flag:**
-Load `applications-orchestrator` (read the `--status` section). No other skills needed. No Notion access, no agents spawned — read-only filesystem operation.
+Load `career-engine-orchestrator` (read the `--status` section). No other skills needed. No Notion access, no agents spawned — read-only filesystem operation.
 
 **`--check` flag:**
 Load `01-writing-rules.md` first. Then spawn `gatekeeper` directly:

@@ -1,9 +1,11 @@
 ---
-name: new-application-steps
-description: 'Per-role pipeline for the cv-campaign orchestrator. Handles Step 0.10 (warm-up role selection) and Steps 1 through 7 for New Applications pipeline roles: CV draft, gatekeeper, recruiter review, HM review, CV revision, cover letter draft, cover letter gatekeeper, cover letter recruiter review, cover letter HM review, cover letter revision, cover letter gatekeeper (post-revision), DOCX export for both files, and Notion writeback. The structured JD for each role is already in memory from the queue pipeline — do not re-fetch. Load this skill as part of the cv-campaign pipeline, after application-intake.'
+name: career-engine-new-application
+description: 'Per-role pipeline for the career-engine orchestrator. Handles Step 0.10 (warm-up role selection) and Steps 1 through 7 for New Applications pipeline roles: CV draft, gatekeeper, recruiter review, HM review, CV revision, cover letter draft, cover letter gatekeeper, cover letter recruiter review, cover letter HM review, cover letter revision, cover letter gatekeeper (post-revision), DOCX export for both files, and Notion writeback. The structured JD for each role is already in memory from the queue pipeline — do not re-fetch. Load this skill as part of the career-engine pipeline, after career-engine-intake.'
 ---
 
-# CV Campaign — Per-Role Pipeline
+# New Application — Per-Role Pipeline
+
+> **Registry:** this pipeline is listed in the Pipeline Registry in `skills/career-engine/SKILL.md`. Actions owned by another pipeline's registry row are out of scope here — route to that pipeline instead of improvising.
 
 This skill covers Step 0.10 and Steps 1 through 7 of the New Applications pipeline. Step 0.10 runs once before the per-role loop begins. Steps 1 through 7 repeat for each role in the processing queue. The structured JD was fetched in Step 0.5 and is in memory — pass it directly without re-fetching.
 
@@ -53,7 +55,7 @@ Spawn `gatekeeper` with `option=content`, passing the draft CV text, `Role summa
 
 **If PASS:** proceed to Step 2.
 
-**If FAIL:** review the violation list. If all violations are mechanical and unambiguous (swap two words, remove one phrase, reorder paragraphs — no creative judgment required), apply them inline. If any violation requires cv-writer judgment (rewriting a bullet, resolving a fabrication flag), spawn `cv-writer` with `option=revision`, passing the draft and the gatekeeper's full violation list. After fix, spawn `gatekeeper` again with `option=content`. Repeat until PASS. Do not surface this loop to {{USER_FIRST_NAME}} — log violation rounds internally.
+**If FAIL:** review the violation list. If all violations are mechanical and unambiguous (swap two words, remove one phrase, reorder paragraphs — no creative judgment required), apply them inline. If any violation requires cv-writer judgment (rewriting a bullet, resolving a fabrication flag), spawn `cv-writer` with `option=revision`, passing the draft and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After fix, spawn `gatekeeper` again with `option=content`. Repeat until PASS. Do not surface this loop to {{USER_FIRST_NAME}} — log violation rounds internally.
 
 **Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 1.5)` section in the revision log, proceed to Step 2, and flag for {{USER_FIRST_NAME}} in the final delivery that this CV needs manual review before sending.
 
@@ -97,7 +99,7 @@ Spawn `gatekeeper` with `option=content`, passing the revised CV text, `Role sum
 
 **If PASS:** proceed to Step 5.
 
-**If FAIL:** spawn `cv-writer` with `option=revision`, passing the revised CV and the gatekeeper's full violation list. After revision, re-save the updated markdown to `/tmp/` and the output backup path before spawning `gatekeeper` again. Repeat until PASS. Log all violation rounds internally.
+**If FAIL:** spawn `cv-writer` with `option=revision`, passing the revised CV and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, re-save the updated markdown to `/tmp/` and the output backup path before spawning `gatekeeper` again. Repeat until PASS. Log all violation rounds internally.
 
 **Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 4.5)` section in the revision log, proceed to Step 5, and flag for {{USER_FIRST_NAME}} in the final delivery that this CV needs manual review before sending.
 
@@ -115,8 +117,6 @@ Read the following from Notion for this role:
 
 **Why I Want This Role property** — {{USER_FIRST_NAME}}'s written motivation for this role, filled in manually in Notion. If populated, include the full content in the letter-writer prompt as the primary content input.
 
-**Page body content** — Optional additional background {{USER_FIRST_NAME}} may have added (her reaction to the role, any context she wants in the letter). Include if present. If blank, skip — it is not required.
-
 **If Why I Want This Role is empty:** Do NOT proceed to Step 5 for this role. Skip the cover letter entirely. Deliver the CV only. Log this role as "Letter skipped — Why I Want This Role is empty." Do NOT generate questions. Do NOT spawn letter-writer. Surface this message to {{USER_FIRST_NAME}}:
 
 > **Letter skipped for [Company] — [Role Title].** The "Why I Want This Role" field in Notion is empty. Fill it in and re-run the pipeline for this role to get a cover letter.
@@ -130,11 +130,11 @@ Read the following from Notion for this role:
 **Before spawning letter-writer:** Read `02-professional-background.md` (Role Facts) for {{USER_FIRST_NAME}}'s role facts — key proof points from `02-professional-background.md` (Role Facts). Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
 
 **Before spawning, pass the following for this role:**
-- **Why I Want This Role property** and **Page body content** — use the values retrieved in Pre-Step 5. Do not re-read from Notion.
+- **Why I Want This Role property** — use the value retrieved in Pre-Step 5. Do not re-read from Notion.
 - **Strategy** property — from the employment coach
 - **Gap handling** property — from the employment coach
 
-**Priority rule:** Why I Want This Role and page body content take precedence over Strategy and Gap handling. If there is any conflict between them on what content to prioritise or how to organise the letter, Why I Want This Role and page body content win.
+**Priority rule:** Why I Want This Role takes precedence over Strategy and Gap handling. If there is any conflict between them on what content to prioritise or how to organise the letter, Why I Want This Role wins.
 
 **Include this verbatim at the front of the letter-writer prompt:**
 > STRUCTURE IS NON-NEGOTIABLE. Regardless of any reviewer feedback you receive, the letter structure defined in `cover-letter/SKILL.md` must be observed in full — in particular the tone, voice, and content of the opening paragraph. Reviewer feedback informs what proof to include or emphasise; it does not change how the letter is structured or how the opening is written.
@@ -145,8 +145,7 @@ Spawn `letter-writer` with `option=cover-letter`, passing:
 - The coach's Relationship type
 - The HM CV verdict from Step 3 — if Conditional, quote the specific condition verbatim so letter-writer knows upfront what the cover letter must address
 - **Why I Want This Role** from Notion (read above) — primary content input; include if populated
-- **Page body content** from Notion (read above) — supplementary; include if present
-- **Strategy** and **Gap handling** from Notion (read above) — secondary context; defer to Why I Want This Role and page body content on any conflict
+- **Strategy** and **Gap handling** from Notion (read above) — secondary context; defer to Why I Want This Role on any conflict
 
 **Orchestrator quality read — before passing to gatekeeper:**
 
@@ -160,11 +159,11 @@ If the answer to any of these is "no," return to `letter-writer` with `option=co
 
 ### Step 5.2 — Gatekeeper (cover letter draft check)
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Why I Want This Role content and page body content (from the Pre-Step 5 read). The Why I Want This Role and page body content allows the gatekeeper to apply the personal-content exemption correctly — see the exemption rule at the top of Option 2 in `gatekeeper-checks/SKILL.md`.
+Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Why I Want This Role content (from the Pre-Step 5 read). The Why I Want This Role content allows the gatekeeper to apply the personal-content exemption correctly — see the exemption rule at the top of Option 2 in `gatekeeper-checks/SKILL.md`.
 
 **If PASS:** proceed to Step 5.3.
 
-**If FAIL:** spawn `letter-writer` with `option=revision`, passing the cover letter and the gatekeeper's full violation list. After revision, spawn `gatekeeper` again with `option=cover-letter`. Repeat until PASS. Log all violation rounds internally.
+**If FAIL:** spawn `letter-writer` with `option=revision`, passing the cover letter and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again with `option=cover-letter`. Repeat until PASS. Log all violation rounds internally.
 
 **Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 5.2)` section in the revision log, proceed to Step 5.3, and flag for {{USER_FIRST_NAME}} in the final delivery that this cover letter needs manual review before sending.
 
@@ -203,11 +202,11 @@ cp /tmp/<coverletter_filename>.md "<output_dir>/<company_dir>/<coverletter_filen
 
 ### Step 5.8 — Gatekeeper (cover letter final check)
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the revised cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Why I Want This Role content and page body content (same as Step 5.2).
+Spawn `gatekeeper` with `option=cover-letter`, passing the revised cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Why I Want This Role content (same as Step 5.2).
 
 **If PASS:** proceed to Step 5.9.
 
-**If FAIL:** spawn `letter-writer` with `option=revision`, passing the revised cover letter and the gatekeeper's full violation list. After revision, re-save the updated markdown to `/tmp/` and the output backup path before spawning `gatekeeper` again. Repeat until PASS. Log all violation rounds internally.
+**If FAIL:** spawn `letter-writer` with `option=revision`, passing the revised cover letter and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, re-save the updated markdown to `/tmp/` and the output backup path before spawning `gatekeeper` again. Repeat until PASS. Log all violation rounds internally.
 
 **Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 5.8)` section in the revision log, proceed to Step 5.9, and flag for {{USER_FIRST_NAME}} in the final delivery that this cover letter needs manual review before sending.
 
@@ -221,19 +220,32 @@ The humanizer is a writing editor and linguistics expert. It loads `skills/cover
 
 **Wait for the humanizer to return** the corrected letter and its change log before proceeding.
 
-Save the humanizer's output to `/tmp/` and the output backup path, overwriting the previous cover letter markdown. The change log goes into the revision log under `## Humanizer changes`.
+Before overwriting, copy the current (Step 5.8-passing) markdown to a sibling file with the suffix `.prehumanizer.md` — this is the revert target for Step 5.95. Then save the humanizer's output to `/tmp/` and the output backup path, overwriting the previous cover letter markdown. The change log goes into the revision log under `## Humanizer changes`.
 
-This step is non-blocking — if the humanizer returns no changes, proceed normally. If the humanizer fails, log the failure and proceed with the pre-humanizer version.
+If the humanizer fails or returns no changes, proceed with the pre-humanizer version (which already passed Step 5.8).
+
+### Step 5.95 — Final verification on the exported bytes
+
+The humanizer changed the text after the last PASS, so that PASS is no longer valid. Run both checks below on the **exact saved markdown** that Step 6 will convert:
+
+1. **Mechanical pre-export checklist** — run directly, no subagent. On the letter body (ignore pandoc fence lines starting `:::` and `{custom-style=...}` attributes):
+   - Company name appears in the first body paragraph.
+   - Role title appears somewhere in the body.
+   - Zero em dashes (`—`) and zero colons in body text.
+   - Zero hits for the named banned patterns: "I know this", "that's where", "that's what", "that's the kind", "that exact", "exactly that", "this same", "serves as", "stands as", "acts as".
+2. **Final gatekeeper pass** — spawn `gatekeeper` with `option=cover-letter` on this exact text.
+
+**If both pass:** proceed to Step 6. **If either fails:** spawn `cover-letter-humanizer` again with the specific failures named (language-level issues) or `letter-writer` with `option=revision` (content-level issues), then re-run this step. Cap: 2 rounds. After the cap, revert to the `.prehumanizer.md` file saved in Step 5.9 (the last text that passed Step 5.8) and flag the letter for manual review in the final delivery. Never export text that has not passed this step.
 
 ---
 
 ## Step 6 — Produce DOCX
 
-**Before executing this step:** confirm `application-files-export` is loaded. If it is not already in context, load it now — read `skills/application-files-export/SKILL.md` before proceeding. Do not execute Step 6 without it.
+**Before executing this step:** confirm `career-engine-export` is loaded. If it is not already in context, load it now — read `skills/career-engine-export/SKILL.md` before proceeding. Do not execute Step 6 without it.
 
-Both the CV and the cover letter are now final markdown files saved to `/tmp/`. Convert both to `.docx` using pandoc with the `.dotx` reference templates. Run bash directly — no agent spawn needed.
+Both the CV and the cover letter are now final markdown files saved to `/tmp/`. Convert both to `.docx` using pandoc with the `.dotx` reference templates. Run bash directly — no agent spawn needed. **On Path B (host-bridge MCP — see the orchestrator's Mandatory path verification, R-30), run these commands through the host process tool instead, with intermediate markdown written host-side rather than to sandbox `/tmp/`.**
 
-Follow the `application-files-export` skill's Step 6 production protocol exactly — it is the single authoritative source for pandoc commands, script paths, subtitle update, and verification. Do not substitute your own abbreviated steps. Both files must exist and be nonzero in the output folder before proceeding to Step 7.
+Follow the `career-engine-export` skill's Step 6 production protocol exactly — it is the single authoritative source for pandoc commands, script paths, subtitle update, and verification. Do not substitute your own abbreviated steps. Both files must exist and be nonzero in the output folder before proceeding to Step 7.
 
 **Subtitle argument:** Pass the exact role title from the JD as the subtitle argument to `update-subtitle.py` — the job title {{USER_FIRST_NAME}} is applying for (e.g., "[Role Title from JD]"). This is the ONLY text that should appear in the subtitle slot under {{USER_FIRST_NAME}}'s name. Do not pass a generic descriptor, {{USER_FIRST_NAME}}'s background framing, or anything not directly taken from the JD role title field.
 
@@ -271,14 +283,14 @@ cp /tmp/he-<cv_filename>.md "<output_dir>/"
 cp /tmp/he-<cl_filename>.md "<output_dir>/"
 ```
 
-Convert using the Hebrew DOCX production protocol from `application-files-export`:
+Convert using the Hebrew DOCX production protocol from `career-engine-export`:
 
 ```bash
 HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
 
 # Hebrew CV — concatenate with Hebrew footer, then convert
 cat /tmp/he-<cv_filename>.md \
-    "${CLAUDE_PLUGIN_ROOT}/skills/application-files-export/static-cv-footer-he.md" \
+    "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/static-cv-footer-he.md" \
     > /tmp/he-<cv_filename>-with-footer.md
 
 pandoc /tmp/he-<cv_filename>-with-footer.md \
@@ -286,7 +298,7 @@ pandoc /tmp/he-<cv_filename>-with-footer.md \
   -o "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx"
 
 # Hebrew CV subtitle
-python3 "${CLAUDE_PLUGIN_ROOT}/skills/application-files-export/scripts/update-subtitle.py" \
+python3 "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/update-subtitle.py" \
   "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx" \
   "<role title>"
 
@@ -327,7 +339,7 @@ ls -lh "<output_dir>/<company_dir>/<cl_filename>.docx"
 **Only if both files exist and are nonzero:** write the Draft Directory URL to the `Draft Directory` URL property on the Notion row (match by Page ID from Step 0), then write `state.json` in Step 7b, then write remaining Notion properties in Step 7c.
 
 ```
-Draft Directory: https://anchorpoint.app/link?p=projects%2F83fe790c-6170-462d-a560-ad639af051c6%2F<date-folder>%2F<company_dir>%2F
+Draft Directory: {{DRAFT_DIR_URL_BASE}}<date-folder>%2F<company_dir>%2F
 ```
 
 If the Notion writeback itself fails after files are confirmed, log it and surface it in the final delivery — the files are on disk and state.json captures the data as fallback.
@@ -335,9 +347,9 @@ If the Notion writeback itself fails after files are confirmed, log it and surfa
 ### Step 7b — Write state file (crash-recovery)
 
 Append this role's data to:
-`{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/state.json`
+`{{OUTPUT_FOLDER}}/applications-<YYYY-MM-DD>/state.json`
 
-Create the file on the first role; append on subsequent ones. Use the `/tmp→output folder` copy protocol from `application-files-export`. Use the shortened path format for all paths — `cv-campaign-<YYYY-MM-DD>/<filename>` only, never the full output folder path.
+Create the file on the first role; append on subsequent ones. Use the `/tmp→output folder` copy protocol from `career-engine-export`. Use the shortened path format for all paths — `applications-<YYYY-MM-DD>/<filename>` only, never the full output folder path.
 
 **To append (role 2+):** Read the existing state.json, parse the `roles` array, push the new role object, and write the full updated JSON back. Do not use `cat >` on a file that already exists — that overwrites the file and loses all previous role entries.
 
@@ -358,7 +370,7 @@ Create the file on the first role; append on subsequent ones. Use the `/tmp→ou
       "hm_cv_verdict": "<Yes|Conditional|No>",
       "hm_cl_verdict": "<Proceed|Return>",
       "revision_log_path": "<company_dir>/revision-log-<roletitle>-<company>-<monYYYY>.md",
-      "draft_dir_url": "https://anchorpoint.app/link?p=projects%2F83fe790c-6170-462d-a560-ad639af051c6%2F<date-folder>%2F<company_dir>%2F",
+      "draft_dir_url": "{{DRAFT_DIR_URL_BASE}}<date-folder>%2F<company_dir>%2F",
       "role_emphasis": "<1-2 sentence real mandate interpretation>",
       "jd_proof": "<verbatim quote from JD>",
       "keywords": "Critical: <terms> | Important: <terms> | Nice-to-have: <terms>",
@@ -376,7 +388,7 @@ Create the file on the first role; append on subsequent ones. Use the `/tmp→ou
 - `company_dir` — the kebab-case company directory name (same as used for the subdirectory)
 - `hm_cv_verdict` / `hm_cl_verdict` — record both verdicts separately; omit `hm_cl_verdict` if the cover letter loop did not complete
 - `date_first_advertised` / `remote_compatibility` — from the coach's research output; write `null` if not available (e.g., content-exists roles where coach skipped fetching)
-- All paths are relative to the campaign folder (e.g., `company-name/cv-{{USER_LAST_NAME}}-[role-title]-company-name-may2026.docx`). Hebrew files are not listed separately — they are in the same `company_dir` and accessible via the Draft Directory URL.
+- All paths are relative to the run folder (e.g., `company-name/cv-{{USER_LAST_NAME}}-[role-title]-company-name-may2026.docx`). Hebrew files are not listed separately — they are in the same `company_dir` and accessible via the Draft Directory URL.
 
 ### Step 7c — Write pipeline outputs to Notion properties
 
@@ -483,3 +495,15 @@ After Step 7d, record in state.json that this role produced new (unapproved) bul
 ```
 
 This flag is read by the orchestrator's Step 9b (bullet approval prompt) at the end of the full run. Roles where bullets were already approved in a prior run and no new bullets were written do not need this flag set.
+
+### Step 7f — Why I Want This Role promotion
+
+Runs for every role in the run whose `Why I Want This Role` field is populated — including roles where the letter track was skipped. This step is mechanical and must never block delivery: if it fails, log the failure and continue.
+
+1. Read `${CLAUDE_PLUGIN_ROOT}/references/02-professional-background.md` in full.
+2. Compare the role's `Why I Want This Role` content against the entire file. Identify content that is **new to the plugin**: durable motivation themes (e.g., why a sector, company stage, or role type draws her), standing professional observations, reusable angles, and characteristic phrasings worth carrying into future letters.
+3. **Exclude:** anything already captured in the file (even in different words), purely role- or company-specific reactions with no reuse value, and anything that is not her own written content. Promote only what she actually wrote — never infer, extrapolate, or paraphrase into new claims.
+4. Append each new entry to Section 5 → "Promoted from Why I Want This Role," quoting her phrasing **verbatim**, in the entry format defined there: `- **[Topic]** — "[verbatim quote]" *(from Why I Want This Role — [Company], [YYYY-MM-DD])*`.
+5. **Factual claims route differently:** if her content contains a new durable career fact (an outcome, metric, deliverable, or role detail) that belongs in Section 7 (Role Facts), do NOT write it there — Section 7 entries require her approval. Flag it in the final delivery instead: "New role fact in Why I Want This Role ([Company]): '[quote]' — add to 02-professional-background.md §7 if accurate."
+6. Append-only. Never rewrite, merge, or delete existing entries anywhere in the file.
+7. Log the result in the final delivery per role: "Promoted N new entries to the motivation bank" or "No new content to promote."
