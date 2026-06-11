@@ -1,6 +1,6 @@
 # {{USER_FULL_NAME}} — Executive Positioning & Messaging Framework
 
-> **Setup required.** This file ships as a blank template. Run `/cv-campaign:setup` to populate it with your own positioning data, or fill in each `{{...}}` placeholder manually. Once complete, this file is the single source of truth that all agents use for positioning, voice, methodology, and domain narratives.
+> **Setup required.** This file ships as a blank template. Run `/career-engine:setup` to populate it with your own positioning data, or fill in each `{{...}}` placeholder manually. Once complete, this file is the single source of truth that all agents use for positioning, voice, methodology, and domain narratives.
 
 ---
 

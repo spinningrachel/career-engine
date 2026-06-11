@@ -40,7 +40,7 @@ Run every item in order before returning output.
 
 ### Opening
 - [ ] **Source check — do this first:** Does the opener express the angle and content the candidate provided in Why I Want This Role? The substance — what they said they want to communicate, their key phrases, their specific angle on this role — must be present. The opener must not express a different framing derived from the agent's own reading of the JD. Check specifically: (a) are their key phrases and ideas present? (b) does any sentence express something they did not write and did not ask for? If yes to (b), remove it.
-- [ ] The opener is based **solely on Why I Want This Role** — not on page body, not on the JD, not on the coach output
+- [ ] The opener is based **solely on Why I Want This Role** — not on the JD, not on the coach output
 - [ ] The opener uses the candidate's actual language — their tone, their vocabulary, their phrasing — polished to be appropriate for formal writing, but not replaced with generic professional language
 - [ ] The opening paragraph is first person and establishes the candidate's reaction to this specific role
 - [ ] No second-person sentences in the opening paragraph ("Your buyers are...," "Your product does...," "Your sales motion...")

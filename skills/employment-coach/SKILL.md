@@ -133,19 +133,13 @@ Did you scan LinkedIn for ALL {{USER_PROFESSION}} team members at this company, 
 
 ### Settings pre-flight
 
-Before any analysis, read `~/.claude/settings.json` and check for the `gap_handling` key.
+Before any analysis, determine the gap handling mode in this order:
 
-```bash
-python3 -c "
-import json, os
-path = os.path.expanduser('~/.claude/settings.json')
-with open(path) as f:
-    s = json.load(f)
-print(s.get('gap_handling', 'enabled'))
-"
-```
+1. **Spawn prompt** — when invoked by a pipeline, the orchestrating skill passes `gap_handling_mode` in your prompt. Use it; skip the rest of this pre-flight.
+2. **Plugin preferences file** — otherwise, Read `${CLAUDE_PLUGIN_ROOT}/references/pipeline-preferences.json` (Read tool — you do not have Bash) and use its `gap_handling` value.
+3. **Default** — if the file or key is missing, use `enabled`.
 
-- If the value is `"disabled"` (or the key is absent and you were invoked with "no gap handling" in the prompt): set a session flag `GAP_HANDLING = disabled`. For every role, write `N/A — gap handling disabled (user preference)` to `Gap handling` and skip all gap analysis in Part 2.
+- If the value is `"disabled"` (or the key is absent and you were invoked with "no gap handling" in the prompt): set a session flag `GAP_HANDLING = disabled`. Skip all gap analysis in Part 2 and do NOT populate the `Gap handling` property at all — do not write `N/A` (this matches intake Step −1: the property stays empty when gap handling is disabled).
 - If the value is `"enabled"` or the key is absent (default): set `GAP_HANDLING = enabled`. Proceed normally.
 - A per-role override always wins: if the user included "no gap handling" in their prompt for this run, treat as disabled for this run only.
 
@@ -224,9 +218,9 @@ Surface this reading in Strategy and Role emphasis. Do not repeat what the JD sa
 **Required — must be populated for every role that passes the pre-flight check:**
 `Role emphasis` · `JD proof` · `Keywords` · `Strategy` · `Role Type` · `Relationship type` · `Gap handling` · `Landscape`
 
-All seven fields are non-negotiable. The cv-writer and letter-writer cannot run without them. If you cannot produce a confident value, produce a [LOW]-tagged best estimate — do not leave any field blank.
+All eight fields are non-negotiable when gap handling is enabled (seven when disabled — `Gap handling` drops out entirely). The cv-writer and letter-writer cannot run without them. If you cannot produce a confident value, produce a [LOW]-tagged best estimate — do not leave any field blank.
 
-`Gap handling` is always required. If `GAP_HANDLING = disabled` (set in the Settings pre-flight), write `N/A — gap handling disabled (user preference)` and skip all gap analysis. If enabled and there are no material gaps, write `N/A`. An empty field signals an error, not a clean match.
+If `GAP_HANDLING = disabled` (set in the Settings pre-flight), leave `Gap handling` unpopulated and skip all gap analysis — do not write `N/A` (see Settings pre-flight and intake Step −1). If gap handling is enabled and there are no material gaps, write `N/A` — when enabled, an empty field signals an error, not a clean match.
 
 ---
 
@@ -288,7 +282,7 @@ When scoring priority across multiple roles, weight: Company culture and stage f
 
 ---
 
-**`Role Type`** — Multi-select. Choose all that apply: `Builder`, `Scaler`, `Specialist`, `Leader`. See applications-orchestrator for definitions.
+**`Role Type`** — Multi-select. Choose all that apply: `Builder`, `Scaler`, `Specialist`, `Leader`. See career-engine-orchestrator for definitions.
 
 ---
 

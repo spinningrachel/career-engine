@@ -1,13 +1,15 @@
 ---
-name: applications-orchestrator
-description: Run {{USER_FIRST_NAME}}'s CV campaign pipeline against her Notion Job Applications database. Trigger whenever {{USER_FIRST_NAME}} says "run CV campaign", "process the CV queue", "run the CV pipeline", or any variant referencing a batch of tailored CVs or cover letters. Fetches all queued roles from Notion, passes them to the employment coach (which fetches JDs and produces strategic properties), builds the processing queue, and routes each role to the pipeline {{USER_FIRST_NAME}} specifies in chat.
+name: career-engine-orchestrator
+description: Run {{USER_FIRST_NAME}}'s career-engine pipeline against her Notion Job Applications database. Trigger whenever {{USER_FIRST_NAME}} says "run the career engine", "process the CV queue", "run the CV pipeline", or any variant referencing a batch of tailored CVs or cover letters. Fetches all queued roles from Notion, passes them to the employment coach (which fetches JDs and produces strategic properties), builds the processing queue, and routes each role to the pipeline {{USER_FIRST_NAME}} specifies in chat.
 ---
 
-# CV Campaign Orchestrator
+# New Application Orchestrator
+
+> **Registry:** this pipeline is listed in the Pipeline Registry in `skills/career-engine/SKILL.md`. Actions owned by another pipeline's registry row are out of scope here — route to that pipeline instead of improvising.
 
 ## Role
 
-The orchestrator coordinates {{USER_FIRST_NAME}}'s CV campaign from start to finish. It fetches roles, delegates every reasoning and writing task to sub-agents, routes outputs, and delivers a concise final summary. It does not write CVs or cover letters, does not review applications, and does not make judgment calls about fit.
+The orchestrator coordinates {{USER_FIRST_NAME}}'s career engine from start to finish. It fetches roles, delegates every reasoning and writing task to sub-agents, routes outputs, and delivers a concise final summary. It does not write CVs or cover letters, does not review applications, and does not make judgment calls about fit.
 
 The New Applications pipeline produces three deliverables per role: a tailored CV, a cover letter, and a reviewer feedback file. All three are required outputs.
 
@@ -23,36 +25,58 @@ These rules govern every run without exception. Read them before doing anything 
 
 The orchestrator uses Bash to write files (markdown, DOCX, state.json, feedback) to {{USER_FIRST_NAME}}'s output folder. Bash in a sandboxed subagent context does not have access to the real filesystem and cannot write to the output folder — it will silently write to a session scratchpad instead. Therefore: the orchestrator must always be invoked directly in the main session, not spawned via the Agent tool. Only analysis and writing agents (cv-writer, letter-writer, reviewers, gatekeeper) are spawned as subagents — they return text only, they do not write files.
 
+**The orchestrator never authors document content.**
+
+CV and cover letter text is produced only by cv-writer, letter-writer, and the humanizer. The orchestrator's editing authority is limited to the mechanical inline fixes explicitly authorized in the gatekeeper loop steps (swap a word, remove one phrase, reorder paragraphs — zero creative judgment). It never composes sentences, merges drafts, picks between bases, or assembles a final document from parts. If a writer keeps failing, the cap rules apply: deliver the last passing version flagged for manual review. A hand-assembled document has bypassed every gate and must never be exported.
+
+**Writer regression is corrected by re-spawning, never by patching.**
+
+Maintain a per-document **fix log** across every revision loop: each entry records the violation and the fix applied. Every revision spawn receives the full fix log with this instruction verbatim: "These violations were already fixed in earlier rounds. Reintroducing any of them is itself a FAIL. Treat the fixed phrasings as locked unless they violate a current rule." If a writer returns text that reverts to an older base or reintroduces a fixed violation, name the regression explicitly and re-spawn with the fix log — do not fix the text yourself beyond the authorized mechanical scope.
+
+**A PASS is only valid against the exact bytes that ship.**
+
+Any text change after a gatekeeper PASS — including the humanizer's changes — invalidates that PASS. The final verification gate in the pipeline steps (post-humanizer gatekeeper pass plus the mechanical pre-export checklist) must run on the exact markdown that will be converted to DOCX. Never export a document whose final text was not the text a PASS was issued against.
+
 **Outputs go to {{USER_FIRST_NAME}}'s output folder — never to a session scratchpad.**
 
 The only valid output destination is:
-`{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/`
+`{{OUTPUT_FOLDER}}/applications-<YYYY-MM-DD>/`
 
-**Mandatory path verification — run this before processing the first role:**
+**Mandatory path verification — run before processing the first role.** Two access paths, tried in order (R-30). A failed Path A is an environment limitation, not a missing folder — it does not end the run by itself.
+
+**Path A — direct filesystem** (Claude Code, or the output folder is connected to the session):
 
 ```bash
-OUTPUT_DIR="{{OUTPUT_FOLDER}}/cv-campaign-$(date +%Y-%m-%d)"
+OUTPUT_DIR="{{OUTPUT_FOLDER}}/applications-$(date +%Y-%m-%d)"
 mkdir -p "$OUTPUT_DIR"
-# Verify — if the output dir does not exist or is not accessible, stop immediately
-[ -d "$OUTPUT_DIR" ] || { echo "ERROR: Output dir not found or not accessible. Aborting."; exit 1; }
-echo "Output dir confirmed: $OUTPUT_DIR"
+[ -d "$OUTPUT_DIR" ] && echo "Output dir confirmed (Path A): $OUTPUT_DIR"
 ```
 
-If this check fails, **stop the run immediately** and report the error to {{USER_FIRST_NAME}}. Do not proceed and do not fall back to any other path. Do not use `./outputs/`, relative paths, or any path containing "local-agent-mode-sessions" or "Application Support".
+**Path B — host-bridge MCP** (sandboxed environments, e.g. Cowork, where sandbox Bash cannot reach the user's filesystem): if Path A fails, discover host filesystem tools via ToolSearch — search for `Desktop Commander`, `read_file`, `write_file`, `create_directory`, `start_process`, or equivalent host filesystem/process tools — and verify access by listing `{{OUTPUT_FOLDER}}` through the strongest available tool. If access is confirmed, proceed, and route ALL file operations for this run through those tools: directory creation, file reads and writes, and every pandoc command (via the host process tool, e.g. `start_process`). Sandbox `/tmp/` is not visible to host-side pandoc — on Path B, write intermediate markdown through the host tool to the output company directory (or a host temp path) instead of sandbox `/tmp/`.
+
+**Both paths fail → stop the run immediately** and report to {{USER_FIRST_NAME}}: the run needs either the output folder connected to the session or a host filesystem tool (e.g. Desktop Commander) enabled. Do not proceed.
+
+**The no-scratchpad rule is unchanged and applies on both paths.** Do not use `./outputs/`, relative paths, or any path containing "local-agent-mode-sessions" or "Application Support". Path B writes to the same real output folder — through a different tool, never to a substitute location.
+
+**If host access is lost mid-run** (e.g. the MCP disconnects): retry the operation once. If still unreachable, do not improvise a fallback path — deliver the remaining file contents in chat flagged for manual save, log the failure in the run-level revision log, and continue the run's non-file steps.
 
 **Three to five files per role, one file per run.**
 
 The New Applications pipeline produces three files per role (CV DOCX, cover letter DOCX, reviewer feedback MD) plus up to two additional Hebrew files when `Languages` includes `Hebrew` (Hebrew CV DOCX, Hebrew cover letter DOCX). One file per run (LinkedIn updates MD). The DOCX files follow the same production path: cv-writer or letter-writer outputs styled markdown → the orchestrator writes the markdown to `/tmp/` → pandoc converts to `.docx` using the `.dotx` reference templates → files copy to the output folder. The reviewer feedback file is written in Step 7d. The LinkedIn updates file is written in Step 8 after all roles complete. Writing markdown to `/tmp/` is a required production step, not optional.
 
-**Load `application-files-export` before processing the first role.**
+**Load `career-engine-export` before processing the first role.**
 
-If `application-files-export` is not loaded when you reach the DOCX export step, back up and load it.
+If `career-engine-export` is not loaded when you reach the DOCX export step, back up and load it.
 
 **Run end-to-end. Do not stop to ask {{USER_FIRST_NAME}} about scope mid-run.**
 
 The employment coach caps the run and selects which roles process this session. That cap is the decision. Do not pause after Role 1 to ask whether to continue. Do not ask whether to batch DOCX conversion. Do not ask whether the run is too long.
 
 If a single role fails, log the failure and move to the next role. The only valid mid-run pauses are a hard unrecoverable system error or {{USER_FIRST_NAME}} explicitly typing a stop command in chat.
+
+**The named pipeline command is the routing authority. Do not re-scope it before launch.**
+
+When {{USER_FIRST_NAME}} invokes a pipeline by name ("run a new application pipeline", "run the edit pipeline", "run intake"), that command decides the route. Row metadata — `Edit type`, `Last Pipeline Run`, prior outputs on disk, recent Status changes — is context, never a veto. Do not pause before launch to ask whether she meant a different pipeline, whether the roles were "already processed", or how to scope the run. The command already answered those questions. If the metadata suggests another pipeline might also be relevant, add a one-line note to the briefing and proceed with the pipeline she named.
 
 **Cover letters lead with strength and never volunteer scope or qualifications.**
 
@@ -67,17 +91,17 @@ This rule governs every agent that touches cover letter content:
 
 **Job Applications database:** Notion database ID `{{NOTION_DATABASE_ID}}`. Source of job descriptions and destination for per-role updates.
 
-**Output folder:** `{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/`
+**Output folder:** `{{OUTPUT_FOLDER}}/applications-<YYYY-MM-DD>/`
 
-Each role's files go in a subdirectory inside the campaign folder named after the hiring company (see company directory naming convention in `application-files-export`). After all files for a role are produced and verified **on disk** (confirmed via `ls`), the orchestrator writes the file directory URL to the `Draft Directory` URL property on the Notion row. All English and Hebrew files for the role are accessible from that directory URL.
+Each role's files go in a subdirectory inside the run folder named after the hiring company (see company directory naming convention in `career-engine-export`). After all files for a role are produced and verified **on disk** (confirmed via `ls`), the orchestrator writes the file directory URL to the `Draft Directory` URL property on the Notion row. All English and Hebrew files for the role are accessible from that directory URL.
 
 **`Draft Directory` property:** URL property. Written in Step 7a — only after both DOCX files are confirmed present and nonzero on disk via `ls`. **Never written before files are confirmed on disk.** If the `ls` check fails, the role is flagged as incomplete and Notion is not updated for that role. Value formula:
 
 ```
-https://anchorpoint.app/link?p=projects%2F83fe790c-6170-462d-a560-ad639af051c6%2F<date-folder>%2F<company_dir>%2F
+{{DRAFT_DIR_URL_BASE}}<date-folder>%2F<company_dir>%2F
 ```
 
-Where `<date-folder>` = the campaign folder name (e.g. `cv-campaign-2026-05-26`) and `<company_dir>` = the kebab-case company directory name.
+Where `<date-folder>` = the run folder name (e.g. `applications-2026-05-26`) and `<company_dir>` = the kebab-case company directory name.
 
 **`Languages` property:** Multi-select on the Notion row. Expected options: `English`, `Hebrew`. If `Hebrew` is present, the pipeline automatically runs the Hebrew localization step (Step 6H) after English DOCX export and produces two additional DOCX files in the same company subdirectory. No extra configuration required.
 
@@ -85,14 +109,14 @@ Where `<date-folder>` = the campaign folder name (e.g. `cv-campaign-2026-05-26`)
 
 ## Skills to Load
 
-Load these skills in order before doing anything else. Do not begin processing until all five are loaded.
+Load these skills in order before doing anything else. Do not begin processing until all four are loaded.
 
-**Note:** `01-writing-rules.md` is pre-loaded by the `/cv-campaign` command. If invoking the orchestrator directly (not via the command), load `references/01-writing-rules.md` first — it contains the fabrication rule and all constraint definitions that every downstream agent depends on.
+**Note:** `01-writing-rules.md` is pre-loaded by the `/career-engine` command. If invoking the orchestrator directly (not via the command), load `references/01-writing-rules.md` first — it contains the fabrication rule and all constraint definitions that every downstream agent depends on.
 
-1. `application-intake` — Steps 0 through 0.9d: Notion fetch, JD fetching, coach invocation, priority writeback, queue building, Status writeback
-2. `new-application-steps` — Steps 1 through 7: per-role CV writing, gatekeeper checks, reviews, cover letter (letter-writer), HM cover letter review, DOCX export (including Step 6H Hebrew), Notion writeback
-3. `application-edit` — Steps E0 through E10: editing pipeline for `Needs editing` roles; starts from existing Notion row content, not from scratch
-4. `application-files-export` — DOCX template styles, pandoc commands, file naming, `/tmp → output folder` copy protocol, page count verification
+1. `career-engine-intake` — Steps 0 through 0.9d: Notion fetch, JD fetching, coach invocation, priority writeback, queue building, Status writeback
+2. `career-engine-new-application` — Steps 1 through 7: per-role CV writing, gatekeeper checks, reviews, cover letter (letter-writer), HM cover letter review, DOCX export (including Step 6H Hebrew), Notion writeback
+3. `career-engine-edit` — Steps E0 through E10: editing pipeline for `Needs editing` roles; starts from existing Notion row content, not from scratch
+4. `career-engine-export` — DOCX template styles, pandoc commands, file naming, `/tmp → output folder` copy protocol, page count verification
 
 ## Notion Property Ownership
 
@@ -131,18 +155,18 @@ Status is the single property that drives what the pipeline does with a role. {{
 
 | Status | Who sets it | Meaning |
 |---|---|---|
-| `Hold` | {{USER_FIRST_NAME}} | Being researched before a decision to apply. **NOT handled by this (CV-writing) pipeline.** Two pre-campaign paths can process Hold roles: the coach standalone pipeline (`/cv-campaign coach`) for full market intelligence (competitive landscape, PMM analysis), or application-intake standalone for quick coach properties. Both promote Hold roles to Researched when complete. |
-| `Interested` | {{USER_FIRST_NAME}} | {{USER_FIRST_NAME}} has decided to apply. **This is what application-intake and the main CV campaign pipeline pull.** Move a role from Hold → Interested (or add directly as Interested) when {{USER_FIRST_NAME}} wants a CV and cover letter produced. |
+| `Hold` | {{USER_FIRST_NAME}} | Being researched before a decision to apply. **NOT handled by this (CV-writing) pipeline.** Two upstream paths can process Hold roles: the coach standalone pipeline (`/career-engine --coach-skills`) for full market intelligence (competitive landscape, PMM analysis), or career-engine-intake standalone for quick coach properties. Both promote Hold roles to Researched when complete. |
+| `Interested` | {{USER_FIRST_NAME}} | {{USER_FIRST_NAME}} has decided to apply. **This is what career-engine-intake and the main career-engine pipeline pull.** Move a role from Hold → Interested (or add directly as Interested) when {{USER_FIRST_NAME}} wants a CV and cover letter produced. |
 | `Needs editing` | {{USER_FIRST_NAME}} | Queued for the editing pipeline. Pipeline starts from existing outputs in the Notion row — does not run fresh. |
 | `CV Ready for Review` | Pipeline (on completion) | Pipeline finished; {{USER_FIRST_NAME}} needs to review before sending. |
 | `Applied` | {{USER_FIRST_NAME}} | Sent. |
 | `Researched` | Coach standalone pipeline (on completion) | Coach has run market intelligence — competitive landscape, priority scoring, strategic properties, PMM expert analysis. Role is ready for {{USER_FIRST_NAME}} to decide whether to move to Interested. |
 
-**Pipeline reads:** `Interested` (main pipeline and application-intake) and `Needs editing` (editing pipeline). All other statuses — including `Hold` and `Researched` — are ignored by this pipeline.
+**Pipeline reads:** `Interested` (main pipeline and career-engine-intake) and `Needs editing` (editing pipeline). All other statuses — including `Hold` and `Researched` — are ignored by this pipeline.
 
-**The two pre-campaign pipelines are separate:**
-- `/cv-campaign coach` → researches **Hold** roles → sets Status to **Researched**
-- `application-intake` (Steps 0–0.9c) → prepares **Interested** roles → feeds the CV writing pipeline
+**The two upstream pipelines are separate:**
+- `/career-engine --coach-skills` → researches **Hold** roles → sets Status to **Researched**
+- `career-engine-intake` (Steps 0–0.9d) → prepares **Interested** roles → feeds the CV writing pipeline
 
 ---
 
@@ -167,19 +191,37 @@ Roles with `Priority` already set are always selected into the queue before unsc
 
 ---
 
+## Pipeline Registry
+
+The complete list of pipelines this plugin can run. Before taking any action, confirm it belongs to the pipeline you are running — anything owned by another pipeline's row is out of scope and must not be improvised.
+
+| # | Pipeline | Trigger | Entry skill | Hard preconditions | Status transitions owned | Never does |
+|---|---|---|---|---|---|---|
+| 1 | Setup | `/career-engine:setup`, "set up the plugin" | `career-engine-setup` | none | none | Writes no application content |
+| 2 | Sourcing | "find open roles", "source roles" | `source-open-roles` | preferences saved | creates rows (new roles enter as `Hold`) | Never writes CVs or letters |
+| 3 | Intake | "run intake", `--coach-skills` | `career-engine-intake` | database configured | `Hold` → `Researched` (standalone mode only) | Never writes CVs or letters; never creates or modifies Notion views |
+| 4 | New Application | career-engine command, no flag | `career-engine-orchestrator` + `career-engine-new-application` | Intake has run; `Why I Want This Role` filled for any role needing a letter | `Interested` → downstream statuses per orchestrator | Orchestrator never authors document content |
+| 5 | Fast track | `--now <url or JD>` | `career-engine-orchestrator` → --now Mode | Why I Want This Role collected in chat, else CV-only | none — no Notion row | Never reads or writes Notion |
+| 6 | Edit | "edit CVs", `--edit`, Status = `Needs editing` | `career-engine-edit` | `Edit type` set; `Why I Want This Role` populated for the letter track | `Needs editing` → `CV Ready for Review` | Never starts from scratch; always edits the existing Notion-documented outputs |
+| 7 | Localization | automatic when `Languages` includes the second language | `localization` | English DOCX files complete | none | Translation only — never drafts, revises, or evaluates |
+| 8 | LinkedIn coach | "review my LinkedIn", "optimise my profile" | `linkedin-coach` | none | none | Never writes to Notion |
+| 9 | Personal brand | "build my personal brand", "refresh my bio" | `personal-brand` | none | none | Never writes to Notion |
+
+**One-pass utility modes** (no loops, no Notion writeback): `--coach` (conversational fit assessment), `--check` (single gatekeeper pass on pasted text), `--review` (single recruiter + HM pass), `--write-letter` (standalone letter draft), `--status` (read state.json and report).
+
 ## Pipeline Flow
 
-Run the queue pipeline first (`application-intake`). When the processing queue is built and {{USER_FIRST_NAME}} has been briefed, run the per-role pipeline for each role in queue order.
+Run the queue pipeline first (`career-engine-intake`). When the processing queue is built and {{USER_FIRST_NAME}} has been briefed, run the per-role pipeline for each role in queue order.
 
-**Mode for application-intake:** When `application-intake` runs as part of this pipeline, it operates in **orchestrator mode** — it queries the database directly with a Status filter for `Interested` (not Hold) and applies orchestrator-mode queue selection (scored roles first, ordered 1 → 6, then unscored).
+**Mode for career-engine-intake:** When `career-engine-intake` runs as part of this pipeline, it operates in **orchestrator mode** — it queries the database directly with a Status filter for `Interested` (not Hold) and applies orchestrator-mode queue selection (scored roles first, ordered 1 → 6, then unscored).
 
 **Pipeline is determined by {{USER_FIRST_NAME}}'s chat command**, not by a Notion property she sets per-role. All `Interested` roles default to the standard cv pipeline unless {{USER_FIRST_NAME}} specifies otherwise in chat. {{USER_FIRST_NAME}} can request a different pipeline for specific roles at run time.
 
 | Pipeline | What runs | Deliverables |
 |---|---|---|
 | `New Applications` (default) | cv pipeline — Steps 1 through 8 | CV DOCX + cover letter DOCX + feedback MD |
-| `--now` | fast track — see below | CV DOCX + cover letter DOCX + feedback MD |
-| `Needs editing` | application-edit (separate skill) — Steps E0 through E10 | Updated CV DOCX + updated cover letter DOCX; starts from existing Notion outputs, not from scratch. Trigger when {{USER_FIRST_NAME}} says "edit CVs" or similar, or when roles have Status = Needs editing. |
+| `--now` | fast track — see below | CV DOCX + feedback MD + cover letter DOCX only if Why I Want This Role content is provided in chat (see Step N4) |
+| `Needs editing` | career-engine-edit (separate skill) — Steps E0 through E10 | Updated CV DOCX + updated cover letter DOCX; starts from existing Notion outputs, not from scratch. Trigger when {{USER_FIRST_NAME}} says "edit CVs" or similar, or when roles have Status = Needs editing. |
 
 The structured JD for each role was fetched in Step 0.5 of the queue pipeline and is already in memory. Pass it directly to per-role sub-agents — do not re-fetch.
 
@@ -190,7 +232,7 @@ The structured JD for each role was fetched in Step 0.5 of the queue pipeline an
 Use when {{USER_FIRST_NAME}} provides a URL or pastes a JD directly in chat and needs documents immediately, without going through the Notion queue. **No Notion interaction at all** — no reading, no writing.
 
 ### When to use
-{{USER_FIRST_NAME}} says something like: "Write my CV for this now", "/cv-campaign --now <url>", "I just found this job, do it", or pastes a JD with an urgent framing.
+{{USER_FIRST_NAME}} says something like: "Write my CV for this now", "/career-engine --now <url>", "I just found this job, do it", or pastes a JD with an urgent framing.
 
 ### Flow
 
@@ -216,7 +258,8 @@ No Notion writeback for coach outputs in `--now` mode.
 
 **Step N4 — Per-role pipeline**
 
-Run `new-application-steps` Steps 1 through 7d exactly as in the standard pipeline. The only differences:
+Run `career-engine-new-application` Steps 1 through 7d exactly as in the standard pipeline. The only differences:
+- **Why I Want This Role (before Step 5)** — no Notion row exists, so the field cannot be read. Ask {{USER_FIRST_NAME}} in chat: "Why do you want this role? One or two sentences in your own words — this becomes the letter's opener. Reply 'skip' for CV only." If she provides content, use it as the Why I Want This Role input for Step 5 and the letter proceeds normally. If she replies "skip", declines, or provides nothing usable, **skip the cover letter entirely** (Steps 5–5.8) and deliver the CV only — the letter-writer's Intake Gate refuses to write without this content, and that gate is never overridden.
 - Step 6H (Hebrew localization) — skip entirely. No Notion row exists, so `Languages` cannot be read. `--now` mode does not support Hebrew output. If {{USER_FIRST_NAME}} wants Hebrew, add the role to Notion and run normally.
 - Step 7a (Draft Directory writeback) — skip entirely. No Notion row exists for this role.
 - Step 7b (state.json) — write as normal to the output folder.
@@ -224,7 +267,7 @@ Run `new-application-steps` Steps 1 through 7d exactly as in the standard pipeli
 - Step 7d (feedback file) — write as normal.
 
 **Output folder:** same as all other runs:
-`{{OUTPUT_FOLDER}}/cv-campaign-<YYYY-MM-DD>/`
+`{{OUTPUT_FOLDER}}/applications-<YYYY-MM-DD>/`
 
 Create the folder if it does not exist (same as normal).
 
@@ -283,7 +326,7 @@ If no flags: append a single line to the revision log: `Cover letter validation 
 
 **`state.json` is the authoritative source for crash recovery:**
 
-If a `state.json` exists in the most recent campaign folder and a role is marked `completed` in it, **skip that role** — regardless of when the run was, regardless of the role's current Notion Status. The most recent `state.json` represents actual pipeline progress. Notion writeback may have failed without invalidating what is on disk.
+If a `state.json` exists in the most recent run folder and a role is marked `completed` in it, **skip that role** — regardless of when the run was, regardless of the role's current Notion Status. The most recent `state.json` represents actual pipeline progress. Notion writeback may have failed without invalidating what is on disk.
 
 **When to process from scratch:** If no `state.json` exists, or a role does not appear in it as `completed`, run the full pipeline for that role from the beginning. `Interested` roles not in `state.json` always run fresh.
 
@@ -298,10 +341,10 @@ Read-only. No agents. No Notion. Just reads the filesystem.
 **Step S1 — Find the most recent run folder**
 
 ```bash
-ls -1d "{{OUTPUT_FOLDER}}/cv-campaign-"* | sort | tail -1
+ls -1d "{{OUTPUT_FOLDER}}/applications-"* | sort | tail -1
 ```
 
-If no campaign folder exists, report: "No campaign runs found."
+If no run folder exists, report: "No pipeline runs found."
 
 **Step S2 — Read state.json**
 
@@ -313,20 +356,20 @@ If state.json is missing, report: "state.json not found in `<folder>` — run ma
 
 **Step S3 — Check files on disk**
 
-For each role in state.json, verify the expected files exist. `cv_path` and `cover_letter_path` are relative to the campaign folder and already include the company subdirectory (e.g. `nuvoton/cv-{{USER_LAST_NAME}}-...docx`). Hebrew file presence is inferred from the `languages` field in state.json — if it contains `"Hebrew"`, check for Hebrew DOCX files in the same company subdirectory.
+For each role in state.json, verify the expected files exist. `cv_path` and `cover_letter_path` are relative to the run folder and already include the company subdirectory (e.g. `nuvoton/cv-{{USER_LAST_NAME}}-...docx`). Hebrew file presence is detected from filenames — if any DOCX in the company subdirectory carries the `-he` suffix (derived from `cv_path`/`cover_letter_path` with `-he` inserted before `.docx`), treat the role as having Hebrew outputs and verify both Hebrew files exist.
 
 ```bash
 ls "<most-recent-folder>/<cv_path>" 2>/dev/null && echo "✓" || echo "MISSING"
 ls "<most-recent-folder>/<cover_letter_path>" 2>/dev/null && echo "✓" || echo "MISSING"
 ls "<most-recent-folder>/<feedback_path>" 2>/dev/null && echo "✓" || echo "MISSING"
 ls "<most-recent-folder>/<revision_log_path>" 2>/dev/null && echo "✓" || echo "MISSING"
-# Hebrew files — derive expected filenames from cv_path/cover_letter_path with -he suffix, check only if languages includes Hebrew
+# Hebrew files — derive expected filenames from cv_path/cover_letter_path with -he suffix; check only if a -he DOCX is present in the company subdirectory
 ```
 
 **Step S4 — Print summary**
 
 ```
-## Campaign status — <session_date>
+## Run status — <session_date>
 
 Completed: N roles  ·  Files missing: M
 
@@ -362,7 +405,7 @@ state.json records roles that **completed Step 7b** (all three files produced, s
 
 **If state.json has all expected roles but a file is MISSING on disk:** The state was written but the file copy failed or was deleted after the run. The markdown source file in `/tmp/` is gone; re-run that role.
 
-**If state.json is complete and all files are present but Notion rows still show `Interested`:** Step 7c (Notion writeback) failed after state was written. The files are good. Manually update each Notion row: set Status to `CV Ready for Review` and write the Draft Directory URL to the `Draft Directory` property (construct it from the `draft_dir_url` field in state.json, or derive it from the formula using the campaign folder date and company directory name).
+**If state.json is complete and all files are present but Notion rows still show `Interested`:** Step 7c (Notion writeback) failed after state was written. The files are good. Manually update each Notion row: set Status to `CV Ready for Review` and write the Draft Directory URL to the `Draft Directory` property (construct it from the `draft_dir_url` field in state.json, or derive it from the formula using the run folder date and company directory name).
 
 ### Which steps are safe to re-run
 
@@ -392,7 +435,7 @@ If the pipeline produced both DOCX files and the feedback file but crashed befor
 1. Run `--status` to confirm the files are on disk.
 2. In Notion, manually set the row's Status to `CV Ready for Review`.
 3. Write the Draft Directory URL to the `Draft Directory` URL property. Construct it from the `draft_dir_url` field in state.json, or derive it using the formula:
-   `https://anchorpoint.app/link?p=projects%2F83fe790c-6170-462d-a560-ad639af051c6%2F<date-folder>%2F<company_dir>%2F`
+   `{{DRAFT_DIR_URL_BASE}}<date-folder>%2F<company_dir>%2F`
 4. The role is done. Do not re-run it — the documents are good.
 
 ---
@@ -528,7 +571,7 @@ Run after Step 9 (revision log). For every role completed this run that produced
 
 ## Step 9c — Run metrics
 
-Run after Step 9b. Write a `run-metrics-<YYYY-MM-DD>.json` file to the campaign output folder. This file records structural metrics for the run. Actual token counts are appended by a Stop hook configured during setup — the hook writes to this same file when the session ends.
+Run after Step 9b. Write a `run-metrics-<YYYY-MM-DD>.json` file to the run output folder. This file records structural metrics for the run. Actual token counts are appended by a Stop hook configured during setup — the hook writes to this same file when the session ends.
 
 ```bash
 cat > "<output_dir>/run-metrics-$(date +%Y-%m-%d).json" << 'JSON_EOF'

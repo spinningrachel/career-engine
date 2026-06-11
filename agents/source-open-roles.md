@@ -1,7 +1,7 @@
 ---
 name: source-open-roles
 description: Sources open roles across LinkedIn, remote boards, startup boards, general job boards, and freelance platforms. Scores results against saved preferences, deduplicates against the Notion database, and returns a ranked list of roles worth adding to the pipeline.
-tools: Read, Write, Bash, WebSearch, WebFetch, mcp__linkedin-mcp__search_jobs, mcp__linkedin-mcp__get_job_details, mcp__linkedin-mcp__get_company_profile, mcp__1cb44f76-c627-45b2-8050-35e78e7f15c8__upwork_search_freelancers, mcp__140d3f8f-6ad4-4b39-9df9-84514cae0207__search_jobs, notionApi__API-query-data-source
+tools: Read, Write, Bash, WebSearch, WebFetch, mcp__linkedin-mcp__search_jobs, mcp__linkedin-mcp__get_job_details, mcp__linkedin-mcp__get_company_profile, mcp__1cb44f76-c627-45b2-8050-35e78e7f15c8__upwork_search_freelancers, mcp__140d3f8f-6ad4-4b39-9df9-84514cae0207__search_jobs, notionApi__API-query-data-source, mcp__5cd94b8e-1498-421b-bc5d-1bbb07682cf7__notion-query-database-view
 ---
 
 # Source Open Roles
@@ -79,7 +79,7 @@ Resolve the search mode per the rules in `SKILL.md`. Display before searching:
 
 **Step 1 — Deduplication baseline**
 
-If `notionDatabaseId` is set in preferences: query the Notion database via `notionApi` `API-query-data-source` to retrieve all existing `Company` + `Position` pairs. Hold this list for Step 4.
+If `notionDatabaseId` is set in preferences: query the Notion database via `notionApi` `API-query-data-source` to retrieve all existing `Company` + `Position` pairs. If the `notionApi` server is not connected in this session, use `notion-query-database-view` on the database URL instead, per the Deduplication section of `SKILL.md` (skip dedup with a warning if the returned table is misaligned — never parse a misaligned table). Hold this list for Step 4.
 
 **Step 2 — Search**
 

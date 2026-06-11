@@ -1,3 +1,5 @@
+> **⚠️ RECORD CORRUPTED (noted 2026-06-11):** a later global find-replace rewrote the original (pre-rename) skill names in this plan, so Task 3's rename mapping now shows names mapping to themselves. The original names were the `cv-campaign-*` generation. Do not use this document as a rename reference — see CLAUDE.md regression row R-26.
+
 # Career Engine Plugin Refactor Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

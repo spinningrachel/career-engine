@@ -59,19 +59,19 @@ Three files in `references/` govern everything every agent produces.
 
 **`01-writing-rules.md`** contains the rules that constrain agent behavior: fabrication guards, attribution rules (which outcomes belong to you vs. the company), framing constraints, JD term mappings, and your contact details and target roles. Every agent reads this first. If a claim can't be traced to this file or to `02-professional-background.md`, it doesn't go on the page.
 
-**`02-professional-background.md`** contains your career content: role facts (companies, dates, titles, metrics, what you built), approved CV bullets, approved CV summaries by domain, testimonials, portfolio, and the Q&A bank. Agents draw from this file for every bullet, every proof point, and every intake answer. The Q&A bank accumulates automatically — every answer you give to a pipeline question gets promoted here so the same question is never asked twice.
+**`02-professional-background.md`** contains your career content: role facts (companies, dates, titles, metrics, what you built), approved CV bullets, approved CV summaries by domain, testimonials, portfolio, and the motivation bank. Agents draw from this file for every bullet, every proof point, and every reusable motivation angle. The motivation bank accumulates automatically — new durable content you write in the Why I Want This Role field gets promoted here after each run, in your own words, so your voice and angles compound over time.
 
 **`03-framework.md`** contains your positioning: professional category, voice samples, core positioning statement, value pillars, methodology, domain depth, ICP, messaging by audience, taglines, differentiators, and elevator pitches. The letter-writer and employment coach draw from this file for cover letter strategy and career framing. It's what makes the letters sound like you rather than a generic candidate.
 
 ### How a run works
 
-The plugin has three application pipelines, plus a sourcing tool for finding new roles. For full descriptions of each, see [Pipelines and modes](#pipelines-and-modes) and [Agents and skills](#agents-and-skills).
+The plugin runs nine pipelines (see the table in [Pipelines and modes](#pipelines-and-modes)); the three core application pipelines run in sequence on roles already in your database. For full descriptions of each, see [Pipelines and modes](#pipelines-and-modes) and [Agents and skills](#agents-and-skills).
 
 **Intake → New Application → Application Edit**
 
 1. Add a role to your job tracking database with Status = `Hold`
-2. Run **Intake**: the employment coach researches the company, writes strategic properties to your database, and generates Q&A intake questions tailored to the role
-3. Open the role in your database and answer the Q&A questions in the Page Body field
+2. Run **Intake**: the employment coach researches the company and writes strategic properties to your database
+3. Open the role in your database and fill in the Why I Want This Role field — what specifically caught your attention about this role, plus anything else you want in the letter that isn't in your CV
 4. Change Status to `Interested`
 5. Run **New Application**: the pipeline fetches all `Interested` roles, builds a priority queue of up to five, and routes each one through the full CV and cover letter pipeline — employment coach → cv-writer → gatekeeper → recruiter reviewer → hiring manager reviewer → letter-writer → gatekeeper → DOCX export → writeback
 6. Review your documents. If anything needs improving, change Status to `Needs editing`
@@ -207,7 +207,7 @@ This file is your career content bank. It answers the question: *what has this c
 
 The role facts section (Section 7) contains per-company entries: title, dates, reporting structure, team size, key metrics, what was built, and approved CV bullets. Approved bullets are ones the pipeline has written and you have explicitly locked — they are reused verbatim in future CVs. New bullets start empty and fill in as you run the pipeline (see [How approved bullets work](#how-approved-bullets-work)).
 
-The file also contains approved CV summaries by domain (Section 6), testimonials (Section 9), portfolio with links (Section 10), and the Q&A bank (Section 5). The Q&A bank is auto-populated: every answer you give during a pipeline run gets promoted here so the letter-writer never asks the same question twice.
+The file also contains approved CV summaries by domain (Section 6), testimonials (Section 9), portfolio with links (Section 10), and the motivation bank (Section 5). The motivation bank is auto-populated: after each run, new durable content from your Why I Want This Role field is promoted here verbatim, so the letter-writer can reuse your real angles and phrasings in future applications.
 
 ### `03-framework.md`
 
@@ -225,12 +225,12 @@ The letter-writer and employment coach draw from this file for every cover lette
 
 The pipeline is triggered by natural language in Claude Code. The commands below show the supported phrases, but any reasonable variation works.
 
-### Full campaign (batch mode)
+### Full pipeline (batch mode)
 
-A full campaign fetches all roles with Status = `Interested` from your job tracking database, runs the employment coach on each, builds a priority queue, and produces a CV and cover letter for each role. The pipeline handles 1–5 roles per run. If you have more than five `Interested` roles, run it multiple times — the queue is rebuilt from whatever remains after each run. To produce a CV without a cover letter, specify "no letter" in your chat command.
+A full pipeline run fetches all roles with Status = `Interested` from your job tracking database, runs the employment coach on each, builds a priority queue, and produces a CV and cover letter for each role. The pipeline handles 1–5 roles per run. If you have more than five `Interested` roles, run it multiple times — the queue is rebuilt from whatever remains after each run. To produce a CV without a cover letter, specify "no letter" in your chat command.
 
 ```
-Run CV campaign.
+Run the career engine.
 Process my CV queue.
 Run the pipeline.
 Run the pipeline, no letters.
@@ -310,7 +310,7 @@ The orchestrator verifies the output folder exists, loads all required skills, a
 
 ### Step 0 — Fetch and prepare roles
 
-The orchestrator queries the job tracking database for all rows with Status = `Interested`. For each row, it captures the full payload: company, position, Job URL, JD Body (if already populated), all coach properties, and any existing Q&A content. In `--now` mode, this step is skipped — a single role is passed directly.
+The orchestrator queries the job tracking database for all rows with Status = `Interested`. For each row, it captures the full payload: company, position, Job URL, JD Body (if already populated), all coach properties, and the Why I Want This Role content. In `--now` mode, this step is skipped — a single role is passed directly.
 
 ### Step 0.5 — JD content preparation
 
@@ -346,18 +346,18 @@ For each role in the queue, the CV loop runs as follows:
 
 The cover letter loop mirrors the CV loop:
 
-1. **letter-writer (draft)** — produces a cover letter using final CV content, JD, Q&A answers, Strategy, and Gap handling
+1. **letter-writer (draft)** — produces a cover letter using final CV content, JD, your Why I Want This Role content, Strategy, and Gap handling
 2. **gatekeeper (cover-letter)** — 13 voice and structure checks; loops silently with letter-writer until PASS
 3. **recruiter-reviewer** — reviews the cover letter for screening-risk issues
 4. **hiring-manager-reviewer** — evaluates whether the letter addresses the hiring manager's condition, adds something the CV doesn't, and increases interview likelihood
 5. **letter-writer (revision)** — produces the final cover letter; mandatory revision pass runs before the gatekeeper sees it
 6. **gatekeeper (cover-letter)** — final check; loops until PASS
 
-**What happens if you skipped Q&A or Intake:**
+**What happens if you skipped Why I Want This Role or Intake:**
 
-If you skipped Intake entirely (no company research, no Q&A questions generated), the letter-writer has no strategic properties (Role emphasis, Keywords, Strategy) and no Q&A answers to draw from. It produces a letter based on the JD, your reference files, and general framing — valid, but generic. The letter won't reflect your specific angle on the role or the company-specific research the coach produces. Running Intake before New Application is strongly recommended for any role you genuinely want.
+If you skipped Intake entirely (no company research), the letter-writer has no strategic properties (Role emphasis, Keywords, Strategy) to draw from. It produces a letter based on the JD, your reference files, and general framing — valid, but generic. The letter won't reflect the company-specific research the coach produces. Running Intake before New Application is strongly recommended for any role you genuinely want.
 
-If Intake ran but you didn't answer the Q&A questions in the Notion page body, the letter-writer proceeds without your specific angle for that role. It uses the coach's Strategy field and your reference files, which produces a reasonable letter but one that won't capture what drew you to this specific opportunity. Filling in the Q&A and Page Body fields before running New Application produces noticeably better letters.
+If the Why I Want This Role field is empty, **no letter is written at all** — the letter-writer's Intake Gate refuses and the pipeline delivers the CV only, with a message to fill in the field and re-run. The field is the mandatory primary personal-content source: it is the sole source for the opener and is leveraged throughout the entire letter, in your own tone and vocabulary wherever relevant. Filling it in thoughtfully before running New Application is what makes letters sound like you.
 
 To skip the cover letter entirely for a run, say "no letter" in your chat command when triggering New Application.
 
@@ -383,7 +383,7 @@ After all roles complete:
 
 - **LinkedIn updates** — aggregates Keywords from all coach outputs, counts cross-role frequency, and writes a `linkedin-updates-<date>.md` file with high-signal (3+ roles) and medium-signal (2 roles) terms alongside extracted summary phrases
 - **Revision log** — writes a run-level revision log with cross-run decisions and any technical issues encountered
-- **Q&A promotion** — promotes new Q&A answers from this run into `02-professional-background.md` so the letter-writer never asks the same question twice
+- **Why I Want This Role promotion** — new durable content from each role's Why I Want This Role field is promoted verbatim into the motivation bank in `02-professional-background.md` (Step 7f), so your angles and phrasings are reusable in future letters
 - **Bullet approval prompt** — asks which companies from this run you want to lock bullets for (see [How approved bullets work](#how-approved-bullets-work))
 
 ### Final delivery
@@ -394,13 +394,28 @@ The orchestrator delivers a single summary in chat covering any validation issue
 
 ## Pipelines and modes
 
-The plugin has three pipelines, each serving a distinct phase of the job search. Which one runs depends on how you trigger it and what Status the roles carry in your job tracking database.
+The plugin runs nine pipelines plus five one-pass utility modes. Which one runs depends on how you trigger it and what Status the roles carry in your job tracking database.
+
+| Pipeline | How you trigger it | What it needs first | What it produces | Status flow |
+|---|---|---|---|---|
+| **Setup** | `/career-engine:setup` | nothing | configured database, settings, reference files | — |
+| **Sourcing** | "find open roles" | saved search preferences | ranked role list written to your database | new rows enter as `Hold` |
+| **Intake** | "run intake" or `--coach-skills` | roles with Status = `Hold` | coach research, strategic properties | `Hold` → `Researched` |
+| **New Application** | the career-engine command, no flag | Intake has run; `Why I Want This Role` filled for letters | CV DOCX + cover letter DOCX + feedback file | runs on `Interested` roles |
+| **Fast track** | `--now <url or JD>` | a JD; Why I Want This Role given in chat (else CV only) | CV DOCX (+ letter if Why provided) | none — skips the database |
+| **Edit** | "edit CVs" or `--edit` | Status = `Needs editing` and `Edit type` set | revised DOCX files | `Needs editing` → `CV Ready for Review` |
+| **Localization** | automatic when `Languages` includes a second language | finished English DOCX files | translated CV + letter DOCX | — |
+| **LinkedIn coach** | "review my LinkedIn" | nothing | profile audit, headline, content strategy | — |
+| **Personal brand** | "build my personal brand" | nothing | positioning statement, content pillars, bios | — |
+
+**One-pass utility modes** — no loops, nothing written to your database: `--coach` (talk through a role), `--check` (gatekeeper on pasted text), `--review` (recruiter + HM reviews on pasted text), `--write-letter` (standalone letter draft), `--status` (completion report from the last run).
+
 
 ### Intake
 
-The Intake pipeline runs market intelligence on roles you're researching but haven't committed to applying for. It operates on roles with Status = `Hold`, researches each company (competitive landscape, funding, hiring manager, culture signals), writes coach properties to your database, generates Q&A intake questions for each role, and updates Status to `Researched`. No CVs are produced.
+The Intake pipeline runs market intelligence on roles you're researching but haven't committed to applying for. It operates on roles with Status = `Hold`, researches each company (competitive landscape, funding, hiring manager, culture signals), writes coach properties to your database, and updates Status to `Researched`. No CVs are produced. After reviewing the research, you fill in the Why I Want This Role field yourself — what caught your attention, and anything else you want in the letter that isn't in your CV.
 
-**Intake is a mandatory prerequisite for New Application.** The letter-writer needs two inputs that only exist after Intake runs: the strategic properties the coach writes (Role emphasis, Keywords, Strategy, Gap handling) and the Q&A answers you provide in the page body after Intake generates the questions. Without these, the letter-writer falls back to generic framing.
+**Intake is a mandatory prerequisite for New Application.** The letter-writer needs two inputs that only exist after Intake runs: the strategic properties the coach writes (Role emphasis, Keywords, Strategy, Gap handling) and the answers you provide in the Why I Want This Role field after Intake generates the questions. Without these, the letter-writer falls back to generic framing.
 
 Trigger Intake with the coach command or natural language:
 
@@ -435,8 +450,8 @@ Status determines which pipeline processes a role and encodes where it sits in t
 
 | Status | Set by | Processed by | What happens |
 |---|---|---|---|
-| `Hold` | You | Intake | Company research; Q&A questions generated; coach properties written; Status → `Researched` |
-| `Researched` | Intake | — | Awaiting your Q&A answers and decision to apply |
+| `Hold` | You | Intake | Company research; coach properties written; Status → `Researched` |
+| `Researched` | Intake | — | Awaiting your Why I Want This Role content and decision to apply |
 | `Interested` | You | New Application | Full CV + cover letter pipeline; Status → `CV Ready for Review` |
 | `CV Ready for Review` | New Application | — | Awaiting your review of the output |
 | `Needs editing` | You | Application Edit | Existing outputs improved; Status → `CV Ready for Review` |
@@ -475,8 +490,6 @@ You can add as many additional custom properties as you want — for your own no
 | `Status` | Select | You + Pipeline | Controls pipeline behavior (see above) |
 | `Priority` | Select | You / Coach | Processing order. Values: `Highest`, `First`, `Second`, `Third`, `Fourth`, `Fifth` |
 | `JD Body` | Text | Coach | Full JD text; populated by the coach on first fetch |
-| `Q&A` | Text | Letter-writer | Interview questions generated for this role |
-| `Page Body` | Text | You | Your notes and intake answers for this role; the letter-writer reads this before drafting |
 | `Role emphasis` | Text | Coach | 1–2 sentences on the real mandate beneath the job title |
 | `JD proof` | Text | Coach | Verbatim JD quote supporting Role emphasis; for your verification only — no writing agent reads this |
 | `Keywords` | Text | Coach | 8–15 tiered JD terms: `Critical: ... \| Important: ... \| Nice-to-have: ...` |
@@ -513,7 +526,7 @@ The `Note` field belongs to you. Agents must **never** write to this field to su
 
 ## Output files
 
-All files from a run land in a campaign folder named by date: `<output_folder>/applications-<YYYY-MM-DD>/`. Each role gets its own subdirectory named after the company in kebab-case.
+All files from a run land in a run folder named by date: `<output_folder>/applications-<YYYY-MM-DD>/`. Each role gets its own subdirectory named after the company in kebab-case.
 
 `<output_folder>` is the path you configure during onboarding (`/career-engine:setup --phase 5`). It can be any local directory — iCloud, Dropbox, a standard folder, or anything else your filesystem allows. The placeholder `{{OUTPUT_FOLDER}}` in plugin files is replaced with your actual path during setup.
 
@@ -576,11 +589,11 @@ When you approve a company, the bullets from that run are written into `02-profe
 
 The plugin has two groups of commands: pipeline commands that run against your job tracking database, and standalone skills that operate independently of any active job search.
 
-**Pipeline commands** — these run the multi-agent campaign and require Notion (or CSV) to be configured.
+**Pipeline commands** — these run the multi-agent pipeline and require Notion (or CSV) to be configured.
 
 | Command | Behavior |
 |---|---|
-| `/career-engine` | Full campaign against Interested roles |
+| `/career-engine` | Full pipeline against Interested roles |
 | `/career-engine --edit` | Editing pipeline for Needs editing roles |
 | `/career-engine --now <url>` | Single role, no Notion |
 | `/career-engine --coach <question>` | Direct coaching, conversational |
@@ -605,7 +618,7 @@ Eight agents handle all reasoning and writing. The orchestrator spawns them as s
 
 **cv-writer** — Writes and revises CVs. Two options: Draft and Revision. CV structure is driven by Role Type. The fabrication rule is absolute — claims that can't be grounded in documented experience are left out, not invented.
 
-**letter-writer** — Writes and revises cover letters and generates Q&A interview questions during the research pipeline. Receives page body content, Q&A answers, Strategy, and Gap handling from the orchestrator. Voice and structure rules in `skills/cover-letter/SKILL.md` hold regardless of reviewer feedback.
+**letter-writer** — Writes and revises cover letters. Receives Why I Want This Role content, Strategy, and Gap handling from the orchestrator. Voice and structure rules in `skills/cover-letter/SKILL.md` hold regardless of reviewer feedback.
 
 **recruiter-reviewer** — Reviews CVs and cover letters as a senior recruiter in the Israeli tech and global startup market. Returns tiered feedback (Tier 1/2/3). Flags everything accurately; cv-writer and letter-writer address what they can through reframing.
 
@@ -615,20 +628,18 @@ Eight agents handle all reasoning and writing. The orchestrator spawns them as s
 
 **localization** *(Alpha)* — Produces native Israeli professional Hebrew versions of the CV and cover letter. Runs after the English DOCX export when the role's Languages property includes Hebrew. Localization follows the Israeli tech professional register — hybrid Hebrew-English, direct, not formal. RTL layout requires manual Word setup; full configuration instructions coming.
 
-**pmm-positioning-expert** — Analyzes competitive positioning for a company during standalone research runs. Does not run in the main campaign pipeline.
-
 ### Skills
 
 Skills contain the detailed procedures each agent follows. They are loaded by the orchestrator before processing begins.
 
 | Skill | Loaded by | Purpose |
 |---|---|---|
-| `applications-orchestrator` | Orchestrator | Full campaign coordination, Steps 0–9b |
-| `application-intake` | Orchestrator | Steps 0–0.9: Notion fetch, coach invocation, queue building |
-| `new-application-steps` | Orchestrator | Steps 1–7d: per-role CV and cover letter pipeline |
-| `application-files-export` | Orchestrator | DOCX conversion commands, file naming, copy protocol |
-| `application-edit` | Orchestrator | Editing pipeline for Needs editing roles |
-| `coach` | Coach command | Standalone research pipeline for Hold roles |
+| `career-engine-orchestrator` | Orchestrator | Full pipeline coordination, Steps 0–9b |
+| `career-engine-intake` | Orchestrator | Steps 0–0.9: Notion fetch, coach invocation, queue building |
+| `career-engine-new-application` | Orchestrator | Steps 1–7d: per-role CV and cover letter pipeline |
+| `career-engine-export` | Orchestrator | DOCX conversion commands, file naming, copy protocol |
+| `career-engine-edit` | Orchestrator | Editing pipeline for Needs editing roles |
+| `career-engine-coach` | Coach command | Standalone research pipeline for Hold roles |
 | `cover-letter` | letter-writer | Voice rules, structure, use-case patterns, revision pass |
 | `cv-writing` | cv-writer | Bullet formula, ATS rules, forbidden phrases |
 | `gatekeeper-checks` | gatekeeper | Full checklist for both CV and cover letter options |
@@ -675,7 +686,7 @@ The pipeline always produces two outputs per role: a markdown file and (if pando
 
 The plugin ships with `references/cv-template-default.dotx`, a Word template with custom styles for pandoc DOCX export. The template controls fonts, heading sizes, color scheme, and the header layout. Microsoft Word is not required to use the DOCX — any application that opens `.docx` files works, including LibreOffice (free) and Google Docs.
 
-To use your own template instead, provide the path during setup (`/career-engine:setup --phase 5`). Your template must define the same custom style names — see `skills/application-files-export/SKILL.md` for the full style reference.
+To use your own template instead, provide the path during setup (`/career-engine:setup --phase 5`). Your template must define the same custom style names — see `skills/career-engine-export/SKILL.md` for the full style reference.
 
 **Markdown output (no dependencies)**
 
@@ -767,11 +778,11 @@ The gatekeeper loops with the writing agent until all checks pass. If a loop exc
 
 ### Cover letter doesn't sound like me
 
-The letter-writer draws voice from two sources: your Q&A page body in Notion and the delivered letters in `references/delivered-letters/`. If neither is populated, it falls back to general voice calibration from `03-framework.md`, which produces more generic output. Add your best past letters to `references/delivered-letters/` and answer the Q&A questions in Notion before re-running.
+The letter-writer draws voice from two sources: your Why I Want This Role content in Notion and the delivered letters in `references/delivered-letters/`. If neither is populated, it falls back to general voice calibration from `03-framework.md`, which produces more generic output. Add your best past letters to `references/delivered-letters/` and fill in the Why I Want This Role field in Notion before re-running.
 
 ### State.json is missing after a run
 
-The run either crashed before completing or the state file write failed. Run `/career-engine --status` — if no state file is found, it will report that. Check the iCloud output folder directly for the campaign date folder. Partial runs can be resumed by setting the affected role's Status back to `Interested` and re-running.
+The run either crashed before completing or the state file write failed. Run `/career-engine --status` — if no state file is found, it will report that. Check the iCloud output folder directly for the dated run folder. Partial runs can be resumed by setting the affected role's Status back to `Interested` and re-running.
 
 ---
 
@@ -797,7 +808,7 @@ The run either crashed before completing or the state file write failed. Run `/c
 
 **Deeper research on the hiring side.** The employment coach already identifies the hiring manager and researches the company. Future iterations would go further: tracking relationships and connections at the target company, surfacing relevant mutual contacts, monitoring for new hires or departures on the team, and improving the quality of company intelligence over time as more context accumulates per employer.
 
-**Job search assistance.** Expanding upstream from the application itself: surfacing relevant roles based on your profile and target criteria, tracking application status and follow-up timing, and building a searchable record of every company researched and every role applied for across multiple job search campaigns.
+**Job search assistance.** Expanding upstream from the application itself: surfacing relevant roles based on your profile and target criteria, tracking application status and follow-up timing, and building a searchable record of every company researched and every role applied for across multiple job searches.
 
 If any of these directions is relevant to work you want to contribute, open an issue.
 

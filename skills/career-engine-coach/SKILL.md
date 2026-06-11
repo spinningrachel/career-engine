@@ -1,18 +1,18 @@
 ---
-name: coach
+name: career-engine-coach
 description: >
   Standalone market intelligence and research pipeline. Run with natural language —
   "research my roles", "run market intelligence", "do company research",
   "fill in the intelligence", "fill in the landscape", "run the research pipeline",
   "run competitive research", or any variant asking for background research,
   competitive landscape, or market intelligence on companies in {{USER_FIRST_NAME}}'s pipeline.
-  NOT the intake pipeline — for the intake pipeline (JD fetch, coaching, Q&A),
-  use application-intake.
+  NOT the intake pipeline — for the intake pipeline (JD fetch, coaching),
+  use career-engine-intake.
   Runs on Hold roles in the Notion Job Applications database — maximum 5 per run,
   oldest first. Researches each company (competitive landscape, sector signals,
   company dynamics, recruitment criteria, career path), spawns the employment coach
-  for strategic property generation, spawns letter-writer to generate Q&A interview
-  questions, writes all results to Notion, and updates Status to Researched.
+  for strategic property generation, writes all results to Notion, and updates
+  Status to Researched.
   Does NOT write CVs or trigger the CV pipeline.
 ---
 
@@ -26,7 +26,7 @@ Do not write CVs. Do not trigger any other pipeline. Research, priority scoring,
 
 **This pipeline runs on Hold roles only.** Hold = roles {{USER_FIRST_NAME}} is researching before deciding to apply. This skill focuses on competitive landscape, market intelligence, company and org dynamics, and priority scoring. It ends at Status = Researched.
 
-**The application-intake pipeline is entirely separate and runs on Interested roles** — roles {{USER_FIRST_NAME}} has already decided to apply for. Do not confuse the two. If {{USER_FIRST_NAME}} says "run intake" or "process my Interested roles," that is application-intake, not this skill.
+**The career-engine-intake pipeline is entirely separate and runs on Interested roles** — roles {{USER_FIRST_NAME}} has already decided to apply for. Do not confuse the two. If {{USER_FIRST_NAME}} says "run intake" or "process my Interested roles," that is career-engine-intake, not this skill.
 
 ---
 
@@ -66,6 +66,8 @@ https://www.notion.so/{{NOTION_DATABASE_ID}}?v=35e5ef1aa63480ff9b4e000cbcd67aec
 ```
 
 This view is pre-configured to return only `Hold` roles where Landscape is empty, sorted by creation date ascending. Do not construct your own filter — use the view directly. Do not fetch the full database.
+
+**The view result is for discovery only (R-1).** The rendered table is susceptible to column misalignment and shows only the view's visible columns. Use it only to identify the candidate pages (oldest first): extract the page IDs/links, then call `notion-fetch id="<page_id>"` on each selected page and read all property values from the structured page response — never from the rendered table.
 
 **Cap: process a maximum of 5 roles per run.** Take the first 5 results from the view (oldest first). If more than 5 roles are returned, process only the first 5 and report how many remain. Do not process all roles in one run regardless of how many exist. {{USER_FIRST_NAME}} will run the pipeline again for the next batch.
 
@@ -203,29 +205,6 @@ Do not overwrite `Priority` here — already handled in Step 3.6.
 
 ---
 
-## Step 4.5 — Generate additional interview questions
-
-**─── MANDATORY — DO NOT SKIP ───**
-
-This step always runs for every role processed this run. It is not optional. Do not skip it because it seems expensive or because Q&A being empty "is fine." The pipeline is not complete until Step 4.5 has executed.
-
-The Notion page body template already contains two standard questions {{USER_FIRST_NAME}} answers before the campaign:
-- What specifically caught her attention about this role
-- Anything else she wants in the letter that isn't in her CV
-
-This step generates **additional** questions specific to this role and JD — only if there is something the standard questions don't cover (a specific gap to address, a company-specific angle worth probing, a condition from the HM that needs surfacing).
-
-For each role processed this run, spawn `letter-writer` with `option=interview-questions`, passing:
-- Company name and role title
-- The structured JD (including the Company self-characterization section if present)
-- The coach's output for this role: Role emphasis, Strategy, Gap handling, Relationship type
-
-Run all spawns in parallel. **Only write to the `Q&A` property if letter-writer returns additional questions.** If no additional questions are needed beyond the standard two, leave Q&A empty — that is correct output from the step, not a skipped step. Skip any role where `Q&A` is already populated — do not overwrite existing content.
-
-**After Step 4.5 completes, proceed directly to Step 5.** Do not ask {{USER_FIRST_NAME}} whether to continue.
-
----
-
 ## Step 5 — Write Landscape and Status to Notion
 
 Update the following properties on each Notion page using `notion-update-page` with `command: update_properties`.
@@ -241,7 +220,7 @@ Write format when field is already populated:
 [existing content preserved verbatim below]
 ```
 
-Use this exact section structure for the new coach content. **Keep it scannable — {{USER_FIRST_NAME}} reads this to decide what to write in Q&A, not to study the company. One tight bullet per point. No padding.**
+Use this exact section structure for the new coach content. **Keep it scannable — {{USER_FIRST_NAME}} reads this to decide what to write in Why I Want This Role, not to study the company. One tight bullet per point. No padding.**
 
 ```
 ## Competitors
@@ -272,7 +251,7 @@ Use this exact section structure for the new coach content. **Keep it scannable 
 
 **`Priority`** (Select property) — write only if currently empty. Use the numeric Notion value from Step 3.6: `1` (Highest) through `6` (Fifth). Do not write this field if Priority is already set.
 
-**`Status`** — Update from `Hold` to `Researched` after writing Landscape and Priority. This signals that market intelligence is complete for this role and it is ready for the campaign pipeline when {{USER_FIRST_NAME}} decides to move it forward. Do not update Status if it was not `Hold` when fetched — respect whatever {{USER_FIRST_NAME}} has set.
+**`Status`** — Update from `Hold` to `Researched` after writing Landscape and Priority. This signals that market intelligence is complete for this role and it is ready for the pipeline pipeline when {{USER_FIRST_NAME}} decides to move it forward. Do not update Status if it was not `Hold` when fetched — respect whatever {{USER_FIRST_NAME}} has set.
 
 ---
 

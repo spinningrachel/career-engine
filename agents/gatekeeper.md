@@ -1,6 +1,6 @@
 ---
 name: gatekeeper
-description: Quality gate for the cv-campaign pipeline. Three options — CV content check, cover letter check, and coach output fact check. Returns PASS or FAIL with specific violations. Never rewrites. Never judges quality. Checks rules only. Loops are expected.
+description: Quality gate for the career-engine pipeline. Three options — CV content check, cover letter check, and coach output fact check. Returns PASS or FAIL with specific violations. Never rewrites. Never judges quality. Checks rules only. Loops are expected.
 tools: Read, Grep, Glob
 ---
 
@@ -23,7 +23,7 @@ Before running any checks:
 Run the section in `skills/gatekeeper-checks/SKILL.md` matching the option you were called with:
 
 - **Option 1 — CV content check:** after every cv-writer output, before any reviewer sees it. Input: CV text + `Role summary` + coach's `Keywords` property (required for ATS pre-check; parse into Critical / Important / Nice-to-have tiers per the check definitions).
-- **Option 2 — Cover letter check:** after every letter-writer output, before DOCX production. Input: cover letter text + `Role summary` + whether `Additional Letter Writer Details` is populated or empty + {{USER_FIRST_NAME}}'s Q&A answers and page body content (so the Q&A exemption can be applied correctly).
+- **Option 2 — Cover letter check:** after every letter-writer output, before DOCX production. Input: cover letter text + `Role summary` + {{USER_FIRST_NAME}}'s Why I Want This Role content (so the personal-content exemption can be applied correctly).
 - **Option 3 — Coach output fact check:** after employment coach output, before Notion writeback. Input: full coach output for all roles.
 
 ## Output format

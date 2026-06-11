@@ -49,7 +49,7 @@ The plugin expects a specific database schema. The fastest way to get started:
 
 After duplicating:
 1. Copy the database ID from the URL (`notion.so/<workspace>/<DATABASE_ID>?v=...`)
-2. Run `/cv-campaign:setup` — it will ask for the ID and write it to the plugin config
+2. Run `/career-engine:setup` — it will ask for the ID and write it to the plugin config
 
 ## CSV / Google Sheets alternative
 

@@ -27,7 +27,7 @@ The invoker must tell you:
 
 If not told, check both REPO and LIVE.
 
-REPO = `/Users/rachel/cv-campaign-plugin/`
+REPO = `/Users/rachel/career-engine/`
 LIVE = `/Users/rachel/.claude/plugins/marketplaces/local-desktop-app-uploads/career-engine/`
 
 ---
@@ -102,18 +102,34 @@ For each subdirectory in `skills/`, verify it contains either:
 
 **FAIL condition:** any skill directory is empty.
 
-### Check 4 — No stale skill/command name references
+### Check 4 — No retired skill-name generations referenced
 
-Scan all `.md` files in `agents/`, `skills/`, `CLAUDE.md` for the following banned names:
-- `application-files-export`
-- `application-intake`
-- `new-application-steps`
-- `career-engine-setup`
-- `application-edit`
-- `applications-orchestrator`
+Two retired naming generations must not appear anywhere in runtime files. Generation 1 (pre-June 8): `cv-campaign-intake`, `cv-campaign-setup`, `cv-campaign-steps`, `cv-campaign-edit`, `cv-campaign-orchestrator`, `cv-campaign-export`. Generation 2 (June 8 – June 11): `application-intake`, `application-edit`, `new-application-steps`, `applications-orchestrator`, `application-files-export`. The current names are `career-engine-intake`, `career-engine-edit`, `career-engine-new-application`, `career-engine-orchestrator`, `career-engine-export`, `career-engine-coach`, `career-engine-setup`.
+
+**Note:** the literal legacy *output folder* pattern `cv-campaign-YYYY-MM-DD` (and `cv-campaign-<YYYY-MM-DD>`) is NOT banned — it matches real folders on disk from old runs and is required by the R-8 crash-recovery search. It does not match any banned skill name below.
 
 ```bash
-grep -rn "application-files-export\|application-intake\|new-application-steps\|career-engine-setup\|application-edit\|applications-orchestrator" <location> --include="*.md" | grep -v "agents/qa-plugin.md"
+grep -rn "cv-campaign-intake\|cv-campaign-setup\|cv-campaign-steps\|cv-campaign-edit\|cv-campaign-orchestrator\|cv-campaign-export\|application-intake\|application-edit\|new-application-steps\|applications-orchestrator\|application-files-export" <location> --include="*.md" | grep -v "agents/qa-plugin.md" | grep -v "/docs/"
+```
+
+**FAIL condition:** any occurrence found.
+
+### Check 4b — No "campaign" branding terminology in runtime prose
+
+The plugin is the career engine; "CV campaign" / "campaign" branding is retired (R-26). Marketing-English uses of the word (consumer campaigns, ABM campaigns, drumbeat campaigns, ActiveCampaign) in `references/` personal content and worked examples are fine — the check therefore covers `skills/`, `agents/`, `README.md`, and `CLAUDE.md` only, and excludes the legacy folder pattern and the two known marketing-English example lines.
+
+```bash
+grep -rni "campaign" <location>/skills <location>/agents <location>/README.md <location>/CLAUDE.md --include="*.md" | grep -v "agents/qa-plugin.md" | grep -vi "cv-campaign-YYYY\|cv-campaign-<YYYY\|consumer campaigns\|ActiveCampaign"
+```
+
+**FAIL condition:** any occurrence found.
+
+### Check 4c — No retired Q&A wiring
+
+The `Q&A` Notion property, the letter-writer `interview-questions` option, the "Q&A bank", and the `Additional Letter Writer Details` property are all retired (R-29). The user's per-role personal content lives solely in `Why I Want This Role`; the reusable bank is `02-professional-background.md` §5 "Motivation Bank", fed by the promotion step (new-application Step 7f / edit Step E10.5). Generic non-property uses of "Q&A" (the `{{USER_ANSWER_*}}` placeholder description in this file, the personal-brand bio-interview skill, historical CLAUDE.md regression rows, `/docs/` archives) are fine — the check covers runtime wiring only.
+
+```bash
+grep -rn "option=interview-questions\|interview-questions\|interview questions\|Q&A property\|Q&A bank\|Q&A answers\|Q&A questions\|Additional Letter Writer Details" <location>/skills <location>/agents <location>/references <location>/README.md --include="*.md" | grep -v "agents/qa-plugin.md" | grep -v "skills/personal-brand/"
 ```
 
 **FAIL condition:** any occurrence found.
@@ -122,7 +138,7 @@ grep -rn "application-files-export\|application-intake\|new-application-steps\|c
 
 For each agent `.md` file, scan for skill names that are loaded or referenced (look for patterns like skill name strings, `Load`, `read skill`, etc.). For each skill name found, verify the corresponding directory exists in `skills/`.
 
-Common skill names to expect: `application-intake`, `new-application-steps`, `application-files-export`, `applications-orchestrator`, `application-edit`, `career-engine-setup`, `coach`, `cover-letter`, `cover-letter-humanizer`, `cv-writing`, `employment-coach`, `gatekeeper-checks`, `career-engine`.
+Common skill names to expect: `career-engine-intake`, `career-engine-new-application`, `career-engine-export`, `career-engine-orchestrator`, `career-engine-edit`, `career-engine-setup`, `coach`, `cover-letter`, `cover-letter-humanizer`, `cv-writing`, `employment-coach`, `gatekeeper-checks`, `career-engine`.
 
 **FAIL condition:** a referenced skill name has no matching directory.
 
@@ -179,6 +195,8 @@ All of the following must appear as real values (not `{{...}}` strings) in LIVE 
 | `{{USER_FUNCTION_SENIORITY_HIERARCHY}}` | `CMO → VP Marketing → Head of Marketing / Director of Marketing → Senior Marketing Manager → Marketing Manager → IC` |
 | `{{WORD_TEMPLATES_PATH}}` | `/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized` |
 | `{{CV_TEMPLATE_FILE}}` | `rachel-cheyfitz.dotx` |
+| `{{DRAFT_DIR_URL_BASE}}` | Anchorpoint project link base (`https://anchorpoint.app/link?p=projects%2F...%2F`) or the word `skip` |
+| `{{NOTION_NEEDS_EDITING_VIEW_URL}}` | the pre-built "Needs Editing" Notion view URL |
 
 ---
 
@@ -197,9 +215,9 @@ Verify the following files exist in `LIVE/references/`:
 The REPO is the open-source distribution. It must not contain Rachel's real personal data. Scan REPO for the following strings — none should appear:
 
 ```bash
-grep -rn "Rachel\|Cheyfitz\|3465ef1aa63480a283cfdf847cb47404\|CVs jobsearch and hiring\|rachel@cheyfitz" \
-  /Users/rachel/cv-campaign-plugin/ --include="*.md" \
-  | grep -v "CLAUDE.md\|README\|qa-plugin.md"
+grep -rn "Rachel\|Cheyfitz\|3465ef1aa63480a283cfdf847cb47404\|CVs jobsearch and hiring\|rachel@cheyfitz\|anchorpoint.app" \
+  /Users/rachel/career-engine/ --include="*.md" \
+  | grep -v "CLAUDE.md\|README\|qa-plugin.md\|/docs/"
 ```
 
 **FAIL condition:** any real personal name, Notion database ID, real output path, or personal email found in REPO skill or agent files. These must be placeholders in REPO.
@@ -215,7 +233,7 @@ If a future session establishes a new stable sync source, this check can be upda
 ### Check 8 — No old.md exists
 
 ```bash
-find /Users/rachel/cv-campaign-plugin -name "old.md"
+find /Users/rachel/career-engine -name "old.md"
 find "/Users/rachel/.claude/plugins/marketplaces/local-desktop-app-uploads/career-engine" -name "old.md"
 ```
 
@@ -236,14 +254,14 @@ Read `CLAUDE.md` in REPO and LIVE. Verify it contains "Canonical personal versio
 ### Check 11 — Pipeline skill chain integrity (REPO)
 
 The following skill directories must exist in `REPO/skills/`:
-- `application-intake`
-- `new-application-steps`
-- `application-files-export`
-- `applications-orchestrator`
-- `application-edit`
+- `career-engine-intake`
+- `career-engine-new-application`
+- `career-engine-export`
+- `career-engine-orchestrator`
+- `career-engine-edit`
 - `career-engine-setup`
 - `career-engine`
-- `coach`
+- `career-engine-coach`
 - `cover-letter`
 - `cover-letter-humanizer`
 - `cv-writing`
@@ -293,12 +311,12 @@ grep -c "Final Gate" <location>/agents/cover-letter-humanizer.md
 
 **FAIL condition:** string not found (count = 0).
 
-### Check 17 — Edit type hard gate present in application-edit skill
+### Check 17 — Edit type hard gate present in career-engine-edit skill
 
-In `skills/application-edit/SKILL.md`: verify the file contains "Edit type is mandatory".
+In `skills/career-engine-edit/SKILL.md`: verify the file contains "Edit type is mandatory".
 
 ```bash
-grep -c "Edit type is mandatory" <location>/skills/application-edit/SKILL.md
+grep -c "Edit type is mandatory" <location>/skills/career-engine-edit/SKILL.md
 ```
 
 **FAIL condition:** string not found.
@@ -316,35 +334,122 @@ grep -c "Failure mode B" <location>/skills/cover-letter/SKILL.md
 
 ### Check 19 — Indeed connector fallback present in intake skill
 
-In `skills/application-intake/SKILL.md`: verify the file contains "indeed.com" and "search_jobs".
+In `skills/career-engine-intake/SKILL.md`: verify the file contains "indeed.com" and "search_jobs".
 
 ```bash
-grep -c "indeed.com" <location>/skills/application-intake/SKILL.md
-grep -c "search_jobs" <location>/skills/application-intake/SKILL.md
+grep -c "indeed.com" <location>/skills/career-engine-intake/SKILL.md
+grep -c "search_jobs" <location>/skills/career-engine-intake/SKILL.md
 ```
 
 **FAIL condition:** either string not found.
 
-### Check 20 — Notion view creation prohibition present in intake skill
+### Check 19b — Universal fallback ladder present in intake skill (R-23)
 
-In `skills/application-intake/SKILL.md`: verify the file contains "create-database-view".
+In `skills/career-engine-intake/SKILL.md`: verify Step 0.5 contains the universal fallback ladder and the usable-content fetch criterion.
 
 ```bash
-grep -c "create-database-view" <location>/skills/application-intake/SKILL.md
+grep -c "Universal fallback ladder" <location>/skills/career-engine-intake/SKILL.md
+grep -c "usable JD content" <location>/skills/career-engine-intake/SKILL.md
+grep -c "url-fetched-via-search" <location>/skills/career-engine-intake/SKILL.md
+```
+
+**FAIL condition:** any string not found.
+
+### Check 19c — Rendering-capable extraction rung present (R-27)
+
+```bash
+grep -c "Rendering-capable extraction" <location>/skills/career-engine-intake/SKILL.md
+grep -c "Rendering-capable extraction" <location>/agents/employment-coach.md
+grep -c "Fetched-alternative" <location>/agents/employment-coach.md
+```
+
+**FAIL condition:** either of the first two counts is 0. The third grep must return exactly 1 (the parenthetical explaining the option does not exist) — more than 1 means the invalid option is being written again.
+
+### Check 20 — Notion view creation prohibition present in intake skill
+
+In `skills/career-engine-intake/SKILL.md`: verify the file contains "create-database-view".
+
+```bash
+grep -c "create-database-view" <location>/skills/career-engine-intake/SKILL.md
 ```
 
 **FAIL condition:** string not found.
 
-### Check 21 — notionApi query required (not notion-query-database-view) present in intake skill
+### Check 21 — Two-tier Notion query path present in intake skill (R-1, R-25)
 
-In `skills/application-intake/SKILL.md`: verify the file contains "notion-query-database-view" (the prohibition names the banned tool) AND "API-query-data-source" (the required replacement).
+In `skills/career-engine-intake/SKILL.md`: verify Step 0b contains both query paths and the misalignment invariant — "API-query-data-source" (Path A), "Path B" (the sanctioned view-query fallback), and "misaligned rendered table" (the never-parse invariant).
 
 ```bash
-grep -c "notion-query-database-view" <location>/skills/application-intake/SKILL.md
-grep -c "API-query-data-source" <location>/skills/application-intake/SKILL.md
+grep -c "API-query-data-source" <location>/skills/career-engine-intake/SKILL.md
+grep -c "Path B" <location>/skills/career-engine-intake/SKILL.md
+grep -c "misaligned rendered table" <location>/skills/career-engine-intake/SKILL.md
 ```
 
-**FAIL condition:** either string not found.
+**FAIL condition:** any string not found.
+
+### Check 21b — Pipeline command authority present in orchestrator (R-24)
+
+In `skills/career-engine-orchestrator/SKILL.md`: verify the Absolute Constraints contain the command-authority rule.
+
+```bash
+grep -c "routing authority" <location>/skills/career-engine-orchestrator/SKILL.md
+```
+
+**FAIL condition:** string not found.
+
+### Check 21c — View-result discovery-only rule present at all three query sites (R-1, R-25)
+
+Rendered view tables are never parsed for property values; they are used only to discover candidate pages, with properties read per page via `notion-fetch`.
+
+```bash
+grep -c "discovery only" <location>/skills/career-engine-intake/SKILL.md
+grep -c "discovery only (R-1)" <location>/skills/career-engine-edit/SKILL.md
+grep -c "discovery only (R-1)" <location>/skills/career-engine-coach/SKILL.md
+```
+
+**FAIL condition:** any count is zero.
+
+### Check 21d — Intake Step 0a schema-fetch error path present
+
+```bash
+grep -c "If the schema fetch fails" <location>/skills/career-engine-intake/SKILL.md
+```
+
+**FAIL condition:** string not found.
+
+### Check 17b — E10 has no duplicate coach-property writeback
+
+Step E2 owns the coach-property writeback; Step E10 must not repeat it.
+
+```bash
+grep -c "Write updated coach-owned properties" <location>/skills/career-engine-edit/SKILL.md
+```
+
+**FAIL condition:** count is anything other than 0.
+
+### Check 21e — Gap handling preference read from the plugin file (R-28)
+
+```bash
+grep -c "pipeline-preferences.json" <location>/skills/career-engine-intake/SKILL.md
+grep -c "pipeline-preferences.json" <location>/skills/employment-coach/SKILL.md
+grep -c "pipeline-preferences.json" <location>/skills/career-engine-setup/SKILL.md
+test -f <location>/references/pipeline-preferences.json && echo 1 || echo 0
+```
+
+**FAIL condition:** any count is 0 or the file is missing.
+
+### Check 21f — Two-path output-access ladder present (R-30)
+
+The output-path verification must offer Path A (direct filesystem) and Path B (host-bridge MCP) instead of a sandbox-Bash-only hard stop, and the retired no-fallback absolute must not reappear.
+
+```bash
+grep -c "Path B — host-bridge MCP" <location>/skills/career-engine-orchestrator/SKILL.md   # must be 1
+grep -c "Path B — host-bridge MCP" <location>/skills/career-engine-edit/SKILL.md           # must be 1
+grep -c "Environment note (R-30)" <location>/skills/career-engine-export/SKILL.md          # must be 1
+grep -c "Do not proceed and do not fall back to any other path" <location>/skills/career-engine-orchestrator/SKILL.md  # must be 0
+```
+
+**FAIL condition:** any "must be 1" count differs from 1, or the "must be 0" count is nonzero.
 
 ### Check 22 — Known regression checks present in CLAUDE.md
 
@@ -385,7 +490,7 @@ For each finding, report: the step reference, the failure type (from the list be
 
 ### Check 23 — Intake pipeline logic review
 
-Read `skills/application-intake/SKILL.md` from Step −1 through Step 0.9d. Walk every step in order. Apply all seven failure type checks to each step. Report every finding.
+Read `skills/career-engine-intake/SKILL.md` from Step −1 through Step 0.9d. Walk every step in order. Apply all seven failure type checks to each step. Report every finding.
 
 Pay particular attention to:
 - Step 0b: does the notionApi query path have a defined fallback if the query returns zero results vs returns an error?
@@ -395,7 +500,7 @@ Pay particular attention to:
 
 ### Check 24 — New application steps logic review
 
-Read `skills/new-application-steps/SKILL.md` from Step 1 through the final step. Walk every step in order. Apply all seven failure type checks.
+Read `skills/career-engine-new-application/SKILL.md` from Step 1 through the final step. Walk every step in order. Apply all seven failure type checks.
 
 Pay particular attention to:
 - Step sequencing: does each step's output cleanly feed the next step's required input?
@@ -405,7 +510,7 @@ Pay particular attention to:
 
 ### Check 25 — Edit pipeline logic review
 
-Read `skills/application-edit/SKILL.md` from Preflight through Step E10. Walk every step in order. Apply all seven failure type checks.
+Read `skills/career-engine-edit/SKILL.md` from Preflight through Step E10. Walk every step in order. Apply all seven failure type checks.
 
 Pay particular attention to:
 - Edit type gate: does it truly block all pipeline work for a role, or does any step proceed before the gate fires?
@@ -415,11 +520,11 @@ Pay particular attention to:
 
 ### Check 26 — Orchestrator logic review
 
-Read `skills/applications-orchestrator/SKILL.md`. Walk every step. Apply all seven failure type checks.
+Read `skills/career-engine-orchestrator/SKILL.md`. Walk every step. Apply all seven failure type checks.
 
 Pay particular attention to:
 - Queue selection logic: is the priority ordering unambiguous when two roles share the same priority value?
-- Role routing: is the handoff to intake and new-application-steps clean — no context lost between orchestrator and sub-pipeline?
+- Role routing: is the handoff to intake and career-engine-new-application clean — no context lost between orchestrator and sub-pipeline?
 - Error propagation: if one role fails mid-pipeline, does the orchestrator continue correctly or does it risk aborting the batch?
 
 ---

@@ -6,6 +6,8 @@ allowed-tools: Read, Write, mcp__linkedin-mcp__get_my_profile, mcp__linkedin-mcp
 
 # LinkedIn Coach
 
+> **Registry:** this pipeline is listed in the Pipeline Registry in `skills/career-engine/SKILL.md`. Actions owned by another pipeline's registry row are out of scope here — route to that pipeline instead of improvising.
+
 Comprehensive LinkedIn optimisation across five modes. Choose the one that fits your situation.
 
 ## Capabilities

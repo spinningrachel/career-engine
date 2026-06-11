@@ -1,17 +1,17 @@
 ---
 name: career-content-bank
-description: Accumulated approved career content and reusable Q&A answers. Contains approved CV summaries, role facts with approved bullets, testimonials, portfolio, and the Q&A bank. Agents load this alongside 01-writing-rules.md for any task requiring approved language, role facts, or intake answers.
+description: Accumulated approved career content and reusable motivation material. Contains approved CV summaries, role facts with approved bullets, testimonials, portfolio, and the motivation bank. Agents load this alongside 01-writing-rules.md for any task requiring approved language, role facts, or reusable motivation content.
 ---
 
 # Career Content Bank
 
-This file accumulates through pipeline use — it starts with the facts you know upfront (role history, contact, portfolio) and fills in over time as CVs are approved, letters land, and Q&A answers are captured.
+This file accumulates through pipeline use — it starts with the facts you know upfront (role history, contact, portfolio) and fills in over time as CVs are approved, letters land, and new Why I Want This Role content is promoted into the motivation bank.
 
 > **Setup required.** Fill in Sections 6–10 before running the pipeline. Section 7 (Role Facts) is the most important — every CV bullet must be grounded here. The more complete and specific your role facts, the less agents will need to infer, and the fewer corrections you will need to make.
 
 **Two types of content:**
 - **Approved career content** (Sections 6–10): role facts, approved language, testimonials, portfolio — reference for CV and letter writing
-- **Q&A bank** (Section 5): reusable intake answers — checked by letter-writer before generating new Notion Q&A questions
+- **Motivation bank** (Section 5): standing answers plus durable content promoted from Why I Want This Role — loaded by writers for voice calibration and reusable angles
 
 ---
 
@@ -181,19 +181,31 @@ Use for consulting pitches and cover letters where social proof strengthens the 
 
 ---
 
-## Section 5 — Q&A Bank
+## Section 5 — Motivation Bank
 
-Reusable intake answers indexed by topic. Letter-writer loads this before generating Notion Q&A questions — if an answer exists here, use it directly and do not ask {{USER_FIRST_NAME}} again.
+Reusable motivation themes, standing answers, and {{USER_FIRST_NAME}}'s own phrasings, indexed by topic. Two sources feed this section:
 
-*What to put here: answers to questions that will come up repeatedly during your job search. Answer honestly and specifically — vague answers produce vague letters. You can add questions as they arise in applications. The more of these you fill in, the less the pipeline will need to ask you.*
+1. **Manually** — standing answers to questions that come up repeatedly during a job search (the table below).
+2. **Automatically** — the pipeline's Why I Want This Role promotion step (new-application Step 7f; edit Step E10.5) appends new durable content from the `Why I Want This Role` field after each run, quoted verbatim with the source role and date.
+
+Writers load this section for voice calibration and reusable angles — {{USER_FIRST_NAME}}'s own words always beat constructed alternatives. **Append-only:** pipeline steps add entries; they never rewrite, merge, or delete existing ones.
+
+*What to put here manually: answers to questions that will come up repeatedly during your job search. Answer honestly and specifically — vague answers produce vague letters. The more of these you fill in, the less context agents will be missing.*
 
 | Question | Answer | Details |
 |---|---|---|
 | What's the professional observation that defines your approach — the problem you exist to solve? | {{YOUR_ANSWER}} | Core identity statement. Agents use this as the foundation for cover letter openers. Write it in your own voice, not a polished elevator pitch. |
-|---|---|---|
 | What's your geographic filter for roles? | {{YOUR_GEO_FILTER}} | *(e.g., "Local first, then fully remote globally, then timezone-compatible remote — no relocation.")* Apply before investing time in any non-local application. |
 | Is unfamiliarity with a domain ever a real blocker for you — or can you get up to speed? | {{YOUR_HONEST_ANSWER}} | This shapes how agents handle "gap" questions in cover letters. If you learn fast, say so and give the proof. If certain knowledge is genuinely required, say that too. |
 | Do you have public speaking, writing, or on-camera experience? | {{YOUR_ANSWER}} | Relevant for roles calling for thought leadership, evangelism, or external representation. |
 | What's driving a career transition or unconventional application? | {{YOUR_ANSWER_IF_APPLICABLE}} | Only fill in if you're making a deliberate change or applying outside your direct background. Agents use this to frame the cover letter honestly without telegraphing weakness. |
 | Do you have warm contacts at any companies you're applying to? | {{YOUR_STANDING_ANSWER}} | *(e.g., "Always write letters as if there are no warm contacts — I adjust before sending.")* |
 | What types of companies or missions genuinely excite you beyond your domain expertise? | {{YOUR_ANSWER}} | Agents use this when the JD mentions mission, values, or culture fit. Honest enthusiasm is more compelling than manufactured interest. |
+
+### Promoted from Why I Want This Role
+
+*Auto-populated by the pipeline (new-application Step 7f; edit Step E10.5). Entries are {{USER_FIRST_NAME}}'s verbatim words — never paraphrased, never invented. Append-only.*
+
+<!-- Entry format:
+- **[Topic]** — "[verbatim quote]" *(from Why I Want This Role — [Company], [YYYY-MM-DD])*
+-->
