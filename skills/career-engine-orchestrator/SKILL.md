@@ -356,7 +356,7 @@ If state.json is missing, report: "state.json not found in `<folder>` — run ma
 
 **Step S3 — Check files on disk**
 
-For each role in state.json, verify the expected files exist. `cv_path` and `cover_letter_path` are relative to the run folder and already include the company subdirectory (e.g. `nuvoton/cv-{{USER_LAST_NAME}}-...docx`). Hebrew file presence is detected from filenames — if any DOCX in the company subdirectory carries the `-he` suffix (derived from `cv_path`/`cover_letter_path` with `-he` inserted before `.docx`), treat the role as having Hebrew outputs and verify both Hebrew files exist.
+For each role in state.json, verify the expected files exist. `cv_path` and `cover_letter_path` are relative to the run folder and already include the company subdirectory (e.g. `northwind/cv-{{USER_LAST_NAME}}-...docx`). Hebrew file presence is detected from filenames — if any DOCX in the company subdirectory carries the `-he` suffix (derived from `cv_path`/`cover_letter_path` with `-he` inserted before `.docx`), treat the role as having Hebrew outputs and verify both Hebrew files exist.
 
 ```bash
 ls "<most-recent-folder>/<cv_path>" 2>/dev/null && echo "✓" || echo "MISSING"

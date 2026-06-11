@@ -46,7 +46,7 @@ Classify every shared item against this map. Multiple items in one document are 
 | Portfolio and work samples | `02-professional-background.md` §10 | Include links |
 | Motivation themes, standing answers, voice phrasings | `02-professional-background.md` §5 (Motivation Bank) | Append-only — same discipline as the Step 7f promotion |
 | Rules, constraints, attribution and framing requirements, contact details | `references/01-writing-rules.md` | Rules changes affect every agent — confirm the intent explicitly |
-| Positioning, voice profile, methodology, messaging, taglines | `references/03-framework.md` | |
+| Positioning, voice profile, methodology, messaging, taglines, goals, ICP, career-shift posture, employment status | `references/03-framework.md` | **The primary source of truth about the user — see Framework Updates below.** Changes here alter agent behavior everywhere; every proposal must name the behavioral consequence, not just the text change. |
 | Sent cover letters for voice calibration | `references/delivered-letters/` | **Do not write directly** — route through letter-writer Option 3 (Manage Letter Examples; cap 6) |
 | LinkedIn profile PDF export (new or updated) | `references/linkedin-profile.md` | **Replace, wholesale** — extract the export into the file's structure (headline, About verbatim, skills, experience entries, education), stamp the snapshot date, and supersede the previous snapshot entirely. This is the canonical base for all LinkedIn recommendations; no usage questions needed — the wiring exists. |
 | Word templates (.dotx) | `references/` | Personalized version only |
@@ -86,6 +86,18 @@ An unwired file is a failed add — do not report success until the wiring is in
 - **Approved summaries (§6)** carry validation tags. Replacing one removes its validation history — say so when proposing the replacement.
 - **Motivation Bank (§5)** is append-only for pipeline writes; this skill may edit §5 entries only on explicit instruction.
 - **Fabrication rule applies in full.** Everything written must be traceable to what {{USER_FIRST_NAME}} provided — her words, her documents. Never embellish, infer, or fill gaps with plausible content. If material is incomplete (a role with no dates, a metric with no number), ask or store it incomplete and flagged — never complete it yourself.
+- **Documented writing rules and prohibitions are protected.** Voice and tone preferences refine register, vocabulary, and style — they never implicitly weaken, modify, or create exceptions to any documented writing rule or prohibition (in `01-writing-rules.md`, the cover-letter skill, the humanizer, or cv-writing). If a stated preference conflicts with a documented behavior, surface the conflict and ask whether she **explicitly rejects that specific documented behavior**. Only an explicit rejection changes a rule — and the change is then written into the rule's home file as part of the approved proposal, never inferred from a preference.
+
+## Framework Updates — the user changes over time
+
+`03-framework.md` is the primary source of truth about who {{USER_FIRST_NAME}} is and what she is positioning toward — and people change, grow, and shift. This skill is the standing mechanism for keeping the framework current between setup runs. Rules specific to framework updates:
+
+- **Direct statements are valid input.** A framework update does not require a document. "I'm now primarily pursuing a shift," "add Chief of Staff to my off-limits list," "I've started a new role at [Company]," "my target stage changed" — said in chat — are exactly the material this section exists for. Capture her wording; the normal proposal-and-approval flow still applies.
+- **User-confirmed means no `[DRAFT]` markers.** The `[DRAFT — confirm in interview]` discipline belongs to setup Phase 3, where the agent *infers*. Updates arriving through this skill come from {{USER_FIRST_NAME}} directly and are approved before writing — write them as confirmed content. Never re-mark a confirmed section as draft.
+- **Name the behavioral consequence in every proposal.** Framework changes change how agents behave — a posture change alters how every shift role is treated; an off-limits addition stops agents from ever emphasizing that direction; an ICP change shifts priority scoring. The proposal must state what will behave differently, so she approves the consequence, not just the wording.
+- **Enum fields stay enums.** §Career-shift posture's Posture field takes exactly one of: `Not open` / `Open — case-by-case` / `Primarily pursuing a shift`. If her statement doesn't map cleanly to one value, ask — do not coin a fourth state.
+- **Bigger than a patch?** When the change is a genuine life shift (new role, career change, pivot in goals) that touches several framework sections, offer the relevant Phase 4 questions from `career-engine-setup` for those sections instead of patching piecemeal — a short re-interview beats a guessed rewrite. Her call which to run.
+- **Framework primacy cuts both ways.** Because every agent reads this file first, never let a framework update sit only in conversation — if she states a change and it is approved, it gets written. A stated-but-unwritten change is invisible to every future run.
 
 ## Procedure
 

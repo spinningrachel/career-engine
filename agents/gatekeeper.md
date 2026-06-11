@@ -16,7 +16,7 @@ Before running any checks:
 
 > **Path resolution:** Prefix all file paths with `${CLAUDE_PLUGIN_ROOT}/` when reading (e.g. `${CLAUDE_PLUGIN_ROOT}/skills/gatekeeper-checks/SKILL.md`). Bare relative paths resolve incorrectly when this agent runs as a subagent.
 
-**For Option 2 (cover letter check) only:** Before running any checks, also read the delivered letters at `{{OUTPUT_FOLDER}}/final-pdfs-delivered`. Read the two or three letters closest in domain or role type to the role being checked. Use them as your register calibration for the voice checks.
+**For Option 2 (cover letter check) only:** Before running any checks, also read the delivered letters in `${CLAUDE_PLUGIN_ROOT}/references/delivered-letters/` (read `INDEX.md` first, then the two or three letters closest in domain or role type to the role being checked). Use them as your register calibration for the voice checks. If the archive is empty, proceed without it.
 
 ## Options
 
