@@ -10,6 +10,15 @@ allowed-tools: Read, Write, mcp__linkedin-mcp__get_my_profile, mcp__linkedin-mcp
 
 Comprehensive LinkedIn optimisation across five modes. Choose the one that fits your situation.
 
+**─── FRAMEWORK PRIMACY — GOVERNS EVERY MODE ───**
+
+**`03-framework.md` is the primary source of truth about who the user is and what they are positioning toward. LinkedIn is a tool this skill helps them improve — never a source of truth about their goals.** Treat the framework as background guidance for every recommendation in every mode. The profile is permanent and serves the user's whole positioning: a single application, a single target role, or any one run's signals — including a role that represents a career shift — must not pull recommendations toward themselves unless the change also strengthens the overall positioning. Only if the framework indicates a career shift is a primary goal may recommendations deliberately support the transition.
+
+**Profile source ladder (for any mode that reads the profile):**
+1. **`references/linkedin-profile.md`** — the permanent profile reference, when present and not still templated (content containing the characters `{{` and `}}` means not yet provided). This is the canonical snapshot agents base recommendations on; the user replaces it with a new LinkedIn PDF export via update-refs whenever they change their profile.
+2. **LinkedIn MCP** (`get_my_profile`) — when the reference is absent and the MCP is connected. Offer to save the fetched content as `references/linkedin-profile.md` via update-refs so future runs have it.
+3. **Ask the user** to paste sections or share a PDF/screenshot — and note they can make it permanent by saying "update my references."
+
 ## Capabilities
 
 | # | Capability | When to Use |
@@ -24,16 +33,13 @@ Comprehensive LinkedIn optimisation across five modes. Choose the one that fits 
 
 ## A. Full Profile Audit
 
-**What you need:** LinkedIn profile content (from MCP fetch, screenshots, copy-paste, or PDF export) + career goals or target role.
+**What you need:** LinkedIn profile content + career goals or target role (goals read from `03-framework.md` first — see Framework Primacy above).
 
-**Step 1 — Fetch profile (if LinkedIn MCP is connected)**
+**Step 1 — Acquire the profile via the Profile source ladder** (defined at the top of this skill):
 
-If `mcp__linkedin-mcp__get_my_profile` is available:
-- Run `get_my_profile(sections="experience,education,skills,contact_info")`
-- Use the result as the profile source
-
-If not available:
-- Ask: "Please paste your LinkedIn About section, current headline, and your most recent 3 experience entries. Or share a screenshot."
+1. Read `references/linkedin-profile.md` — if present and not templated, this is the profile source. Note its snapshot date in the audit output.
+2. Otherwise, if `mcp__linkedin-mcp__get_my_profile` is available: run `get_my_profile(sections="experience,education,skills,contact_info")` and use the result. Offer to save it as the permanent reference via update-refs.
+3. Otherwise ask: "Please paste your LinkedIn About section, current headline, and your most recent 3 experience entries — or share a PDF export. A PDF export can also become your permanent profile reference (say 'update my references'), so every future run analyses your real profile."
 
 **Step 2 — Profile sections review**
 

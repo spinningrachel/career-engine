@@ -138,7 +138,7 @@ grep -rn "option=interview-questions\|interview-questions\|interview questions\|
 
 For each agent `.md` file, scan for skill names that are loaded or referenced (look for patterns like skill name strings, `Load`, `read skill`, etc.). For each skill name found, verify the corresponding directory exists in `skills/`.
 
-Common skill names to expect: `career-engine-intake`, `career-engine-new-application`, `career-engine-export`, `career-engine-orchestrator`, `career-engine-edit`, `career-engine-setup`, `coach`, `cover-letter`, `cover-letter-humanizer`, `cv-writing`, `employment-coach`, `gatekeeper-checks`, `career-engine`.
+Common skill names to expect: `career-engine-intake`, `career-engine-new-application`, `career-engine-export`, `career-engine-orchestrator`, `career-engine-edit`, `career-engine-setup`, `coach`, `cover-letter`, `cover-letter-humanizer`, `cv-writing`, `employment-coach`, `gatekeeper-checks`, `career-engine`, `update-refs`.
 
 **FAIL condition:** a referenced skill name has no matching directory.
 
@@ -161,7 +161,9 @@ grep -rn "{{" \
   | grep -v "/docs/superpowers/" \
   | grep -v "{{PLACEHOLDER}}" \
   | grep -v "{{COMPANY_1}}\|{{COMPANY_2}}\|{{COMPANY_1_HEBREW}}\|{{COMPANY_2_HEBREW}}" \
-  | grep -v "{{USER_ANSWER_"
+  | grep -v "{{USER_ANSWER_" \
+  | grep -v "/skills/update-refs/" \
+  | grep -v "the characters"
 ```
 
 **What this grep excludes and why:**
@@ -173,6 +175,8 @@ grep -rn "{{" \
 - `{{PLACEHOLDER}}` — **intentional template syntax** in `skills/linkedin-coach/SKILL.md` and `skills/personal-brand/SKILL.md`; this is a literal instruction telling the agent to write `{{PLACEHOLDER}}` in its output when a fact is unconfirmed. It is NOT a setup value. It must remain as `{{PLACEHOLDER}}` in both REPO and LIVE.
 - `{{COMPANY_1}}`, `{{COMPANY_2}}`, `{{COMPANY_1_HEBREW}}`, `{{COMPANY_2_HEBREW}}` — **user-fill table cells** in `skills/localization/SKILL.md`; these are columns in a translation table that the user fills in at runtime. They are not setup values.
 - `{{USER_ANSWER_*}}` — fill-in-the-blank Q&A patterns in reference files; correct to keep in both versions
+- `skills/update-refs/` — describes the literal `{{...}}` placeholder convention in its sync-to-repo step; meta-documentation prose, not a setup value
+- `"the characters"` — R-10-style substitution-proof guard and detection prose ("still contains/contain/containing the characters `{{` and `}}`") in the intake/edit/export guards, orchestrator Step 8-pre, and the linkedin-coach profile ladder; literal character references, not setup values
 
 **FAIL condition:** any `{{...}}` placeholder found in the grep output above. Every hit is a value that should have been replaced and must be fixed before the pipeline can run correctly.
 
@@ -450,6 +454,21 @@ grep -c "Do not proceed and do not fall back to any other path" <location>/skill
 ```
 
 **FAIL condition:** any "must be 1" count differs from 1, or the "must be 0" count is nonzero.
+
+### Check 21g — Framework primacy, LinkedIn profile reference, and career-shift posture present
+
+The framework-primacy doctrine, the LinkedIn profile reference and its consumers, and the career-shift posture rule must all be present.
+
+```bash
+grep -c "Framework primacy" <location>/skills/career-engine-orchestrator/SKILL.md      # must be >= 1
+grep -c "Step 8-pre" <location>/skills/career-engine-orchestrator/SKILL.md             # must be >= 1
+grep -c "Profile source ladder" <location>/skills/linkedin-coach/SKILL.md              # must be >= 1
+grep -c "FRAMEWORK PRIMACY" <location>/skills/employment-coach/SKILL.md                # must be 1
+grep -c "Career-shift posture" <location>/skills/employment-coach/SKILL.md             # must be 1
+test -f <location>/references/linkedin-profile.md && echo 1 || echo 0                  # must be 1
+```
+
+**FAIL condition:** any count is 0 (or differs from the stated requirement), or the linkedin-profile.md file is missing.
 
 ### Check 22 — Known regression checks present in CLAUDE.md
 
