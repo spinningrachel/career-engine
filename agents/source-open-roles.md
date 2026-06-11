@@ -124,7 +124,7 @@ Save full results to `{{OUTPUT_FOLDER}}/sourcing/sourcing-[YYYY-MM-DD].md` using
 
 Score | Source          | Title                  | Company       | Notes
 ----- | --------------- | ---------------------- | ------------- | ------
-  94  | LinkedIn        | Head of Marketing      | Huskeys       | HM identified, 97 applicants
+  94  | LinkedIn        | Head of Marketing      | NovaSec       | HM identified, 97 applicants
   81  | Working Nomads  | VP Marketing           | CoolStartup   | Salary listed, remote confirmed
   ...
 

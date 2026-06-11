@@ -39,8 +39,8 @@ Run every item in order before returning output. The gatekeeper runs the same ch
 ## Experience
 
 - [ ] `## EDUCATION`, `## LANGUAGES`, and `## ADDITIONAL` do NOT appear anywhere in the output — these sections are injected by {{USER_FIRST_NAME}}'s Word macros after DOCX export and must never be included in cv-writer's markdown
-- [ ] `## EXPERIENCE` contains full-time employment only, in reverse-chronological order per `01-writing-rules.md` Section 7 — Contentabl must not appear here
-- [ ] `## CONSULTING` section is present and contains Contentabl
+- [ ] `## EXPERIENCE` contains full-time employment only, in reverse-chronological order per `01-writing-rules.md` Section 7 — consulting/fractional engagements must not appear here
+- [ ] `## CONSULTING` section is present and contains the consulting/fractional track record
 - [ ] Every named role has a RoleOverview immediately below its RoleTitle — count them; the numbers must match (applies to both EXPERIENCE and CONSULTING sections)
 - [ ] No tool or app names inside any experience bullet (exemption: approved bullets from Section 7 are pre-validated — do not alter them to satisfy this check)
 - [ ] Each employer is described using only the approved target market from `01-writing-rules.md` Section 7

@@ -16,7 +16,7 @@ This skill governs all DOCX production in the career-engine pipeline. Load it be
 cv-writer outputs **styled markdown** using pandoc's `custom-style` div and span syntax. The pipeline converts it to `.docx` at Step 6 using pandoc with the `.dotx` reference templates. A short post-processing script then updates the role-specific Subtitle in the CV document header.
 
 **Templates (in `./references/`):**
-- `rachel-{{USER_LAST_NAME}}.dotx` — CV reference template. Contains all custom styles, {{USER_FIRST_NAME}}'s name and contact info in the document header, and correct formatting throughout.
+- `{{CV_TEMPLATE_FILE}}` — CV reference template. Contains all custom styles, {{USER_FIRST_NAME}}'s name and contact info in the document header, and correct formatting throughout.
 - `cover-letter-template.dotx` — Cover letter reference template. Contains header and styles.
 
 Neither template should be read into context. Use them only as pandoc `--reference-doc` arguments.
@@ -129,7 +129,7 @@ DRAFT_DIR_URL="{{DRAFT_DIR_URL_BASE}}${DATE_FOLDER}%2F${COMPANY_DIR}%2F"
 **Unconfigured link base guard:** if the Draft Directory link base is the word `skip` or still contains the characters `{{` and `}}`, leave the `Draft Directory` property empty and continue — do not write a malformed URL.
 
 
-Example: `{{DRAFT_DIR_URL_BASE}}applications-2026-05-26%2Fnuvoton%2F`
+Example: `{{DRAFT_DIR_URL_BASE}}applications-2026-05-26%2Fnorthwind%2F`
 
 ---
 
@@ -380,7 +380,7 @@ Observations about the company's product, buyers, or market position belong in p
 
 **4. Handling adjacent or smaller-scale experience.**
 
-THE NUMBER ONE GOLDEN RULE: COVER LETTERS ARE RACHEL'S OPPORTUNITY TO SHINE. LEAD WITH HER MOST RELEVANT BIGGEST STRENGTHS. NEVER PRE-EMPTIVELY EXPLAIN OR QUALIFY ANYTHING. ONLY LEAD WITH WHAT SHE HAS DONE AND NAME THE SPECIFICS THAT MAP TO WHAT THEY ARE HIRING FOR.
+THE NUMBER ONE GOLDEN RULE: COVER LETTERS ARE THE CANDIDATE'S OPPORTUNITY TO SHINE. LEAD WITH THEIR MOST RELEVANT BIGGEST STRENGTHS. NEVER PRE-EMPTIVELY EXPLAIN OR QUALIFY ANYTHING. ONLY LEAD WITH WHAT SHE HAS DONE AND NAME THE SPECIFICS THAT MAP TO WHAT THEY ARE HIRING FOR.
 
 - Different domains and verticals are NEVER a gap and especially not a weakness.
 - If there is any *perceived skill* gap the hiring manager will clock in the first 10 seconds, name the work she has done, let it stand. Do not add a scope qualifier. Lead with what was done, name the specifics, and stop.

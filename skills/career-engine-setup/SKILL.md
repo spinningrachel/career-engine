@@ -122,14 +122,14 @@ Confirm: "Done. Let's move to your career materials."
 
 Tell the user:
 
-> "Send me whatever you have from the list below. The more you share, the better the output. I'll read everything and build your positioning framework from it. I will **not store your files** — I'll use them to synthesize your reference files and then they're gone. The only exception is cover letters: if you tell me they're good representations of your voice, I'll keep those in your output folder's `final-pdfs-delivered` subfolder as voice calibration anchors for future runs."
+> "Send me whatever you have from the list below. The more you share, the better the output. I'll read everything and build your positioning framework from it. I will **not store your files** — I'll use them to synthesize your reference files and then they're gone. The only exception is cover letters: if you tell me they're good representations of your voice, I'll add them to the plugin's delivered-letters archive (`references/delivered-letters/`, cap 6) as voice calibration anchors for future runs."
 
 List of useful content and what each feeds:
 
 | Content | What it feeds | Notes |
 |---|---|---|
 | Current CV(s) | `02-professional-background.md` — role facts (company, dates, titles, metrics, scope) | Used for facts only. Your old CV bullet language is **not** treated as approved bullets — those emerge from pipeline iterations. |
-| Approved sent cover letters | `{{OUTPUT_FOLDER}}/final-pdfs-delivered/` — voice calibration | Only kept if you confirm they're good representations of your voice. Ask explicitly before storing. |
+| Approved sent cover letters | `references/delivered-letters/` — the in-plugin voice-calibration archive (cap 6) | Only kept if you confirm they're good representations of your voice. Ask explicitly before storing; store via the letter-writer Option 3 entry format and update INDEX.md. |
 | **LinkedIn profile PDF export** ("Save to PDF" on your own profile) | `references/linkedin-profile.md` — **stored as a permanent reference.** Every LinkedIn recommendation the plugin produces (the per-run LinkedIn updates file, the LinkedIn coach) analyses against this snapshot. Also feeds `03-framework.md` — testimonials, voice samples, domain context. | **Ask for this explicitly — it is the one item on this list to actively request, not just accept.** Skippable if the user declines: LinkedIn outputs run in fallback mode (raw signals, no profile analysis) until provided. Tell them: "You can add it any time later — export the PDF and say 'update my references'." A fresh export replaces the snapshot wholesale whenever they change their profile. |
 | Performance reviews or peer feedback | `03-framework.md` — peer-attributed qualities, testimonials | Not stored. |
 | Portfolio pieces or writing samples | `02-professional-background.md` Section 10 — portfolio | Not stored after synthesis. |
@@ -147,9 +147,9 @@ Ask the user to send files. Wait for submission before proceeding.
 
 Before reading anything, ask:
 
-> "You shared cover letters. Are these good representations of your voice — the kind of letters you'd be happy to send today? If yes, I'll keep them in your output folder's `final-pdfs-delivered` subfolder so future pipeline runs can use them for voice calibration. If no, I'll read them for context and then they're gone."
+> "You shared cover letters. Are these good representations of your voice — the kind of letters you'd be happy to send today? If yes, I'll add them to the plugin's delivered-letters archive so every future run can calibrate against them. If no, I'll read them for context and then they're gone."
 
-- If yes: copy approved cover letters to `{{OUTPUT_FOLDER}}/final-pdfs-delivered/`
+- If yes: store each approved letter in `references/delivered-letters/` using the letter-writer Option 3 entry format (one file per letter, full text exactly as sent, metadata header) and update `INDEX.md`. Respect the cap of 6.
 - If no: read them for context only, do not store
 
 ### Read all submitted content carefully
@@ -185,6 +185,8 @@ Fill in every section of `03-framework.md` from what the materials show. Where t
 
 **ICP and target opportunities** — infer from the career stage, company sizes, and domains worked in. Draft; will be refined in the interview.
 
+**Career-shift posture** — **never infer this silently and never leave it confident.** A career history says nothing reliable about appetite for a shift — a CV full of one function reveals nothing about whether the user *wants* a different one. Write only what the evidence implies (e.g., a fractional/consulting track record implies openness to contract work in the interim; repeated function changes may imply shift appetite) and **always mark the section `[DRAFT — confirm in interview]`** regardless of how strong the evidence seems. The Phase 4 posture questions are always asked and are the only thing that confirms this section.
+
 **Messaging** — draft based on the positioning. Leave as draft; will be refined.
 
 **Taglines, elevator pitches, differentiators, competitive frame, anti-positioning** — draft from the synthesis. Mark all as `[DRAFT — confirm in interview]`.
@@ -201,7 +203,7 @@ Present `03-framework.md` to the user and say:
 
 > "Here's your positioning framework, built from what you sent me. Review it — especially the sections marked `[REVIEW]` or `[DRAFT]`. When you're ready, tell me what needs changing or say it looks right. Either way, I'll follow up with a few questions to fill gaps and check things your materials didn't fully capture.
 >
-> **A note on your files:** I've used your submitted content to build this but have not stored it. [If cover letters were kept: "Your approved cover letters are in your output folder's `final-pdfs-delivered` subfolder."] Everything else has been read and synthesised — the original files are not in the plugin."
+> **A note on your files:** I've used your submitted content to build this but have not stored it. [If cover letters were kept: "Your approved cover letters are in the plugin's delivered-letters archive (`references/delivered-letters/`)."] Everything else has been read and synthesised — the original files are not in the plugin."
 
 Wait for the user's response. Whether they give feedback or say it's fine, proceed to the interview.
 
@@ -232,6 +234,8 @@ These questions cannot be reliably inferred from a CV. They shape how every lett
 
 Write the answers into `03-framework.md` §Voice and tone and §Voice samples. If the user provides actual quotes or phrases, capture them verbatim.
 
+**Voice preferences never silently modify documented rules.** These answers refine register, vocabulary, and style — they do not weaken or create exceptions to any documented writing rule or prohibition (in `01-writing-rules.md`, the cover-letter skill, the humanizer, or cv-writing). If an answer conflicts with a documented behavior (e.g., the user says they love em dashes, or wants tricolons everywhere), surface the conflict and ask whether they **explicitly reject that specific documented behavior**. Only an explicit rejection changes a rule — write the change into the rule's home file and note it; never infer a rule change from a preference.
+
 **Positioning and voice (if not clear from materials)**
 - How would you describe what you do in one sentence — to a technical founder, not a recruiter?
 - What's the problem you exist to solve that most people in your field don't solve as well?
@@ -255,6 +259,13 @@ Write the answers into `03-framework.md` §Voice and tone and §Voice samples. I
 - What roles are you targeting — title, seniority, function?
 - What company stage and size? Any strong preferences or hard nos?
 - Geographic constraints or preferences?
+
+**Career-shift posture (for `03-framework.md` §Career-shift posture — always ask, like the voice questions; appetite for a shift cannot be inferred from materials)**
+- Beyond your established function, how do you feel about career-shift roles — not open, open case-by-case, or is a shift actually a primary goal of this search?
+- If open or pursuing: which directions interest you (role types, functions), and what does a shift role need to offer — seniority, scope, specific conditions — for you to want it?
+- Anything off-limits — functions or transitions you never want agents to propose or emphasize?
+
+Write the answers into `03-framework.md` §Career-shift posture and remove its `[DRAFT]` marker. Also capture current employment status and search mode (full-time vs. contract/freelance in the interim) in the same section if it surfaced here or anywhere in the interview.
 
 **Enrichment probing — things users often don't volunteer**
 
@@ -389,9 +400,9 @@ Select column values (must match exactly):
 4. Once set up, ask for the access URL or connection details. Write to `.claude/settings.json` under `job_tracking.source`.
 
 **Output folder**
-Ask the user for their output folder path. This is where all pipeline output (CVs, cover letters, feedback files) will be saved. Approved cover letters go to a `final-pdfs-delivered/` subfolder inside this folder.
+Ask the user for their output folder path. This is where all pipeline output (CVs, cover letters, feedback files) will be saved. (Voice-calibration letters live inside the plugin at `references/delivered-letters/` — not in the output folder.)
 
-Write the path to every `{{OUTPUT_FOLDER}}` placeholder across all skill files. The delivered letters path is always `{{OUTPUT_FOLDER}}/final-pdfs-delivered/` — it is not a separate configurable path.
+Write the path to every `{{OUTPUT_FOLDER}}` placeholder across all skill files.
 
 **CV template**
 Ask: "Do you want to use the included CV template (`cv-template-default.dotx`) or provide your own `.dotx` file?"

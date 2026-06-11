@@ -16,8 +16,8 @@ Run every item in order before returning output.
 ### Top 3 — check these first
 
 - [ ] **Zero em dashes.** Search the letter for `—`. Any hit is a flag. Note it for the humanizer log — do not loop the letter-writer for this.
-- [ ] **Rule of three: max once per letter.** If there are two or more tricolons (three parallel items used for rhetorical effect), note it for the humanizer log.
-- [ ] **-ing phrases appended to main clauses: max once per letter.** Count "contributing to," "showcasing," "highlighting," "enabling" appended after a main clause. More than one is a flag. Note it for the humanizer log.
+- [ ] **Rule of three: no contrived agent tricolons.** The user's real parallel lists pass. If a tricolon reads as assembled for rhetorical effect rather than listing real things, or the same sentence opening repeats three-plus times, note it for the humanizer log.
+- [ ] **-ing phrases appended to main clauses: max three per letter, each content-bearing.** Count "contributing to," "showcasing," "highlighting," "enabling" appended after a main clause. More than three is a flag; any decorative tail (commentary, no real content) is a flag at any count. Note it for the humanizer log.
 
 ---
 
@@ -30,7 +30,7 @@ Run every item in order before returning output.
 
 ### Structure
 - [ ] Greeting is exactly "Hi to the [company name] team!" or "Hi to [Name]!" — never "Dear Hiring Manager"
-- [ ] Sign-off is exactly "Looking forward to next steps," on one line, then the candidate's full name on the next — nothing else after the name
+- [ ] Sign-off: "Looking forward to next steps," is the default; an archive-consistent variation is fine. The candidate's full name follows on its own line
 - [ ] Word count is 230–290 words, not counting greeting or sign-off, counted explicitly
 - [ ] The role title appears at least once in the letter body — anywhere the flow allows, using the exact job description phrasing
 - [ ] Every proof paragraph does exactly one thing — nothing restates a CV bullet

@@ -150,7 +150,7 @@ Use for consulting pitches and cover letters where social proof strengthens the 
 
 ## Section 10 — Portfolio and Work Samples
 
-**Delivered letters archive:** `{{OUTPUT_FOLDER}}/final-pdfs-delivered` — cover letters and CVs {{USER_FIRST_NAME}} approved and sent. These are the highest-fidelity voice anchors available. When writing a cover letter, read any letters for similar domains or role types before writing.
+**Delivered letters archive:** `references/delivered-letters/` (inside the plugin; cap 6, managed via letter-writer Option 3) — cover letters {{USER_FIRST_NAME}} approved and sent, exactly as sent. These are the highest-fidelity voice anchors available. When writing a cover letter, read any letters for similar domains or role types before writing.
 
 **Portfolio URL:** {{USER_PORTFOLIO_URL}}
 

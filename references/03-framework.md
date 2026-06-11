@@ -44,6 +44,21 @@
 - Acknowledge learning curves; credit collaborators; don't oversell.
 - Be direct about what you're good at.
 
+## Voice fingerprint (quantitative)
+
+Measured stylometric targets derived from the user's delivered letters (`references/delivered-letters/`). The quantitative companion to the archive: the archive shows what to sound like; these numbers make drift measurable. Regenerate when the archive composition changes materially.
+
+**Constants — calibration targets for every letter:**
+- Length: {{USER_FP_WORD_RANGE}} words, {{USER_FP_SENTENCE_RANGE}} sentences
+- Sentence rhythm: mean {{USER_FP_SENT_MEAN_RANGE}} words with wide deliberate spread — every letter carries both a very short sentence and a long one
+- Vocabulary: common words used variedly ({{USER_FP_VOCAB_NOTE}}). **Never substitute a rarer synonym for polish** — vocabulary upgrades are the most measurable form of voice drift
+- Person: {{USER_FP_PERSON_NOTE}}
+- Tense: {{USER_FP_TENSE_NOTE}}
+
+**Flex variables — the writer's choice per letter, never mandated:** proof-number density, story register vs capability-list register, question use, subordination level, passive instances where natural.
+
+**Hard slop prohibitions remain in force regardless of fingerprint or archive:** zero em dashes and colons, the banned-vocabulary true tells, no synonym upgrades. These are not style preferences — they are tripwires for agent failure modes.
+
 ## Voice samples
 
 Direct quotes from recorded interviews, advisory sessions, and mentorship work. Use these to calibrate voice — they show how you actually talk about your work when speaking, not writing.
@@ -249,6 +264,19 @@ Reusable in cover letters, interview answers, and analyst conversations. These a
 | {{USER_PERSONA_1}} | {{USER_PERSONA_1_GOAL}} | {{USER_PERSONA_1_KPIS}} | {{USER_PERSONA_1_NEED}} |
 | {{USER_PERSONA_2}} | {{USER_PERSONA_2_GOAL}} | {{USER_PERSONA_2_KPIS}} | {{USER_PERSONA_2_NEED}} |
 | {{USER_PERSONA_3}} | {{USER_PERSONA_3_GOAL}} | {{USER_PERSONA_3_KPIS}} | {{USER_PERSONA_3_NEED}} |
+
+---
+
+# Career-shift posture
+
+How open the user is to roles outside their established function. Agents read this section to decide how to treat shift roles (see the employment coach's Framework Primacy rule). A posture stated here governs; while this section is empty or still templated, agents default to treating shifts as marginal — full normal support, no extra emphasis on the shift.
+
+- **Posture:** {{USER_SHIFT_POSTURE}} *(one of: Not open / Open — case-by-case / Primarily pursuing a shift)*
+- **Current employment status and search mode:** {{USER_SEARCH_STATUS}} *(e.g., employed and searching selectively; unemployed, seeking full time; open to contract or freelance in the interim)*
+- **Primary targets (the non-shift baseline):** {{USER_PRIMARY_TARGETS}}
+- **Shift directions of interest:** {{USER_SHIFT_DIRECTIONS}} *(role types or functions the user is curious about)*
+- **Off-limits:** {{USER_SHIFT_OFF_LIMITS}} *(functions, role types, or transitions agents must never propose or emphasize)*
+- **What governs a shift application:** {{USER_SHIFT_CONDITIONS}} *(e.g., depends on the specific hiring company's requirements; only at equivalent seniority)*
 
 ---
 

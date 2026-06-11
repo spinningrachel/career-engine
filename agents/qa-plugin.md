@@ -27,8 +27,8 @@ The invoker must tell you:
 
 If not told, check both REPO and LIVE.
 
-REPO = `/Users/rachel/career-engine/`
-LIVE = `/Users/rachel/.claude/plugins/marketplaces/local-desktop-app-uploads/career-engine/`
+REPO = `<repo-root>/`
+LIVE = `<plugin-cache>/`
 
 ---
 
@@ -38,24 +38,24 @@ LIVE = `/Users/rachel/.claude/plugins/marketplaces/local-desktop-app-uploads/car
 
 | What | REPO | LIVE |
 |---|---|---|
-| Purpose | Public open-source distribution | Rachel's live personal installation |
-| First/last name | `{{USER_FIRST_NAME}}`, `{{USER_LAST_NAME}}`, `{{USER_FULL_NAME}}` placeholders | `Rachel`, `Cheyfitz`, `Rachel Cheyfitz` (real values) |
+| Purpose | Public open-source distribution | the user's live personal installation |
+| First/last name | `{{USER_FIRST_NAME}}`, `{{USER_LAST_NAME}}`, `{{USER_FULL_NAME}}` placeholders | `<your-first-name>`, `<your-last-name>`, `<your-full-name>` (real values) |
 | Output folder | `{{OUTPUT_FOLDER}}` placeholder | Real iCloud path (see Note for this installation) |
 | Notion DB ID | `{{NOTION_DATABASE_ID}}` placeholder | Real database ID (see Note for this installation) |
-| Country/city | `{{USER_COUNTRY}}`, `{{USER_CITY}}` placeholders | `Israel`, `Tel Aviv` |
-| Language config | `{{USER_DEFAULT_LANGUAGE}}`, `{{USER_SECOND_LANGUAGE}}`, `{{USER_SECOND_LANGUAGE_UPPER}}` placeholders | `English`, `Hebrew`, `HEBREW` |
-| Profession/seniority | `{{USER_PROFESSION}}`, `{{USER_FUNCTION_SENIORITY_HIERARCHY}}` placeholders | `marketing`, full hierarchy string |
+| Country/city | `{{USER_COUNTRY}}`, `{{USER_CITY}}` placeholders | (your real values) |
+| Language config | `{{USER_DEFAULT_LANGUAGE}}`, `{{USER_SECOND_LANGUAGE}}`, `{{USER_SECOND_LANGUAGE_UPPER}}` placeholders | (your real values) |
+| Profession/seniority | `{{USER_PROFESSION}}`, `{{USER_FUNCTION_SENIORITY_HIERARCHY}}` placeholders | (your real values) |
 | Word templates path | `{{WORD_TEMPLATES_PATH}}` placeholder | Real path (see Note for this installation) |
-| CV template file | `{{CV_TEMPLATE_FILE}}` placeholder | `rachel-cheyfitz.dotx` |
+| CV template file | `{{CV_TEMPLATE_FILE}}` placeholder | `<your-dotx-file>` |
 | Intentional template syntax | `{{PLACEHOLDER}}` (in linkedin-coach, personal-brand) — literal agent instruction syntax, kept in both versions | Same — `{{PLACEHOLDER}}` is NEVER a setup value; it is a literal instruction telling the agent to write `{{PLACEHOLDER}}` in its output |
 | Localization table fill-ins | `{{COMPANY_1}}`, `{{COMPANY_2}}`, `{{COMPANY_1_HEBREW}}`, `{{COMPANY_2_HEBREW}}` in localization skill — user-fill table templates, kept in both versions | Same — these are user-fill table cells, not setup placeholders |
-| `.dotx` templates in references/ | Absent (personal file, not synced) | `rachel-cheyfitz.dotx` present |
-| `02-professional-background.md` | Generic or omitted personal data | Rachel's real background facts |
+| `.dotx` templates in references/ | Absent (personal file, not synced) | `<your-dotx-file>` present |
+| `02-professional-background.md` | Generic or omitted personal data | the user's real background facts |
 | `CLAUDE.md` and `README.md` | Placeholder-aware documentation | Placeholder-aware documentation |
 
-**Expected differences are not bugs.** REPO having `{{USER_FULL_NAME}}` where LIVE has `Rachel Cheyfitz` is correct. LIVE having `Rachel Cheyfitz` where REPO has `{{USER_FULL_NAME}}` is correct. These are the intended states.
+**Expected differences are not bugs.** REPO having `{{USER_FULL_NAME}}` where LIVE has `<your-full-name>` is correct. LIVE having `<your-full-name>` where REPO has `{{USER_FULL_NAME}}` is correct. These are the intended states.
 
-**CRITICAL RULE — Direction is always REPO→LIVE, never the reverse.** The QA agent must NEVER suggest, recommend, or write replacing real personal values in LIVE with `{{...}}` placeholder strings. The direction of substitution is one-way: REPO keeps placeholders, LIVE has real values. If you see `Rachel Cheyfitz` in a LIVE file, that is CORRECT. Do not flag it as a problem. Do not suggest replacing it with `{{USER_FULL_NAME}}`.
+**CRITICAL RULE — Direction is always REPO→LIVE, never the reverse.** The QA agent must NEVER suggest, recommend, or write replacing real personal values in LIVE with `{{...}}` placeholder strings. The direction of substitution is one-way: REPO keeps placeholders, LIVE has real values. If you see `<your-full-name>` in a LIVE file, that is CORRECT. Do not flag it as a problem. Do not suggest replacing it with `{{USER_FULL_NAME}}`.
 
 **What IS a bug:**
 - LIVE contains any setup `{{...}}` placeholder that should have been replaced (Check 6)
@@ -124,6 +124,16 @@ grep -rni "campaign" <location>/skills <location>/agents <location>/README.md <l
 
 **FAIL condition:** any occurrence found.
 
+### Check 4d — No retired iCloud delivered-letters location
+
+The output-folder `final-pdfs-delivered/` location is retired (R-31). The only delivered-letters location is the in-plugin `references/delivered-letters/` archive (cap 6, letter-writer Option 3). All consumers — letter-writer, cover-letter skill, gatekeeper Option 2, humanizer agent, setup — must point there.
+
+```bash
+grep -rn "final-pdfs-delivered" <location> --include="*.md" | grep -v "agents/qa-plugin.md" | grep -v "/docs/"
+```
+
+**FAIL condition:** any occurrence found.
+
 ### Check 4c — No retired Q&A wiring
 
 The `Q&A` Notion property, the letter-writer `interview-questions` option, the "Q&A bank", and the `Additional Letter Writer Details` property are all retired (R-29). The user's per-role personal content lives solely in `Why I Want This Role`; the reusable bank is `02-professional-background.md` §5 "Motivation Bank", fed by the promotion step (new-application Step 7f / edit Step E10.5). Generic non-property uses of "Q&A" (the `{{USER_ANSWER_*}}` placeholder description in this file, the personal-brand bio-interview skill, historical CLAUDE.md regression rows, `/docs/` archives) are fine — the check covers runtime wiring only.
@@ -148,7 +158,7 @@ Scan all `.md` files in LIVE for any remaining `{{...}}` placeholders that shoul
 
 ```bash
 grep -rn "{{" \
-  "/Users/rachel/.claude/plugins/marketplaces/local-desktop-app-uploads/career-engine" \
+  "<plugin-cache>" \
   --include="*.md" \
   | grep -v "/skills/career-engine-setup/" \
   | grep -v "/README\.md" \
@@ -185,21 +195,21 @@ All of the following must appear as real values (not `{{...}}` strings) in LIVE 
 
 | Placeholder | Real value in LIVE |
 |---|---|
-| `{{NOTION_DATABASE_ID}}` | `3465ef1aa63480a283cfdf847cb47404` |
-| `{{OUTPUT_FOLDER}}` | `/Users/rachel/Library/Mobile Documents/com~apple~CloudDocs/Main Directory/Professional/Employment/CVs jobsearch and hiring` |
-| `{{USER_FULL_NAME}}` | `Rachel Cheyfitz` |
-| `{{USER_FIRST_NAME}}` | `Rachel` (appears in REPO skill files — verify replaced everywhere in LIVE) |
-| `{{USER_LAST_NAME}}` | `cheyfitz` in filename patterns (e.g. `cv-cheyfitz-...`, `rachel-cheyfitz.dotx`); `Cheyfitz` in display/signature contexts (e.g. `Rachel Cheyfitz`) |
-| `{{USER_COUNTRY}}` | `Israel` |
-| `{{USER_CITY}}` | `Tel Aviv` |
-| `{{USER_DEFAULT_LANGUAGE}}` | `English` |
-| `{{USER_SECOND_LANGUAGE}}` | `Hebrew` |
-| `{{USER_SECOND_LANGUAGE_UPPER}}` | `HEBREW` |
-| `{{USER_PROFESSION}}` | `marketing` |
-| `{{USER_FUNCTION_SENIORITY_HIERARCHY}}` | `CMO → VP Marketing → Head of Marketing / Director of Marketing → Senior Marketing Manager → Marketing Manager → IC` |
-| `{{WORD_TEMPLATES_PATH}}` | `/Users/rachel/Library/Group Containers/UBF8T346G9.Office/User Content.localized/Templates.localized` |
-| `{{CV_TEMPLATE_FILE}}` | `rachel-cheyfitz.dotx` |
-| `{{DRAFT_DIR_URL_BASE}}` | Anchorpoint project link base (`https://anchorpoint.app/link?p=projects%2F...%2F`) or the word `skip` |
+| `{{NOTION_DATABASE_ID}}` | `<your-notion-database-id>` |
+| `{{OUTPUT_FOLDER}}` | `<your-output-folder>` |
+| `{{USER_FULL_NAME}}` | `<your-full-name>` |
+| `{{USER_FIRST_NAME}}` | `<your-first-name>` (appears in REPO skill files — verify replaced everywhere in LIVE) |
+| `{{USER_LAST_NAME}}` | `<lastname>` in filename patterns (e.g. `cv-<lastname>-...`, `<your-dotx-file>`); `<your-last-name>` in display/signature contexts (e.g. `<your-full-name>`) |
+| `{{USER_COUNTRY}}` | `<your-country>` |
+| `{{USER_CITY}}` | `<your-city>` |
+| `{{USER_DEFAULT_LANGUAGE}}` | `<your-default-language>` |
+| `{{USER_SECOND_LANGUAGE}}` | `<your-second-language>` |
+| `{{USER_SECOND_LANGUAGE_UPPER}}` | `<YOUR-SECOND-LANGUAGE>` |
+| `{{USER_PROFESSION}}` | `<your-profession>` |
+| `{{USER_FUNCTION_SENIORITY_HIERARCHY}}` | `<your-seniority-hierarchy>` |
+| `{{WORD_TEMPLATES_PATH}}` | `<your-word-templates-path>` |
+| `{{CV_TEMPLATE_FILE}}` | `<your-dotx-file>` |
+| `{{DRAFT_DIR_URL_BASE}}` | cloud file-share link base (`https://<your-link-base>...`) or the word `skip` |
 | `{{NOTION_NEEDS_EDITING_VIEW_URL}}` | the pre-built "Needs Editing" Notion view URL |
 
 ---
@@ -210,23 +220,25 @@ Verify the following files exist in `LIVE/references/`:
 - `01-writing-rules.md`
 - `02-professional-background.md`
 - `03-framework.md`
-- `rachel-cheyfitz.dotx`
+- `<your-dotx-file>`
 
 **FAIL condition:** any file missing from LIVE references.
 
 ### Check 6c — REPO must not contain real personal values (REPO only)
 
-The REPO is the open-source distribution. It must not contain Rachel's real personal data. Scan REPO for the following strings — none should appear:
+The REPO is the open-source distribution. It must not contain the user's real personal data. Scan REPO for the following strings — none should appear:
+
+**Before running:** replace each `<your-...>` token in the command below with your real values (they are deliberately not `{{...}}` setup placeholders — setup substitution will not fill them, so the check cannot silently run with literal tokens and false-PASS).
 
 ```bash
-grep -rn "Rachel\|Cheyfitz\|3465ef1aa63480a283cfdf847cb47404\|CVs jobsearch and hiring\|rachel@cheyfitz\|anchorpoint.app" \
-  /Users/rachel/career-engine/ --include="*.md" \
+grep -rn "<your-first-name>\|<your-last-name>\|<your-notion-database-id>\|<your-output-folder-name>\|<your-email>\|<your-link-base>" \
+  <repo-root>/ --include="*.md" \
   | grep -v "CLAUDE.md\|README\|qa-plugin.md\|/docs/"
 ```
 
 **FAIL condition:** any real personal name, Notion database ID, real output path, or personal email found in REPO skill or agent files. These must be placeholders in REPO.
 
-**Note:** `Rachel` and `Cheyfitz` may appear in `CLAUDE.md` and `README.md` as documentation — those are excluded above. They must NOT appear in `agents/` or `skills/` files.
+**Note:** `<your-first-name>` and `<your-last-name>` may appear in `CLAUDE.md` and `README.md` as documentation — those are excluded above. They must NOT appear in `agents/` or `skills/` files.
 
 ### Check 7 — 02-professional-background.md sync
 
@@ -237,8 +249,8 @@ If a future session establishes a new stable sync source, this check can be upda
 ### Check 8 — No old.md exists
 
 ```bash
-find /Users/rachel/career-engine -name "old.md"
-find "/Users/rachel/.claude/plugins/marketplaces/local-desktop-app-uploads/career-engine" -name "old.md"
+find <repo-root> -name "old.md"
+find "<plugin-cache>" -name "old.md"
 ```
 
 **FAIL condition:** `old.md` found in REPO or LIVE.
@@ -314,6 +326,19 @@ grep -c "Final Gate" <location>/agents/cover-letter-humanizer.md
 ```
 
 **FAIL condition:** string not found (count = 0).
+
+### Check 16b — Sentence-balance rule and preference-intake guards present
+
+The humanizer's sentence-length monotony rule (with Final Gate parity) and the voice-preference rule-protection guards must all be present.
+
+```bash
+grep -c "Sentence-length balance" <location>/skills/cover-letter-humanizer/SKILL.md                       # must be 1
+grep -c "reads monotone" <location>/skills/cover-letter-humanizer/SKILL.md                                 # must be 2 (Step 2 rule + Final Gate parity)
+grep -c "Documented writing rules and prohibitions are protected" <location>/skills/update-refs/SKILL.md   # must be 1
+grep -c "never silently modify documented rules" <location>/skills/career-engine-setup/SKILL.md            # must be 1
+```
+
+**FAIL condition:** any count differs from its stated requirement.
 
 ### Check 17 — Edit type hard gate present in career-engine-edit skill
 
@@ -469,6 +494,19 @@ test -f <location>/references/linkedin-profile.md && echo 1 || echo 0           
 ```
 
 **FAIL condition:** any count is 0 (or differs from the stated requirement), or the linkedin-profile.md file is missing.
+
+### Check 21h — Voice calibration stack present (tiers, fingerprint, humanizer wiring)
+
+```bash
+grep -c "Voice fingerprint" <location>/references/03-framework.md                      # must be >= 1
+grep -c "Tier 1 — Truth" <location>/skills/cover-letter/SKILL.md                       # must be 1
+grep -c "Tier 3 — Voice and register" <location>/skills/cover-letter/SKILL.md          # must be 1
+grep -c "Calibration authority" <location>/skills/cover-letter-humanizer/SKILL.md      # must be >= 1
+grep -c "Voice fingerprint" <location>/agents/cover-letter-humanizer.md                # must be >= 1
+grep -c "Voice fingerprint" <location>/skills/cover-letter/SKILL.md                    # must be >= 1
+```
+
+**FAIL condition:** any count is 0 or below its stated requirement.
 
 ### Check 22 — Known regression checks present in CLAUDE.md
 

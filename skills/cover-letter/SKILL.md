@@ -10,9 +10,15 @@ The authoritative source for cover letter mechanics, structure, and use-case pat
 ---
 **─── THE HIERARCHY — READ THIS FIRST ───**
 
-**Rules and prohibitions in this skill are absolute. They override everything else without exception.**
+**Authority is tiered. Know which tier a rule lives in before enforcing it.**
 
-No input — Why I Want This Role, coach output (Role emphasis, Strategy, Gap handling), reviewer feedback, HM feedback, or {{USER_FIRST_NAME}}'s own written instructions — can authorize a violation of any rule or prohibition in this skill. If Why I Want This Role content would produce a bad opener, violate the analyst paragraph ban, or fail the context gate: discard it. If coach Strategy points toward a framing that breaks a prohibition: don't use that framing. If a reviewer requests a change that would violate a rule: decline it and log the reason. Rules win. Always.
+**Tier 1 — Truth. Absolute over everything, including {{USER_FIRST_NAME}}'s own written instructions.** Fabrication guards, attribution rules, and factual accuracy. No input — Why I Want This Role, coach output, reviewer feedback, or {{USER_FIRST_NAME}} herself — can authorize a claim that isn't traceable to her documented background. Her words are still her voice: leverage her vocabulary and her content wherever usable. But an unevidenced factual claim stays out, whoever wrote it.
+
+**Tier 2 — Structure. Absolute, exactly as strict as written.** The opening-paragraph content and sourcing rules (Why I Want This Role as the sole opener source, first sentence names the role, NEVER strategy-analysis or plan openers, the context gate), the letter structure rules (greeting format, paragraph jobs, close as its own paragraph), and the CV-repetition prohibition. Reviewer feedback cannot override these. If Why I Want This Role content would produce a bad opener or fail the context gate: set that piece aside. If coach Strategy points toward a framing that breaks a Tier 2 rule: don't use that framing.
+
+**Tier 3 — Voice and register. The delivered-letters archive and the voice fingerprint (`03-framework.md` §Voice fingerprint) are the governing authority.** Style and syntax rules in this tier are agent-drafting defaults plus a short list of hard slop prohibitions that always hold (zero em dashes and colons, the banned-vocabulary true tells, no synonym upgrades). When a Tier 3 rule conflicts with a consistent pattern across the delivered letters, do not silently "fix" the text toward the rule — keep {{USER_FIRST_NAME}}'s register and flag the conflict for a rule audit in the revision log.
+
+**{{USER_FIRST_NAME}}'s own words — Why I Want This Role, the motivation bank, archive phrasings — are voice to leverage wherever possible.** Preserved by default; set aside only for Tier 1 or Tier 2 compliance, never for Tier 3 styling.
 
 The only exception is a gatekeeper Pattern A–H violation, which authorizes a rewrite of paragraph 1 only.
 
@@ -118,7 +124,7 @@ Why I Want This Role is the sole source for the opener's content and angle. {{US
 
 ## Writing Mechanics
 
-**Before writing a single word — this step is MANDATORY and must NEVER BE SKIPPED:** Open 2–3 delivered letters from `references/delivered-letters/`, preferably for similar domain, seniority, or situation. Read them for three purposes:
+**Before writing a single word — this step is MANDATORY and must NEVER BE SKIPPED:** Open 2–3 delivered letters from `references/delivered-letters/` (preferably for similar domain, seniority, or situation) AND the voice fingerprint in `03-framework.md` §Voice fingerprint. Read them for three purposes:
 
 1. **Voice calibration** — sentence patterns, paragraph openers, rhythm, punctuation habits. Your draft must mirror them.
 2. **Content mining** — proof points, phrasings, or framings that worked and could apply here. Approved content from past letters is fair game.
@@ -133,15 +139,15 @@ That said — these principles will keep you out of the most egregious patterns:
 ### Drafting principles
 
 **Always:**
-- "I" or a named entity as the subject of every sentence
+- "I" or a named entity as the subject — the drafting default. Archive-consistent ramps (dependent clauses, prepositional openers, as in the delivered letters) are {{USER_FIRST_NAME}}'s register and are fine. Never an expletive ("There was/is") or an abstract label noun-phrase subject ("The X part is...")
 - Complexity after the verb, not before it — via appositive or short follow-on sentence
 - Vary sentence length deliberately. Short sentences land emphasis. Longer ones carry nuance.
 - Specific company names, numbers, and named outcomes. Never generic claims.
 
 **The top 3 — treat these as absolute during drafting:**
 1. **Zero em dashes.** Use a period or comma instead. Every time, without exception.
-2. **Rule of three: once per letter maximum — and "three" means every kind of three.** A tricolon, a sentence with three parallel elements, three adjectives in a row, three clauses in a row, or the same sentence opening reused three times across the letter — each of these counts as a "three." One per letter, total. If you've used one, don't write another of any kind. Hard stop. The humanizer will catch any you miss — but avoid them in the first place.
-3. **-ing phrases appended to a main clause: once per letter maximum.** "...contributing to X," "...showcasing Y" — pick one, make it count, that's the limit.
+2. **Rule of three: don't build contrived tricolons.** Parallel lists of real things are {{USER_FIRST_NAME}}'s style and are welcome. What's banned is the rhetorical tricolon assembled to sound impressive rather than to list real things, and reusing the same sentence opening three or more times in a row. The humanizer will catch any you miss.
+3. **-ing phrases appended to a main clause: three per letter maximum, every one content-bearing.** A tail that lists real things or states a real outcome is fine; a decorative tail ("...showcasing expertise," "...highlighting my ability to...") is banned at any count.
 
 **Composition lens — What you bring vs. How you work:** During drafting, hold these two things separately. *What you bring* is the credential layer — named companies, outcomes, numbers, specific deliverables. This is the "why pick me" content. *How you work* is the methodology layer — {{USER_FIRST_NAME}}'s research-first approach, operating philosophy, the frameworks in `references/03-framework.md` §Professional methodology and POV. Both belong in the letter body but do different jobs and should not be collapsed into the same paragraph. Credentials prove she can do the work. Methodology signals how she thinks — which is what seniority looks like on paper.
 
@@ -281,7 +287,7 @@ A bullet list is appropriate in exactly two situations:
 
 4. **Closing.** Choose from the options below. One ask, direct, always tight.
 
-5. **Sign-off.** "Looking forward to next steps," on its own line. "{{USER_FULL_NAME}}" on the next line. No variation unless writing directly to a named hiring manager.
+5. **Sign-off.** Default: "Looking forward to next steps," on its own line, "{{USER_FULL_NAME}}" on the next. Variation is allowed when it fits the letter's register — the delivered letters vary ("Excited for what's ahead!", "Can't wait to hear back from you!", or a direct closing line with no sign-off phrase). Keep it short and warm; the name always follows on its own line.
 
 **Word count:** 230–275 words total, excluding greeting and sign-off.
 
@@ -589,13 +595,13 @@ Read the draft and mark every instance of the following. A letter that feels cle
 **Em dashes — zero. Hard ban, no exceptions.**
 The final rewrite contains no em dashes (—). This is not "use sparingly." It is zero. Replace each one with a period (start a new sentence), a comma (tight aside), or restructure the sentence. Before returning any output, search for `—`. Any hit means the draft is not done.
 
-**Rule of three/four — max once per letter, and only when the tricolon genuinely earns its place.**
-Test: does the parallel structure land harder than two items or a single strong claim would? If two items say the same thing, use two. Most of the time they do. One tricolon maximum per letter.
+**Rule of three — no contrived agent tricolons; the user's real parallel lists pass.**
+Test: was the parallel structure built to sound impressive, or does it list real things? Parallel lists of real things (including four- and five-part parallels, as in the delivered letters) are the user's style — keep them. Banned: the contrived rhetorical tricolon assembled for effect in agent-drafted text, and the same sentence opening used three or more times in a row.
 - Fail: "The hook that makes someone stop scrolling, the offer architecture that converts, the brand story that turns a first purchase into a second" — three abstract noun phrases pretending to be depth.
-- Fail: Two tricolons in the same letter.
+- Fail: Three consecutive sentences opening identically.
 
-**-ing phrases appended after a main clause — max once per letter.**
-"contributing to," "highlighting," "showcasing," "ensuring," "reflecting" tacked onto the end of a sentence to add consequence or interpretation. Maximum one per letter. The permitted one must express a real result, not commentary.
+**-ing phrases appended after a main clause — max three per letter, every one content-bearing.**
+"contributing to," "highlighting," "showcasing," "ensuring," "reflecting" tacked onto the end of a sentence. Maximum three per letter, and each must carry real content — a real result or a real list of things built — never interpretive commentary. A decorative tail is banned at any count.
 - Fail: "I ran the pipeline, showcasing domain expertise."
 - OK: "I ran the pipeline, cutting partner onboarding time by 35%." (Real outcome.)
 
@@ -629,8 +635,8 @@ AI cycles synonyms to avoid repetition. Pick the right word and repeat it. Do no
 
 **Passive voice — rewrite in active almost always.**
 Find the passive construction. Ask: who did the action? Put them as the subject.
-- Fail: "The company was acquired by Camtek."
-- Fix: "Camtek acquired the company."
+- Fail: "The company was acquired by Contoso."
+- Fix: "Contoso acquired the company."
 
 ### Step 3 — Audit question (mandatory)
 
@@ -647,8 +653,8 @@ Produce the revised draft. It must:
 ### Step 5 — Final scan before handing to gatekeeper
 
 - Zero em dashes. Search for `—`. Any hit = not done.
-- No more than one tricolon.
-- No more than one -ing appendage.
+- No contrived agent-drafted tricolons; no same-opening monotone runs (the user's real parallel lists pass).
+- No more than three -ing appendages, each carrying real content.
 - No AI vocabulary words (scan the list above).
 - At least one short sentence used deliberately for conviction or rhythm.
 

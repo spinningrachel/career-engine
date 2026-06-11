@@ -11,10 +11,11 @@ description: Analysis procedures for the employment-coach agent (Option 2 — Pi
 
 **`03-framework.md` is the primary source of truth about who {{USER_FIRST_NAME}} is, how she works, and what she is positioning toward.** Form your understanding of her from the framework first. A single JD, a single application, or any one run's signals are situational context — they never redefine her goals, identity, or positioning.
 
-**Career-shift posture.** Whether a role represents a career shift is judged against the framework, not against the role. Check the framework for her stated posture toward shifts (open to them / not open / primarily pursuing a shift):
+**Career-shift posture.** Whether a role represents a career shift is judged against the framework, not against the role. Check `03-framework.md` §Career-shift posture for her stated posture (Not open / Open — case-by-case / Primarily pursuing a shift), her shift directions of interest, and anything off-limits:
 
-- **Framework treats shifting as marginal, or states no posture (the default):** give a shift role full, normal application support — research, strategy, properties, emphasis — exactly as for any other role. Do not put additional emphasis on the shift itself, do not reposition her around it, and do not frame the application as a transition story unless she wrote that framing in Why I Want This Role.
-- **Framework indicates shifting is a primary goal:** treat shift roles as central — strategy, Role emphasis, and Gap handling may lean into the transition deliberately.
+- **Not open:** the named pipeline command still rules (R-24) — a commanded shift role is processed in full, but flag the posture mismatch as a one-line note in the briefing, and never emphasize the shift in strategy or materials. Off-limits directions are flagged the same way.
+- **Open — case-by-case, or no posture stated (the default):** give a shift role full, normal application support — research, strategy, properties, emphasis — exactly as for any other role. Do not put additional emphasis on the shift itself, do not reposition her around it, and do not frame the application as a transition story unless she wrote that framing in Why I Want This Role. Her listed shift directions and conditions inform fit assessment and priority scoring, not repositioning.
+- **Primarily pursuing a shift:** treat shift roles as central — strategy, Role emphasis, and Gap handling may lean into the transition deliberately.
 
 This rule binds every pipeline that spawns the coach: intake, new application, and edit.
 
@@ -341,7 +342,7 @@ If the specific AI category (e.g., conversational AI, NLP, voice agents) is not 
 
 1. **Read the JD text.** Check the byline, "reports to" language, and any named title in the reporting structure. If the JD names a reporting title (e.g., "reports to the CMO"), that title + company is your next search query — go to step 3 immediately.
 2. **Read the company About Us / Team page.** This is mandatory — not optional. Marketing leaders, team structure, and culture signals are frequently listed there. Open the page and read it. Note any {{USER_PROFESSION}} function leaders by name and title.
-3. **Google `"[title]" [company name]`** — e.g., `"CMO" Ship4wd` or `"VP Marketing" Acme Corp`. This often surfaces the person's name directly in search snippet text, press mentions, or LinkedIn previews without requiring a login. Read the first page of results.
+3. **Google `"[title]" [company name]`** — e.g., `"CMO" Northwind` or `"VP Marketing" Acme Corp`. This often surfaces the person's name directly in search snippet text, press mentions, or LinkedIn previews without requiring a login. Read the first page of results.
 4. **Search LinkedIn for the company** and scan **all** people with {{USER_PROFESSION}} titles — not just the most senior one. Map the org layer by layer using {{USER_FUNCTION_SENIORITY_HIERARCHY}} as the reference for title tiers. The most senior {{USER_PROFESSION}} leader is often NOT the hiring manager.
 5. **Check B2B intelligence platforms.** Search theorg.com, Crunchbase, and ZoomInfo for the company — these often list org structure, named leaders, and reporting chains without requiring sign-in. A Google search for `[company name] theorg` or `[company name] site:theorg.com` is a fast entry point.
 6. **Apply org-layer logic.** If both a top-tier and a mid-tier {{USER_PROFESSION}} leader are visible (per {{USER_FUNCTION_SENIORITY_HIERARCHY}}), the mid-tier leader is the likely hiring manager for any role below the top tier. Do not default to the most senior title.

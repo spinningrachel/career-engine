@@ -27,8 +27,8 @@ Preferences are stored in `~/.career-engine-job-prefs.json`. The full schema:
     "remotePreference": "remote only",
     "excludePatterns": ["junior", "intern", "contract"],
     "defaultTimeRange": "last week",
-    "location": "Tel Aviv, Israel",
-    "notionDatabaseId": "3465ef1a-a634-80ef-8f43-000b75686c29"
+    "location": "City, Country",
+    "notionDatabaseId": "<your-notion-database-id>"
   }
 }
 ```
