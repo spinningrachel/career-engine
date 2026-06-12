@@ -77,15 +77,46 @@ Target status by mode:
 - **Standalone mode:** Status = `Hold`
 - **Orchestrator mode:** Status = `Interested`
 
-Two query paths exist. Use **Path A** whenever the `notionApi` server is connected and working in the current session; use **Path B** when it is absent or unusable (e.g. Cowork sessions, which provide only the standard Notion connector). Both intake modes use the same paths.
+Two query paths exist, and Path A has two rungs. Use **Path A1** (the `ntn` CLI) whenever its gate check passes; fall to **Path A2** (the `notionApi` server) when A1 is unavailable; use **Path B** when both A rungs are absent or unusable (e.g. a Cowork session with no CLI in its sandbox and no `notionApi` server — only the standard Notion connector). Falling down the ladder is sanctioned routing, never a reportable failure. Both intake modes use the same paths.
 
-**Path A — `notionApi` structured query (preferred).** `notionApi` returns structured JSON keyed by property name. There is no column alignment to get wrong, no table to parse, no off-by-one risk.
+**Path A1 — `ntn` CLI structured query (preferred where available).** The official Notion CLI returns the same structured JSON as the API, but through Bash — so the result is trimmed in the shell and only the fields the pipeline needs ever enter context. The gate, not the environment label, decides: any runtime whose shell passes the gate — including a sandboxed session where the CLI is installed and a token is configured — uses A1; where the gate fails, the ladder falls to A2 without comment. The gate never installs the CLI and never prompts for credentials mid-run. Keychain auth requires an interactive login session; in headless or sandboxed shells auth comes from the `NOTION_API_TOKEN` environment variable (or `NOTION_KEYRING=0` file-based auth) — if neither is present, `ntn whoami` fails, and that is the gate working as designed.
+
+Gate check (both conditions must pass):
+```bash
+command -v ntn >/dev/null 2>&1 && ntn whoami >/dev/null 2>&1 && echo "Path A1 available"
+```
+
+Resolve the data source ID once per run from the database ID, then query:
+
+```bash
+ntn api /v1/databases/{{NOTION_DATABASE_ID}}   # read data_sources[0].id from the response
+ntn datasources query <data-source-id> \
+  --filter '{"property":"Status","status":{"equals":"Hold"}}' \
+  --limit 100 --json
+```
+
+(orchestrator mode: `Interested` instead of `Hold`.) Trim the JSON in the shell (`python3` or `jq`) down to each row's page `id` plus the named properties this step needs — always read by property name, never by column position. If `has_more` is true, continue with `--start-cursor` until exhausted. For a full single-row read, `ntn pages get <page_id>` returns every property plus the page body as markdown in one call.
+
+Better still, project at the source so bulk payloads never arrive at all: repeat the httpie-style query param `filter_properties==<property_id>` on a direct query call —
+
+```bash
+ntn api /v1/data_sources/<data-source-id>/query 'filter_properties==title' 'filter_properties==<property_id>' \
+  -X POST -d '{"filter": {...}, "page_size": 100}'
+```
+
+— which returns only the named properties (verified: ~3KB for a projected batch vs ~120KB unprojected). `filter_properties` takes property IDs read from the data source schema, not property names.
+
+Syntax notes for direct API calls: `ntn api` is httpie-style — the path is given directly with no get/post verb words (`ntn api /v1/pages/<page_id>`; method is inferred, override with `-X PATCH -d '{...}'`); query params are `name==value` inline inputs. When unsure of syntax, verify instead of guessing: `ntn api ls` lists supported endpoints, `ntn api <path> --docs` prints the official endpoint docs, and `--spec` prints the request/response schema.
+
+If any A1 call errors after the gate passed (auth revoked mid-run, network failure), fall to Path A2 for the remainder of the run.
+
+**Path A2 — `notionApi` structured query.** `notionApi` returns structured JSON keyed by property name. There is no column alignment to get wrong, no table to parse, no off-by-one risk.
 
 The `notionApi` tools are deferred and their schemas are not pre-loaded. Before calling, run a ToolSearch to load the schema:
 ```
 ToolSearch query="select:notionApi__API-query-data-source"
 ```
-If ToolSearch returns a schema, proceed with Path A. If it returns nothing, try the full tool name `mcp__notionApi__API-query-data-source` directly — deferred tools are still callable by their full name even if ToolSearch doesn't surface them. If the direct call returns a tool-not-found error, the `notionApi` server is not connected in this session — switch to Path B. If the Path A call returns any other error (auth failure such as a 401, malformed response, timeout), treat the `notionApi` server as unusable in this session and switch to Path B as well. In neither case report this as a failure; Path B is a sanctioned route, not a workaround. If Path B then also fails, apply the both-paths-fail rule at the end of this step.
+If ToolSearch returns a schema, proceed with Path A2. If it returns nothing, try the full tool name `mcp__notionApi__API-query-data-source` directly — deferred tools are still callable by their full name even if ToolSearch doesn't surface them. If the direct call returns a tool-not-found error, the `notionApi` server is not connected in this session — switch to Path B. If the Path A2 call returns any other error (auth failure such as a 401, malformed response, timeout), treat the `notionApi` server as unusable in this session and switch to Path B as well. In neither case report this as a failure; Path B is a sanctioned route, not a workaround. If Path B then also fails, apply the all-paths-fail rule at the end of this step.
 
 Call `notionApi` `API-query-data-source` (full tool name: `mcp__notionApi__API-query-data-source`) with:
 - database ID: `{{NOTION_DATABASE_ID}}`
@@ -102,15 +133,15 @@ This returns a JSON array of page objects. Each object has an `id` field and a `
 2. **Use the result for discovery only.** Extract the page IDs/links from the result — these are unambiguous even in a misaligned table. Do not read any property value out of the rendered table.
 3. **Fetch full properties per page:** call `notion-fetch id="<page_id>"` on each candidate page and read its complete property set from the structured page response. Discard pages whose Status does not match the target. Every downstream read in this run — Step 0.6 priorities, the Step 0.8 coach-complete check, the Step 0.9a write-only-to-empty rule — uses these per-page property sets, never the rendered table.
 
-**Rules for both paths:**
+**Rules for all paths:**
 
 **Never create, update, or modify Notion database views.** Do not call `create-database-view`, `update-database-view`, or any equivalent tool under any circumstance — not as a workaround, not to filter results, not to resolve misalignment.
 
-**Do not use Bash or Grep on the query result.** Process it directly from the tool response in context.
+**On Paths A2 and B, do not use Bash or Grep on the query result.** Process it directly from the tool response in context. On Path A1 the result arrives through the shell, and trimming it there (`python3`/`jq`) is the sanctioned mechanism — that is the point of the rung, not a violation of this rule.
 
 The result should contain only rows matching the target status. If unfiltered rows appear, discard non-matching ones in memory and log a warning. Do not process any row whose Status does not match the target.
 
-If both paths fail with tool errors or unparseable responses, stop immediately and report the error to {{USER_FIRST_NAME}} — do not treat it as zero results and do not improvise a third query route.
+If all paths fail with tool errors or unparseable responses, stop immediately and report the error to {{USER_FIRST_NAME}} — do not treat it as zero results and do not improvise a query route outside the ladder.
 
 Skip any entry where neither a Job URL nor job description details in the RTF body of the record are populated.
 
@@ -243,6 +274,8 @@ This step is mechanical and runs end-to-end without pausing.
 ### 0.9a — Write coach outputs to Notion
 
 **Rule: write only to empty properties.** For every property below, check the current Notion value first. If already populated — skip it. Do not overwrite any existing value. `N/A` counts as populated.
+
+Where Path A1 (the `ntn` CLI, Step 0b gate) is active in this run, property writes may equivalently go through `ntn api /v1/pages/<page_id> -X PATCH -d '{"properties": {...}}'` — same write-only-to-empty rule, same parallelism. Otherwise use the connector tools as written below.
 
 For each role in the processing queue, apply this rule to:
 - `Priority` — write the coach's value (`1`–`6`) only if currently empty. If the role was coach-skipped (already coach-complete per Step 0.8), do not write at all — leave unchanged. In a mixed batch, apply per role individually.
