@@ -79,7 +79,7 @@ Resolve the search mode per the rules in `SKILL.md`. Display before searching:
 
 **Step 1 — Deduplication baseline**
 
-If `notionDatabaseId` is set in preferences: query the Notion database via `notionApi` `API-query-data-source` to retrieve all existing `Company` + `Position` pairs. If the `notionApi` server is not connected in this session, use `notion-query-database-view` on the database URL instead, per the Deduplication section of `SKILL.md` (skip dedup with a warning if the returned table is misaligned — never parse a misaligned table). Hold this list for Step 4.
+If `notionDatabaseId` is set in preferences: retrieve all existing `Company` + `Position` pairs, preferring the `ntn` CLI when its gate passes (`command -v ntn >/dev/null 2>&1 && ntn whoami >/dev/null 2>&1` — query with `ntn datasources query`, per the Deduplication section of `SKILL.md`), else via `notionApi` `API-query-data-source`. If neither is available in this session, use `notion-query-database-view` on the database URL instead, per the Deduplication section of `SKILL.md` (skip dedup with a warning if the returned table is misaligned — never parse a misaligned table). Hold this list for Step 4.
 
 **Step 2 — Search**
 

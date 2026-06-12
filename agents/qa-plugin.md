@@ -404,14 +404,18 @@ grep -c "create-database-view" <location>/skills/career-engine-intake/SKILL.md
 
 **FAIL condition:** string not found.
 
-### Check 21 — Two-tier Notion query path present in intake skill (R-1, R-25)
+### Check 21 — Tiered Notion query ladder present in intake skill (R-1, R-25, R-35)
 
-In `skills/career-engine-intake/SKILL.md`: verify Step 0b contains both query paths and the misalignment invariant — "API-query-data-source" (Path A), "Path B" (the sanctioned view-query fallback), and "misaligned rendered table" (the never-parse invariant).
+In `skills/career-engine-intake/SKILL.md`: verify Step 0b contains all three ladder rungs and the misalignment invariant — "command -v ntn" (Path A1 gate, R-35), "API-query-data-source" (Path A2), "Path B" (the sanctioned view-query fallback), and "misaligned rendered table" (the never-parse invariant). Also verify the A1 gate appears at the other query sites that gained a CLI rung.
 
 ```bash
+grep -c "command -v ntn" <location>/skills/career-engine-intake/SKILL.md
 grep -c "API-query-data-source" <location>/skills/career-engine-intake/SKILL.md
 grep -c "Path B" <location>/skills/career-engine-intake/SKILL.md
 grep -c "misaligned rendered table" <location>/skills/career-engine-intake/SKILL.md
+grep -c "command -v ntn" <location>/skills/career-engine-coach/SKILL.md
+grep -c "command -v ntn" <location>/skills/career-engine-edit/SKILL.md
+grep -c "command -v ntn" <location>/skills/source-open-roles/SKILL.md
 ```
 
 **FAIL condition:** any string not found.

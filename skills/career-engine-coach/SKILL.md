@@ -59,13 +59,23 @@ Do not proceed to Step 3 without this context.
 
 ## Step 2 — Find roles to research
 
-Use `notion-query-database-view` with this exact view URL:
+**Path A1 — `ntn` CLI (preferred where available).** If the gate passes (`command -v ntn >/dev/null 2>&1 && ntn whoami >/dev/null 2>&1`), query directly instead of the view route below (resolve the data source ID from `{{NOTION_DATABASE_ID}}` via `ntn api /v1/databases/{{NOTION_DATABASE_ID}}` → `data_sources[0].id`):
+
+```bash
+ntn datasources query <data-source-id> \
+  --filter '{"and":[{"property":"Status","status":{"equals":"Hold"}},{"property":"Landscape","rich_text":{"is_empty":true}}]}' \
+  --sort 'Entry Created On asc' --limit 5 --json
+```
+
+Trim the JSON in the shell to page `id` plus the named properties you need (read by property name, never by column position); for the full per-role payload, `ntn pages get <page_id>` returns all properties plus the page body as markdown in one call. The view exists to serve the connector route — on A1, the direct filter above is the sanctioned equivalent. If the gate fails or any A1 call errors, fall through to the view route below without comment (intake Step 0b documents the full ladder and syntax).
+
+Otherwise use `notion-query-database-view` with this exact view URL:
 
 ```
 https://www.notion.so/{{NOTION_DATABASE_ID}}?v=35e5ef1aa63480ff9b4e000cbcd67aec
 ```
 
-This view is pre-configured to return only `Hold` roles where Landscape is empty, sorted by creation date ascending. Do not construct your own filter — use the view directly. Do not fetch the full database.
+This view is pre-configured to return only `Hold` roles where Landscape is empty, sorted by creation date ascending. On the connector route, do not construct your own filter — use the view directly (the A1 direct filter above is the only sanctioned exception). Do not fetch the full database.
 
 **The view result is for discovery only (R-1).** The rendered table is susceptible to column misalignment and shows only the view's visible columns. Use it only to identify the candidate pages (oldest first): extract the page IDs/links, then call `notion-fetch id="<page_id>"` on each selected page and read all property values from the structured page response — never from the rendered table.
 
