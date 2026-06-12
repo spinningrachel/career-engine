@@ -67,7 +67,7 @@ For each page fetched, capture the full row payload including:
 - Job URL
 - `Edit type` — required; options: `CV`, `Letter`, `Both`
 - Pipeline (New Applications — from {{USER_FIRST_NAME}}'s chat command)
-- All existing property values — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Why I Want This Role`, `CV File Name`, `Letter File Name`, `Note`, and any other populated fields
+- All existing property values — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Why I Want This Role`, `CV File Name`, `Letter File Name` (note: these two file-name properties may be absent from the schema — that is not an error; see the run-folder convention below), `Note`, and any other populated fields
 - Any reviewer feedback or notes already on the row
 
 **Edit type is mandatory. It controls everything.** After fetching, immediately inspect the `Edit type` value for every role before any other work begins — before spawning the coach, before loading JDs, before any pipeline step.
@@ -102,7 +102,7 @@ The employment coach fetches JDs as part of Step E1 — no separate fetch step n
 
 **Content check:** Run only if Edit type is `CV` or `Both`. Spawn `gatekeeper` with `option=content`, passing the existing CV text, the structured JD, and the role's `Keywords` property (from the Notion row — required for the ATS pre-check). Returns either PASS or a content violation list.
 
-**Cover letter check:** Run only if Edit type is `Letter` or `Both`. Skip if no cover letter exists (`Letter File Name` property is empty). Spawn `gatekeeper` with `option=cover-letter`, passing the existing cover letter text and the structured JD. Returns either PASS or a cover letter violation list.
+**Cover letter check:** Run only if Edit type is `Letter` or `Both`. Skip if no cover letter exists (`Letter File Name` empty or absent AND no letter found by the run-folder convention — if the property is absent from the schema or empty, locate the file via the run-folder convention instead: state.json `cover_letter_path`/`cv_path`, or the Draft Directory company subdirectory with filename patterns `coverletter-*`/`cv-*`). Spawn `gatekeeper` with `option=cover-letter`, passing the existing cover letter text and the structured JD. Returns either PASS or a cover letter violation list.
 
 Run both in parallel. Collect results. Do not loop or fix anything yet — this step is diagnosis only.
 
@@ -139,7 +139,7 @@ Process roles sequentially. For each role, branch on the pipeline {{USER_FIRST_N
 Agents in this track are explicitly informed they are improving existing work. Pass each agent:
 - The structured JD from Step E0.5
 - The existing CV text from the Notion row or the existing DOCX (whichever is available)
-- The existing cover letter text (retrieved from the output run folder using the filename in `Letter File Name` — extract text using `pandoc "<output_dir>/<letter-filename>.docx" -t plain`; skip if `Letter File Name` is empty)
+- The existing cover letter text (retrieved from the output run folder using the filename in `Letter File Name`; if the property is absent from the schema or empty, locate the file via the run-folder convention instead: state.json `cover_letter_path`/`cv_path`, or the Draft Directory company subdirectory with filename patterns `coverletter-*`/`cv-*` — extract text using `pandoc "<output_dir>/<letter-filename>.docx" -t plain` or read the `.md` sibling)
 - The verified coach properties from Step E1
 - Any reviewer feedback or notes already on the row
 
@@ -205,7 +205,7 @@ Spawn `gatekeeper` with `option=content`, passing the final revised CV text, the
 - **`Why I Want This Role` property** — {{USER_FIRST_NAME}}'s written motivation for this role; passes the gate above, so it is populated. Include the full content.
 
 Spawn `letter-writer` with `option=revision`. Pass:
-- The existing cover letter (from the output run folder using the filename in `Letter File Name` — extract text with `pandoc "<output_dir>/<letter-filename>.docx" -t plain`)
+- The existing cover letter (from the output run folder using the filename in `Letter File Name`; if the property is absent from the schema or empty, locate the file via the run-folder convention instead: state.json `cover_letter_path`/`cv_path`, or the Draft Directory company subdirectory with filename patterns `coverletter-*`/`cv-*`)
 - The baseline cover letter violation list from Step E0.7
 - The verified coach properties from Step E1, including `Gap handling`
 - The final CV (for context)
@@ -232,7 +232,7 @@ Before passing the revised cover letter to the gatekeeper, compare the old and n
 
 **Step E7.3 — Gatekeeper (cover letter check — initial)**
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, the structured JD (including the Company self-characterization section), {{USER_FIRST_NAME}}'s Why I Want This Role content (retrieved in Step E7 from Notion).
+Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, the structured JD (including the Company self-characterization section), {{USER_FIRST_NAME}}'s Why I Want This Role content (retrieved in Step E7 from Notion). Also pass the final CV text for this role (required for the CV-repetition check); if no CV exists for this role, state that explicitly so the gatekeeper reports the skipped check by name.
 
 **If PASS:** proceed to Step E7.4.
 
@@ -258,7 +258,7 @@ Returns the final cover letter and a brief revision log (what changed and why, o
 
 **Step E7.7 — Gatekeeper (cover letter check — final)**
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the final cover letter text, the structured JD, {{USER_FIRST_NAME}}'s Why I Want This Role content (same as Step E7.3).
+Spawn `gatekeeper` with `option=cover-letter`, passing the final cover letter text, the structured JD, {{USER_FIRST_NAME}}'s Why I Want This Role content, and the final CV text (same as Step E7.3).
 
 **If PASS:** proceed to Step E8 (humanizer).
 
@@ -276,7 +276,7 @@ Before overwriting, copy the current (E7.7-passing) markdown to a sibling file w
 
 **Step E8.5 — Final verification on the exported bytes**
 
-The humanizer changed the text after the last PASS, so that PASS is no longer valid. On the exact saved markdown that E9 will convert: (1) run the mechanical pre-export checklist — company name in first body paragraph, role title in body, zero em dashes and zero colons in body text (ignoring pandoc `:::` fences and `{custom-style=...}` attributes), zero hits for "I know this", "that's where", "that's what", "that's the kind", "that exact", "exactly that", "this same", "serves as", "stands as", "acts as"; (2) spawn `gatekeeper` with `option=cover-letter` on this exact text. If either fails: re-spawn the humanizer (language issues) or letter-writer with `option=revision` (content issues) and re-run this step. Cap: 2 rounds; after the cap, revert to the `.prehumanizer.md` file saved in E8 (the last E7.7-passing text) and flag for manual review. Never export text that has not passed this step.
+The humanizer changed the text after the last PASS, so that PASS is no longer valid. On the exact saved markdown that E9 will convert: (1) run the mechanical pre-export checklist — company name in first body paragraph (stealth roles: JD descriptor suffices), role title in body, zero em dashes and zero colons in body text (ignoring pandoc `:::` fences and `{custom-style=...}` attributes), zero hits for "I know this", "that's where", "that's what", "that's the kind", "that exact", "exactly that", "this same", "serves as", "stands as", "acts as"; also grep "the same" — a hit fails only when it points at an agent-coined abstraction ("the same engine"), not in benign uses ("the same week"); (2) spawn `gatekeeper` with `option=cover-letter` on this exact text. If either fails: re-spawn the humanizer (language issues) or letter-writer with `option=revision` (content issues) and re-run this step. Cap: 2 rounds; after the cap, revert to the `.prehumanizer.md` file saved in E8 (the last E7.7-passing text) and flag for manual review. Never export text that has not passed this step.
 
 ---
 

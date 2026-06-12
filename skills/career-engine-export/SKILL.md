@@ -344,7 +344,7 @@ Body paragraphs are regular markdown paragraphs (Normal style — no annotation 
 
 ### Word count and structure
 
-All cover letters are limited to a single page, 230–290 words (not counting greeting or sign-off). This matches the requirement in cover-letter/SKILL.md and the gatekeeper check. Structure and voice are consistent across all letters and follow the framework below.
+All cover letters are limited to a single page, maximum 320 words with no minimum (not counting greeting or sign-off). This matches the requirement in cover-letter/SKILL.md and the gatekeeper check. Structure and voice are consistent across all letters and follow the framework below.
 
 ### Voice constraints
 

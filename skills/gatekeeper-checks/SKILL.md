@@ -77,18 +77,21 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 
 ## Option 2 — Cover Letter Checks
 
+**Calibration authority (R-32) — read before running any check in this option.** The delivered-letters archive and the voice fingerprint (`03-framework.md` §Voice fingerprint) govern voice and register. The pattern and structure checks below target agent-drafted failure modes — they do not police the user's own register. A register pattern consistent with the delivered letters is NOT a violation: keep it and note it, exactly as the humanizer does. Hard slop prohibitions (em dashes, colons, banned vocabulary true tells) and all truth/structure checks (opener sourcing, role named, CV repetition, fabrication) carry no carve-out. You run BEFORE the humanizer — if you strip an archive-consistent ramp here, the humanizer's carve-out can never restore it, so the carve-out must be applied here first.
+
 **Format**
-- Greeting: `Hi to the [Company name] team!` or `Hi to [Name]!` — no other form accepted
-- Sign-off: "Looking forward to next steps," then "{{USER_FULL_NAME}}" — nothing after the name
-- Body: 230–290 words (excluding greeting and sign-off)
+- Greeting: `Hi to the [Company name] team!` or `Hi to [Name]!` — for stealth roles (no public company name), `Hi to the team!` or `Hi to the [JD descriptor] team!` is accepted
+- Role named in the first sentence of the body — it does not have to lead the sentence, but it must be explicit (Tier 2; FAIL if absent)
+- Sign-off: "Looking forward to next steps," (default) or an archive-consistent variation, then "{{USER_FULL_NAME}}" on its own line. A P.S. after the name is permitted when archive-consistent (logistics, warmth) — flag only company-positioning commentary in a P.S.
+- Body: maximum 320 words (excluding greeting and sign-off; no minimum — canonical rule per the cover-letter skill; the 270–320 band is the typical delivered-letter register)
 
 **Personal-content exemption — read before running any content check**
 
-If {{USER_FIRST_NAME}}'s Why I Want This Role content was passed alongside the cover letter, that is {{USER_FIRST_NAME}}'s own first-person material — not letter-writer invention. Do not fail on content checks for passages that clearly originate from her Why I Want This Role field. The signal: personal-content-derived text sounds like a personal reaction or genuine first-person opinion; copywriting-fabricated content sounds assembled and polished. When a specific personal claim about the company or role matches phrasing that could plausibly be {{USER_FIRST_NAME}} speaking in her own voice, treat it as personal-content-derived and exempt it from Pattern C, Pattern H, and the company character claims check. Apply the exemption only to plausibly personal statements — not to analytical claims about the company's strategy, market, or positioning.
+If {{USER_FIRST_NAME}}'s Why I Want This Role content was passed alongside the cover letter, that is {{USER_FIRST_NAME}}'s own first-person material — not letter-writer invention. Do not fail on content checks for passages that clearly originate from her Why I Want This Role field. The signal: personal-content-derived text sounds like a personal reaction or genuine first-person opinion; copywriting-fabricated content sounds assembled and polished. When a specific personal claim about the company or role matches phrasing that could plausibly be {{USER_FIRST_NAME}} speaking in her own voice, treat it as personal-content-derived and exempt it from Pattern C, Pattern H, the company character claims check, the analyst-paragraph body check, and the banned words/phrases list. A hedged inference in her words ("I believe X would demand Y") is an earned inference — exempt when named proof sits within two sentences. The exemption does NOT cover: the specificity-slot check (kept at full strength by explicit ruling), the CV-repetition prohibition, or fabricated/unevidenced factual claims. Apply the exemption only to plausibly personal statements — not to agent-constructed analytical claims about the company's strategy, market, or positioning.
 
 **CV repetition check — FAIL if triggered**
 
-This check requires the final revised CV to be in scope. If the CV was not passed alongside the cover letter, skip this check and note it.
+This check requires the final revised CV to be in scope. If the CV was not passed alongside the cover letter, report 'CV not provided — repetition check skipped' as a named line in your output — never skip silently. The pipelines are required to pass the CV; a missing CV is itself a finding.
 
 Read every substantive claim, metric, credential, and fact in the letter body. For each one, check whether the same information already appears anywhere in the CV — in the summary, in any experience bullet, or in any other section. Flag as: "Letter repeats CV content: '[sentence or phrase]' restates '[location in CV]'." A sentence fails if it makes the same claim in different words — paraphrase is not a loophole. Enhancement is permitted: if the letter sentence contains material the CV bullet does not (context, story, decision logic, or new detail), it passes. Pure restatement fails.
 
@@ -134,8 +137,8 @@ Check for the following failure patterns — any one is a fail:
 The gatekeeper MUST flag and FAIL the following structural problems when they appear in the opening paragraph:
 
 - **Gerund as subject:** Opening sentence begins with a gerund phrase ("Finding the right words for...", "Building GTM for...", "Having spent [time]..."). The subject must be {{USER_FIRST_NAME}} (first person), not a gerund.
-- **Prepositional phrase opener:** First sentence begins with a prepositional phrase ("In a market where...", "After six years in...", "For companies at this stage...") instead of {{USER_FIRST_NAME}} as subject.
-- **Dependent clause opener:** First sentence leads with a subordinate clause ("When half the vendors say the same thing...", "Because positioning in security is hard...") before {{USER_FIRST_NAME}} appears.
+- **Prepositional phrase opener — agent-drafted only:** First sentence begins with a prepositional phrase ("In a market where...", "For companies at this stage...") with no archive precedent. Archive-consistent ramps ("After years in regulated, trust-dependent categories...", "On Fiverr, I write...") are the user's register — pass and note, do not fail.
+- **Dependent clause opener — agent-drafted only:** First sentence leads with a subordinate clause framing the market or industry ("When half the vendors say the same thing...", "Because positioning in security is hard...") with no archive precedent. Archive-consistent ramps where the clause carries HER action or reaction ("When I heard that [Company] is hiring...", "When reading the [Company] posting...") are the user's register — pass and note, do not fail.
 - **Wh-clause stacking:** Multiple "who/which/that" clauses chained within a single sentence, creating a sentence that sounds assembled rather than said.
 
 These are not advisory. A sentence structure violation in the opening paragraph is a FAIL requiring revision.

@@ -137,7 +137,7 @@ The letter that answers "what they asked for" is generic. The letter that answer
 
 ### Write
 
-**Word count — hard constraint:** 230–290 words for the body (not counting greeting or sign-off). Count explicitly before returning output.
+**Word count — hard constraint:** maximum 320 words for the body (not counting greeting or sign-off; no minimum — canonical rule, see the cover-letter skill). Aim for the 270–320 band typical of the delivered letters when the content supports it; never pad. Count explicitly before returning output.
 
 ---
 **─── OPENER — NON-NEGOTIABLE ───**

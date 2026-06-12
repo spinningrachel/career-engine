@@ -159,7 +159,7 @@ If the answer to any of these is "no," return to `letter-writer` with `option=co
 
 ### Step 5.2 — Gatekeeper (cover letter draft check)
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Why I Want This Role content (from the Pre-Step 5 read). The Why I Want This Role content allows the gatekeeper to apply the personal-content exemption correctly — see the exemption rule at the top of Option 2 in `gatekeeper-checks/SKILL.md`.
+Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Why I Want This Role content (from the Pre-Step 5 read). Also pass the final CV text for this role (required for the CV-repetition check); if no CV exists for this role, state that explicitly so the gatekeeper reports the skipped check by name. The Why I Want This Role content allows the gatekeeper to apply the personal-content exemption correctly — see the exemption rule at the top of Option 2 in `gatekeeper-checks/SKILL.md`.
 
 **If PASS:** proceed to Step 5.3.
 
@@ -202,7 +202,7 @@ cp /tmp/<coverletter_filename>.md "<output_dir>/<company_dir>/<coverletter_filen
 
 ### Step 5.8 — Gatekeeper (cover letter final check)
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the revised cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Why I Want This Role content (same as Step 5.2).
+Spawn `gatekeeper` with `option=cover-letter`, passing the revised cover letter text, `Role summary`, {{USER_FIRST_NAME}}'s Why I Want This Role content, and the final CV text (same as Step 5.2).
 
 **If PASS:** proceed to Step 5.9.
 
@@ -229,10 +229,10 @@ If the humanizer fails or returns no changes, proceed with the pre-humanizer ver
 The humanizer changed the text after the last PASS, so that PASS is no longer valid. Run both checks below on the **exact saved markdown** that Step 6 will convert:
 
 1. **Mechanical pre-export checklist** — run directly, no subagent. On the letter body (ignore pandoc fence lines starting `:::` and `{custom-style=...}` attributes):
-   - Company name appears in the first body paragraph.
+   - Company name appears in the first body paragraph (stealth roles: the JD descriptor satisfies this).
    - Role title appears somewhere in the body.
    - Zero em dashes (`—`) and zero colons in body text.
-   - Zero hits for the named banned patterns: "I know this", "that's where", "that's what", "that's the kind", "that exact", "exactly that", "this same", "serves as", "stands as", "acts as".
+   - Zero hits for the named banned patterns: "I know this", "that's where", "that's what", "that's the kind", "that exact", "exactly that", "this same", "serves as", "stands as", "acts as"; also grep "the same" — a hit fails only when it points at an agent-coined abstraction ("the same engine"), not in benign uses ("the same week").
 2. **Final gatekeeper pass** — spawn `gatekeeper` with `option=cover-letter` on this exact text.
 
 **If both pass:** proceed to Step 6. **If either fails:** spawn `cover-letter-humanizer` again with the specific failures named (language-level issues) or `letter-writer` with `option=revision` (content-level issues), then re-run this step. Cap: 2 rounds. After the cap, revert to the `.prehumanizer.md` file saved in Step 5.9 (the last text that passed Step 5.8) and flag the letter for manual review in the final delivery. Never export text that has not passed this step.

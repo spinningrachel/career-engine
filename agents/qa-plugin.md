@@ -508,6 +508,22 @@ grep -c "Voice fingerprint" <location>/skills/cover-letter/SKILL.md             
 
 **FAIL condition:** any count is 0 or below its stated requirement.
 
+### Check 21i — Shakedown fixes present (R-34)
+
+```bash
+grep -c "maximum 320" <location>/skills/cover-letter/SKILL.md                               # must be >= 1
+grep -c "maximum 320" <location>/skills/gatekeeper-checks/SKILL.md                          # must be >= 1
+grep -rn "230–275\|230–290\|230–320" <location>/skills <location>/agents <location>/references --include="*.md" | grep -v qa-plugin.md | wc -l   # must be 0
+grep -c "Calibration authority" <location>/skills/gatekeeper-checks/SKILL.md               # must be >= 1
+grep -c "repetition check skipped" <location>/skills/gatekeeper-checks/SKILL.md            # must be >= 1
+grep -c "Role named in the first sentence" <location>/skills/gatekeeper-checks/SKILL.md    # must be >= 1
+grep -c "Proof-point partitioning" <location>/skills/cover-letter/SKILL.md                 # must be >= 1
+grep -c "always surfaced" <location>/skills/cover-letter/SKILL.md                          # must be >= 1
+grep -ci "stealth" <location>/skills/gatekeeper-checks/SKILL.md                            # must be >= 1
+```
+
+**FAIL condition:** any count is 0 or off its stated requirement.
+
 ### Check 22 — Known regression checks present in CLAUDE.md
 
 In `CLAUDE.md` (both REPO and LIVE): verify the file contains "Known regression checks" and entries "R-1" through "R-6".
