@@ -46,11 +46,12 @@ Used by the employment coach to score roles. Define your scoring criteria here �
 - Based in: {{USER_LOCATION}}
 - Viable: {{USER_REMOTE_PREFERENCE}} *(e.g., fully remote; local hybrid; specific countries or timezones)*
 - Hard exclusions: {{USER_GEO_EXCLUSIONS}} *(e.g., "onsite-only roles outside [city]" or "US residency required")*
+- For remote-advertised roles, a geographic restriction in the text is a soft signal, not an automatic disqualifier: apply the Remote-geography weighting in `skills/employment-coach/SKILL.md` Part 0 (exception-path check first — EOR, out-of-country hires, a restriction rationale the user's location satisfies; max one-tier discount with an `ask-first` flag when a path exists). Score Fifth on geography only for structural restrictions (legal residency, citizenship, clearance, payroll-stated-no-exceptions) with no exception path found.
 
 **5. Risk signals** — Lower the priority for:
 - {{USER_RISK_SIGNAL_1}} *(e.g., roles where your research reveals the title overstates the actual scope)*
 - {{USER_RISK_SIGNAL_2}} *(e.g., company stages that have been poor fit historically)*
-- Vague titles with no domain anchor, hard geographic exclusions, or roles where company research reveals a strong mismatch between title and scope
+- Vague titles with no domain anchor, structural geographic exclusions with no exception path, or roles where company research reveals a strong mismatch between title and scope
 
 **6. Advertised date** — Use with discretion. A very recent JD with strong fit may be more urgent than an older one, but fit outweighs recency.
 

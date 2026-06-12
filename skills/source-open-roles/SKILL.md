@@ -184,7 +184,25 @@ Cap at 100. Sort descending. Roles without a title match should not appear unles
 
 ---
 
+## Verification Pass (mandatory before output)
+
+Run on the ranked list after scoring — every result that will be displayed or offered for Notion add. Full verification applies to the top 20 by score; below that, run only item 2 on text already in hand (no extra fetches).
+
+**1. Careers-page cross-check.** Locate the role on the company's own careers page (ATS fetch methods above, or `site:<company-domain>` search). Outcomes:
+- **Listed** — capture any detail the board listing lacks (location nuance, salary, team, reporting line) and merge it into the result.
+- **Not listed** — the role may be filled or pulled. Do not drop it; flag `[Not on careers page — verify before applying]`.
+- **Listed with different terms** — the careers-page version wins; note the discrepancy.
+While there, capture staleness signals: original posting date and re-post indicators (e.g. hiring posts months older than the board date). Flag roles open or re-posted 90+ days.
+
+**2. Location deep-scan.** Location truth is rarely confined to the location field — clues hide in the full text and metadata and get overlooked. Scan the complete listing text plus metadata (structured data, board location tags, the careers-page entry, visible hiring posts) for: stated location or timezone requirements, the REASON given for them, work-authorization language, and operational clues (an EOR provider such as Deel or Oyster in the application flow, postings in multiple countries, distributed-team statements). Record what was found and where.
+
+**3. Remote-geography rule.** A role advertised as remote is NEVER excluded for a geographic restriction found in its text (e.g. "US only", "primarily EST timezone"). Surface it in the ranked list and include it in the Notion-add offer regardless of score, with a one-line note carrying: the restriction as written, its stated reason, and any exception-path evidence from the deep-scan (EOR in place, hires outside the stated country, a timezone rationale the user's location satisfies as well or better). The user decides; the engine never silently hides a remote role over geography. Remote restrictions are often softer than written — this protects any user hunting remote roles from outside the restricted country.
+
+---
+
 ## Exclusion Rules
+
+**Geography is never an exclusion for remote roles.** A geographic restriction in a remote-advertised role's text is handled by the Verification Pass remote-geography rule above — noted, never excluded.
 
 Exclude any result where:
 - The title contains any `excludePatterns` value (case-insensitive substring match)

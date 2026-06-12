@@ -82,12 +82,19 @@ If any fallback returns usable JD text (at minimum: role requirements and respon
 - Include this role in your Patterns section output: `NEEDS JD — [Company] [Role Title]: URL blocked after all fallback attempts. {{USER_FIRST_NAME}} must paste the JD text into the JD Body field in Notion before this role can be coached.`
 - Do not produce analysis, priority score, or strategic properties for this role — log it as pending and move on.
 
+**Step 2b — Careers-page cross-check (always — including `content-exists` roles).**
+
+The JD in hand is one snapshot; the company's own careers page is the live source of truth. For every role — even when `JD Body` was already populated — locate the role on the company careers page (the rendering-capable extractor and `site:<company-domain>` search from the fetch ladder apply). Outcomes:
+- **Listed** — harvest anything the saved JD lacks (location nuance and its stated rationale, salary, team or reporting detail) and treat the careers-page version as current where the two conflict.
+- **Not listed** — the role may be filled or pulled. Do not drop the role; flag prominently in Patterns: `ROLE MAY BE CLOSED — [Company] [Role Title]: not found on company careers page as of [date]` and factor it into priority and strategy.
+- **Staleness** — capture the original posting date and re-post signals (board dates, hiring posts older than the listing). A role open or re-posted 90+ days goes into the Signals block and Patterns.
+
 **Step 3 — Preserve verbatim text.**
 
 Once the JD is obtained, lock down the full verbatim text before any analysis. Write to Notion for freshly fetched roles only (skip for `content-exists`):
 - `JD Body` — full verbatim JD text, cleaned of navigation chrome
 - `JD Fetch Status` — `Fetched`, `LinkedIn-blocked`, or `Unfetchable`
-- `Israel Compatibility` — `Yes` (worldwide confirmed), `Remote-only` (geography unclear), `No` (on-site outside {{USER_COUNTRY}} or country-restricted). When in doubt, use `Remote-only`.
+- `Israel Compatibility` — `Yes` (worldwide confirmed), `Remote-only` (geography unclear), `No` (on-site outside {{USER_COUNTRY}} or country-restricted). Determine this from the Location & eligibility deep-scan in `skills/employment-coach/SKILL.md` — never from the location field alone. When in doubt, use `Remote-only`.
 
 ### Analysis
 

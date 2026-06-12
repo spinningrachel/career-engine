@@ -97,9 +97,15 @@ Apply exclusion rules from `SKILL.md`: exclude patterns, previous search session
 
 Apply the scoring rubric from `SKILL.md` to every remaining result. Sort descending.
 
+**Step 4.5 — Verify (careers page + location deep-scan)**
+
+Run the Verification Pass from `SKILL.md` on the ranked list: careers-page cross-check (existence, extra detail merged in, staleness flags) and the location deep-scan (full text + metadata; restriction, stated reason, exception-path evidence). A remote-advertised role is never excluded for geography — the location note travels with the result instead.
+
 **Step 5 — Output**
 
-Display ranked results per the output format below.
+Display ranked results per the output format below. Results carrying verification flags (`[Not on careers page — verify before applying]`, staleness, location notes) show them inline.
+
+Remote roles carrying a geographic restriction with exception-path evidence are included in the add-to-intake offer below regardless of score, marked `[location: ask-first]`.
 
 If any results scored 75+, ask at the end:
 > **[N] roles scored 75 or above. Add them to your intake queue?** (yes / no / select)
