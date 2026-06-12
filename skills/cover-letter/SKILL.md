@@ -87,7 +87,7 @@ At its core, writing this letter is a positioning, messaging, and strategy exerc
 - Specific decisions or moments the CV bullet can only gesture at
 - Voice — how {{USER_FIRST_NAME}} thinks, what she notices, what she cares about
 
-**Hard floor:** Any metric, credential, or claim that appears anywhere in the CV must not appear in the letter at all — not as a primary claim, not as a supporting detail, not in passing.
+**Hard floor:** Any metric, credential, or claim that appears anywhere in the CV must not be **restated** in the letter — not as a primary claim, not in equivalent words, not in passing. **Enhancement is the one lawful use of a CV fact:** the fact may be *named once as the anchor* of genuinely new material (the story behind it, the decision logic, the context the bullet cannot carry) — the Enhance test above governs. A CV fact standing on its own, doing the same job it does in the CV, fails regardless of rewording.
 
 **What a cover letter is not:**
 - A prose version of the CV. Every paragraph must add something the CV cannot carry.
@@ -114,9 +114,15 @@ Why I Want This Role is the sole source for the opener's content and angle. {{US
 
 **NEVER open with a plan.** "My first priority at [Company] will be..." / "The first thing I'd do is..." / "Before writing a word of copy, I'd..." — these describe what you'd do if hired, not why you're writing. They answer the wrong question. Plans and approach descriptions belong in the body. The opener answers: why is {{USER_FIRST_NAME}} writing to this company right now?
 
+**When Why I Want This Role mirrors the CV.** Sometimes her proudest story IS a CV bullet, or her written motivation restates CV facts. Her voice and angle still govern the opener — but the CV-repetition prohibition is Tier 2 and is not waived by the personal-content exemption (that exemption covers voice and personal claims, not duplication). Resolution: keep her framing and vocabulary, and write the *enhancement* of the fact — the why, the story, the decision — rather than the fact itself. If a piece of her content cannot be used without restating the CV, use its angle, not its words, and log the set-aside.
+
 **Beyond the opener — use all of it, throughout.** Why I Want This Role is the sole source for the opener, but it is NOT confined to the opener — and the opener is not its only job. Leverage it across the entire letter: wherever a piece of her content fits the structure — a proof paragraph, a transition, the close — work it in. Strong preference: every piece of information she provides in the field appears somewhere in the letter. Even stronger preference: wherever her content is in play, default to her tone and vocabulary over polished alternatives. Integration must be logical — place each piece where it does real work for the letter, never bolt it on just to hit coverage.
 
+**Proof-point partitioning — run before drafting.** The CV and the letter draw from the same documented background, and the CV is written first — so list what the CV already spends (summary claims, bullet outcomes, metrics) before selecting the letter's proof. The letter's named proof comes from what the CV does NOT carry: the detail layers in `02-professional-background.md` §7 ("What you built / delivered" runs deeper than any bullet), adjacent engagements, stories and decision logic behind the bullets, §9 testimonials, §10 portfolio artifacts. If every documented proof point is CV-spent, enhance the strongest one (story behind it) instead of importing a restatement — and a named non-numeric specific (deliverable, methodology, artifact) satisfies any need for concreteness when all numbers are CV-spent.
+
 **Role emphasis governs proof selection.** Which companies to surface, which outcomes to lead with, what the proof paragraphs need to demonstrate — this is the coach's call, not {{USER_FIRST_NAME}}'s Why I Want This Role. If her Why I Want This Role gives you a great story, ask: does it address what Role emphasis says the letter needs to prove? If yes, use it prominently. If the story is interesting but off-strategy, include it briefly where it fits — setting a piece of her content aside entirely is a last resort, reserved for content that is non-compliant or genuinely unusable.
+
+**Discarded and unreadable input is always surfaced — never silent.** When Tier 1 sets aside a piece of {{USER_FIRST_NAME}}'s own input (a claim not traceable to her documented background), or any input is uninterpretable (garbled tokens like a stray "cfx", instructions referencing text that no longer exists, degenerate properties): exclude it from the letter, log it in the revision log, and surface it in the final chat delivery as a named ask-back — "Set-aside personal input for [Company]: '[fragment]' — confirm it, correct it, or add it to 02-professional-background.md and re-run." She can only fix what she can see.
 
 **Do not reference the hiring company's positioning.** Do not analyse, describe, or comment on the company's positioning, public messaging, or how they frame their product in the market — anywhere in the letter. This includes indirect references ("a company that gets the importance of X"), framing that implies you've studied their positioning, and any sentence where {{USER_FIRST_NAME}} reads as an observer of their market strategy. When in doubt, cut it.
 
@@ -167,8 +173,8 @@ FIRST AND FOREMOST, AND COMPLETELY MANDATORY AND NON-NEGOTIABLE: The first sente
 - "I'll be honest" only when the JD or company tone signals informality is welcome. Never for enterprise or formal contexts.
 
 **Naming requirements:**
-- Company name in the first paragraph, ideally the first two sentences.
-- Role title somewhere in the letter, using the exact job description phrasing.
+- Company name in the first paragraph, ideally the first two sentences. **Stealth roles** (no public company name — Company Stage `Stealth` or a placeholder company): the JD's own descriptor ("your agentic SecOps platform," "this stealth ISR team") satisfies this — never invent a name, and the greeting becomes "Hi to the team!"
+- Role title somewhere in the letter, using the exact job description phrasing — and named in the first sentence per the Opener rule.
 
 ---
 
@@ -289,7 +295,7 @@ A bullet list is appropriate in exactly two situations:
 
 5. **Sign-off.** Default: "Looking forward to next steps," on its own line, "{{USER_FULL_NAME}}" on the next. Variation is allowed when it fits the letter's register — the delivered letters vary ("Excited for what's ahead!", "Can't wait to hear back from you!", or a direct closing line with no sign-off phrase). Keep it short and warm; the name always follows on its own line.
 
-**Word count:** 230–275 words total, excluding greeting and sign-off.
+**Word count:** maximum 320 words total, excluding greeting and sign-off — no minimum. The ceiling (320) is a Tier 2 bound; the 270–320 band is the typical register of the delivered letters — aim there when the content supports it, but a shorter letter that says everything needed beats a padded one. Length below the ceiling is a Tier 3 calibration choice. This is the single canonical rule — every other file defers to it.
 
 ### Close options
 

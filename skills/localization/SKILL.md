@@ -258,4 +258,4 @@ This skill is shipped with English as the default language column. If the user's
 | Dear [Name], | שלום ל[Name]! | שלום ל[Name]! | — | Warm, direct, natural Israeli informal opening |
 | Dear [Company] team, | שלום לצוות [Company-in-Hebrew]! | שלום לצוות [Company-in-Hebrew]! | — | Use company name in Hebrew phonetics per company table |
 | Signature | — | [Full Name in Hebrew phonetics]{custom-style="Signature Char"} | — | Use candidate's name in Hebrew phonetics from `01-writing-rules.md` |
-| Body word count target | — | 180–220 Hebrew words (body only; greeting and sign-off excluded) | — | Hebrew is naturally more concise than English; this range is the natural equivalent of the 230–290 English target |
+| Body word count target | — | maximum 250 Hebrew words, no minimum (body only; greeting and sign-off excluded) | — | Hebrew is naturally more concise than English; the ceiling is proportional to the 320-word English ceiling — the upper half mirrors the English 270–320 typical band |

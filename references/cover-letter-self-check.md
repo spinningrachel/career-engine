@@ -31,7 +31,7 @@ Run every item in order before returning output.
 ### Structure
 - [ ] Greeting is exactly "Hi to the [company name] team!" or "Hi to [Name]!" — never "Dear Hiring Manager"
 - [ ] Sign-off: "Looking forward to next steps," is the default; an archive-consistent variation is fine. The candidate's full name follows on its own line
-- [ ] Word count is 230–290 words, not counting greeting or sign-off, counted explicitly
+- [ ] Word count is at most 320 words (no minimum), not counting greeting or sign-off, counted explicitly
 - [ ] The role title appears at least once in the letter body — anywhere the flow allows, using the exact job description phrasing
 - [ ] Every proof paragraph does exactly one thing — nothing restates a CV bullet
 - [ ] Closing follows the function-builder or capability statement pattern — direct ask
@@ -81,12 +81,12 @@ Run every item in order before returning output.
 - [ ] No standalone credential paragraph that only restates CV facts without adding context
 - [ ] None of these words or phrases appear: "genuinely," "straightforward," "proven track record," "results-driven," "dynamic," "extensive experience," "at the intersection," "unlock," "unleash," "harness," "today's landscape," "navigating the landscape," "hit home," "how we show up," "full disclosure:"
 - [ ] Rhetorical questions: zero in the opener, one maximum in the entire letter
-- [ ] No phrase: "I would welcome," "I believe," "I hope"
+- [ ] No agent-drafted "I would welcome," "I believe," "I hope". Carve-out: "I believe" verbatim from the user's Why I Want This Role, or as an earned inference in her words with named proof within two sentences, passes (the delivered letters use it).
 - [ ] No phrase: "I know how to speak to buyers who [X]" — self-declaration without named evidence
 
 ### Gut check
 - [ ] Does the first sentence sound like a person, not a form letter?
 - [ ] Is every claim backed by a number, a company name, or a real story?
-- [ ] Is the letter 230–290 words?
+- [ ] Is the letter within the 320-word ceiling?
 - [ ] Does it sound like the candidate, calibrated against the delivered letters?
 - [ ] **Redundancy pass:** Re-read the letter top-to-bottom. Does anything in paragraph 2 or 3 restate what paragraph 1 already established? If yes, cut or compress.
