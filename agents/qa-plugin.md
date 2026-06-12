@@ -512,6 +512,20 @@ grep -c "Voice fingerprint" <location>/skills/cover-letter/SKILL.md             
 
 **FAIL condition:** any count is 0 or below its stated requirement.
 
+### Check 21j — Careers-page verification and remote-geography rules present (R-36)
+
+```bash
+grep -c "Verification Pass" <location>/skills/source-open-roles/SKILL.md                    # must be >= 1
+grep -c "NEVER excluded for a geographic restriction" <location>/skills/source-open-roles/SKILL.md  # must be >= 1
+grep -c "Step 4.5" <location>/agents/source-open-roles.md                                   # must be >= 1
+grep -c "Careers-page cross-check" <location>/agents/employment-coach.md                    # must be >= 1
+grep -c "Location & eligibility deep-scan" <location>/skills/employment-coach/SKILL.md      # must be >= 1
+grep -c "Remote-geography weighting" <location>/skills/employment-coach/SKILL.md            # must be >= 1
+grep -c "ask-first" <location>/skills/employment-coach/SKILL.md                             # must be >= 1
+```
+
+**FAIL condition:** any count is 0.
+
 ### Check 21i — Shakedown fixes present (R-34)
 
 ```bash

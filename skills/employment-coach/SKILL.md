@@ -80,6 +80,16 @@ Only run this step if the LinkedIn MCP is connected. If it is not, skip and note
 
 ---
 
+### Location & eligibility deep-scan (mandatory, every role)
+
+Location truth is rarely confined to the location field — clues hide in the full JD text, the metadata, and the company's operational footprint, and they get overlooked. For every role:
+
+1. **Scan everything:** the full JD text, location/metadata fields, the careers-page entry (agent Step 2b), and visible hiring posts — for stated location or timezone requirements, work-authorization language, and crucially the REASON given for any restriction. "Primarily EST timezone for healthy overlap with European business hours" restricts very differently than "must hold US work authorization": the first is a rationale a candidate elsewhere may satisfy better than the stated geography does; the second is structural.
+2. **Check the exception paths** whenever a remote-advertised role carries a geographic restriction: does the company hire through an EOR (Deel, Remote.com, Oyster — often visible in the application flow or careers-page footer)? Does it already hire outside the stated country (multi-country postings, team members' visible locations)? Does the stated rationale actually hold against {{USER_FIRST_NAME}}'s location (timezone-overlap reasons often do)?
+3. **Output a Location block** in the research findings: the restriction as written, its stated reason, exception-path evidence found (or "none found"), and — when a path exists — a suggested ask-first action: a 2-line note to the named recruiter or People contact asking whether a candidate in {{USER_FIRST_NAME}}'s location with the overlapping hours would be considered. This block feeds Priority scoring (Part 0) and the `Strategy` property.
+
+---
+
 ### JD Signal Analysis (Red and Green Flags)
 
 After completing all research dimensions, analyse the JD text itself for non-obvious signals. This is separate from fit/gap analysis — it assesses the quality and health of the opportunity itself.
@@ -170,6 +180,8 @@ Is this role an open application, unsolicited application, or speculative applic
 3. Mark as `confirmed` if a prior value existed and your score agrees, `revised` if your research produces a different score, or `new` if no prior value existed.
 
 Also factor in advertised date: a very recent role with strong fit may be more urgent than an older one with similar fit, but stronger fit generally outweighs recency.
+
+**Remote-geography weighting:** when the role is advertised remote and the only blocker is a geographic restriction in its text, do not score it as a hard exclusion on that basis alone. Consult the Location & eligibility deep-scan first. If an exception path was found (EOR in place, existing out-of-country hires, a stated rationale {{USER_FIRST_NAME}}'s location satisfies), score on the remaining criteria, discount at most one priority tier for the geography risk, and flag `ask-first` with the suggested 2-line outreach from the Location block. Score Fifth on geography only when the restriction is structural (legal residency, citizenship, security clearance, payroll-stated-no-exceptions) AND the deep-scan found no exception path. A remote role is never silently dropped over geography — if it reached the coach, it gets scored and its location note travels with it.
 
 ---
 
