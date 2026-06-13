@@ -163,7 +163,7 @@ Hebrew DOCX files are produced inline in Step 6H (Standard/Edit pipelines). This
 - `cvHe.dotm` — Hebrew CV reference template (macro-enabled)
 - `he-letter.dotx` — Hebrew cover letter reference template
 
-Full path: `{{WORD_TEMPLATES_PATH}}/`
+Full path: `$WORD_TEMPLATES_PATH/` — resolved from the career-data config key `word_templates_path` (R-38). If empty, Hebrew export is unavailable; skip it and note it.
 
 Both Hebrew templates support RTL formatting. Use `--reference-doc` with these templates — do not use pandoc's default template for Hebrew output.
 
@@ -179,7 +179,7 @@ lang: he
 **Conversion steps for Hebrew CV:**
 
 ```bash
-HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
+HE_TEMPLATES="$WORD_TEMPLATES_PATH"   # resolved from career-data config key word_templates_path (R-38)
 
 # 1. Concatenate Hebrew CV markdown with Hebrew footer
 cat /tmp/he-<cv_filename>.md \
@@ -200,7 +200,7 @@ python3 "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/update-subtit
 **Conversion steps for Hebrew cover letter:**
 
 ```bash
-HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
+HE_TEMPLATES="$WORD_TEMPLATES_PATH"   # resolved from career-data config key word_templates_path (R-38)
 
 pandoc /tmp/he-<cl_filename>.md \
   --reference-doc="${HE_TEMPLATES}/he-letter.dotx" \

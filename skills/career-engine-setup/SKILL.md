@@ -328,7 +328,7 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
    - "Paste your database ID." (the 32-character string from the Notion URL — `notion.so/[workspace]/DATABASE_ID?v=...`)
    - "Do you have a filtered view you want to use? If so, paste the view ID too." (the `v=...` part of the URL)
 
-3. Write the database ID to every `{{NOTION_DATABASE_ID}}` placeholder across all skill files.
+3. Write the database ID as `notion_database_id` in the career-data config (`${CAREER_DATA}/references/pipeline-preferences.json`). If the user gave a Needs-Editing view URL, write it as `notion_needs_editing_view_url`. Do NOT substitute `{{NOTION_DATABASE_ID}}` into plugin files — every skill resolves it from the config at runtime (R-38).
 4. Write the view ID to every `{{NOTION_VIEW_ID}}` placeholder (or leave placeholder if not provided).
 
 5. Say: "**Important:** Do not rename the columns in your Notion database. The pipeline writes to them by exact name — renaming breaks the integration silently."
@@ -412,7 +412,7 @@ Ask: "Do you want to use the included CV template (`cv-template-default.dotx`) o
 
 **Draft Directory link base**
 Ask: "Do you use a cloud file-share (Anchorpoint, Dropbox, Google Drive) that produces a stable folder URL for your output folder? If yes, paste the base URL up to (and including) the separator before the date folder. If not, answer `skip`."
-- Write the answer (or the literal word `skip`) to every `{{DRAFT_DIR_URL_BASE}}` placeholder across skill files.
+- Write the answer (or the literal word `skip`) as `draft_dir_url_base` in the career-data config. No plugin-file substitution (R-38).
 - When the value is `skip`, the pipeline leaves the `Draft Directory` Notion property empty (see the unconfigured link base guard in `career-engine-export`).
 
 **Gap handling**
@@ -423,15 +423,19 @@ Ask: "Should the pipeline run gap analysis for every role? Gap handling identifi
 
 If you're not sure, leave it enabled. You can always turn it off per-role when it isn't relevant."
 
-- Write the gap-handling choice into `${CAREER_DATA}/references/pipeline-preferences.json` **alongside** the `output_folder` and `cv_template` keys set earlier in this phase (one career-data config file — readable everywhere, survives upgrades). The complete file (R-38):
+- Write the gap-handling choice into `${CAREER_DATA}/references/pipeline-preferences.json` **alongside** every other key set in this phase — one career-data config file (readable everywhere, survives upgrades). The complete file (R-38):
   ```json
   {
     "gap_handling": "enabled",
     "output_folder": "<the absolute path the user gave>",
-    "cv_template": "references/<their-dotx-or-cv-template-default.dotx>"
+    "cv_template": "references/<their-dotx-or-cv-template-default.dotx>",
+    "notion_database_id": "<32-char DB id, or empty for non-Notion trackers>",
+    "draft_dir_url_base": "<cloud-share base URL, or skip>",
+    "word_templates_path": "<Hebrew .dotx templates dir, or empty>",
+    "notion_needs_editing_view_url": "<Needs-Editing view URL, or empty>"
   }
   ```
-  (`gap_handling` is `"enabled"` or `"disabled"`.) All three keys are required for a run; the orchestrator stops if `output_folder` or `cv_template` is missing.
+  (`gap_handling` is `"enabled"`/`"disabled"`.) **Required for any run:** `output_folder`, `cv_template`; **also required for Notion trackers:** `notion_database_id`. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop if a required key is missing. Never substitute any of these into plugin files.
   (or `"disabled"`, matching the user's choice). Preserve any other keys already present in the file.
 - Apply the **Writing personal data** rule: in Claude Code write `career-data` directly; in Cowork stage the change and emit the Appendix-A handoff. Refresh the `career-data` backup export after a direct write.
 - Do NOT write this preference to `~/.claude/settings.json` — that location is reachable only from the user's own machine and silently falls back to the default everywhere else. The pipeline still reads it as a legacy fallback, but `career-data` is the authority.
