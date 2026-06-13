@@ -32,6 +32,10 @@ Do not write CVs. Do not trigger any other pipeline. Research, priority scoring,
 
 ---
 
+## Step 0 — Resolve per-install config (R-38)
+
+This pipeline runs standalone (not under the orchestrator), so resolve config yourself. After the `career-data` discovery above, read `${CAREER_DATA}/references/pipeline-preferences.json` and set `$NOTION_DATABASE_ID` (required — if missing or empty, stop: "career-data has no `notion_database_id` — run `/career-engine:setup --phase 5`"). Wherever this skill shows `{{NOTION_DATABASE_ID}}`, use the resolved `$NOTION_DATABASE_ID`. The plugin keeps these placeholders literal (single build).
+
 ## Step 1 — Fetch Notion schema and load {{USER_FIRST_NAME}}'s background
 
 **First — fetch the database schema.** Run `notion-fetch` on the Job Applications database before anything else:

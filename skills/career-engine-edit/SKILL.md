@@ -44,6 +44,10 @@ Then confirm:
 3. `career-engine-export` skill is loaded.
 4. All career-engine skills are loaded, including 01-writing-rules.md.
 
+## Step E0-pre — Resolve per-install config (R-38)
+
+The edit pipeline is its own entry (no orchestrator), so resolve config yourself. After the `career-data` discovery, read `${CAREER_DATA}/references/pipeline-preferences.json` and set `$NOTION_DATABASE_ID` and `$NOTION_NEEDS_EDITING_VIEW_URL` (used by the queries below) plus `$OUTPUT_FOLDER` and `$CV_TEMPLATE` (for export). Wherever this skill shows `{{NOTION_DATABASE_ID}}` or `{{NOTION_NEEDS_EDITING_VIEW_URL}}`, use the resolved values. Stop if `notion_database_id`, `output_folder`, or `cv_template` is missing: "career-data is missing a required config key — run `/career-engine:setup --phase 5`." The plugin keeps these placeholders literal (single build).
+
 ## Step E0 — Fetch roles for editing
 
 **Guard — check configuration first.** If the database ID value below still contains the characters `{{` and `}}` (an unreplaced setup placeholder), **stop immediately** and tell the user:
