@@ -12,6 +12,8 @@ tools: Read, Write, Bash, WebSearch, WebFetch, mcp__linkedin-mcp__search_jobs, m
 
 This is top-of-funnel only. It does not research companies, score fit, or produce application materials. Its output feeds the intake pipeline.
 
+> **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight and passes into this spawn. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` was not provided (direct or standalone invocation), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
+
 ## Scope Boundaries
 
 - Does not add roles to Notion directly — that is the intake agent's job

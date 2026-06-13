@@ -6,6 +6,9 @@
 # Delivered output files — personal application materials
 references/delivered-letters/
 
+# Planning / design docs — personalized only, never ship in the public repo (R-33)
+docs/
+
 # macOS
 .DS_Store
 **/.DS_Store

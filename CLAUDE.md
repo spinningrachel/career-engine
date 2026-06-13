@@ -10,13 +10,11 @@ Working instructions for Claude when editing, extending, or maintaining this plu
 
 This means: after completing any set of changes — no matter how small — you MUST invoke the QA agent (`agents/qa-plugin.md`) before telling the user the work is complete. This is not optional and cannot be skipped because the changes "seem clean" or because you "already checked manually." Manual checking is how drift accumulates silently.
 
-**The QA agent also checks for drift between the two plugin versions.** Every change must be applied to BOTH:
-1. The open-source repo at the path shown in this file
-2. The personal canonical version at `~/Downloads/career-engine.plugin` (a zip archive — extract to edit, repackage when done)
+**The plugin is a single build.** There is no second personalized copy to keep in sync: the user's personal data lives entirely in the external `career-data` skill (see *Single-build architecture* below), which the plugin never contains. QA validates the one shipped artifact and confirms it holds zero personal data.
 
-If a change was made to one version and not the other, the QA agent will catch it. Do not declare work complete before it does.
+**How to invoke:** Spawn the QA agent by reading `agents/qa-plugin.md` and following its instructions. Pass it the repo path and the built `.plugin`.
 
-**How to invoke:** Spawn the QA agent by reading `agents/qa-plugin.md` and following its instructions. Pass it both plugin paths.
+> **Migration in progress (2026-06-13).** The move to the single-build / `career-data` model is being implemented in phases (`docs/superpowers/specs/2026-06-13-data-layer-implementation-plan.md`). Until Phase 1 (read-path) lands, agents still read in-plugin `references/`. The QA rewrite is Phase 4 and runs at the end (Phase 7); do not run the old two-build QA mid-migration.
 
 This gate applies to: any content edit, any rename, any new file, any property name change, any structural change, any cross-version sync. If you edited even one file, run QA.
 
@@ -24,30 +22,23 @@ This gate applies to: any content edit, any rename, any new file, any property n
 
 ---
 
-## Two-version architecture
+## Single-build architecture
 
-This plugin exists in two versions that must stay in sync:
+This plugin ships as **one build**: the public repo. It contains only code (agents, skills) and **blank reference templates** carrying `{{...}}` placeholders. It holds no personal data, so there is no second version and nothing to keep in sync.
 
-| Version | Location | Purpose |
-|---|---|---|
-| **Open-source repo** | `<repo-root>/` | Public distribution. Uses `{{USER_FULL_NAME}}`, `{{USER_FIRST_NAME}}`, `{{OUTPUT_FOLDER}}` and other `{{...}}` placeholders throughout. No personal info. |
-| **Personalized (canonical)** | `~/Downloads/career-engine.plugin` | Your live installation. Real names, real paths, personal background files, delivered letters archive. Maintained as a zip — extract to edit, repackage when done. |
+### Data layer: the `career-data` skill
 
-> **Canonical personal version:** `~/Downloads/career-engine.plugin`  
-> This is a zip archive. To edit: extract to a temp directory, make changes, repackage. The session copy at `~/Library/Application Support/Claude/local-agent-mode-sessions/...` is ephemeral — do not maintain it.
+The user's personal data — filled `01/02/03`, delivered letters, LinkedIn snapshot, job preferences, pipeline preferences, personal `.dotx` — lives in a separate, user-installed skill named **`career-data`**, outside the plugin. Plugin upgrades never touch it. Agents resolve `career-data` at run start and read the user's real data from it; the plugin's blank templates are the new-user fallback only.
 
-**The sync rule:** any change to one version must be applied to the other in the same session, with the exceptions below.
+- **Canonical copy:** the Desktop app installation of `career-data`, shared across Chat / Cowork / Code tabs.
+- **Sync is one-way: app → Code.** Never write `~/.claude/skills/` directly from a CLI — it creates a divergent copy (R-37).
+- **Create / update via the app:** Chat edits and repackages a `.skill`; the user uploads it via Settings → Capabilities → Skills. The non-technical update prompt is in the design's Appendix A.
 
-**Exceptions — do NOT sync:**
-- Personal info in the personalized version (real names, real paths, personal candidate rules and company-specific examples) → stays in personalized only
-- Placeholder values in the open-source version (`{{USER_FULL_NAME}}` etc.) → never replaced with real names in the repo
-- `references/pipeline-preferences.json` — exists in both versions; the repo ships defaults (`gap_handling: enabled`), the personalized version carries the user's actual choices. Sync new keys and structure only — never overwrite the personalized values with repo defaults.
-- `references/delivered-letters/` — exists in both versions; personalized version contains real sent letters; open-source version contains only INDEX.md with placeholder guidance. Managed via Option 3 of the letter-writer agent. Cap: 6 letters.
-- `references/{{USER_DOTX_FILE}}.dotx` — personalized only (your Word template for DOCX export)
-- `references/02-professional-background.md`, `references/01-writing-rules.md`, `references/03-framework.md` — exist in both but contain personal content in personalized version; sync structural/procedural changes only, not personal data
-- `references/linkedin-profile.md` — exists in both; the repo ships the placeholder template, the personalized version carries the user's real LinkedIn snapshot (replaced wholesale via update-refs from a fresh LinkedIn PDF export). Sync template/structure changes only, never profile content. Optional by design — agents fall back when missing or templated.
-- `agents/qa-plugin.md` — exists in both with the same checks and structure; the personalized version carries the literal installation values (paths, database ID, name/email mapping, banned-string greps), the repo carries `<your-...>` placeholders in those positions. Sync check logic and structure only — never copy literal values into the repo or placeholders into the personalized copy.
-- `docs/` (planning archives) — personalized version only. The public repo ships no planning docs; they contain personal session context.
+Full design and plan: `docs/superpowers/specs/2026-06-13-data-layer-externalization-design.md` and `...-implementation-plan.md`.
+
+**Placeholder resolution (single-build rule).** The plugin's instruction files keep `{{...}}` placeholders literally — they are NOT substituted at install, because substituting them would personalize the shared build. Agents resolve them at runtime from `career-data`: identity values (`{{USER_FIRST_NAME}}`, `{{USER_FULL_NAME}}`, `{{USER_LAST_NAME}}`, `{{USER_PROFESSION}}`, `{{USER_FUNCTION_SENIORITY_HIERARCHY}}`, city/country, etc.) from `career-data` `01-writing-rules.md` §8; output-folder and CV-template paths (`{{OUTPUT_FOLDER}}`, `{{CV_TEMPLATE_FILE}}`) from the `career-data` config. (The literal `{{PLACEHOLDER}}` template syntax in `linkedin-coach`/`personal-brand` agent-output instructions is a different thing and is unaffected — it stays literal in both contexts.)
+
+> **Status:** until the read-path phase lands, agents still read in-plugin `references/`. The `docs/` planning specs are personalized-only and gitignored; the public repo ships no planning docs.
 
 ---
 
@@ -76,40 +67,21 @@ Slash commands. Thin — they invoke skills, not implement logic directly.
 
 ## Drift prevention
 
-Drift happens when one version gets an edit and the other doesn't. To check for drift:
-
-```bash
-# Compare a specific file between versions (adapt paths to your installation)
-diff <repo-root>/agents/letter-writer.md \
-     <plugin-cache>/agents/letter-writer.md
-```
-
-Common drift sources:
-- Linters or auto-formatters modifying the installed version
-- Session compaction causing a change to be applied to only one version
-- Personal edits made directly in the installed version without updating the repo
-
-When you notice a drift, resolve it before making further changes. Establish which version is authoritative (usually: whichever has the most recent intentional change) and bring the other into alignment.
+With a single build there is no cross-version drift. The remaining drift risk is between **copies of `career-data`**: the canonical Desktop app install vs. a stray copy written directly to `~/.claude/skills/` by a CLI. Prevent it with the rule in *Single-build architecture* — never write `~/.claude/skills/` directly; create and update `career-data` only through the Desktop app. Sync is one-way, app → Code.
 
 ---
 
-## Sync procedure
+## Updating personal data (no sync)
 
-When making a content change:
-
-1. Edit the **open-source repo** first — write with `{{USER_FULL_NAME}}` / `{{USER_FIRST_NAME}}` etc. placeholders. **Carve-out:** the `update-refs` skill legitimately applies the personalized version first (the user's materials arrive personal); its structural slice still syncs to the repo with placeholders in the same session, and Check 6c backstops leaks.
-2. Apply the **same change** to the personalized version — substitute real names/paths, add personal specifics where appropriate
-3. If the change involves personal data (e.g., candidate rules, background facts) — edit the personalized version only
-4. After a batch of changes, **repackage both .plugin files** (see below)
+There is no second build to sync. Plugin code changes go in the repo. The user's personal data is never in the repo — it lives in the external `career-data` skill and is updated through the app per the design's Appendix A: attach the current package → edit → verify the file count (files, not archive entries) + binary md5 → repackage as `.skill` → upload via Settings → Capabilities → Skills.
 
 ---
 
 ## Packaging
 
-Both `.plugin` files are zip archives. Rebuild after any batch of changes:
+One `.plugin` build, from the repo. Rebuild after a batch of changes:
 
 ```bash
-# Open-source plugin (run from repo root — adapt path to your installation)
 cd <repo-root>
 python3 -c "
 import zipfile, os
@@ -123,22 +95,9 @@ with zipfile.ZipFile('career-engine.plugin', 'w', zipfile.ZIP_STORED) as zf:
             zf.write(os.path.join(root, file), os.path.join(root, file)[2:])
 print('Done.')
 "
-
-# Personal plugin (adapt paths and dotx backup filename to your installation)
-cd <plugin-cache>
-python3 -c "
-import zipfile, os
-exclude = {'.git', '__pycache__', '.DS_Store', '.in_use', '<user-dotx-file>.dotx.bak'}
-with zipfile.ZipFile(os.path.expanduser('~/Downloads/career-engine.plugin'), 'w', zipfile.ZIP_STORED) as zf:
-    for root, dirs, files in os.walk('.'):
-        dirs[:] = [d for d in dirs if d not in exclude]
-        for file in files:
-            if file in exclude or file.endswith('.plugin'):
-                continue
-            zf.write(os.path.join(root, file), os.path.join(root, file)[2:])
-print('Done.')
-"
 ```
+
+The plugin contains code + blank templates only — no personal data. QA validates the built `.plugin` (unzip + checks) and asserts zero personal data before it ships.
 
 ---
 
@@ -195,7 +154,7 @@ Use this as a checklist when writing or reviewing any skill file.
 ## Key design decisions
 
 **Why doctrine lives in skills, not agents:**
-Agent files are open-source. Personal writing philosophy, specific candidate rules, and strategic framing would leak into the public repo if kept in agents. Skills can hold personal content in the personalized version while the open-source skill uses generic placeholders.
+Agent files are open-source. Personal writing philosophy, specific candidate rules, and strategic framing would leak into the public repo if kept in agents. Skills hold doctrine and blank `{{...}}` templates only; the user's personal content lives entirely in the external `career-data` skill, never in the plugin.
 
 **Why the pipeline cap is 5 roles:**
 The employment coach runs as a single subagent with all roles in context. Beyond 5, context quality degrades. The intake skill processes all roles when there are ≤5 (no priority ordering needed); priority ordering only applies when there are >5 and a selection must be made.
@@ -210,7 +169,7 @@ Delivered letters show openers that vary widely in structure — emotional react
 
 ## QA Agent
 
-See the mandatory stop gate at the top of this file. The QA agent lives at `agents/qa-plugin.md`. Run it after every edit session — it checks both plugin versions for drift, stale references, missing files, property name consistency, and structural integrity. The full check list is in the agent file itself.
+See the mandatory stop gate at the top of this file. The QA agent lives at `agents/qa-plugin.md`. Run it after every edit session. It validates the single shipped `.plugin` artifact (unzipped) for stale references, missing files, property-name consistency, structural integrity, and that it contains zero personal data. The full check list is in the agent file itself. *(The QA rewrite to this single-artifact model is Phase 4 of the data-layer migration; until then the agent still describes the retired two-build checks.)*
 
 ---
 
@@ -258,3 +217,4 @@ These bugs were confirmed in live intake runs, diagnosed, and fixed. Every futur
 | R-34 | **Ten-letter shakedown exposed plumbing and rule-coverage gaps the per-file checks could not see** | Two observation runs (5 edit-track, 5 from-scratch letters on live roles) found: four incompatible word-count ranges (230–275 / 230–290 ×2 / 270–320) with a live humanizer deadlock (it may shrink below a floor it cannot repair); the CV-repetition prohibition unenforceable in all four gatekeeper letter checks (CV never passed; the check self-skipped silently) while its own hard-floor wording contradicted the permitted Enhance operation and collided with opener sourcing when the user's motivation mirrors the CV; the gatekeeper never received the R-32 calibration authority — dependent-clause/prepositional archive ramps were hard opening-paragraph FAILs, "nothing after the name" banned archive P.S. lines, "I believe" was banned while praised in the archive INDEX, and the personal-content exemption did not cover the analyst check or banned-word lists; MANDATORY role-named-in-first-sentence had no checker anywhere; the export greps missed "the same [abstraction]"; the edit track keyed on `CV File Name`/`Letter File Name` properties absent from the live schema; stealth roles could never satisfy greeting/company-name checks; Tier 1 discarded the user's own claims silently with no ask-back | Canonical word count: maximum 320, no minimum — floor removed by user ruling (typical band 270–320) at all eight sites; the humanizer floor rule was added then removed with the floor; CV text now passed in all four letter gatekeeper spawns with named skip reporting; hard floor rewritten to "must not be restated" with Enhance as the lawful anchor use; WIWTR-mirrors-CV resolution and proof-point partitioning added; gatekeeper Option 2 got the Calibration authority preamble, agent-drafted-only scoping on ramp violations, stealth greeting/descriptor provisions, role-in-first-sentence check, sign-off default-with-variation + archive P.S.; personal-content exemption extended to analyst check and banned lists with earned-inference carve-out (specificity-slot check explicitly kept full-strength); "the same" added to the abstraction-pointing coverage; file-name properties given run-folder-convention fallbacks; discarded/unreadable input now always surfaced as a named ask-back in final delivery | `skills/cover-letter/SKILL.md`; `skills/gatekeeper-checks/SKILL.md`; `skills/cover-letter-humanizer/SKILL.md`; `agents/letter-writer.md`; `agents/gatekeeper.md`; `skills/career-engine-new-application/SKILL.md`; `skills/career-engine-edit/SKILL.md`; `references/cover-letter-self-check.md`; `skills/career-engine-export/SKILL.md`; `skills/career-engine-orchestrator/SKILL.md` |
 | R-35 | **Official Notion CLI adopted as the preferred structured-query rung** | Notion shipped an official CLI (`ntn`, beta, May 2026); a supervised trial against the live database verified keychain auth (no plaintext-token dependency — the token-clobber failure class is structurally closed on this path), server-side filtered queries in under a second with shell-side trimming (raw 388KB for 10 rows reduced to ~100 bytes/row before anything enters context), property writeback via `ntn api PATCH`, and full row-as-markdown reads via `ntn pages get`; the existing ladder had only MCP paths, paying full-payload context costs even in Claude Code where Bash was available all along | The R-25 query ladder gains a top rung: Path A is now A1 (`ntn` CLI, gated on `command -v ntn` + `ntn whoami`, falls through silently when absent) / A2 (`notionApi`, unchanged); Path B unchanged; the gate, not the environment label, decides (a sandboxed session with the CLI installed and a token configured passes; one without falls through — sanctioned routing, never a reportable failure; the gate never installs or prompts for credentials mid-run); the no-Bash-on-query-results rule is scoped to tool responses (A2/B) while A1 shell trimming is the sanctioned mechanism; coach Step 2 and edit E0 get direct-filter A1 equivalents to their pre-built views (filters verified against the live schema); source-open-roles dedup prefers A1; intake 0.9a property writes may use `ntn api PATCH` where A1 is active, same write-only-to-empty rule | `skills/career-engine-intake/SKILL.md` → Step 0b + 0.9a; `skills/career-engine-coach/SKILL.md` → Step 2; `skills/career-engine-edit/SKILL.md` → Step E0; `skills/source-open-roles/SKILL.md` → Deduplication; `agents/source-open-roles.md` → Step 1; `agents/qa-plugin.md` → Check 21 |
 | R-36 | **Location clues overlooked; careers page never re-checked; remote roles hard-excluded on geography as written** | A live coach run on a remote-advertised role (exact target title, first-tier on every other criterion) scored it as a hard exclusion because the JD said "fully remote position in the US... primarily EST timezone" — but the JD's own stated reason for EST was "healthy overlap with European business hours" (which the user's timezone satisfies better than EST does), the company hires through a global EOR (Deel) and hires directly in Germany, and a LinkedIn hiring post showed the role open/re-posted for ~17 months — all discoverable, all overlooked; the company careers page was only a fallback fetch rung, never a verification step, so existence and freshness were never confirmed; sourcing had no protection against silently dropping remote roles over geography, which equally harms any user hunting remote roles from outside the restricted country | Sourcing: new mandatory Verification Pass before output (careers-page cross-check with existence/extra-detail/staleness outcomes, full-text + metadata location deep-scan, remote-geography rule — a remote-advertised role is NEVER excluded for a geographic restriction; it is surfaced and included in the Notion-add offer regardless of score with the restriction, its stated reason, and exception-path evidence noted), wired as agent Step 4.5 with `[location: ask-first]` marking. Coach: new agent Step 2b careers-page cross-check (always, including `content-exists` roles; ROLE MAY BE CLOSED flag; 90+ day staleness signal), new Location & eligibility deep-scan section (scan everything including the restriction's stated REASON; exception paths: EOR, out-of-country hires, rationale-vs-location; Location block with suggested 2-line ask-first outreach feeding Priority and Strategy), Part 0 Remote-geography weighting (max one-tier discount when a path exists; Fifth only for structural restrictions with no path; remote roles never silently dropped), Israel Compatibility derived from the deep-scan; Priority Framework criteria 4/5 aligned in both versions | `skills/source-open-roles/SKILL.md` → Verification Pass + Exclusion Rules; `agents/source-open-roles.md` → Steps 4.5/5; `agents/employment-coach.md` → Step 2b + Step 3; `skills/employment-coach/SKILL.md` → Location & eligibility deep-scan + Part 0; `references/01-writing-rules.md` → Priority Framework 4/5; `agents/qa-plugin.md` → Check 21j |
+| R-37 | **Personal data tangled in the plugin; QA validated trees, never the shipped zip; CLI skill writes drifted from the Desktop copy** *(migration in progress)* | Personal data lived inside the plugin `references/`, forcing two hand-synced builds and risking clobber on every update; QA validated working trees (`/tmp/ce-zip-edit`, the install) but never the `~/Downloads` zip that actually ships, so a bad repackage passed clean; and a skill written directly to `~/.claude/skills/` via the Code CLI did not propagate to Cowork and diverged from the Desktop-app copy (observed: "single home" vs "single, central home") | Personal data externalized to a user-installed `career-data` skill outside the plugin; the plugin becomes a single build of code + blank templates (no second version, no sync). Skill sync is one-way app→Code; the Desktop app install is canonical; create/update go through the app's `.skill` upload with a file-count (files, not entries) + binary-md5 verify. Multi-file+binary packaging verified (`.dotx` md5-identical through `.zip`/`.skill`). QA rewritten to unzip and validate the one shipped artifact and assert zero personal data. Phased; read-path wiring, QA rewrite, and README pending | `docs/superpowers/specs/2026-06-13-data-layer-externalization-design.md` + `-implementation-plan.md` + `-personal-brand-preservation.md`; `CLAUDE.md` → Single-build architecture; the `career-data` skill |
