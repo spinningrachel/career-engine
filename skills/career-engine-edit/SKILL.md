@@ -50,9 +50,9 @@ The edit pipeline is its own entry (no orchestrator), so resolve config yourself
 
 ## Step E0 — Fetch roles for editing
 
-**Guard — check configuration first.** If the database ID value below still contains the characters `{{` and `}}` (an unreplaced setup placeholder), **stop immediately** and tell the user:
+**Guard — resolve the database ID from the career-data config (R-38).** The plugin keeps `{{NOTION_DATABASE_ID}}` literal by design — do not treat the literal placeholder as unconfigured. Use `$NOTION_DATABASE_ID` resolved in Step E0-pre from the career-data config. **Stop only if that config value is missing or empty**, and tell the user:
 
-> "The Notion database ID has not been configured. Run `/career-engine:setup` (or `/career-engine:setup --phase 5`) to complete the database integration before running the pipeline."
+> "Your career-data config has no `notion_database_id`. Run `/career-engine:setup --phase 5` to add it."
 
 ---
 
