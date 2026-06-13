@@ -403,12 +403,12 @@ Select column values (must match exactly):
 **Output folder**
 Ask the user for their output folder path. This is where all pipeline output (CVs, cover letters, feedback files) will be saved. (Voice-calibration letters live inside the plugin at `references/delivered-letters/` — not in the output folder.)
 
-Write the path to every `{{OUTPUT_FOLDER}}` placeholder across all skill files.
+Write the path as `output_folder` in `${CAREER_DATA}/references/pipeline-preferences.json` (the career-data config). Do NOT substitute `{{OUTPUT_FOLDER}}` into plugin files — the orchestrator resolves it from the config at runtime (R-38).
 
 **CV template**
 Ask: "Do you want to use the included CV template (`cv-template-default.dotx`) or provide your own `.dotx` file?"
-- If own file: copy it into `career-data/references/` and record its `career-data` path as the CV template in the `career-data` config. Agents resolve `{{CV_TEMPLATE_FILE}}` from there at runtime.
-- If default: record `default` in the `career-data` config; the template is the plugin's `${CLAUDE_PLUGIN_ROOT}/references/cv-template-default.dotx`. No plugin-file substitution.
+- If own file: copy it into `career-data/references/` and record it as `cv_template` (a path relative to `career-data`, e.g. `references/<their-dotx>`) in the career-data config (`pipeline-preferences.json`). The orchestrator resolves `{{CV_TEMPLATE_FILE}}` from there at runtime (R-38).
+- If default: record `cv_template` as `references/cv-template-default.dotx` in the career-data config (ship the default template into `career-data/references/` too, or the orchestrator falls back to the plugin's `${CLAUDE_PLUGIN_ROOT}/references/cv-template-default.dotx`). No plugin-file substitution.
 
 **Draft Directory link base**
 Ask: "Do you use a cloud file-share (Anchorpoint, Dropbox, Google Drive) that produces a stable folder URL for your output folder? If yes, paste the base URL up to (and including) the separator before the date folder. If not, answer `skip`."
@@ -423,12 +423,15 @@ Ask: "Should the pipeline run gap analysis for every role? Gap handling identifi
 
 If you're not sure, leave it enabled. You can always turn it off per-role when it isn't relevant."
 
-- Write the choice to `${CAREER_DATA}/references/pipeline-preferences.json` (in the user's `career-data` skill — readable in every environment and surviving plugin upgrades). Write exactly:
+- Write the gap-handling choice into `${CAREER_DATA}/references/pipeline-preferences.json` **alongside** the `output_folder` and `cv_template` keys set earlier in this phase (one career-data config file — readable everywhere, survives upgrades). The complete file (R-38):
   ```json
   {
-    "gap_handling": "enabled"
+    "gap_handling": "enabled",
+    "output_folder": "<the absolute path the user gave>",
+    "cv_template": "references/<their-dotx-or-cv-template-default.dotx>"
   }
   ```
+  (`gap_handling` is `"enabled"` or `"disabled"`.) All three keys are required for a run; the orchestrator stops if `output_folder` or `cv_template` is missing.
   (or `"disabled"`, matching the user's choice). Preserve any other keys already present in the file.
 - Apply the **Writing personal data** rule: in Claude Code write `career-data` directly; in Cowork stage the change and emit the Appendix-A handoff. Refresh the `career-data` backup export after a direct write.
 - Do NOT write this preference to `~/.claude/settings.json` — that location is reachable only from the user's own machine and silently falls back to the default everywhere else. The pipeline still reads it as a legacy fallback, but `career-data` is the authority.

@@ -42,17 +42,17 @@ Any text change after a gatekeeper PASS — including the humanizer's changes �
 The only valid output destination is:
 `{{OUTPUT_FOLDER}}/applications-<YYYY-MM-DD>/`
 
-**Mandatory path verification — run before processing the first role.** Two access paths, tried in order (R-30). A failed Path A is an environment limitation, not a missing folder — it does not end the run by itself.
+**Mandatory path verification — run before processing the first role.** Run the *Mandatory career-data discovery* (below) FIRST — it resolves `${CAREER_DATA}` and reads `$OUTPUT_FOLDER` and `$CV_TEMPLATE` from the career-data config (R-38). The plugin keeps `{{OUTPUT_FOLDER}}` literal; never treat that placeholder as a path. Two access paths, tried in order (R-30). A failed Path A is an environment limitation, not a missing folder — it does not end the run by itself.
 
 **Path A — direct filesystem** (Claude Code, or the output folder is connected to the session):
 
 ```bash
-OUTPUT_DIR="{{OUTPUT_FOLDER}}/applications-$(date +%Y-%m-%d)"
+OUTPUT_DIR="$OUTPUT_FOLDER/applications-$(date +%Y-%m-%d)"
 mkdir -p "$OUTPUT_DIR"
 [ -d "$OUTPUT_DIR" ] && echo "Output dir confirmed (Path A): $OUTPUT_DIR"
 ```
 
-**Path B — host-bridge MCP** (sandboxed environments, e.g. Cowork, where sandbox Bash cannot reach the user's filesystem): if Path A fails, discover host filesystem tools via ToolSearch — search for `Desktop Commander`, `read_file`, `write_file`, `create_directory`, `start_process`, or equivalent host filesystem/process tools — and verify access by listing `{{OUTPUT_FOLDER}}` through the strongest available tool. If access is confirmed, proceed, and route ALL file operations for this run through those tools: directory creation, file reads and writes, and every pandoc command (via the host process tool, e.g. `start_process`). Sandbox `/tmp/` is not visible to host-side pandoc — on Path B, write intermediate markdown through the host tool to the output company directory (or a host temp path) instead of sandbox `/tmp/`.
+**Path B — host-bridge MCP** (sandboxed environments, e.g. Cowork, where sandbox Bash cannot reach the user's filesystem): if Path A fails, discover host filesystem tools via ToolSearch — search for `Desktop Commander`, `read_file`, `write_file`, `create_directory`, `start_process`, or equivalent host filesystem/process tools — and verify access by listing `$OUTPUT_FOLDER` (resolved from the career-data config) through the strongest available tool. If access is confirmed, proceed, and route ALL file operations for this run through those tools: directory creation, file reads and writes, and every pandoc command (via the host process tool, e.g. `start_process`). Sandbox `/tmp/` is not visible to host-side pandoc — on Path B, write intermediate markdown through the host tool to the output company directory (or a host temp path) instead of sandbox `/tmp/`.
 
 **Both paths fail → stop the run immediately** and report to {{USER_FIRST_NAME}}: the run needs either the output folder connected to the session or a host filesystem tool (e.g. Desktop Commander) enabled. Do not proceed.
 
@@ -70,6 +70,8 @@ mkdir -p "$OUTPUT_DIR"
    - **Absent** — no `career-data` found (marker also absent) → check the output folder for a `career-data` backup export. Backup present → configured user, offer to restore. No backup → genuine new user: run `/career-engine:setup` (blank templates are the correct starting point only here).
 
 **Personal-data files** (load from `${CAREER_DATA}/references/`): `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx`. **Doctrine files** stay on `${CLAUDE_PLUGIN_ROOT}/references/`: the self-checks, `REFERENCES.md`, `remote-compatibility-rules.md`, `he-terminology-guide.md`, and the default `.dotx` templates. Inject `CAREER_DATA=<resolved path>` into every agent spawn prompt so each subagent reads personal data from that same root.
+
+**Config resolution (R-38).** From `${CAREER_DATA}/references/pipeline-preferences.json`, read `output_folder` (an absolute path) and `cv_template` (a path relative to `${CAREER_DATA}`, e.g. `references/<lastname>.dotx`). These resolve the `{{OUTPUT_FOLDER}}` and `{{CV_TEMPLATE_FILE}}` placeholders for the whole run: set `$OUTPUT_FOLDER` and `$CV_TEMPLATE` and pass them downstream (path verification above and export both use them). If either key is missing, stop with: "career-data has no `output_folder`/`cv_template` configured — run `/career-engine:setup --phase 5` to add it." This is the gap that broke the first live run (R-38): the plugin no longer carries a substituted output path, so the config must supply it.
 
 **Writing personal data (R-37).** Any write to a personal-data file targets `${CAREER_DATA}/references/...`. In Claude Code, write it directly. In Cowork (the skills mount is read-only), do NOT write the skill — stage the change to the output folder as `pending-career-data-updates.md` and emit the Appendix-A handoff prompt for the user to apply in Chat; never write a divergent copy. After any successful direct write, refresh the `career-data` backup export in the output folder. New Section 7-grade career facts are flagged for approval, never auto-written.
 

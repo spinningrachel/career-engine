@@ -18,7 +18,7 @@ This skill governs all DOCX production in the career-engine pipeline. Load it be
 cv-writer outputs **styled markdown** using pandoc's `custom-style` div and span syntax. The pipeline converts it to `.docx` at Step 6 using pandoc with the `.dotx` reference templates. A short post-processing script then updates the role-specific Subtitle in the CV document header.
 
 **Templates (in `./references/`):**
-- `{{CV_TEMPLATE_FILE}}` — CV reference template. Contains all custom styles, {{USER_FIRST_NAME}}'s name and contact info in the document header, and correct formatting throughout.
+- `{{CV_TEMPLATE_FILE}}` — CV reference template. Contains all custom styles, {{USER_FIRST_NAME}}'s name and contact info in the document header, and correct formatting throughout. Resolve its path from the career-data config (`cv_template` in `${CAREER_DATA}/references/pipeline-preferences.json`, relative to `${CAREER_DATA}`); the orchestrator passes it as `$CV_TEMPLATE` (R-38). Do not read the literal `{{CV_TEMPLATE_FILE}}` placeholder as a path.
 - `cover-letter-template.dotx` — Cover letter reference template. Contains header and styles.
 
 Neither template should be read into context. Use them only as pandoc `--reference-doc` arguments.
