@@ -29,6 +29,10 @@ This skill sets up the plugin for a new user. It builds the three reference file
 - `02-professional-background.md` — role facts, approved content, portfolio
 - `03-framework.md` — positioning, voice, methodology, domain narratives
 
+**Output target — the `career-data` skill, not in-plugin references (R-37).** Setup builds these files into the user's external `career-data` skill, not into the plugin's `references/`. Author the data files (`01/02/03`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx`) into a `career-data/` skill directory, then install it through the app: package it as a `.skill` and have the user upload it via **Settings → Capabilities → Skills** (see the design's Appendix A). Write the first backup export of `career-data` to the output folder. The plugin's in-plugin `references/` stay as blank `{{...}}` templates — never personalized.
+
+**Placeholder resolution (single-build).** Identity and config values are NOT substituted into the plugin's agent/skill/reference files — that would personalize the shared build. They live in `career-data` and agents resolve them at runtime: identity from `career-data` `01-writing-rules.md` §8, output folder and CV template from the `career-data` config (see CLAUDE.md → *Placeholder resolution*). Every step below writes these values into `career-data`, never into plugin files.
+
 **How onboarding works:** You send your existing career materials. The agent reads them and synthesizes `03-framework.md`. You review it and respond — with feedback or approval. That response triggers a targeted interview that fills gaps and captures what the materials didn't fully show. Integration (Notion, output path) comes after.
 
 **Run order matters.** Phase 1 (identity) → Phase 2 (content submission) → Phase 3 (synthesis) → Phase 4 (review and interview) → Phase 5 (integration) → Phase 6 (permissions) → Phase 7 (job-preferences). Phases 5–7 can be deferred — the pipeline can run with Phases 1–4 complete.
@@ -41,10 +45,7 @@ This skill sets up the plugin for a new user. It builds the three reference file
 
 Before doing anything, assess what has been completed:
 
-1. Scan for unfilled identity placeholders:
-   ```bash
-   grep -r "{{USER_" ${CLAUDE_PLUGIN_ROOT}/references/
-   ```
+1. Check whether `career-data` is installed and complete: locate the `career-data` skill, read `career-data-marker.json`, and confirm every file in its `expected_files` is present and non-empty. Absent → new user, run full setup. Present but incomplete → report which files are missing and offer to repair.
 
 2. Check `03-framework.md` for `[DRAFT]` or `[REVIEW]` markers — these indicate sections the interview hasn't confirmed yet.
 
@@ -81,7 +82,7 @@ Ask for the following. Use the placeholder name as the prompt — "What's your `
 | `{{USER_COUNTRY}}` | Country you are based in |
 | `{{USER_FUNCTION_SENIORITY_HIERARCHY}}` | Typical title tiers in your function from most senior to IC (e.g., for marketing: "CMO → VP → Head/Director → Manager → IC") |
 
-Write answers into `01-writing-rules.md` Section 8. Write `{{USER_FIRST_NAME}}`, `{{USER_FULL_NAME}}`, and `{{USER_LAST_NAME}}` into every occurrence across all three reference files. Write `{{USER_PROFESSION}}`, `{{USER_CITY}}`, `{{USER_COUNTRY}}`, and `{{USER_FUNCTION_SENIORITY_HIERARCHY}}` into every occurrence across all skill and agent files.
+Write these answers into `career-data` `01-writing-rules.md` Section 8 (identity), per the **Writing personal data** rule. Do NOT substitute `{{...}}` placeholders into the plugin's agent, skill, or reference files — the single build stays un-personalized; agents resolve identity values at runtime from `career-data` §8 (CLAUDE.md → *Placeholder resolution*).
 
 ---
 
@@ -406,8 +407,8 @@ Write the path to every `{{OUTPUT_FOLDER}}` placeholder across all skill files.
 
 **CV template**
 Ask: "Do you want to use the included CV template (`cv-template-default.dotx`) or provide your own `.dotx` file?"
-- If own file: ask for the path → write to `{{CV_TEMPLATE_FILE}}` placeholders
-- If default: write `${CLAUDE_PLUGIN_ROOT}/references/cv-template-default.dotx` to all `{{CV_TEMPLATE_FILE}}` placeholders
+- If own file: copy it into `career-data/references/` and record its `career-data` path as the CV template in the `career-data` config. Agents resolve `{{CV_TEMPLATE_FILE}}` from there at runtime.
+- If default: record `default` in the `career-data` config; the template is the plugin's `${CLAUDE_PLUGIN_ROOT}/references/cv-template-default.dotx`. No plugin-file substitution.
 
 **Draft Directory link base**
 Ask: "Do you use a cloud file-share (Anchorpoint, Dropbox, Google Drive) that produces a stable folder URL for your output folder? If yes, paste the base URL up to (and including) the separator before the date folder. If not, answer `skip`."
@@ -422,16 +423,16 @@ Ask: "Should the pipeline run gap analysis for every role? Gap handling identifi
 
 If you're not sure, leave it enabled. You can always turn it off per-role when it isn't relevant."
 
-- Write the choice to the plugin's preferences file — this file ships inside the plugin, so the setting is visible in every environment (Claude Code, Cowork, anywhere the plugin runs). Write `${CLAUDE_PLUGIN_ROOT}/references/pipeline-preferences.json` with exactly:
+- Write the choice to `${CAREER_DATA}/references/pipeline-preferences.json` (in the user's `career-data` skill — readable in every environment and surviving plugin upgrades). Write exactly:
   ```json
   {
     "gap_handling": "enabled"
   }
   ```
   (or `"disabled"`, matching the user's choice). Preserve any other keys already present in the file.
-- Do NOT write this preference to `~/.claude/settings.json` — that location is reachable only from the user's own machine and silently falls back to the default everywhere else. The pipeline still reads it as a legacy fallback, but the plugin file is the authority.
+- Apply the **Writing personal data** rule: in Claude Code write `career-data` directly; in Cowork stage the change and emit the Appendix-A handoff. Refresh the `career-data` backup export after a direct write.
+- Do NOT write this preference to `~/.claude/settings.json` — that location is reachable only from the user's own machine and silently falls back to the default everywhere else. The pipeline still reads it as a legacy fallback, but `career-data` is the authority.
 - Verify by reading the file back and confirming the value matches the user's choice.
-- **Repackage reminder:** the preference must survive reinstalls — after setup completes, the personal `.plugin` zip must be rebuilt so the file travels with the plugin.
 
 Confirm: "Phase 5 complete. Job tracking, output folder, CV template, and gap handling preference are configured."
 

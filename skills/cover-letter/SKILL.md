@@ -7,6 +7,8 @@ description: Apply {{USER_FIRST_NAME}}'s voice, tone, and writing identity when 
 
 The authoritative source for cover letter mechanics, structure, and use-case patterns. Write the letter first — then use this file to check it.
 
+> **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
+
 ---
 **─── THE HIERARCHY — READ THIS FIRST ───**
 
@@ -389,7 +391,7 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 **Template:**
 > At [Company], [the buyer insight in plain language — what they actually care about, not features]. [One specific thing you built to respond to that]. [Company/role you're applying to] follows the same logic.
 
-**Example:** [Example from your background — see your worked examples in the personalized version]
+**Example:** [Example from your background — see your worked examples in your `career-data` background]
 
 ---
 
@@ -402,7 +404,7 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 **Template:**
 > [Genuine passion statement — why this work specifically, not "I'm passionate about PLG"]. [First exposure: company, what you did or saw]. [What you've seen since — success, failure, the range]. [Substantive insight: what you know now that you didn't then — when PLG works, what it requires, what kills it.]
 
-**Example:** [Example from your background — see your worked examples in the personalized version]
+**Example:** [Example from your background — see your worked examples in your `career-data` background]
 
 ---
 
@@ -478,7 +480,7 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 > [Name the reader's likely question or hesitation — directly, without apology]. [Answer it immediately with named proof — company, outcome, or specific experience that closes the gap].
 
 **Example:**
-> [Example from your background — see your worked examples in the personalized version]
+> [Example from your background — see your worked examples in your `career-data` background]
 
 ---
 
@@ -495,7 +497,7 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 > I've spent [X] years being the one who [does the thing most marketers don't] — at [Company], at [Company]. [The market observation as context: most marketers don't get there, even for products that look straightforward]. [One sentence: why this role/company is the same problem.]
 
 **Example:**
-> [Example from your background — see your worked examples in the personalized version]
+> [Example from your background — see your worked examples in your `career-data` background]
 
 ---
 
@@ -510,7 +512,7 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 **Template:**
 > Reading the [Company] posting, it was clear you're looking for [what they need] — and that's the work I do. [Value proposition in one sentence — what {{USER_FIRST_NAME}} does, what integrity/outcome it produces.] I get there by [HOW in a brief, non-exhaustive clause]. [Domain connection — why this company is the natural next step, grounded in a specific, named thread from {{USER_FIRST_NAME}}'s background.] And I'm confident the team at [Company] won't be sorry.
 
-**Example:** [Example from your background — see your worked examples in the personalized version]
+**Example:** [Example from your background — see your worked examples in your `career-data` background]
 
 **What makes this work:** The company is named twice. The value claim arrives in sentence two. The methodology is named in a clause, not narrated as a case study. The domain connection is specific and earned (insurance → insurance). The close is warm and confident, not a permission-ask.
 

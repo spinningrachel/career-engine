@@ -24,6 +24,10 @@ allowed-tools:
 
 You are maintaining the reference files that every career-engine agent writes from. These files are the grounding layer: every CV claim, every letter proof point, and every voice decision traces back to them. A careless write here propagates into every future application. Precision beats speed; asking beats assuming.
 
+> **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
+
+**Writing personal data (R-37).** Every reference target in the map below lives in `${CAREER_DATA}/references/...`, not in the plugin. Apply the orchestrator's **Writing personal data** rule: in Claude Code, write the `career-data` files directly; in Cowork, stage the change to the output folder and emit the Appendix-A handoff for the user to apply in Chat — never write a divergent copy. Refresh the `career-data` backup export after a direct write.
+
 **Scope:** this skill handles materials {{USER_FIRST_NAME}} brings to you — updated CVs, new testimonials, portfolio items, changed role facts, positioning documents, voice samples, new reference documents. It does not write application content, does not touch Notion, and does not run any pipeline.
 
 ---
@@ -76,7 +80,7 @@ A reference file that no agent loads is inert — it will never influence any ou
 **Creating a new file requires wiring it, in the same session:**
 - Add a row to `references/REFERENCES.md` (what it contains, who loads it, what does NOT belong in it)
 - Add the file to the loading table of every agent that should consume it, per the answers above
-- If the file holds personal data, add it to the sync exceptions list in `CLAUDE.md` (personalized version only; repo gets a placeholder template or nothing, per the exception)
+- If the file holds personal data, it belongs in `career-data` (not the plugin, not the repo). Add it under `${CAREER_DATA}/references/` and wire it into the agents' loading via the `${CAREER_DATA}` data root — never commit a personal reference file to the plugin repo
 
 An unwired file is a failed add — do not report success until the wiring is in place.
 
@@ -109,9 +113,9 @@ An unwired file is a failed add — do not report success until the wiring is in
 
 4. **Proposal.** For every resolved item, show: target file and section, operation, and the exact content as it will be written (a before/after diff for updates and replacements). Then ask for approval — item by item or as a batch, her choice. **Nothing is written without approval.**
 
-5. **Apply — personalized version first.** Write the approved changes to the personalized plugin (extract `~/Downloads/career-engine.plugin` to a temp directory if not already extracted, edit, repackage — per the Packaging section of `CLAUDE.md`). Where the session cannot reach the zip directly, use the host-bridge tool ladder (R-30 Path B) — never write reference updates to a session-local path and call it done.
+5. **Apply to `career-data`.** Write the approved changes to the `career-data` skill per the orchestrator's **Writing personal data** rule: in Claude Code, write `career-data` directly; in Cowork, stage the change to the output folder and emit the Appendix-A handoff for the user to apply in Chat. Refresh the `career-data` backup export after a direct write. Never write reference updates to a session-local path and call it done.
 
-6. **Sync to the repo** per the two-version rules: structural changes (new sections, new files, wiring, REFERENCES.md rows) go to the open-source repo with `{{...}}` placeholders; personal data does not sync. When in doubt whether something is structural or personal — ask.
+6. **Data vs code.** Personal data goes only to `career-data`, never to the plugin repo. A genuinely new *reference-file type* and its agent wiring (REFERENCES.md rows, loading-table entries) are code changes and go to the repo with `{{...}}` placeholders. When in doubt whether something is data or code — ask.
 
 7. **Repackage** every `.plugin` zip whose tree changed. Both files are always named `career-engine.plugin`.
 

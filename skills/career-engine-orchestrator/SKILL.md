@@ -60,6 +60,19 @@ mkdir -p "$OUTPUT_DIR"
 
 **If host access is lost mid-run** (e.g. the MCP disconnects): retry the operation once. If still unreachable, do not improvise a fallback path — deliver the remaining file contents in chat flagged for manual save, log the failure in the run-level revision log, and continue the run's non-file steps.
 
+**Mandatory career-data discovery — run before loading any personal reference (R-37).** The user's personal data lives in the external `career-data` skill, not in the plugin. Resolve it once here, treat the resolved directory as `${CAREER_DATA}` for the whole run, and pass it to every spawned agent.
+
+1. Locate the `career-data` skill directory on the current surface (the loaded-skill path in Code; the readable skills mount in Cowork). Confirm `career-data-marker.json` is present at its root.
+2. Set `${CAREER_DATA}` to that directory. Personal-data files load from `${CAREER_DATA}/references/...`. The plugin's `${CLAUDE_PLUGIN_ROOT}/references/...` copies are blank templates and serve only as the new-user fallback.
+3. Three outcomes:
+   - **Healthy** — marker present and every file in the marker's `expected_files` present and non-empty → proceed.
+   - **Damaged** — marker present but an expected file missing or empty → **stop the run**, name the file, tell {{USER_FIRST_NAME}} to restore `career-data` from the output-folder backup. Do NOT fall back to templates (R-28 class).
+   - **Absent** — no `career-data` found (marker also absent) → check the output folder for a `career-data` backup export. Backup present → configured user, offer to restore. No backup → genuine new user: run `/career-engine:setup` (blank templates are the correct starting point only here).
+
+**Personal-data files** (load from `${CAREER_DATA}/references/`): `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx`. **Doctrine files** stay on `${CLAUDE_PLUGIN_ROOT}/references/`: the self-checks, `REFERENCES.md`, `remote-compatibility-rules.md`, `he-terminology-guide.md`, and the default `.dotx` templates. Inject `CAREER_DATA=<resolved path>` into every agent spawn prompt so each subagent reads personal data from that same root.
+
+**Writing personal data (R-37).** Any write to a personal-data file targets `${CAREER_DATA}/references/...`. In Claude Code, write it directly. In Cowork (the skills mount is read-only), do NOT write the skill — stage the change to the output folder as `pending-career-data-updates.md` and emit the Appendix-A handoff prompt for the user to apply in Chat; never write a divergent copy. After any successful direct write, refresh the `career-data` backup export in the output folder. New Section 7-grade career facts are flagged for approval, never auto-written.
+
 **Three to five files per role, one file per run.**
 
 The New Applications pipeline produces three files per role (CV DOCX, cover letter DOCX, reviewer feedback MD) plus up to two additional Hebrew files when `Languages` includes `Hebrew` (Hebrew CV DOCX, Hebrew cover letter DOCX). One file per run (LinkedIn updates MD). The DOCX files follow the same production path: cv-writer or letter-writer outputs styled markdown → the orchestrator writes the markdown to `/tmp/` → pandoc converts to `.docx` using the `.dotx` reference templates → files copy to the output folder. The reviewer feedback file is written in Step 7d. The LinkedIn updates file is written in Step 8 after all roles complete. Writing markdown to `/tmp/` is a required production step, not optional.
@@ -111,7 +124,7 @@ Where `<date-folder>` = the run folder name (e.g. `applications-2026-05-26`) and
 
 Load these skills in order before doing anything else. Do not begin processing until all four are loaded.
 
-**Note:** `01-writing-rules.md` is pre-loaded by the `/career-engine` command. If invoking the orchestrator directly (not via the command), load `references/01-writing-rules.md` first — it contains the fabrication rule and all constraint definitions that every downstream agent depends on.
+**Note:** `01-writing-rules.md` is pre-loaded by the `/career-engine` command. If invoking the orchestrator directly (not via the command), load `${CAREER_DATA}/references/01-writing-rules.md` first (per the career-data discovery preflight above) — it contains the fabrication rule and all constraint definitions that every downstream agent depends on.
 
 1. `career-engine-intake` — Steps 0 through 0.9d: Notion fetch, JD fetching, coach invocation, priority writeback, queue building, Status writeback
 2. `career-engine-new-application` — Steps 1 through 7: per-role CV writing, gatekeeper checks, reviews, cover letter (letter-writer), HM cover letter review, DOCX export (including Step 6H Hebrew), Notion writeback
@@ -450,7 +463,7 @@ Run after all roles complete. Inline — no agent spawn. Produces one file per r
 
 ### Step 8-pre — Load the LinkedIn profile reference
 
-Read `${CLAUDE_PLUGIN_ROOT}/references/linkedin-profile.md`.
+Read `${CAREER_DATA}/references/linkedin-profile.md`.
 
 - **Profile available** (file exists and its content does not still contain the characters `{{` and `}}`): run Steps 8a–8c in **gap-analysis mode** — every recommendation is grounded in what the profile actually says today.
 - **Profile not provided** (file missing or still templated): run Steps 8a–8c in **fallback mode** — keyword aggregation without profile comparison. Open the output file with the note: "No LinkedIn profile on file — these are raw market signals, not a profile analysis. Provide a LinkedIn PDF export (say 'update my references') to get recommendations based on your actual profile."
@@ -579,7 +592,7 @@ Run after Step 9 (revision log). For every role completed this run that produced
 
 > "New bullets were written for: **[Company A]**, **[Company B]**, **[Company C]**. Which of these should I add to your approved list? Approved bullets will be reused verbatim in future CVs for the same company. Reply with company names, 'all', or 'none'."
 
-**If the user says 'all' or names specific companies:** For each approved company, append the bullets from the delivered CV into `references/02-professional-background.md` under that company's role facts entry, under the heading `**Approved CV bullets:**`. If a bullets section already exists for that company, merge — do not duplicate bullets already present.
+**If the user says 'all' or names specific companies:** For each approved company, append the bullets from the delivered CV into `${CAREER_DATA}/references/02-professional-background.md` under that company's role facts entry, under the heading `**Approved CV bullets:**`. If a bullets section already exists for that company, merge — do not duplicate bullets already present. This writes the personal data layer: in Code, write `${CAREER_DATA}` directly; in Cowork, stage the append to the output folder and emit the Appendix-A handoff (write path, §5.3) — never write a divergent copy.
 
 **If the user says 'none' or does not respond:** Skip. Bullets remain as candidate status and will be rewritten fresh on the next run.
 

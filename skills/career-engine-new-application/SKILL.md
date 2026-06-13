@@ -11,6 +11,8 @@ This skill covers Step 0.10 and Steps 1 through 7 of the New Applications pipeli
 
 The pipeline produces two deliverables per role: a CV DOCX and a cover letter DOCX. Both go through the same review sequence — draft, gatekeeper, recruiter review, HM review, revision, gatekeeper (post-revision) — before DOCX export.
 
+> **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
+
 ---
 
 ## Step 0.10 — Warm-up role selection (for batch runs of 2 or more roles)
@@ -500,7 +502,7 @@ This flag is read by the orchestrator's Step 9b (bullet approval prompt) at the 
 
 Runs for every role in the run whose `Why I Want This Role` field is populated — including roles where the letter track was skipped. This step is mechanical and must never block delivery: if it fails, log the failure and continue.
 
-1. Read `${CLAUDE_PLUGIN_ROOT}/references/02-professional-background.md` in full.
+1. Read `${CAREER_DATA}/references/02-professional-background.md` in full. The append below follows the orchestrator's **Writing personal data** rule: Code writes directly; Cowork stages to the output folder and emits the Appendix-A handoff; refresh the backup after a direct write.
 2. Compare the role's `Why I Want This Role` content against the entire file. Identify content that is **new to the plugin**: durable motivation themes (e.g., why a sector, company stage, or role type draws her), standing professional observations, reusable angles, and characteristic phrasings worth carrying into future letters.
 3. **Exclude:** anything already captured in the file (even in different words), purely role- or company-specific reactions with no reuse value, and anything that is not her own written content. Promote only what she actually wrote — never infer, extrapolate, or paraphrase into new claims.
 4. Append each new entry to Section 5 → "Promoted from Why I Want This Role," quoting her phrasing **verbatim**, in the entry format defined there: `- **[Topic]** — "[verbatim quote]" *(from Why I Want This Role — [Company], [YYYY-MM-DD])*`.

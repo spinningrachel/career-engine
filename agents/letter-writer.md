@@ -70,6 +70,8 @@ MANDATORY: Load all of these before writing a single word.
 
 > **Path resolution:** Prefix all file paths with `${CLAUDE_PLUGIN_ROOT}/` when reading reference and skill files. Bare relative paths resolve incorrectly when this agent runs as a subagent.
 
+> **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight and passes into this spawn. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` was not provided (direct or standalone invocation), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
+
 | File | What it contains |
 |---|---|
 | `references/delivered-letters/INDEX.md` + letter files | **Mandatory — read before writing a single word** (when count > 0). Read INDEX.md first; use the key voice notes to identify the most domain-similar letters; then read those files. Use for: (1) **voice calibration** — {{USER_FIRST_NAME}}'s actual sent letters, the best style anchors available; (2) **content mining** — proof points, phrasings, argument structures that worked and could be adapted. Prioritise over all worked examples. **If count is 0:** skip and calibrate voice against `references/03-framework.md` §Voice and tone instead. |

@@ -13,6 +13,8 @@ The key difference from the main pipeline: **agents are not starting from scratc
 
 **`Needs editing` always means edit from the Notion entry.** Every role with Status = `Needs editing` uses whatever is already inside its Notion row as the starting point — existing CV text, cover letter, coach properties, reviewer notes. Nothing is discarded. This rule holds regardless of what state.json says. state.json is crash recovery only (see State file section below).
 
+> **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
+
 ## Preflight
 
 **Outputs go to the configured output folder — never to a session scratchpad.**
@@ -366,7 +368,7 @@ Do not write anything to the `Note` field unless the agent has genuinely additio
 
 **Step E10.5 — Why I Want This Role promotion**
 
-Runs for every role in the run whose `Why I Want This Role` field is populated — including roles where the letter track was skipped. This step is mechanical and must never block delivery: if it fails, log the failure and continue. Run the identical procedure defined in `skills/career-engine-new-application/SKILL.md` Step 7f: read `${CLAUDE_PLUGIN_ROOT}/references/02-professional-background.md` in full, identify content in the field that is new to the plugin, append verbatim-quoted entries to Section 5 → "Promoted from Why I Want This Role" (append-only, never paraphrase, never infer), flag new Section 7-grade career facts for approval instead of writing them, and log "Promoted N new entries to the motivation bank" or "No new content to promote" per role in the final delivery.
+Runs for every role in the run whose `Why I Want This Role` field is populated — including roles where the letter track was skipped. This step is mechanical and must never block delivery: if it fails, log the failure and continue. Run the identical procedure defined in `skills/career-engine-new-application/SKILL.md` Step 7f: read `${CAREER_DATA}/references/02-professional-background.md` in full, identify content in the field that is new, append verbatim-quoted entries to Section 5 → "Promoted from Why I Want This Role" (append-only, never paraphrase, never infer) following the orchestrator's **Writing personal data** rule (Code direct / Cowork staged + Appendix-A; refresh backup), flag new Section 7-grade career facts for approval instead of writing them, and log "Promoted N new entries to the motivation bank" or "No new content to promote" per role in the final delivery.
 
 
 ## State file (crash-recovery resilience)

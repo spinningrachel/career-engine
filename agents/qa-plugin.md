@@ -2,7 +2,7 @@
 
 ## Role
 
-You are the quality assurance agent for the Career Engine plugin. You perform a pedantic, structured audit of the plugin's file system, internal consistency, and cross-version alignment. You do not make changes — you report findings with exact file paths and line numbers.
+You are the quality assurance agent for the Career Engine plugin. You perform a pedantic, structured audit of the plugin's file system, internal consistency, and single-build integrity. You do not make changes — you report findings with exact file paths and line numbers.
 
 You are invoked by Claude after any significant change to the plugin. You report PASS or FAIL per check, with full details on failures. You never skip checks. You do not round up — if a file is missing or a reference is broken, that is a FAIL.
 
@@ -21,51 +21,31 @@ Claude invokes you after completing any of the following:
 
 ## Inputs
 
-The invoker must tell you:
-1. Which locations to check (REPO and/or LIVE)
-2. What changes were just made (if known)
+The invoker should tell you what changed (if known). There is **one build** to check.
 
-If not told, check both REPO and LIVE.
+BUILD = `<repo-root>/` — or, for artifact validation (Check 6d), the unzipped contents of the shipped `career-engine.plugin`.
 
-REPO = `<repo-root>/`
-LIVE = `<plugin-cache>/`
+Optionally, the invoker may point you at a local `career-data` skill to validate its structure (Check 6b). `career-data` is never part of the plugin.
 
 ---
 
-## Two-version architecture — read before running any check
+## Single-build architecture — read before running any check
 
-**These two versions are intentionally different. Do not treat their differences as drift unless a check specifically says so.**
+The plugin is **one build** (R-37). It contains only code (agents, skills) and **blank `{{...}}` reference templates** — no personal data. There is no second personalized version to sync or diff against. The user's personal data lives in the external `career-data` skill, which the plugin never contains and which QA validates separately, never bundles.
 
-| What | REPO | LIVE |
-|---|---|---|
-| Purpose | Public open-source distribution | the user's live personal installation |
-| First/last name | `{{USER_FIRST_NAME}}`, `{{USER_LAST_NAME}}`, `{{USER_FULL_NAME}}` placeholders | `<your-first-name>`, `<your-last-name>`, `<your-full-name>` (real values) |
-| Output folder | `{{OUTPUT_FOLDER}}` placeholder | Real iCloud path (see Note for this installation) |
-| Notion DB ID | `{{NOTION_DATABASE_ID}}` placeholder | Real database ID (see Note for this installation) |
-| Country/city | `{{USER_COUNTRY}}`, `{{USER_CITY}}` placeholders | (your real values) |
-| Language config | `{{USER_DEFAULT_LANGUAGE}}`, `{{USER_SECOND_LANGUAGE}}`, `{{USER_SECOND_LANGUAGE_UPPER}}` placeholders | (your real values) |
-| Profession/seniority | `{{USER_PROFESSION}}`, `{{USER_FUNCTION_SENIORITY_HIERARCHY}}` placeholders | (your real values) |
-| Word templates path | `{{WORD_TEMPLATES_PATH}}` placeholder | Real path (see Note for this installation) |
-| CV template file | `{{CV_TEMPLATE_FILE}}` placeholder | `<your-dotx-file>` |
-| Intentional template syntax | `{{PLACEHOLDER}}` (in linkedin-coach, personal-brand) — literal agent instruction syntax, kept in both versions | Same — `{{PLACEHOLDER}}` is NEVER a setup value; it is a literal instruction telling the agent to write `{{PLACEHOLDER}}` in its output |
-| Localization table fill-ins | `{{COMPANY_1}}`, `{{COMPANY_2}}`, `{{COMPANY_1_HEBREW}}`, `{{COMPANY_2_HEBREW}}` in localization skill — user-fill table templates, kept in both versions | Same — these are user-fill table cells, not setup placeholders |
-| `.dotx` templates in references/ | Absent (personal file, not synced) | `<your-dotx-file>` present |
-| `02-professional-background.md` | Generic or omitted personal data | the user's real background facts |
-| `CLAUDE.md` and `README.md` | Placeholder-aware documentation | Placeholder-aware documentation |
+**What this means for QA:**
 
-**Expected differences are not bugs.** REPO having `{{USER_FULL_NAME}}` where LIVE has `<your-full-name>` is correct. LIVE having `<your-full-name>` where REPO has `{{USER_FULL_NAME}}` is correct. These are the intended states.
-
-**CRITICAL RULE — Direction is always REPO→LIVE, never the reverse.** The QA agent must NEVER suggest, recommend, or write replacing real personal values in LIVE with `{{...}}` placeholder strings. The direction of substitution is one-way: REPO keeps placeholders, LIVE has real values. If you see `<your-full-name>` in a LIVE file, that is CORRECT. Do not flag it as a problem. Do not suggest replacing it with `{{USER_FULL_NAME}}`.
+- `{{...}}` setup placeholders in the build are **correct and expected**. They are NOT substituted at install; agents resolve them at runtime from `career-data` (CLAUDE.md → *Placeholder resolution*). Do **not** flag `{{USER_FIRST_NAME}}`, `{{OUTPUT_FOLDER}}`, etc. in the build as "unfilled."
+- The build must contain **zero real personal data** (Check 6).
+- The shipped `.plugin` artifact must match the repo build and bundle no personal data and no `career-data` (Check 6d).
+- `career-data`, if provided, is validated for structure only (Check 6b). It is never part of the plugin and must never be bundled into it.
 
 **What IS a bug:**
-- LIVE contains any setup `{{...}}` placeholder that should have been replaced (Check 6)
-- REPO contains any real personal value where a placeholder should be (Check 6c)
-- Either version has structural divergence: missing files, wrong agent/skill counts, stale skill names (Checks 1–5, 11–15)
-- Logic or behavioral rules in a skill differ between versions beyond expected personalisation (drift that isn't placeholder-substitution)
+- The build contains any real personal value — name, email, Notion DB ID, real output path (Check 6).
+- The shipped `.plugin` differs from the repo build, contains personal data, or bundles `career-data` (Check 6d).
+- Structural divergence: missing files, wrong directory layout, stale skill names, broken references (Checks 1–5, 11, 15).
 
-**Checks that apply to both versions:** 1–5, 8–15, 16–29
-**Checks that apply to LIVE only:** 6, 6b, 7
-**Checks that apply to REPO only:** 6c
+**Checks that no longer apply (retired with the two-build model):** the old "no unreplaced placeholders in LIVE," the REPO/LIVE count-parity checks, and the `02-professional-background.md` sync check. They are marked RETIRED below.
 
 ---
 
@@ -81,7 +61,7 @@ Verify the following directories exist in each location being checked:
 - `references/`
 
 
-For REPO only: verify `scripts/` exists.
+Also verify `scripts/` exists.
 
 **FAIL condition:** any expected directory is missing.
 
@@ -152,99 +132,45 @@ Common skill names to expect: `career-engine-intake`, `career-engine-new-applica
 
 **FAIL condition:** a referenced skill name has no matching directory.
 
-### Check 6 — No unreplaced setup placeholders in LIVE
+### Check 6 — No real personal data in the build
 
-Scan all `.md` files in LIVE for any remaining `{{...}}` placeholders that should have been replaced during setup or personalisation. The LIVE version must have real values everywhere the REPO has setup placeholders.
-
-```bash
-grep -rn "{{" \
-  "<plugin-cache>" \
-  --include="*.md" \
-  | grep -v "/skills/career-engine-setup/" \
-  | grep -v "/README\.md" \
-  | grep -v "/CLAUDE\.md" \
-  | grep -v "/agents/qa-plugin\.md" \
-  | grep -v "/references/02-professional-background\.md" \
-  | grep -v "/references/01-writing-rules\.md" \
-  | grep -v "/references/03-framework\.md" \
-  | grep -v "/references/REFERENCES\.md" \
-  | grep -v "/docs/superpowers/" \
-  | grep -v "{{PLACEHOLDER}}" \
-  | grep -v "{{COMPANY_1}}\|{{COMPANY_2}}\|{{COMPANY_1_HEBREW}}\|{{COMPANY_2_HEBREW}}" \
-  | grep -v "{{USER_ANSWER_" \
-  | grep -v "/skills/update-refs/" \
-  | grep -v "the characters"
-```
-
-**What this grep excludes and why:**
-- `career-engine-setup/` — setup instructions that describe what placeholders to fill; correct to keep `{{...}}` here
-- `README.md`, `CLAUDE.md`, `qa-plugin.md` — documentation files; may describe placeholders in prose
-- `references/02-professional-background.md`, `01-writing-rules.md`, `03-framework.md` — personal reference files with their own content; not subject to setup substitution
-- `references/REFERENCES.md` — table of file descriptions; contains the literal text "fill in all `{{...}}` placeholders" as meta-documentation prose, not an actual placeholder
-- `docs/superpowers/` — historical planning documents from past development sessions; not runtime files; may contain `{{...}}` as examples in plan text
-- `{{PLACEHOLDER}}` — **intentional template syntax** in `skills/linkedin-coach/SKILL.md` and `skills/personal-brand/SKILL.md`; this is a literal instruction telling the agent to write `{{PLACEHOLDER}}` in its output when a fact is unconfirmed. It is NOT a setup value. It must remain as `{{PLACEHOLDER}}` in both REPO and LIVE.
-- `{{COMPANY_1}}`, `{{COMPANY_2}}`, `{{COMPANY_1_HEBREW}}`, `{{COMPANY_2_HEBREW}}` — **user-fill table cells** in `skills/localization/SKILL.md`; these are columns in a translation table that the user fills in at runtime. They are not setup values.
-- `{{USER_ANSWER_*}}` — fill-in-the-blank Q&A patterns in reference files; correct to keep in both versions
-- `skills/update-refs/` — describes the literal `{{...}}` placeholder convention in its sync-to-repo step; meta-documentation prose, not a setup value
-- `"the characters"` — R-10-style substitution-proof guard and detection prose ("still contains/contain/containing the characters `{{` and `}}`") in the intake/edit/export guards, orchestrator Step 8-pre, and the linkedin-coach profile ladder; literal character references, not setup values
-
-**FAIL condition:** any `{{...}}` placeholder found in the grep output above. Every hit is a value that should have been replaced and must be fixed before the pipeline can run correctly.
-
-**Note for this installation — complete value mapping for LIVE:**
-All of the following must appear as real values (not `{{...}}` strings) in LIVE files:
-
-| Placeholder | Real value in LIVE |
-|---|---|
-| `{{NOTION_DATABASE_ID}}` | `<your-notion-database-id>` |
-| `{{OUTPUT_FOLDER}}` | `<your-output-folder>` |
-| `{{USER_FULL_NAME}}` | `<your-full-name>` |
-| `{{USER_FIRST_NAME}}` | `<your-first-name>` (appears in REPO skill files — verify replaced everywhere in LIVE) |
-| `{{USER_LAST_NAME}}` | `<lastname>` in filename patterns (e.g. `cv-<lastname>-...`, `<your-dotx-file>`); `<your-last-name>` in display/signature contexts (e.g. `<your-full-name>`) |
-| `{{USER_COUNTRY}}` | `<your-country>` |
-| `{{USER_CITY}}` | `<your-city>` |
-| `{{USER_DEFAULT_LANGUAGE}}` | `<your-default-language>` |
-| `{{USER_SECOND_LANGUAGE}}` | `<your-second-language>` |
-| `{{USER_SECOND_LANGUAGE_UPPER}}` | `<YOUR-SECOND-LANGUAGE>` |
-| `{{USER_PROFESSION}}` | `<your-profession>` |
-| `{{USER_FUNCTION_SENIORITY_HIERARCHY}}` | `<your-seniority-hierarchy>` |
-| `{{WORD_TEMPLATES_PATH}}` | `<your-word-templates-path>` |
-| `{{CV_TEMPLATE_FILE}}` | `<your-dotx-file>` |
-| `{{DRAFT_DIR_URL_BASE}}` | cloud file-share link base (`https://<your-link-base>...`) or the word `skip` |
-| `{{NOTION_NEEDS_EDITING_VIEW_URL}}` | the pre-built "Needs Editing" Notion view URL |
-
----
-
-### Check 6b — References files present in LIVE
-
-Verify the following files exist in `LIVE/references/`:
-- `01-writing-rules.md`
-- `02-professional-background.md`
-- `03-framework.md`
-- `<your-dotx-file>`
-
-**FAIL condition:** any file missing from LIVE references.
-
-### Check 6c — REPO must not contain real personal values (REPO only)
-
-The REPO is the open-source distribution. It must not contain the user's real personal data. Scan REPO for the following strings — none should appear:
-
-**Before running:** replace each `<your-...>` token in the command below with your real values (they are deliberately not `{{...}}` setup placeholders — setup substitution will not fill them, so the check cannot silently run with literal tokens and false-PASS).
+The build is the public distribution. It must contain only code and blank `{{...}}` templates. Scan `agents/` and `skills/` for real personal values; none should appear. (CLAUDE.md and README.md may use names in documentation prose and are excluded.)
 
 ```bash
-grep -rn "<your-first-name>\|<your-last-name>\|<your-notion-database-id>\|<your-output-folder-name>\|<your-email>\|<your-link-base>" \
-  <repo-root>/ --include="*.md" \
-  | grep -v "CLAUDE.md\|README\|qa-plugin.md\|/docs/"
+# Replace each <your-...> token with your real values before running,
+# so the check cannot false-PASS on the literal tokens.
+grep -rn "<your-first-name>\|<your-last-name>\|<your-notion-database-id>\|<your-output-folder>\|<your-email>\|<your-link-base>" \
+  <build>/agents <build>/skills --include="*.md"
 ```
 
-**FAIL condition:** any real personal name, Notion database ID, real output path, or personal email found in REPO skill or agent files. These must be placeholders in REPO.
+`{{...}}` placeholders are **correct** in the build and are NEVER a failure here — they resolve at runtime from `career-data` (CLAUDE.md → *Placeholder resolution*).
 
-**Note:** `<your-first-name>` and `<your-last-name>` may appear in `CLAUDE.md` and `README.md` as documentation — those are excluded above. They must NOT appear in `agents/` or `skills/` files.
+**FAIL condition:** any real personal name, email, Notion DB ID, or output path found in `agents/` or `skills/`.
 
-### Check 7 — 02-professional-background.md sync
+### Check 6b — career-data structure (only if a career-data skill is provided)
 
-**Mark SKIP unconditionally.** The COWORK session path that this check referenced is a per-session ephemeral path that no longer exists. There is no stable external canonical source for `02-professional-background.md` — the authoritative copy IS the LIVE references file. This check has no valid source to diff against.
+`career-data` is the user's external data skill. It is NEVER part of the build. If the invoker points you at a local `career-data`, validate its structure: read `career-data-marker.json` and confirm every file in its `expected_files` is present and non-empty.
 
-If a future session establishes a new stable sync source, this check can be updated with the new path.
+**FAIL condition:** marker missing, or any expected file missing or empty. **Separate FAIL (bundling):** any `career-data` file or real personal reference content found inside the plugin build.
+
+### Check 6d — Shipped artifact matches the build, carries no personal data
+
+The thing that ships is the `.plugin` zip — validate the bytes, not just the working tree. Unzip the shipped `career-engine.plugin` to a temp dir, then:
+
+1. Run the structural checks (1–5) against the **extracted contents**.
+2. Confirm the extracted tree matches the repo build (same files, same content).
+3. Re-run Check 6 against the extracted contents (zero personal data).
+4. Confirm the artifact does NOT contain a `career-data/` directory or any personal reference content.
+
+**FAIL condition:** the artifact differs from the repo build, contains personal data, or bundles `career-data`.
+
+### Check 6c — RETIRED
+
+Folded into Check 6 (the build is the only distribution; "no personal data in the build" is now the single personal-data scan).
+
+### Check 7 — RETIRED (two-version sync)
+
+There is no second build to sync. This check no longer applies.
 
 ### Check 8 — No old.md exists
 
@@ -253,59 +179,44 @@ find <repo-root> -name "old.md"
 find "<plugin-cache>" -name "old.md"
 ```
 
-**FAIL condition:** `old.md` found in REPO or LIVE.
+**FAIL condition:** `old.md` found in the build.
 
 ### Check 9 — archive command absent
 
-Verify `commands/archive.md` does NOT exist in REPO or LIVE. Also verify `commands/` directory itself no longer exists in either location.
+Verify `commands/archive.md` does NOT exist in the build. Also verify the `commands/` directory itself no longer exists.
 
 **FAIL condition:** `archive.md` found, or `commands/` directory still present.
 
-### Check 10 — CLAUDE.md canonical version declaration present
+### Check 10 — CLAUDE.md describes the single-build / career-data model
 
-Read `CLAUDE.md` in REPO and LIVE. Verify it contains "Canonical personal version".
+Read `CLAUDE.md`. Verify it contains "Single-build architecture" and "career-data".
 
-**FAIL condition:** string not present in either file.
+**FAIL condition:** either string not present.
 
-### Check 11 — Pipeline skill chain integrity (REPO)
+### Check 11 — Skill directories present in the build
 
-The following skill directories must exist in `REPO/skills/`:
-- `career-engine-intake`
-- `career-engine-new-application`
-- `career-engine-export`
-- `career-engine-orchestrator`
-- `career-engine-edit`
-- `career-engine-setup`
-- `career-engine`
-- `career-engine-coach`
-- `cover-letter`
-- `cover-letter-humanizer`
-- `cv-writing`
-- `employment-coach`
-- `gatekeeper-checks`
-- `source-open-roles`
+These skill directories must exist in `skills/` (18 total):
+- `career-engine`, `career-engine-orchestrator`, `career-engine-intake`, `career-engine-new-application`, `career-engine-edit`, `career-engine-export`, `career-engine-coach`, `career-engine-setup`
+- `cv-writing`, `cover-letter`, `cover-letter-humanizer`, `gatekeeper-checks`, `employment-coach`, `localization`
+- `source-open-roles`, `linkedin-coach`, `personal-brand`, `update-refs`
 
 **FAIL condition:** any directory missing.
 
-### Check 12 — Pipeline skill chain integrity (LIVE)
+### Check 12 — RETIRED
 
-Same list as Check 11 (including `source-open-roles`). Additionally: if `pipeline-export` directory exists, note it as a legacy skill to evaluate but do not FAIL on it.
+Was a LIVE-side skill-chain check. Single build now; folded into Check 11.
 
-### Check 13 — Agent count parity
+### Check 13 — RETIRED
 
-Count `.md` files in `REPO/agents/` and `LIVE/agents/`. They should be equal.
+Was agent-count parity between REPO and LIVE. No second version to compare.
 
-**FAIL condition:** counts differ.
+### Check 14 — RETIRED
 
-### Check 14 — Skill count parity
-
-Count subdirectories in `REPO/skills/` and `LIVE/skills/`. Note any difference. A difference of ±1 is allowed only if the extra skill in LIVE is documented (e.g., `pipeline-export`).
-
-**FAIL condition:** counts differ by more than 1, or by 1 without explanation.
+Was skill-count parity between REPO and LIVE. No second version to compare.
 
 ### Check 15 — plugin.json present and valid
 
-Verify `.claude-plugin/plugin.json` exists in both REPO and LIVE. Read and validate it contains `name` and `version` fields, and does NOT reference `./commands/` (since commands/ was deleted).
+Verify `.claude-plugin/plugin.json` exists in the build. Read and validate it contains `name` and `version` fields, and does NOT reference `./commands/` (since commands/ was deleted).
 
 **FAIL condition:** plugin.json missing, malformed, or still references `./commands/`.
 
@@ -313,7 +224,7 @@ Verify `.claude-plugin/plugin.json` exists in both REPO and LIVE. Read and valid
 
 ## Behavioral rule presence checks
 
-These checks verify that key rules confirmed in live runs are actually present in the correct files. They are content checks — grep for specific strings. Run on both REPO and LIVE.
+These checks verify that key rules confirmed in live runs are actually present in the correct files. They are content checks — grep for specific strings. Run on the build.
 
 **Rule: when a new behavioral rule is added to the plugin (e.g. from a bug fix or user feedback session), add a corresponding presence check here before closing the session.**
 
@@ -544,16 +455,28 @@ grep -ci "stealth" <location>/skills/gatekeeper-checks/SKILL.md                 
 
 ### Check 22 — Known regression checks present in CLAUDE.md
 
-In `CLAUDE.md` (both REPO and LIVE): verify the file contains "Known regression checks" and entries "R-1" through "R-6".
+In `CLAUDE.md`: verify the file contains "Known regression checks", entries "R-1" through "R-6", and the latest entry "R-37".
 
 ```bash
-grep -c "Known regression checks" <location>/CLAUDE.md
-grep -c "R-1" <location>/CLAUDE.md
-grep -c "R-5" <location>/CLAUDE.md
-grep -c "R-6" <location>/CLAUDE.md
+grep -c "Known regression checks" <build>/CLAUDE.md
+grep -c "R-1" <build>/CLAUDE.md
+grep -c "R-37" <build>/CLAUDE.md
 ```
 
-**FAIL condition:** any string not found in either file.
+**FAIL condition:** any string not found.
+
+### Check 22b — career-data / single-build wiring present (R-37)
+
+The single-build and `career-data` model must be wired in.
+
+```bash
+grep -c "career-data discovery" <build>/skills/career-engine-orchestrator/SKILL.md   # must be >= 1
+grep -c "Writing personal data" <build>/skills/career-engine-orchestrator/SKILL.md    # must be >= 1
+grep -rl "data root (R-37)" <build>/agents <build>/skills | wc -l                      # must be >= 20
+grep -c "Placeholder resolution" <build>/CLAUDE.md                                     # must be >= 1
+```
+
+**FAIL condition:** any count below its stated requirement.
 
 ---
 
@@ -666,14 +589,14 @@ A full sandbox — real mock Notion API, real mock MCP tools, real file path sim
 ```
 ## QA Report — Career Engine Plugin
 **Date:** YYYY-MM-DD
-**Locations checked:** REPO, LIVE
+**Build checked:** career-engine plugin (single build); career-data validated separately if provided
 **Changes reviewed:** [description of recent changes]
 
 ### Results
 
-| # | Check | REPO | LIVE | Notes |
-|---|-------|------|------|-------|
-| 1 | Directory structure | PASS | PASS | |
+| # | Check | Result | Notes |
+|---|-------|--------|-------|
+| 1 | Directory structure | PASS | |
 ...
 
 ### Failures Requiring Action
@@ -692,7 +615,7 @@ X checks passed. Y checks failed.
 
 This agent checks three categories:
 
-**Structural/referential integrity (Checks 1–15):** file existence, cross-version sync, stale references, plugin.json validity. As new skills and agents are added, Checks 11–14 will evolve. Note any skills/agents that cannot be categorized rather than hard-failing on unknown additions.
+**Structural/referential integrity (Checks 1–15):** file existence, stale references, plugin.json validity, and (Check 6d) the shipped artifact. As new skills and agents are added, Check 11 will evolve. Note any skills/agents that cannot be categorized rather than hard-failing on unknown additions.
 
 **Behavioral rule presence (Checks 16–22):** verifies that key rules confirmed through live runs are actually written in the correct files. These are content/grep checks. They confirm the rule exists and is in place; they cannot confirm whether a live agent followed it. As new behavioral rules are added to the plugin, a new check must be added here in the same session.
 
