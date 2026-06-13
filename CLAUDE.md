@@ -85,7 +85,7 @@ One `.plugin` build, from the repo. Rebuild after a batch of changes:
 cd <repo-root>
 python3 -c "
 import zipfile, os
-exclude = {'.git', '__pycache__', '.DS_Store', '.in_use'}
+exclude = {'.git', 'docs', '.mcpb-cache', '.claude', '__pycache__', '.DS_Store', '.in_use'}
 with zipfile.ZipFile('career-engine.plugin', 'w', zipfile.ZIP_STORED) as zf:
     for root, dirs, files in os.walk('.'):
         dirs[:] = [d for d in dirs if d not in exclude]
