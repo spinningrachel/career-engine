@@ -47,13 +47,13 @@ Do not ask {{USER_FIRST_NAME}} about this. The preference was set during setup (
 
 ## Step 0 — Fetch Notion schema and roles
 
-**Guard — check configuration first.** Look at the database ID value immediately below. If it still contains the characters `{{` and `}}` (an unreplaced setup placeholder), **stop immediately** and tell the user:
+**Guard — resolve the database ID from the career-data config (R-38).** The plugin keeps `{{NOTION_DATABASE_ID}}` literal by design (single build); the literal placeholder is **not** a sign of incomplete setup — do not abort on it. Resolve `$NOTION_DATABASE_ID` from `${CAREER_DATA}/references/pipeline-preferences.json` (`notion_database_id`): under the orchestrator it is already set by Config resolution; standalone, read it yourself. **Stop only if that config value is missing or empty**, and tell the user:
 
-> "The Notion database ID has not been configured. Run `/career-engine:setup` (or `/career-engine:setup --phase 5`) to complete the database integration before running the pipeline."
+> "Your career-data config has no `notion_database_id`. Run `/career-engine:setup --phase 5` to add your Notion database ID to career-data."
 
-Do not attempt to search for the database. Do not proceed.
+Otherwise proceed with the resolved `$NOTION_DATABASE_ID`.
 
-The database ID for this installation: `{{NOTION_DATABASE_ID}}`
+The database ID for this run: `$NOTION_DATABASE_ID` (resolved from the career-data config; any `{{NOTION_DATABASE_ID}}` token in this skill is a literal placeholder, not a value).
 
 ---
 
@@ -121,7 +121,7 @@ ToolSearch query="select:notionApi__API-query-data-source"
 If ToolSearch returns a schema, proceed with Path A2. If it returns nothing, try the full tool name `mcp__notionApi__API-query-data-source` directly — deferred tools are still callable by their full name even if ToolSearch doesn't surface them. If the direct call returns a tool-not-found error, the `notionApi` server is not connected in this session — switch to Path B. If the Path A2 call returns any other error (auth failure such as a 401, malformed response, timeout), treat the `notionApi` server as unusable in this session and switch to Path B as well. In neither case report this as a failure; Path B is a sanctioned route, not a workaround. If Path B then also fails, apply the all-paths-fail rule at the end of this step.
 
 Call `notionApi` `API-query-data-source` (full tool name: `mcp__notionApi__API-query-data-source`) with:
-- database ID: `{{NOTION_DATABASE_ID}}`
+- database ID: `$NOTION_DATABASE_ID` (resolved from career-data config)
 - filter: `{"property": "Status", "status": {"equals": "Hold"}}` (standalone) or `{"property": "Status", "status": {"equals": "Interested"}}` (orchestrator)
 - page_size: 100
 

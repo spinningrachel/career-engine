@@ -128,7 +128,7 @@ DATE_FOLDER=$(basename "<output_dir>")  # e.g. applications-2026-05-26
 DRAFT_DIR_URL="{{DRAFT_DIR_URL_BASE}}${DATE_FOLDER}%2F${COMPANY_DIR}%2F"
 ```
 
-**Unconfigured link base guard:** if the Draft Directory link base is the word `skip` or still contains the characters `{{` and `}}`, leave the `Draft Directory` property empty and continue — do not write a malformed URL.
+**Unconfigured link base guard:** if `$DRAFT_DIR_URL_BASE` (from the career-data config key `draft_dir_url_base`) is empty, unset, or the word `skip`, leave the `Draft Directory` property empty and continue — do not write a malformed URL.
 
 
 Example: `{{DRAFT_DIR_URL_BASE}}applications-2026-05-26%2Fnorthwind%2F`
