@@ -65,31 +65,27 @@ Do not proceed to Step 3 without this context.
 
 ## Step 2 — Find roles to research
 
-**Path A1 — `ntn` CLI (preferred where available).** If the gate passes (`command -v ntn >/dev/null 2>&1 && ntn whoami >/dev/null 2>&1`), query directly instead of the view route below (resolve the data source ID from `{{NOTION_DATABASE_ID}}` via `ntn api /v1/databases/{{NOTION_DATABASE_ID}}` → `data_sources[0].id`):
+**Path A1 — `ntn` CLI (preferred where available).** If the gate passes (`command -v ntn >/dev/null 2>&1 && ntn whoami >/dev/null 2>&1`), query directly instead of the A2/B routes below (resolve the data source ID from `{{NOTION_DATABASE_ID}}` via `ntn api /v1/databases/{{NOTION_DATABASE_ID}}` → `data_sources[0].id`):
 
 ```bash
 ntn datasources query <data-source-id> \
-  --filter '{"and":[{"property":"Status","status":{"equals":"Hold"}},{"property":"Landscape","rich_text":{"is_empty":true}}]}' \
+  --filter '{"property":"Status","status":{"equals":"Hold"}}' \
   --sort 'Entry Created On asc' --limit 5 --json
 ```
 
-Trim the JSON in the shell to page `id` plus the named properties you need (read by property name, never by column position); for the full per-role payload, `ntn pages get <page_id>` returns all properties plus the page body as markdown in one call. The view exists to serve the connector route — on A1, the direct filter above is the sanctioned equivalent. If the gate fails or any A1 call errors, fall through to the view route below without comment (intake Step 0b documents the full ladder and syntax).
+Trim the JSON in the shell to page `id` plus the named properties you need (read by property name, never by column position); for the full per-role payload, `ntn pages get <page_id>` returns all properties plus the page body as markdown in one call. The view exists to serve the connector route — on A1, the direct filter above is the sanctioned equivalent. If the gate fails or any A1 call errors, fall through to Path A2 (then Path B) below without comment (intake Step 0b documents the full ladder and syntax).
 
-Otherwise use `notion-query-database-view` with this exact view URL:
+**Path A2 — `notionApi` structured query.** If A1 is unavailable, load the schema (`ToolSearch query="select:notionApi__API-query-data-source"`, or call `mcp__notionApi__API-query-data-source` directly). A tool-not-found error means the server is not connected — fall through to Path B; on any other error (401, timeout, malformed response) treat it as unusable and also fall through. Otherwise call `API-query-data-source` with database ID `{{NOTION_DATABASE_ID}}`, filter `{"property":"Status","status":{"equals":"Hold"}}`, page_size 100. It returns structured JSON keyed by property name (no table to misparse).
 
-```
-https://www.notion.so/{{NOTION_DATABASE_ID}}?v=35e5ef1aa63480ff9b4e000cbcd67aec
-```
+**Path B — standard connector view query (discovery only).** `notion-query-database-view` runs a *view's own saved filter* — it takes no ad-hoc `filter` argument (any filter you pass is ignored) and needs a real view URL (`https://www.notion.so/<DB_ID>?v=<VIEW_ID>`), never the bare database URL (R-39). Resolve the URL by name, do not hardcode it: call `notion-fetch id="{{NOTION_DATABASE_ID}}"`, read its `Views` list, and take the URL of the view named **"Hold"**; then call `notion-query-database-view` with that `view_url` and no other arguments. Do not construct your own filter and do not fetch the full database for rows.
 
-This view is pre-configured to return only `Hold` roles where Landscape is empty, sorted by creation date ascending. On the connector route, do not construct your own filter — use the view directly (the A1 direct filter above is the only sanctioned exception). Do not fetch the full database.
-
-**The view result is for discovery only (R-1).** The rendered table is susceptible to column misalignment and shows only the view's visible columns. Use it only to identify the candidate pages (oldest first): extract the page IDs/links, then call `notion-fetch id="<page_id>"` on each selected page and read all property values from the structured page response — never from the rendered table.
+**The view result is for discovery only (R-1).** The rendered table is susceptible to column misalignment and shows only the view's visible columns. Use it only to identify the candidate pages (oldest first): extract the page IDs/links, then call `notion-fetch id="<page_id>"` on each selected page and read all property values from the structured page response — never from the rendered table. Discard any page whose Status is not `Hold`.
 
 **Cap: process a maximum of 5 roles per run.** Take the first 5 results from the view (oldest first). If more than 5 roles are returned, process only the first 5 and report how many remain. Do not process all roles in one run regardless of how many exist. {{USER_FIRST_NAME}} will run the pipeline again for the next batch.
 
-**Note:** The Landscape field is now always written to (even when already populated), so the `Landscape is empty` view filter will exclude any `Hold` role that already has a populated Landscape. {{USER_FIRST_NAME}} may want to update the Notion view to filter on `Status = Hold` only, so that roles with existing Landscape content are still picked up. Until then, use Status = `Hold` as the reliable crash recovery signal — a role that hasn't completed research will have Status = `Hold` regardless of Landscape content.
+**Note:** Every rung of this ladder keys on `Status = Hold` (A1/A2 filter on it directly; Path B resolves the "Hold" view and discards any page whose Status is not `Hold`). Landscape content does not affect selection — a `Hold` role is picked up whether or not its Landscape is already populated.
 
-**Crash recovery:** if a run crashed before completing a role, that role's Status will still be `Hold`. If its Landscape is also empty, the view will pick it up automatically. If its Landscape was already populated when the run started, it will need to be picked up manually or via a view that filters on Status only.
+**Crash recovery:** if a run crashed before completing a role, that role's Status will still be `Hold`, so the next run picks it up automatically regardless of Landscape content.
 
 If the query returns 0 results, end with: "No roles in Hold status awaiting market intelligence."
 

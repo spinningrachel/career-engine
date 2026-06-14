@@ -327,9 +327,11 @@ grep -c "misaligned rendered table" <location>/skills/career-engine-intake/SKILL
 grep -c "command -v ntn" <location>/skills/career-engine-coach/SKILL.md
 grep -c "command -v ntn" <location>/skills/career-engine-edit/SKILL.md
 grep -c "command -v ntn" <location>/skills/source-open-roles/SKILL.md
+grep -c "API-query-data-source" <location>/skills/career-engine-coach/SKILL.md
+grep -c "API-query-data-source" <location>/skills/career-engine-edit/SKILL.md
 ```
 
-**FAIL condition:** any string not found.
+**FAIL condition:** any string not found. (The last two assert the A2 rung is now present at the coach and edit query sites, so all four sites share the same A1→A2→B ladder — R-39.)
 
 ### Check 21b — Pipeline command authority present in orchestrator (R-24)
 
@@ -360,6 +362,43 @@ grep -c "If the schema fetch fails" <location>/skills/career-engine-intake/SKILL
 ```
 
 **FAIL condition:** string not found.
+
+### Check 21k — Canonical Path B shape + no notion-search improvisation (R-39)
+
+`notion-query-database-view` takes no ad-hoc filter and needs a real view URL, so every Path B site must say so and resolve the view by name; the bare-database-URL form and the `notion-search` discovery fallback must not exist.
+
+```bash
+# Each connector query site states the constraint (no bare DB URL / view URL required)
+grep -c "never the bare database URL" <location>/skills/career-engine-intake/SKILL.md
+grep -c "never the bare database URL" <location>/skills/career-engine-coach/SKILL.md
+grep -c "never the bare database URL" <location>/skills/career-engine-edit/SKILL.md
+grep -c "never the bare database URL" <location>/skills/source-open-roles/SKILL.md
+# Intake all-paths-fail forbids notion-search for discovery
+grep -c "cannot enumerate the queue" <location>/skills/career-engine-intake/SKILL.md
+# notion-search must NOT be an allowlist entry in the entry skill (a comment may mention it)
+grep -c "^  - mcp__5cd94b8e-1498-421b-bc5d-1bbb07682cf7__notion-search" <location>/skills/career-engine/SKILL.md
+```
+
+**FAIL condition:** any of the first five counts is 0, OR the last count is not 0 (the last must be 0 — `notion-search` is intentionally unlisted).
+
+### Check 21l — Pointers-not-payloads, and the Mave gate survives (R-41)
+
+Per-role subagents write output to disk and return pointers; new-application threads the `_pipeline/` files and reads feedback from disk; Step 7a's disk-existence gate is still present.
+
+```bash
+# Each per-role subagent carries the R-41 output protocol
+for a in cv-writer letter-writer recruiter-reviewer hiring-manager-reviewer gatekeeper cover-letter-humanizer; do grep -c "Output protocol (R-41)" <location>/agents/$a.md; done
+# Reviewers/gatekeeper/humanizer can write (were read-only / no-write before)
+for a in recruiter-reviewer hiring-manager-reviewer gatekeeper cover-letter-humanizer; do grep -c "^tools:.*Write" <location>/agents/$a.md; done
+# new-application threads _pipeline files and reads the feedback file from disk
+grep -c "_pipeline" <location>/skills/career-engine-new-application/SKILL.md
+grep -c 'PIPE/cv-final.md\|PIPE/recruiter-cv.md\|PIPE/hm-cv.md' <location>/skills/career-engine-new-application/SKILL.md
+grep -c 'contents of `\$PIPE' <location>/skills/career-engine-new-application/SKILL.md
+# Step 7a Mave disk-existence gate MUST still be present
+grep -c "files not found on disk" <location>/skills/career-engine-new-application/SKILL.md
+```
+
+**FAIL condition:** any count is 0. The last is the Mave June-5 hard gate — it must survive the refactor.
 
 ### Check 17b — E10 has no duplicate coach-property writeback
 

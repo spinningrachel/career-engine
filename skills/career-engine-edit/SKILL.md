@@ -56,7 +56,7 @@ The edit pipeline is its own entry (no orchestrator), so resolve config yourself
 
 ---
 
-**Path A1 — `ntn` CLI (preferred where available).** If the gate passes (`command -v ntn >/dev/null 2>&1 && ntn whoami >/dev/null 2>&1`), query directly instead of the view route below (resolve the data source ID from `{{NOTION_DATABASE_ID}}` via `ntn api /v1/databases/{{NOTION_DATABASE_ID}}` → `data_sources[0].id`):
+**Path A1 — `ntn` CLI (preferred where available).** If the gate passes (`command -v ntn >/dev/null 2>&1 && ntn whoami >/dev/null 2>&1`), query directly instead of the A2/B routes below (resolve the data source ID from `{{NOTION_DATABASE_ID}}` via `ntn api /v1/databases/{{NOTION_DATABASE_ID}}` → `data_sources[0].id`):
 
 ```bash
 ntn datasources query <data-source-id> \
@@ -64,15 +64,17 @@ ntn datasources query <data-source-id> \
   --limit 100 --json
 ```
 
-Trim the JSON in the shell to page `id` plus the named properties E0 needs; for the full per-role payload, `ntn pages get <page_id>` returns all properties plus the page body as markdown in one call. The pre-built view exists to serve the connector route — on A1, the direct Status filter is the sanctioned equivalent. If the gate fails or any A1 call errors, fall through to the view route below without comment (intake Step 0b documents the full ladder and syntax).
+Trim the JSON in the shell to page `id` plus the named properties E0 needs; for the full per-role payload, `ntn pages get <page_id>` returns all properties plus the page body as markdown in one call. The pre-built view exists to serve the connector route — on A1, the direct Status filter is the sanctioned equivalent. If the gate fails or any A1 call errors, fall through to Path A2 (then Path B) below without comment (intake Step 0b documents the full ladder and syntax).
 
-Otherwise query the Job Applications database using the pre-built "Needs Editing" view with `notion-query-database-view`:
+**Path A2 — `notionApi` structured query.** If A1 is unavailable, load the schema (`ToolSearch query="select:notionApi__API-query-data-source"`, or call `mcp__notionApi__API-query-data-source` directly). A tool-not-found error means the server is not connected — fall through to Path B; on any other error (401, timeout, malformed response) treat it as unusable and also fall through. Otherwise call `API-query-data-source` with database ID `{{NOTION_DATABASE_ID}}`, filter `{"property":"Status","status":{"equals":"Needs editing"}}`, page_size 100. It returns structured JSON keyed by property name.
+
+**Path B — standard connector view query (discovery only).** `notion-query-database-view` runs a *view's own saved filter* — it takes no ad-hoc `filter` argument (any filter you pass is ignored) and needs a real view URL (`...?v=<VIEW_ID>`), never the bare database URL (R-39). Query the Job Applications database using the pre-built "Needs Editing" view:
 
 ```
 View URL: {{NOTION_NEEDS_EDITING_VIEW_URL}}
 ```
 
-This view is pre-configured to return only rows with `Status = Needs editing`. On the connector route, do not construct your own filter — use the view directly (the A1 direct filter above is the only sanctioned exception). If this view URL fails (view deleted or reorganised), fall back to: fetch the database page with `notion-fetch id="{{NOTION_DATABASE_ID}}"`, find the view named "Needs Editing" in the views list, and use that URL instead.
+This view is pre-configured to return only rows with `Status = Needs editing`. Call `notion-query-database-view` with this `view_url` and no other arguments — do not construct your own filter (the A1/A2 direct filters above are the only sanctioned filtered routes). The view URL is a fast path; if it is empty, fails, or is stale (view deleted or reorganised), resolve it by name instead: fetch the database page with `notion-fetch id="{{NOTION_DATABASE_ID}}"`, find the view named "Needs Editing" in the `Views` list, and use that URL.
 
 **The view result is for discovery only (R-1).** `notion-query-database-view` returns a rendered table that is susceptible to column misalignment and shows only the view's visible columns — never enough for the full row payload below. Extract only the page IDs/links from the result (unambiguous even in a misaligned table), then call `notion-fetch id="<page_id>"` on each page and read the full payload from the structured page response. Never read property values out of the rendered table.
 

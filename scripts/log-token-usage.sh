@@ -1,100 +1,170 @@
 #!/bin/bash
-# log-token-usage.sh
+# log-token-usage.sh — career-engine Stop hook
 #
-# Stop hook for career-engine plugin.
-# Reads token usage from the Claude Code session payload (stdin),
-# finds the most recent run-metrics file in the applications output folder,
-# and writes the actual token counts into it.
+# Writes real token usage into the run-metrics-<date>.json file the pipeline
+# created during THIS session.
 #
-# Configure in ~/.claude/settings.json:
-#   "hooks": {
-#     "Stop": [{
-#       "hooks": [{
-#         "type": "command",
-#         "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/log-token-usage.sh"
-#       }]
-#     }]
-#   }
+# IMPORTANT (R-40): token counts are NOT in the Stop hook stdin payload. The
+# payload provides only `transcript_path`, `session_id`, `cwd`, `hook_event_name`.
+# Token usage lives in the transcript JSONL, under each assistant message's
+# `message.usage` ({input_tokens, output_tokens, cache_read_input_tokens,
+# cache_creation_input_tokens}). Subagent (Task) usage lives in SEPARATE
+# transcript files, so we sum the main transcript AND its subagent transcripts.
+#
+# Correlation: we identify THIS session's metrics file from the orchestrator's
+# *write* of it in the transcript (a write tool_use input contains both
+# "run-metrics-" and "token_counts"; a mere Read does not), then fill the newest
+# still-unfilled run-metrics file in that directory. This is session-scoped, so
+# it never contaminates another session's file and never leaves a sibling
+# "pending" because of mtime guesswork.
+#
+# Registered automatically via the plugin's hooks/hooks.json. It can also be
+# added manually to ~/.claude/settings.json (see README "Token & cost tracking").
 
-# Read the session payload from stdin
 PAYLOAD=$(cat)
+CE_PAYLOAD="$PAYLOAD" python3 <<'PYEOF' 2>>"${TMPDIR:-/tmp}/career-engine-hook.log"
+import os, sys, json, glob, re, datetime
 
-# Extract token counts from payload (Claude Code Stop hook provides these fields)
-INPUT_TOKENS=$(echo "$PAYLOAD" | python3 -c "
-import json, sys
+def log(m): print(f"[ce-token-hook] {m}", file=sys.stderr)
+
+# Opus rate table — USD per 1M tokens. Adjust here if rates change.
+RATES = {"input": 15.0, "output": 75.0, "cache_write": 18.75, "cache_read": 1.50}
+
 try:
-    d = json.load(sys.stdin)
-    print(d.get('session', {}).get('stats', {}).get('inputTokens', d.get('inputTokens', 'unknown')))
-except:
-    print('unknown')
-" 2>/dev/null)
+    payload = json.loads(os.environ.get("CE_PAYLOAD", "{}"))
+except Exception:
+    sys.exit(0)
 
-OUTPUT_TOKENS=$(echo "$PAYLOAD" | python3 -c "
-import json, sys
-try:
-    d = json.load(sys.stdin)
-    print(d.get('session', {}).get('stats', {}).get('outputTokens', d.get('outputTokens', 'unknown')))
-except:
-    print('unknown')
-" 2>/dev/null)
+transcript = payload.get("transcript_path") or ""
+session_id = payload.get("session_id") or ""
+if not transcript or not os.path.isfile(transcript):
+    log(f"no readable transcript ({transcript!r}); nothing to do")
+    sys.exit(0)
 
-CACHE_TOKENS=$(echo "$PAYLOAD" | python3 -c "
-import json, sys
-try:
-    d = json.load(sys.stdin)
-    stats = d.get('session', {}).get('stats', d)
-    print(stats.get('cacheReadInputTokens', stats.get('cacheTokens', 0)))
-except:
-    print(0)
-" 2>/dev/null)
+def iter_entries(path):
+    try:
+        with open(path, errors="ignore") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    yield json.loads(line)
+                except Exception:
+                    continue
+    except Exception:
+        return
 
-TOTAL_COST=$(echo "$PAYLOAD" | python3 -c "
-import json, sys
-try:
-    d = json.load(sys.stdin)
-    print(d.get('session', {}).get('stats', {}).get('totalCostUSD', d.get('costUSD', 'unknown')))
-except:
-    print('unknown')
-" 2>/dev/null)
+def add_usage(totals, path):
+    for d in iter_entries(path):
+        u = (d.get("message") or {}).get("usage") or d.get("usage")
+        if not u:
+            continue
+        totals["input"]        += u.get("input_tokens", 0) or 0
+        totals["output"]       += u.get("output_tokens", 0) or 0
+        totals["cache_read"]   += u.get("cache_read_input_tokens", 0) or 0
+        totals["cache_create"] += u.get("cache_creation_input_tokens", 0) or 0
 
-# Find the most recent run-metrics file in the configured output folder
-# OUTPUT_FOLDER is set during onboarding; falls back to home directory search
-SEARCH_BASE="${OUTPUT_FOLDER:-$HOME}"
-METRICS_FILE=$(find "$SEARCH_BASE" -name "run-metrics-*.json" -newer /tmp/.career-engine-last-hook 2>/dev/null | sort -r | head -1)
+# --- discover subagent transcripts (CLI and Cowork host-loop layouts) ---
+tdir = os.path.dirname(transcript)
+base = os.path.basename(transcript)
+base = base[:-6] if base.endswith(".jsonl") else base
+subs = set()
+for pat in (
+    os.path.join(tdir, f"{base}-subagent-*.jsonl"),   # CLI
+    os.path.join(tdir, base, "subagents", "*.jsonl"),  # host-loop: <session>/subagents/
+    os.path.join(tdir, "subagents", "*.jsonl"),        # transcript already inside session dir
+):
+    for p in glob.glob(pat):
+        if os.path.abspath(p) != os.path.abspath(transcript):
+            subs.add(p)
 
-# Update the last hook marker
-touch /tmp/.career-engine-last-hook 2>/dev/null
+totals = {"input": 0, "output": 0, "cache_read": 0, "cache_create": 0}
+add_usage(totals, transcript)
+for s in subs:
+    add_usage(totals, s)
+log(f"summed main + {len(subs)} subagent transcript(s): {totals}")
 
-if [ -z "$METRICS_FILE" ]; then
-    # No metrics file found — write a standalone token log instead
-    LOG_DIR="${SEARCH_BASE}/applications-token-log"
-    mkdir -p "$LOG_DIR" 2>/dev/null
-    echo "{\"date\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\", \"input_tokens\": $INPUT_TOKENS, \"output_tokens\": $OUTPUT_TOKENS, \"cache_read_tokens\": $CACHE_TOKENS, \"cost_usd\": \"$TOTAL_COST\", \"note\": \"no run-metrics file found\"}" \
-        >> "$LOG_DIR/token-log.jsonl" 2>/dev/null
-    exit 0
-fi
+# --- find THIS session's run-metrics directory from the orchestrator's write ---
+metrics_path_hint = None
+for d in iter_entries(transcript):
+    content = (d.get("message") or {}).get("content")
+    for b in (content if isinstance(content, list) else []):
+        if isinstance(b, dict) and b.get("type") == "tool_use":
+            s = json.dumps(b.get("input", {}))
+            if "run-metrics-" in s and "token_counts" in s:
+                m = re.search(r'(/[^"\']*?/run-metrics-[^"\']*\.json)', s)
+                if m:
+                    metrics_path_hint = m.group(1)   # last write in the session wins
+if not metrics_path_hint:
+    log("no pipeline run-metrics write found in this session; nothing to fill")
+    sys.exit(0)
 
-# Update the metrics file with real token counts
-python3 - << PYEOF
-import json, sys
+def load(p):
+    try:
+        with open(p) as f:
+            return json.load(f)
+    except Exception:
+        return None
 
-path = "$METRICS_FILE"
-try:
-    with open(path) as f:
-        data = json.load(f)
-except:
-    data = {}
+def is_unfilled(tc):
+    """Needs counts if token_counts is the pending string sentinel, or a dict
+    whose token values are missing / unknown / zero."""
+    if isinstance(tc, dict):
+        for k in ("input_tokens", "output_tokens"):
+            v = tc.get(k)
+            if isinstance(v, (int, float)) and v > 0:
+                return False
+            if isinstance(v, str) and v.strip().isdigit() and int(v) > 0:
+                return False
+        return True
+    return True
+
+# Primary: the exact file the orchestrator wrote, if the literal path resolved.
+metrics_path, data = None, None
+if "$(" not in metrics_path_hint and "`" not in metrics_path_hint and os.path.isfile(metrics_path_hint):
+    metrics_path, data = metrics_path_hint, load(metrics_path_hint)
+# Fallback (e.g. the write used $(date), so the literal path is unexpanded):
+# newest still-unfilled run-metrics file in that directory.
+if data is None:
+    mdir = os.path.dirname(metrics_path_hint)
+    cands = []
+    for p in glob.glob(os.path.join(mdir, "run-metrics-*.json")):
+        dd = load(p)
+        if dd is not None and is_unfilled(dd.get("token_counts")):
+            cands.append((os.path.getmtime(p), p, dd))
+    if cands:
+        cands.sort(reverse=True)
+        _, metrics_path, data = cands[0]
+if data is None:
+    log(f"could not resolve a run-metrics file from hint {metrics_path_hint!r}")
+    sys.exit(0)
+
+cost = round(
+    totals["input"]        / 1e6 * RATES["input"] +
+    totals["output"]       / 1e6 * RATES["output"] +
+    totals["cache_create"] / 1e6 * RATES["cache_write"] +
+    totals["cache_read"]   / 1e6 * RATES["cache_read"], 2)
 
 data["token_counts"] = {
-    "input_tokens": "$INPUT_TOKENS",
-    "output_tokens": "$OUTPUT_TOKENS",
-    "cache_read_tokens": "$CACHE_TOKENS",
-    "cost_usd": "$TOTAL_COST",
-    "recorded_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    "input_tokens": totals["input"],
+    "output_tokens": totals["output"],
+    "cache_read_tokens": totals["cache_read"],
+    "cache_creation_tokens": totals["cache_create"],
+    "total_tokens": sum(totals.values()),
+    "cost_usd_estimate": cost,
+    "cost_note": "Opus rates: input $15 / output $75 / cache-write $18.75 / cache-read $1.50 per 1M. >200K-context premium not applied. Session-cumulative.",
+    "session_id": session_id,
+    "subagent_transcripts_counted": len(subs),
+    "recorded_at": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
 }
+try:
+    with open(metrics_path, "w") as f:
+        json.dump(data, f, indent=2)
+    log(f"wrote token_counts to {metrics_path}: {totals['input']+totals['output']+totals['cache_read']+totals['cache_create']:,} total, ${cost}")
+except Exception as e:
+    log(f"failed to write {metrics_path}: {e}")
 
-with open(path, 'w') as f:
-    json.dump(data, f, indent=2)
-
-print(f"Token counts written to {path}")
+sys.exit(0)
 PYEOF
+exit 0

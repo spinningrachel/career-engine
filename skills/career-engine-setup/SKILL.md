@@ -476,9 +476,13 @@ Ask: "Have you added the permissions block? You can do this now and come back, o
 
 **Token usage tracking (optional but recommended):**
 
-The pipeline can track actual token consumption per run. Each run writes a `run-metrics-<date>.json` file to your output folder with structural metrics (roles processed, agents invoked). A Stop hook captures the real token counts when the session closes and writes them into the same file.
+The pipeline tracks actual token consumption per run. Each run writes a `run-metrics-<date>.json` file to your output folder with structural metrics (roles processed, agents invoked). A Stop hook then fills in the real token counts and an estimated cost.
 
-To enable it, add a `hooks` block alongside `permissions` in your `~/.claude/settings.json`:
+The hook ships with the plugin and **registers itself** via `hooks/hooks.json`, so on a current Claude Code there is nothing to configure — confirm by checking that `run-metrics-*.json` files show numeric `token_counts` after a run (not `"pending"` or `"unknown"`).
+
+It reads counts from the session transcript and every subagent transcript (not from the hook payload, which carries no token data — R-40), and writes them into the `run-metrics` file the run created this session.
+
+**Only if your Claude Code version does not auto-load plugin hooks**, add the block manually to `~/.claude/settings.json`, replacing `${CLAUDE_PLUGIN_ROOT}` with your plugin install path (shown in Claude Code's plugin settings):
 
 ```json
 "hooks": {
@@ -491,9 +495,7 @@ To enable it, add a `hooks` block alongside `permissions` in your `~/.claude/set
 }
 ```
 
-Replace `${CLAUDE_PLUGIN_ROOT}` with the actual path to your plugin installation (shown in Claude Code's plugin settings). After a few runs, check the `run-metrics-*.json` files in your output folder to see token consumption by pipeline type, role count, and agent breakdown.
-
-Ask: "Do you want to enable token usage tracking? I can generate the exact hook block for your configuration."
+Ask: "Token tracking is built in and self-registering. Want me to verify it's firing, or generate the manual hook block as a fallback?"
 
 Confirm: "Phase 6 complete. The pipeline will run without approval prompts."
 

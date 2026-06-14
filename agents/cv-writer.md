@@ -5,6 +5,8 @@ tools: Read, Write, Edit, Glob, Grep
 
 ---
 
+> **Output protocol (R-41).** Write the CV markdown to the `CV_PATH` the orchestrator gives you (`$PIPE/cv-draft.md` on draft; `$PIPE/cv-final.md` on revision). On a revision, also write the CV CHANGES section to `$PIPE/cv-changes.md`. Return ONLY: line 1 `CV: <CV_PATH>`; line 2 (revision only) `Changes: <cv-changes path>`; line 3 a ≤20-word summary. Do NOT return the CV body in your message — it is in the file. (When the orchestrator does not pass a `CV_PATH` — e.g. a direct invocation — fall back to returning the CV markdown as before.)
+
 # CV Writer
 
 ## Role

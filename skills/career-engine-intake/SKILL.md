@@ -127,13 +127,12 @@ Call `notionApi` `API-query-data-source` (full tool name: `mcp__notionApi__API-q
 
 This returns a JSON array of page objects. Each object has an `id` field and a `properties` object with named fields — read property values by name, not by column position.
 
-**Path B — view query for discovery, per-page fetch for properties (only when the `notionApi` server is absent or unusable).** The standard Notion connector's `notion-query-database-view` returns a *rendered table*, which is susceptible to column misalignment (the R-1 failure: 17 companies, 16 status tags) and shows only the view's visible columns — never enough for the full row payload the pipeline needs. In Path B the rendered table is therefore used **only to discover candidate pages**; property values are always read per page. The rule that survives from R-1: **a misaligned rendered table must never be parsed** — and in Path B no rendered table is ever parsed for property values, aligned or not.
+**Path B — standard connector view query for discovery, per-page fetch for properties (only when the `notionApi` server is absent or unusable).** `notion-query-database-view` executes a *view's own saved filter and sort* and returns a *rendered table*. Two hard constraints on this tool (R-39): it does **not** accept an ad-hoc `filter` argument — any filter you pass is silently ignored — and it requires a real **view URL** (`https://www.notion.so/<DB_ID>?v=<VIEW_ID>`), never the bare database URL. The rendered table is also susceptible to column misalignment (the R-1 failure: 17 companies, 16 status tags) and shows only the view's visible columns, so it is used **only to discover candidate pages**; property values are always read per page. The rule that survives from R-1: **a misaligned rendered table must never be parsed** — and in Path B no rendered table is ever parsed for property values, aligned or not.
 
-1. Call `notion-query-database-view` with:
-   - url: `https://www.notion.so/{{NOTION_DATABASE_ID}}`
-   - filter: `{"property": "Status", "status": {"equals": "Hold"}}` (standalone) or `{"property": "Status", "status": {"equals": "Interested"}}` (orchestrator)
-2. **Use the result for discovery only.** Extract the page IDs/links from the result — these are unambiguous even in a misaligned table. Do not read any property value out of the rendered table.
-3. **Fetch full properties per page:** call `notion-fetch id="<page_id>"` on each candidate page and read its complete property set from the structured page response. Discard pages whose Status does not match the target. Every downstream read in this run — Step 0.6 priorities, the Step 0.8 coach-complete check, the Step 0.9a write-only-to-empty rule — uses these per-page property sets, never the rendered table.
+1. **Resolve the view URL by name — do not hardcode it and do not pass a filter.** Call `notion-fetch id="$NOTION_DATABASE_ID"`, read its `Views` list, and take the URL of the view named **"Hold"** (standalone) or **"Interested"** (orchestrator). View IDs change when views are reorganised, so the by-name lookup is the source of truth.
+2. Call `notion-query-database-view` with `view_url` = that URL and **no other arguments**. The view already restricts to the target status; do not construct your own filter.
+3. **Use the result for discovery only.** Extract the page IDs/links from the result — these are unambiguous even in a misaligned table. Do not read any property value out of the rendered table.
+4. **Fetch full properties per page:** call `notion-fetch id="<page_id>"` on each candidate page and read its complete property set from the structured page response. Discard pages whose Status does not match the target. Every downstream read in this run — Step 0.6 priorities, the Step 0.8 coach-complete check, the Step 0.9a write-only-to-empty rule — uses these per-page property sets, never the rendered table.
 
 **Rules for all paths:**
 
@@ -143,7 +142,7 @@ This returns a JSON array of page objects. Each object has an `id` field and a `
 
 The result should contain only rows matching the target status. If unfiltered rows appear, discard non-matching ones in memory and log a warning. Do not process any row whose Status does not match the target.
 
-If all paths fail with tool errors or unparseable responses, stop immediately and report the error to {{USER_FIRST_NAME}} — do not treat it as zero results and do not improvise a query route outside the ladder.
+If all paths fail with tool errors or unparseable responses, stop immediately and report the error to {{USER_FIRST_NAME}} — do not treat it as zero results and do not improvise a query route outside the ladder. In particular, **never fall back to `notion-search` (or any semantic/keyword search) to discover queue rows** (R-39): it is relevance-ranked and capped, cannot enumerate the queue, and will silently miss roles — producing a false "no roles" when roles exist.
 
 Skip any entry where neither a Job URL nor job description details in the RTF body of the record are populated.
 
