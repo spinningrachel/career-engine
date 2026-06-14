@@ -226,7 +226,7 @@ Queue selection order differs between standalone and orchestrator modes:
 **Orchestrator mode (Interested roles):** Scored roles take priority. The full pipeline should process the highest-priority ready-to-apply roles first.
 
 1. `scored` roles ordered `1` → `2` → `3` → `4` → `5` → `6`
-2. Remaining slots filled with `unscored` roles — the coach will score them in Step 0.8.
+2. Remaining slots filled with `unscored` roles, in queue order after the scored ones. Orchestrator mode does **not** score them (the coach runs only in standalone intake, R-42) — an unscored `Interested` role is still processed; `Priority` only affects ordering.
 
 **Open Application hard floor (both modes):** Any role identifiable as an open application, unsolicited application, or speculative application where no specific listing is posted must always slot at `6` (Fifth) in the queue, regardless of any Priority value already set. If the coach has not yet run and a pre-set priority above `6` is found on such a role, treat it as `6` for queue ordering. The coach will correct the Notion value in Step 0.8.
 
@@ -235,6 +235,22 @@ All roles not selected are deferred. Proceed immediately to Step 0.8.
 ## Step 0.8 — Employment coach
 
 **Pre-coach filter — run before any coach-complete check:** Remove any role marked `needs-manual` from the coach queue. A role with no usable JD content cannot be meaningfully analysed by the coach. Log the removal in the revision log: "[Company] — [Position]: removed from coach queue, JD content unavailable (needs-manual). Resolve manually then re-run intake." Do not send a `needs-manual` role to the coach under any circumstances. A `needs-manual` role is removed from the **processing queue entirely** — it is excluded from all of Step 0.9, including the 0.9d Status writeback. Its Status stays unchanged so it reappears in the next intake run once the JD is resolved.
+
+**Mode branch (R-42).** The employment coach runs **only in standalone intake mode** (Hold roles — coaching is the entire point of intake). In **orchestrator mode** (New Application — Interested roles) the coach is **never spawned**: roles are expected to arrive intake-ready, and the only job here is to verify the values the writers actually consume. The coach is not a mid-pipeline repair tool.
+
+### Orchestrator mode (Interested roles) — readiness check, NO coach spawn
+
+For each role still in the queue, verify these **writer-needed** fields are populated (non-empty):
+`Role summary`, `Role emphasis`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`.
+
+`JD proof` is **not** checked — it is reference-only (schema: "for Rachel's reference ONLY"), written by the coach during intake, and consumed by no downstream agent, so it must never gate or trigger anything here. `Gap handling` is not required when `gap_handling_mode = disabled`. `Landscape` is coach-research context, not writer input — not required here. A field counts as present if it is non-empty; this is a presence check, not a quality check (a thin-but-present value passes — the writers also draw on `Why I Want This Role` and the JD).
+
+- **All writer-needed fields present** → the role is ready; carry its existing coach values forward to the per-role pipeline.
+- **Any writer-needed field missing or empty** → the role is NOT intake-ready and **cannot be handled this run**. Do NOT spawn the coach to repair it. Remove it from the processing queue, leave its Status unchanged, and flag it in the Step 0.9b briefing: "[Company] — [Position]: not processed — missing writer-needed field(s) `<list>`. Run intake first (move the role through Hold / `--coach-skills`), then re-run the New Application pipeline."
+
+Then **skip Step 0.8.5 entirely** (no coach output exists to fact-check) and proceed to Step 0.9 with the ready roles only.
+
+### Standalone intake mode (Hold roles) — employment coach
 
 Before spawning, check each remaining role in the queue: a role is `coach-complete` only if all required fields are populated. The required count depends on `gap_handling_mode`:
 - **When `gap_handling_mode = enabled` (default):** all eight fields must be populated — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, and `Landscape`.
@@ -257,6 +273,8 @@ The coach returns:
 Hold the coach output in memory. Proceed immediately to Step 0.8.5.
 
 ## Step 0.8.5 — Coach output fact check
+
+**Skip this step entirely in orchestrator mode (R-42).** It only runs when the coach actually ran — i.e. standalone intake. In the New Application pipeline no coach is spawned, so there is no coach output to fact-check; go straight to Step 0.9.
 
 Spawn `gatekeeper` with `option=coach-output`, passing:
 - The full coach output for all roles (Role emphasis, Strategy, Gap handling, Role summary per role)

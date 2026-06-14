@@ -200,7 +200,7 @@ Status is the single property that drives what the pipeline does with a role. {{
 
 **Always write the numeric Notion value (1–6) when setting Priority via `notion-update-page`.** The label names are internal shorthand — Notion rejects them as select values.
 
-Roles with `Priority` already set are always selected into the queue before unscored roles, ordered 1 → 6. Unscored roles fill any remaining slots and are scored by the coach in Step 0.8.
+Roles with `Priority` already set are always selected into the queue before unscored roles, ordered 1 → 6. Unscored roles fill any remaining slots and are processed in queue order after the scored ones. In the New Application pipeline the coach is **not** spawned to score them (R-42 — the coach runs only in standalone intake); an unscored role is still processed, and `Priority` affects ordering only.
 
 **Open Application hard floor:** Roles identifiable as open/speculative/unsolicited applications (no specific listing posted) must always sort and be treated as `6` (Fifth) in the queue, regardless of any Priority value currently in Notion. The coach will write `6` to Notion in Step 0.8. If the coach is skipped (all coach-complete), verify any open application entry is set to `6` before queue ordering — correct it inline if not.
 
