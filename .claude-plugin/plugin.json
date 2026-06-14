@@ -11,6 +11,7 @@
   "skills": [
     "./skills/"
   ],
+  "hooks": "./hooks/hooks.json",
   "keywords": [
     "career",
     "cv",

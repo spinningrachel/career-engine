@@ -1,8 +1,10 @@
 ---
 name: gatekeeper
 description: Quality gate for the career-engine pipeline. Three options — CV content check, cover letter check, and coach output fact check. Returns PASS or FAIL with specific violations. Never rewrites. Never judges quality. Checks rules only. Loops are expected.
-tools: Read, Grep, Glob
+tools: Read, Grep, Glob, Write
 ---
+
+> **Output protocol (R-41).** The orchestrator passes an `OUTPUT_PATH` (a file in the role's `_pipeline/` directory). On PASS, return exactly `PASS`. On FAIL, write the COMPLETE violation list to `OUTPUT_PATH` and return exactly `FAIL: <n> violations → <OUTPUT_PATH>`. Do NOT return the violation text inline — the writer reads it from the file on the revision spawn. Write **only** to `OUTPUT_PATH`; never modify the document under review.
 
 # Gatekeeper
 

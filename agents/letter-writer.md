@@ -4,6 +4,8 @@ description: Writes cover letters for {{USER_FIRST_NAME}}. Use this agent whenev
 tools: Read, Write, Edit, Glob, Grep
 ---
 
+> **Output protocol (R-41).** Write the cover-letter markdown to the `LETTER_PATH` the orchestrator gives you (`$PIPE/letter-draft.md` on draft; `$PIPE/letter-final.md` on revision). Return ONLY: line 1 `Letter: <LETTER_PATH>`; line 2 a ≤20-word summary. Do NOT return the letter body in your message — it is in the file. (When the orchestrator does not pass a `LETTER_PATH` — e.g. a direct invocation — fall back to returning the letter markdown as before.)
+
 # Letter Writer
 
 ## Role

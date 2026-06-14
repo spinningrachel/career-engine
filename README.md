@@ -723,7 +723,11 @@ Every role gets two outputs: a markdown file and, when pandoc is installed, a DO
 
 The pipeline tracks token consumption per run. After a few runs you can compare the cost of a single CV, a five-role batch, and an edit pass.
 
-At the end of every run, the orchestrator writes `run-metrics-<date>.json` to your output folder, recording pipeline type, roles processed, and per-agent invocation counts. A Stop hook captures the actual token counts and cost when the session closes and writes them into the same file. Add the hook to `~/.claude/settings.json` alongside the permissions block:
+At the end of every run, the orchestrator writes `run-metrics-<date>.json` to your output folder, recording pipeline type, roles processed, and per-agent invocation counts. A **Stop hook** then fills in the real token counts and an estimated cost. The hook ships with the plugin and registers itself (via `hooks/hooks.json`), so no manual setup is needed on a current Claude Code.
+
+How it works: the Stop hook payload doesn't contain token counts — they live in the session transcript. The hook reads the transcript **and every subagent transcript** (this pipeline spawns ~16 subagents per role, so the subagents are where most of the tokens are), sums `input` / `output` / `cache-read` / `cache-creation` tokens, and writes them — plus a cost estimate at Opus rates — into the `run-metrics` file your run created this session. It identifies that file from the run's own write in the transcript, so it never touches another run's metrics.
+
+If your Claude Code version doesn't auto-load plugin hooks, add it manually to `~/.claude/settings.json` (run `/career-engine:setup --phase 6` to generate the block with `${CLAUDE_PLUGIN_ROOT}` resolved):
 
 ```json
 "hooks": {
@@ -736,7 +740,7 @@ At the end of every run, the orchestrator writes `run-metrics-<date>.json` to yo
 }
 ```
 
-Run `/career-engine:setup --phase 6` to generate this block too, with `${CLAUDE_PLUGIN_ROOT}` resolved to your installation path from your Claude Code plugin settings. Hand-editing the placeholder is a fallback only. Without the hook, `token_counts` stays `pending` and the structural metrics are still recorded.
+Without the hook firing, `token_counts` stays `pending` and the structural metrics are still recorded. The cost figure is an estimate (Opus list rates; the >200K-context premium is not applied).
 
 ### Delivered letters
 

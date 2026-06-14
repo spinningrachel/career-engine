@@ -17,7 +17,8 @@ allowed-tools:
   - mcp__5cd94b8e-1498-421b-bc5d-1bbb07682cf7__notion-query-database-view
   - mcp__5cd94b8e-1498-421b-bc5d-1bbb07682cf7__notion-update-page
   - mcp__5cd94b8e-1498-421b-bc5d-1bbb07682cf7__notion-create-pages
-  - mcp__5cd94b8e-1498-421b-bc5d-1bbb07682cf7__notion-search
+  # notion-search is intentionally NOT allowlisted: it is relevance-ranked and capped,
+  # cannot enumerate the queue, and must never be used to discover queue rows (R-39).
   # Job search — JD fetching
   - mcp__140d3f8f-6ad4-4b39-9df9-84514cae0207__get_job_details
   - mcp__140d3f8f-6ad4-4b39-9df9-84514cae0207__search_jobs
