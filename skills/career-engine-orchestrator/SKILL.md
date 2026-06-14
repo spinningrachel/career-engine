@@ -187,7 +187,7 @@ Status is the single property that drives what the pipeline does with a role. {{
 
 ## Priority Definitions
 
-**`Priority`** is the sole queue ordering signal. It is set by the employment coach on every run — for every role the coach processes. The coach scores all roles, confirms or revises existing scores, and always writes a value. Values and meanings:
+**`Priority`** is the sole queue ordering signal. It is set by the employment coach **during intake only** — that is the one and only place scoring happens. The New Application pipeline never scores: it reads the `Priority` intake already wrote and uses it purely for queue order (an unscored role still processes, just ordered last). Values and meanings:
 
 | Label | Notion value | Meaning |
 |---|---|---|
