@@ -77,8 +77,11 @@ bash "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/convert-cv.sh" \
   "/tmp/<cv_filename>.md" \
   "/tmp/<cl_filename>.md" \
   "<output_dir>/<company_dir>" \
-  "${CLAUDE_PLUGIN_ROOT}"
+  "${CLAUDE_PLUGIN_ROOT}" \
+  "$CV_TEMPLATE"
 ```
+
+`$CV_TEMPLATE` (arg 5) is the resolved CV `.dotx` path from the career-data config (`cv_template`, R-38) — the personal template lives in career-data, not the plugin (R-37). The script fails fast if it is missing. (R-42 — the script previously hardcoded a literal `{{USER_DOTX_FILE}}.dotx` and a stale `application-files-export` footer path, which broke every export.)
 
 Pandoc inherits the header/footer from the reference template. {{USER_FIRST_NAME}}'s name and contacts appear automatically. Only the Subtitle (role tagline) needs updating per role.
 
