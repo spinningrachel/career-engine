@@ -437,7 +437,17 @@ Ask: "Should the pipeline run gap analysis for every role? Gap handling identifi
 
 If you're not sure, leave it enabled. You can always turn it off per-role when it isn't relevant."
 
-- Write the gap-handling choice into `${CAREER_DATA}/references/pipeline-preferences.json` **alongside** every other key set in this phase — one career-data config file (readable everywhere, survives upgrades). The complete file (R-38):
+**Location compatibility (optional)**
+Ask: "Do you want the coach to track whether each role is compatible with your location? If yes, tell me:
+1. Your location (city, country, or region — e.g. 'Israel', 'Germany', 'EU')
+2. The name of the Notion property where you want this recorded (e.g. 'Israel Compatibility', 'Location Compatibility', or whatever you've named it in your database)
+
+If you don't have this property in your database or don't need it, skip this — the coach will simply not check location compatibility."
+
+- If the user provides both values: write `location_compatibility: {"my_location": "<value>", "notion_property": "<value>"}` to the config.
+- If the user skips: write `location_compatibility: {"my_location": "", "notion_property": ""}` (the default from the plugin template — both empty means the check is skipped at runtime).
+
+- Write the gap-handling choice **and** location compatibility **alongside** every other key set in this phase — one career-data config file (readable everywhere, survives upgrades). The complete file (R-38):
   ```json
   {
     "gap_handling": "enabled",
@@ -448,10 +458,14 @@ If you're not sure, leave it enabled. You can always turn it off per-role when i
     "output_dir_prefix": "applications",
     "default_language": "English",
     "word_templates_path": "<Hebrew .dotx templates dir, or empty>",
-    "notion_needs_editing_view_url": "<Needs-Editing view URL, or empty>"
+    "notion_needs_editing_view_url": "<Needs-Editing view URL, or empty>",
+    "location_compatibility": {
+      "my_location": "<city/country/region, or empty to skip>",
+      "notion_property": "<Notion property name, or empty to skip>"
+    }
   }
   ```
-  (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted.) **Required for any run:** `output_folder`, `cv_template`; **also required for Notion trackers:** `notion_database_id`. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop if a required key is missing. Never substitute any of these into plugin files.
+  (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted; `location_compatibility` both keys empty = check skipped.) **Required for any run:** `output_folder`, `cv_template`; **also required for Notion trackers:** `notion_database_id`. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop if a required key is missing. Never substitute any of these into plugin files.
   (or `"disabled"`, matching the user's choice). Preserve any other keys already present in the file.
 - Apply the **Writing personal data** rule: in Claude Code write `career-data` directly; in Cowork stage the change and emit the Appendix-A handoff. Refresh the `career-data` backup export after a direct write.
 - Do NOT write this preference to `~/.claude/settings.json` — that location is reachable only from the user's own machine and silently falls back to the default everywhere else. The pipeline still reads it as a legacy fallback, but `career-data` is the authority.

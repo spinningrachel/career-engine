@@ -198,7 +198,7 @@ For each role:
 
 3. **No Job URL and no JD content anywhere** — mark `needs-fetch`. Log to the run-level revision log. Drop from this run.
 
-Pass the full row payload (including `JD Body` content and any fetched URL content) to the employment coach in Step 0.8. The coach writes `JD Body`, `JD Fetch Status`, and `Israel Compatibility`.
+Pass the full row payload (including `JD Body` content and any fetched URL content) to the employment coach in Step 0.8. The coach writes `JD Body`, `JD Fetch Status`, `Priority`, `Priority Reason`, and the location compatibility property (if configured).
 
 Hold all structured JD data in memory. Proceed immediately to Step 0.6.
 
@@ -302,8 +302,10 @@ Where Path A1 (the `ntn` CLI, Step 0b gate) is active in this run, property writ
 
 For each role in the processing queue, apply this rule to:
 - `Priority` — write the coach's value (`1`–`6`) only if currently empty. If the role was coach-skipped (already coach-complete per Step 0.8), do not write at all — leave unchanged. In a mixed batch, apply per role individually.
-- `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Relationship type`, `Role summary`, `Person who Advertised Role (if not Hiring Manager)` — write if empty.
-- `Hiring manager's role`, `Manager role confirmed`, `No incumbents in this function` — write if empty.
+- `Priority Reason` — write the coach's one-sentence reason if currently empty. Written for every role the coach touches (both triage-exit roles and full-research roles).
+- Location compatibility property (name resolved from `location_compatibility.notion_property` in `pipeline-preferences.json`) — write if empty and if the property name is configured. Skip entirely if not configured.
+- `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Relationship type`, `Role summary`, `Person who Advertised Role (if not Hiring Manager)` — write if empty. (Triage-exit roles skip these — only full-research roles write them.)
+- `Hiring manager's role`, `Manager role confirmed`, `No incumbents in this function` — write if empty. (Full-research roles only.)
 - `First Advertised` — write if empty. Look for the original posting date on the job board page (often shown as "Posted X days ago", "Date posted:", or a visible timestamp). If the URL fetch returned a page with a posting date, parse and write it (format: YYYY-MM-DD). If no date is findable, leave empty — do not guess or approximate.
 - `Gap handling` — write if empty. If gap_handling_mode = disabled, skip entirely.
 - `Company Stage` — write if empty. Exact option values: `Seed`, `Series A`, `Series B`, `Series C`, `Public`, `PE-backed`, `Stealth`, or `N/A`.

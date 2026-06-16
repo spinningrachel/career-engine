@@ -82,13 +82,31 @@ Only run this step if the LinkedIn MCP is connected. If it is not, skip and note
 
 ---
 
-### Location & eligibility deep-scan (mandatory, every role)
+### Location Compatibility
 
-Location truth is rarely confined to the location field — clues hide in the full JD text, the metadata, and the company's operational footprint, and they get overlooked. For every role:
+Read `location_compatibility` from `${CAREER_DATA}/references/pipeline-preferences.json` before any location analysis. Two keys:
+- `my_location` — the user's location (e.g. `"Israel"`, `"Germany"`, `"EU"`). Used to assess whether a role is compatible.
+- `notion_property` — the name of the Notion property to write the result to (e.g. `"Israel Compatibility"`, `"Location Compatibility"`). May be any property name the user has set up in their database.
+
+If either key is absent or empty: **skip all location compatibility checks and writes** — do not write any location property to Notion.
+
+**Result values** (written to the property named in `notion_property`): `Yes` (worldwide confirmed or no restrictions that affect `my_location`), `Remote-only` (geography unclear or ambiguous), `No` (on-site outside user's location or location-restricted in a way that structurally excludes `my_location`).
+
+- During **Quick Triage** (Step 2c): derive the result from the JD text scan only — no active research. When in doubt, use `Remote-only`.
+- During **deep research** (Part 0 / Location deep-scan below): refine the result using full evidence. The deep-scan result supersedes the triage result and should be re-written if it differs (write-only-to-empty rule still applies — if already written in triage, check whether the deep-scan result conflicts and update accordingly).
+
+---
+
+### Location & eligibility deep-scan (Priority 1–4 roles only)
+
+Runs during full research. Not run for Priority 5–6 triage-exit roles.
+
+Location truth is rarely confined to the location field — clues hide in the full JD text, the metadata, and the company's operational footprint, and they get overlooked. For every role proceeding past triage:
 
 1. **Scan everything:** the full JD text, location/metadata fields, the careers-page entry (agent Step 2b), and visible hiring posts — for stated location or timezone requirements, work-authorization language, and crucially the REASON given for any restriction. "Primarily EST timezone for healthy overlap with European business hours" restricts very differently than "must hold US work authorization": the first is a rationale a candidate elsewhere may satisfy better than the stated geography does; the second is structural.
-2. **Check the exception paths** whenever a remote-advertised role carries a geographic restriction: does the company hire through an EOR (Deel, Remote.com, Oyster — often visible in the application flow or careers-page footer)? Does it already hire outside the stated country (multi-country postings, team members' visible locations)? Does the stated rationale actually hold against {{USER_FIRST_NAME}}'s location (timezone-overlap reasons often do)?
-3. **Output a Location block** in the research findings: the restriction as written, its stated reason, exception-path evidence found (or "none found"), and — when a path exists — a suggested ask-first action: a 2-line note to the named recruiter or People contact asking whether a candidate in {{USER_FIRST_NAME}}'s location with the overlapping hours would be considered. This block feeds Priority scoring (Part 0) and the `Strategy` property.
+2. **Check the exception paths** whenever a remote-advertised role carries a geographic restriction: does the company hire through an EOR (Deel, Remote.com, Oyster — often visible in the application flow or careers-page footer)? Does it already hire outside the stated country (multi-country postings, team members' visible locations)? Does the stated rationale actually hold against `my_location` (timezone-overlap reasons often do)?
+3. **Output a Location block** in the research findings: the restriction as written, its stated reason, exception-path evidence found (or "none found"), and — when a path exists — a suggested ask-first action: a 2-line note to the named recruiter or People contact asking whether a candidate at `my_location` with the overlapping hours would be considered. This block feeds Priority scoring (Part 0) and the `Strategy` property.
+4. **Update location compatibility result** if the deep-scan finding differs from the triage assessment — refine the Notion property value accordingly.
 
 ---
 
@@ -169,21 +187,24 @@ Before any analysis, determine the gap handling mode in this order:
 - If the value is `"enabled"` or the key is absent (default): set `GAP_HANDLING = enabled`. Proceed normally.
 - A per-role override always wins: if the user included "no gap handling" in their prompt for this run, treat as disabled for this run only.
 
-### Part 0 — Priority scoring (all roles)
+### Part 0 — Priority scoring (full research roles)
 
-Score every role in the queue using the Priority Framework in `01-writing-rules.md` Section 1. There is no longer a distinction between pre-scored and unscored roles — the coach always produces a priority for every role it processes.
+This step runs only for roles that reached full research (Priority 1–4 from triage, pre-scored roles, or `--full-research` runs). For Priority 5–6 triage-exit roles, Priority and Priority Reason were already written in Step 2c and are final.
+
+Apply the Priority Framework in `01-writing-rules.md` Section 1, now with full research context:
 
 **Step 1 — Open Application check (run this before everything else):**
 Is this role an open application, unsolicited application, or speculative application — i.e., {{USER_FIRST_NAME}} is applying without a specific open listing? If yes: the priority is `Fifth`. Stop. Do not apply domain fit or any other criterion. Write `Fifth` and the reason: "Open application — hard floor override." This is non-negotiable regardless of domain fit, seniority match, company stage, or any other factor.
 
 **Step 2 — Standard scoring (only if Step 1 did not apply):**
-1. Apply the Priority Framework criteria in order.
-2. Write a one-sentence reason grounded in {{USER_FIRST_NAME}}'s documented background and the JD.
+1. Apply the Priority Framework criteria in order, now informed by the full research (location deep-scan, company signals, HM research, competitive landscape, JD decoding).
+2. Write a tight one-sentence **`Priority Reason`** grounded in {{USER_FIRST_NAME}}'s documented background and the JD — state the key factor(s) that determined the score. This is the final `Priority Reason` for Notion.
 3. Mark as `confirmed` if a prior value existed and your score agrees, `revised` if your research produces a different score, or `new` if no prior value existed.
+4. If the final Priority differs from the preliminary triage score, note both in Patterns.
 
 Also factor in advertised date: a very recent role with strong fit may be more urgent than an older one with similar fit, but stronger fit generally outweighs recency.
 
-**Remote-geography weighting:** when the role is advertised remote and the only blocker is a geographic restriction in its text, do not score it as a hard exclusion on that basis alone. Consult the Location & eligibility deep-scan first. If an exception path was found (EOR in place, existing out-of-country hires, a stated rationale {{USER_FIRST_NAME}}'s location satisfies), score on the remaining criteria, discount at most one priority tier for the geography risk, and flag `ask-first` with the suggested 2-line outreach from the Location block. Score Fifth on geography only when the restriction is structural (legal residency, citizenship, security clearance, payroll-stated-no-exceptions) AND the deep-scan found no exception path. A remote role is never silently dropped over geography — if it reached the coach, it gets scored and its location note travels with it.
+**Remote-geography weighting:** when the role is advertised remote and the only blocker is a geographic restriction in its text, do not score it as a hard exclusion on that basis alone. Consult the Location & eligibility deep-scan first. If an exception path was found (EOR in place, existing out-of-country hires, a stated rationale `my_location` satisfies), score on the remaining criteria, discount at most one priority tier for the geography risk, and flag `ask-first` with the suggested 2-line outreach from the Location block. Score Fifth on geography only when the restriction is structural (legal residency, citizenship, security clearance, payroll-stated-no-exceptions) AND the deep-scan found no exception path. A remote role is never silently dropped over geography — if it reached the coach, it gets scored and its location note travels with it.
 
 ---
 
@@ -406,11 +427,12 @@ Return findings in this exact structure for every role received.
 ```
 ## Employment Coach Analysis — <date>
 
-### Priority scores (blank-priority roles only)
-[Omit this section entirely if all roles had pre-set priorities]
+### Priority scores
+[Omit roles where Priority was pre-set AND confirmed unchanged]
 - **<Company> — <Role Title>** — Page ID: <id>
-  - Priority: <value> — generated
-  - Reason: <one sentence>
+  - Priority: <value> — generated | confirmed | revised
+  - Priority Reason: <one tight sentence — key factor(s) that drove the score>
+  - Triage exit: <Yes — full research skipped | No — full research completed>
 
 ### Patterns and notes for {{USER_FIRST_NAME}}
 - <observation about the batch>
@@ -472,7 +494,7 @@ Return findings in this exact structure for every role received.
 
 **Write only to empty properties.** For every coach-owned property, check the current Notion value before writing. If a value already exists — regardless of what the coach produced — skip it. Do not overwrite.
 
-This applies to all coach-owned properties without exception: `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, `Company Stage`, `Person who Advertised Role (if not Hiring Manager)`, `Priority`, `Landscape`, and all research-derived properties (`Hiring Manager's Name`, `Recent news`, `Funding context`, etc.).
+This applies to all coach-owned properties without exception: `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, `Company Stage`, `Person who Advertised Role (if not Hiring Manager)`, `Priority`, `Priority Reason`, `Landscape`, and all research-derived properties (`Hiring Manager's Name`, `Recent news`, `Funding context`, etc.), as well as the location compatibility property (name resolved from `pipeline-preferences.json`).
 
 **`Priority` exception:** If the coach's analysis produces a materially different priority than what is set (e.g., role is identifiable as an open application that must be `Fifth`, or research reveals a hard disqualifier that changes the score), flag the discrepancy in Patterns and note the recommended value — but still do not overwrite. {{USER_FIRST_NAME}} decides.
 

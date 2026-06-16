@@ -7,5 +7,9 @@
   "default_language": "English",
   "word_templates_path": "",
   "notion_needs_editing_view_url": "",
-  "gap_handling": "enabled"
+  "gap_handling": "enabled",
+  "location_compatibility": {
+    "my_location": "",
+    "notion_property": ""
+  }
 }
