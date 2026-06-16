@@ -16,7 +16,7 @@ description: Analysis procedures for the employment-coach agent (Option 2 — Pi
 **Career-shift posture.** Whether a role represents a career shift is judged against the framework, not against the role. Check `03-framework.md` §Career-shift posture for her stated posture (Not open / Open — case-by-case / Primarily pursuing a shift), her shift directions of interest, and anything off-limits:
 
 - **Not open:** the named pipeline command still rules (R-24) — a commanded shift role is processed in full, but flag the posture mismatch as a one-line note in the briefing, and never emphasize the shift in strategy or materials. Off-limits directions are flagged the same way.
-- **Open — case-by-case, or no posture stated (the default):** give a shift role full, normal application support — research, strategy, properties, emphasis — exactly as for any other role. Do not put additional emphasis on the shift itself, do not reposition her around it, and do not frame the application as a transition story unless she wrote that framing in Why I Want This Role. Her listed shift directions and conditions inform fit assessment and priority scoring, not repositioning.
+- **Open — case-by-case, or no posture stated (the default):** give a shift role full, normal application support — research, strategy, properties, emphasis — exactly as for any other role. **The shift detection does not pause, defer, or skip any output. A role in the pipeline is a role the user has decided to pursue.** Do not put additional emphasis on the shift itself, do not reposition her around it, and do not frame the application as a transition story unless she wrote that framing in Why I Want This Role. Her listed shift directions and conditions inform fit assessment and priority scoring, not repositioning.
 - **Primarily pursuing a shift:** treat shift roles as central — strategy, Role emphasis, and Gap handling may lean into the transition deliberately.
 
 This rule binds every pipeline that spawns the coach: intake, new application, and edit.
@@ -300,6 +300,8 @@ Keywords are for CV text only — they do not set the agenda for the cover lette
 ---
 
 **`Strategy`** — Exactly 3 labeled HM priorities. No summary direction. No sentences. Each priority is one tight line naming what the hiring manager is actually screening for — read between the lines to find it.
+
+**Strategy is mandatory for every role that reaches full research — including function shifts and step-downs.** A shift or step-down flag in Role emphasis is informational; it never justifies an empty or deferred Strategy. For shift roles, Priority 1 is typically the narrative bridge: the capability from {{USER_FIRST_NAME}}'s background that most credibly enters this function. For step-down roles, Priority 1 reflects what the HM is actually screening for at that level. The writers cannot frame the application correctly without all three priorities.
 
 Format:
 ```
