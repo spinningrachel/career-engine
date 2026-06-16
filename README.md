@@ -742,6 +742,27 @@ If your Claude Code version doesn't auto-load plugin hooks, add it manually to `
 
 Without the hook firing, `token_counts` stays `pending` and the structural metrics are still recorded. The cost figure is an estimate (Opus list rates; the >200K-context premium is not applied).
 
+### pipeline-preferences.json reference
+
+`career-data/references/pipeline-preferences.json` is the single configuration file the pipeline reads on every run. Setup writes it during Phase 5. All optional keys default to safe no-op values when absent — so you never need to add every key at once; add them when you need them.
+
+| Key | Required | Default | What it does |
+|---|---|---|---|
+| `notion_database_id` | Yes (Notion users) | `""` | 32-char Notion database ID |
+| `output_folder` | Yes | — | Absolute path to your output folder |
+| `cv_template` | Yes | — | Path to your `.dotx` template, relative to `career-data` root |
+| `draft_dir_url_base` | No | `"skip"` | Base URL for cloud-shared draft links; `"skip"` = leave blank |
+| `output_dir_prefix` | No | `"applications"` | Prefix for per-run output folders |
+| `default_language` | No | `"English"` | Primary language for CV and letter output |
+| `word_templates_path` | No | `""` | Path to Hebrew `.dotx` templates directory |
+| `notion_needs_editing_view_url` | No | `""` | Direct URL to the "Needs Editing" Notion view (speeds up edit pipeline) |
+| `gap_handling` | No | `"enabled"` | `"enabled"` or `"disabled"` — whether the coach addresses employment gaps |
+| `location_compatibility.my_location` | No | `""` | Your location (city, country, or region) for remote-role compatibility checks |
+| `location_compatibility.notion_property` | No | `""` | Notion property name to write the location compatibility result to |
+| `favorite_brands` | No | `[]` | Company names that always receive +1 priority boost (e.g. `["Acme", "Initech"]`) |
+
+**When you update the plugin,** check this table for new optional keys and add any you want to use to your `career-data` skill. Missing optional keys are treated as their default — you will never break a run by having an older config, you just won't get the new feature until you add the key.
+
 ### Delivered letters
 
 `career-data/references/delivered-letters/` holds cover letters you have sent and confirmed represent your voice. The letter-writer reads two or three domain-similar letters from this folder before drafting, calibrating sentence patterns, vocabulary, and paragraph structure against them. The archive caps at six letters.

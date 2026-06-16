@@ -447,7 +447,9 @@ If you don't have this property in your database or don't need it, skip this —
 - If the user provides both values: write `location_compatibility: {"my_location": "<value>", "notion_property": "<value>"}` to the config.
 - If the user skips: write `location_compatibility: {"my_location": "", "notion_property": ""}` (the default from the plugin template — both empty means the check is skipped at runtime).
 
-- Write the gap-handling choice **and** location compatibility **alongside** every other key set in this phase — one career-data config file (readable everywhere, survives upgrades). The complete file (R-38):
+**Favorite brands (optional).** Ask: "Do you have any companies you'd like to always prioritize one tier higher than the coach would normally score? If yes, list them. You can update this list at any time." Write the list to `favorite_brands` as a JSON array of strings. Empty array = no boost applied.
+
+- Write the gap-handling choice, location compatibility, and favorite brands **alongside** every other key set in this phase — one career-data config file (readable everywhere, survives upgrades). The complete file (R-38):
   ```json
   {
     "gap_handling": "enabled",
@@ -462,10 +464,11 @@ If you don't have this property in your database or don't need it, skip this —
     "location_compatibility": {
       "my_location": "<city/country/region, or empty to skip>",
       "notion_property": "<Notion property name, or empty to skip>"
-    }
+    },
+    "favorite_brands": []
   }
   ```
-  (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted; `location_compatibility` both keys empty = check skipped.) **Required for any run:** `output_folder`, `cv_template`; **also required for Notion trackers:** `notion_database_id`. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop if a required key is missing. Never substitute any of these into plugin files.
+  (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted; `location_compatibility` both keys empty = check skipped; `favorite_brands` empty array = no boost.) **Required for any run:** `output_folder`, `cv_template`; **also required for Notion trackers:** `notion_database_id`. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop if a required key is missing. Never substitute any of these into plugin files.
   (or `"disabled"`, matching the user's choice). Preserve any other keys already present in the file.
 - Apply the **Writing personal data** rule: in Claude Code write `career-data` directly; in Cowork stage the change and emit the Appendix-A handoff. Refresh the `career-data` backup export after a direct write.
 - Do NOT write this preference to `~/.claude/settings.json` — that location is reachable only from the user's own machine and silently falls back to the default everywhere else. The pipeline still reads it as a legacy fallback, but `career-data` is the authority.

@@ -198,9 +198,10 @@ Is this role an open application, unsolicited application, or speculative applic
 
 **Step 2 — Standard scoring (only if Step 1 did not apply):**
 1. Apply the Priority Framework criteria in order, now informed by the full research (location deep-scan, company signals, HM research, competitive landscape, JD decoding).
-2. Write a tight one-sentence **`Priority Reason`** grounded in {{USER_FIRST_NAME}}'s documented background and the JD — state the key factor(s) that determined the score. This is the final `Priority Reason` for Notion.
-3. Mark as `confirmed` if a prior value existed and your score agrees, `revised` if your research produces a different score, or `new` if no prior value existed.
-4. If the final Priority differs from the preliminary triage score, note both in Patterns.
+2. **Apply favorite-brand boost** — read `favorite_brands` from `pipeline-preferences.json`. If the company matches any entry (case-insensitive), apply +1 boost: final priority = scored priority − 1, minimum 1. Append "(+1 favorite brand)" to `Priority Reason`. Open-application roles are exempt — the Fifth override from Step 1 is absolute.
+3. Write a tight one-sentence **`Priority Reason`** grounded in {{USER_FIRST_NAME}}'s documented background and the JD, including the brand boost note if applied. This is the final `Priority Reason` for Notion.
+4. Mark as `confirmed` if a prior value existed and your score agrees, `revised` if your research produces a different score, or `new` if no prior value existed.
+5. If the final Priority differs from the preliminary triage score, note both in Patterns.
 
 Also factor in advertised date: a very recent role with strong fit may be more urgent than an older one with similar fit, but stronger fit generally outweighs recency.
 

@@ -109,9 +109,11 @@ For all other unscored roles:
 
 3. **Assign a preliminary Priority** using the Priority Framework in `01-writing-rules.md` Section 1. Write `Priority Reason`: one tight sentence stating the key factor(s) that drove the score.
 
-4. **If Priority 5 or 6** (and no `--full-research` flag): write to Notion (write-only-to-empty): `Priority`, `Priority Reason`, `JD Body` (if freshly fetched), `JD Fetch Status`, `Role Type`, `Relationship type`, and location compatibility result (written to the property named in `pipeline-preferences.json`, if configured). Log in Patterns: "Triage exit [Priority X] — [Company] [Role Title]: [Reason]." **Do not proceed to Analysis for this role.**
+4. **Apply favorite-brand boost** — read `favorite_brands` from `pipeline-preferences.json`. If the company name matches any entry (case-insensitive), apply a +1 boost: final priority = preliminary priority − 1, minimum 1. If boosted, append "(+1 favorite brand)" to `Priority Reason`. This boost is applied **before** the triage-exit decision below, so a brand that scored 5 becomes 4 and proceeds to full research.
 
-5. **If Priority 1–4**: proceed to Step 3 and Analysis. The full research and Part 0 scoring will confirm or revise the preliminary Priority; the `Priority Reason` is finalized there.
+5. **If Priority 5 or 6** (and no `--full-research` flag): write to Notion (write-only-to-empty): `Priority`, `Priority Reason`, `JD Body` (if freshly fetched), `JD Fetch Status`, `Role Type`, `Relationship type`, and location compatibility result (written to the property named in `pipeline-preferences.json`, if configured). Log in Patterns: "Triage exit [Priority X] — [Company] [Role Title]: [Reason]." **Do not proceed to Analysis for this role.**
+
+6. **If Priority 1–4**: proceed to Step 3 and Analysis. The full research and Part 0 scoring will confirm or revise the preliminary Priority; the `Priority Reason` is finalized there.
 
 **Step 3 — Preserve verbatim text.**
 
