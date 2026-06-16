@@ -62,7 +62,13 @@ Draw ONLY from `02-professional-background.md` (Role Facts) and `03-framework.md
 **Anti-fabrication rule:** If the strongest credential you can name is not traceable to a named company and documented outcome in `02-professional-background.md` (Role Facts), do not write it. This rule is absolute.
 
 **7. Company and org dynamics**
-How does this company actually operate beyond what the JD says? **Start with the LinkedIn company profile** — `get_company_profile(company_name, sections="posts,jobs")` if the LinkedIn MCP is connected; otherwise start with the About Us / Team page on the company website (this is mandatory, not a fallback). It frequently names marketing leaders, describes the team structure, and contains culture signals not found in the JD. Then check: founder/leadership LinkedIn tone, company blog, Glassdoor reviews, team size signals. What do they promote vs. what they claim? 2–3 specific, sourced observations — not JD paraphrase. This feeds the strategy's cultural framing and the Landscape.
+How does this company actually operate beyond what the JD says? Research in this order — all four sources are mandatory, not a pick-one list:
+1. **Company Careers and About Us pages** — team structure, stated values, leadership listed by name. Read the actual page, not a summary.
+2. **LinkedIn company profile** — `get_company_profile(company_name, sections="posts,jobs")` if the MCP is connected. Founder/leadership tone, recent posts, what they actually promote vs. what they claim.
+3. **Glassdoor** — WebSearch `site:glassdoor.com "<company name>" reviews`. Read actual review excerpts: management style, work-life balance signals, burn-out flags, what employees say they value vs. what leadership says.
+4. **Reddit** — WebSearch `site:reddit.com "<company name>" culture OR "working at" OR "interview"`. Candid employee and candidate observations not filtered through corporate comms.
+
+Synthesise into 2–3 specific, sourced observations. Name the source inline (e.g. "Glassdoor: ..."). This feeds `Culture` (a dedicated Notion property — see Output Format) and `Strategy`.
 
 **8. Recruitment criteria**
 What do they actually look for when hiring for this type of role? Check: Glassdoor interview reviews, public hiring posts or LinkedIn content from the hiring manager, patterns across their open roles. Aim for 2–3 specific criteria beyond what the JD states explicitly.
@@ -482,6 +488,7 @@ Return findings in this exact structure for every role received.
   - **Market position:** <enterprise / mid-market / SMB; primary buyer>
   - **Sector and market signals:** <1–2 sentences — relevant tailwinds, headwinds, or sector dynamics that affect this company's trajectory right now>
   - **Competitive landscape:** <exactly 5 real, known competitors at the same market tier; name + one-line description + {{USER_COUNTRY}} office Yes/No each>
+- **Culture:** 2–3 tight sourced observations about how this company actually operates. Sources named inline — Glassdoor, LinkedIn, Reddit, Careers/About Us. Flag any burn-out or culture-warning signals explicitly. `N/A` only if all four sources returned nothing usable.
 - **Role summary:** ≤400 chars total. Short paragraph + up to 5 bullets. JD vocabulary only. No candidate references. No location/contact info. Self-characterization section verbatim as final bullet if present (within 400-char total).
 
 [repeat for each role]
@@ -497,7 +504,7 @@ Return findings in this exact structure for every role received.
 
 **Write only to empty properties.** For every coach-owned property, check the current Notion value before writing. If a value already exists — regardless of what the coach produced — skip it. Do not overwrite.
 
-This applies to all coach-owned properties without exception: `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, `Company Stage`, `Person who Advertised Role (if not Hiring Manager)`, `Priority`, `Priority Reason`, `Landscape`, and all research-derived properties (`Hiring Manager's Name`, `Recent news`, `Funding context`, etc.), as well as the location compatibility property (name resolved from `pipeline-preferences.json`).
+This applies to all coach-owned properties without exception: `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, `Company Stage`, `Culture`, `Person who Advertised Role (if not Hiring Manager)`, `Priority`, `Priority Reason`, `Landscape`, and all research-derived properties (`Hiring Manager's Name`, `Recent news`, `Funding context`, etc.), as well as the location compatibility property (name resolved from `pipeline-preferences.json`).
 
 **`Priority` exception:** If the coach's analysis produces a materially different priority than what is set (e.g., role is identifiable as an open application that must be `Fifth`, or research reveals a hard disqualifier that changes the score), flag the discrepancy in Patterns and note the recommended value — but still do not overwrite. {{USER_FIRST_NAME}} decides.
 

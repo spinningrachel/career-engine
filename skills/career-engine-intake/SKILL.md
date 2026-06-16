@@ -253,10 +253,10 @@ Then **skip Step 0.8.5 entirely** (no coach output exists to fact-check) and pro
 ### Standalone intake mode (Hold roles) — employment coach
 
 Before spawning, check each remaining role in the queue: a role is `coach-complete` only if all required fields are populated. The required count depends on `gap_handling_mode`:
-- **When `gap_handling_mode = enabled` (default):** all eight fields must be populated — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, and `Landscape`.
-- **When `gap_handling_mode = disabled`:** seven fields — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, and `Landscape`. `Gap handling` is NOT required and must NOT block coach-complete status.
+- **When `gap_handling_mode = enabled` (default):** all nine fields must be populated — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Culture`, and `Landscape`.
+- **When `gap_handling_mode = disabled`:** eight fields — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Culture`, and `Landscape`. `Gap handling` is NOT required and must NOT block coach-complete status.
 
-Partial population (any required field missing) is not coach-complete and the role must be sent to the coach. `Landscape` is always required — the coach must populate it for every role, even if only to confirm no new landscape intelligence exists.
+Partial population (any required field missing) is not coach-complete and the role must be sent to the coach. `Landscape` and `Culture` are always required — the coach must populate both for every role, even if only to confirm no intelligence was found.
 
 - **All roles are `coach-complete`:** skip the coach spawn entirely. Proceed directly to Step 0.9 using existing values.
 - **Any role has one or more fields missing:** spawn the coach with every role that is not fully complete. Carry existing values forward for coach-complete roles only.
@@ -310,6 +310,7 @@ For each role in the processing queue, apply this rule to:
 - `Gap handling` — write if empty. If gap_handling_mode = disabled, skip entirely.
 - `Company Stage` — write if empty. Exact option values: `Seed`, `Series A`, `Series B`, `Series C`, `Public`, `PE-backed`, `Stealth`, or `N/A`.
 - `Role Type` — write if empty. Multi-select exact values: `Builder`, `Scaler`, `Specialist`, `Leader`, or `N/A`.
+- `Culture` — write if empty. Skip entirely if already has content.
 - `Landscape` — write if empty. Skip entirely if already has content.
 
 Confirm in chat: "Writeback complete: K roles updated, M properties skipped (already populated)."
