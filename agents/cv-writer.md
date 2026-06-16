@@ -154,6 +154,12 @@ See `skills/cv-writing/SKILL.md` for bullet rules (outcomes first, proof, third 
 - `Relationship type` — Full time / Part time / Temporary / Fractional/Consulting/Freelance. Use this for framing tone only — it does not change CV structure.
 - `Role Type` — drives CV structure and skills section format. See `skills/cv-writing/SKILL.md` for structure rules per Role Type.
 
+**Shift framing — check Role emphasis first:** If Role emphasis contains `Shift:` (a function or track shift), this role requires a transfer-credibility argument. Apply shift framing:
+- Lead with transferable achievements and outcomes — what she demonstrably accomplished that maps to the target function. Concrete results first; label the relevance explicitly if the connection is not obvious.
+- Surface relevant skills and passions from `02-professional-background.md` and `03-framework.md` that apply to the new function. Mine them actively — do not leave the transfer case implicit.
+- Position the CV as "brings [capability] to [function]" — not as a career-transition story, not as an apology for what she lacks. Frame for fit, not narrative.
+- The goal is to make the transfer argument undeniable. A shift CV that buries the transferable proof loses the shortlist.
+
 **Step-down framing — check Role emphasis first:** If Role emphasis begins with `Step-down:`, this role is materially below {{USER_FIRST_NAME}}'s typical seniority level. Apply step-down framing:
 - Lead with execution bullets — what she built, shipped, ran, and delivered hands-on. Numbers, outputs, named tools.
 - Suppress strategy and leadership language. Do not surface board presentations, function-building, org design, or budget ownership unless they directly answer a named JD requirement.

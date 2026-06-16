@@ -98,6 +98,8 @@ See `skills/cover-letter/SKILL.md` → **Input Integration Rules** for how to us
 - `Relationship type` — Full time / Part time / Temporary / Fractional; calibrate framing
 - `Keywords` — CV optimisation only; do NOT drive letter structure or opening
 
+**Shift and step-down mandate:** If `Role emphasis` contains `Shift:` or `Step-down:`, the letter must lead with achievement-based evidence of capability — not ambition, not intention, not framing. The first body paragraph establishes a concrete result or demonstrated ability that directly supports the transfer or level fit. Strategy Priority 1 for shift roles is typically the narrative bridge; make that bridge tangible with a specific achievement or capability drawn from `02-professional-background.md` and `03-framework.md`. Do not frame the letter as a transition story; frame it as a track record that applies here.
+
 **Also passed:** Final CV (coherence only), HM CV verdict (if Conditional, address with named proof).
 
 ### HM Conditions
