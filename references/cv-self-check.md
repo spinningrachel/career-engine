@@ -30,6 +30,7 @@ Run every item in order before returning output. The gatekeeper runs the same ch
 - [ ] No tool names, platform names, client names, or role-specific metrics in the summary
 - [ ] None of these phrases appear: "comfortable operating across," "proven track record," "passionate about," "results-driven," "dynamic," "extensive experience"
 - [ ] No section header or label sits between the `## SUMMARY` banner and the summary text
+- [ ] **Single-instance trap:** For every concrete claim or named activity in the summary, count how many times it appears across the CV body. If a sentence implies a repeated pattern but the CV shows only one instance — that sentence is a bullet wearing a summary's clothes. Move the specific detail to a bullet under the relevant role; replace it with the breadth claim. A dense, em-dash-stuffed sentence in the summary is a structural signal to apply this check.
 
 ## Key Achievements block (when present)
 
@@ -38,7 +39,7 @@ Run every item in order before returning output. The gatekeeper runs the same ch
 
 ## Experience
 
-- [ ] `## EDUCATION`, `## LANGUAGES`, and `## ADDITIONAL` do NOT appear anywhere in the output — these sections are injected by {{USER_FIRST_NAME}}'s Word macros after DOCX export and must never be included in cv-writer's markdown
+- [ ] `## EDUCATION`, `## LANGUAGES`, and `## ADDITIONAL` do NOT appear anywhere in the output — these sections are already inside {{USER_FIRST_NAME}}'s Word template; writing them here duplicates them in the final DOCX
 - [ ] `## EXPERIENCE` contains full-time employment only, in reverse-chronological order per `01-writing-rules.md` Section 7 — consulting/fractional engagements must not appear here
 - [ ] `## CONSULTING` section is present and contains the consulting/fractional track record
 - [ ] Every named role has a RoleOverview immediately below its RoleTitle — count them; the numbers must match (applies to both EXPERIENCE and CONSULTING sections)

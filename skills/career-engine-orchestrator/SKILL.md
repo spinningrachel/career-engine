@@ -40,14 +40,14 @@ Any text change after a gatekeeper PASS — including the humanizer's changes �
 **Outputs go to {{USER_FIRST_NAME}}'s output folder — never to a session scratchpad.**
 
 The only valid output destination is:
-`{{OUTPUT_FOLDER}}/applications-<YYYY-MM-DD>/`
+`{{OUTPUT_FOLDER}}/${OUTPUT_DIR_PREFIX:-applications}-<YYYY-MM-DD>/`
 
 **Mandatory path verification — run before processing the first role.** Run the *Mandatory career-data discovery* (below) FIRST — it resolves `${CAREER_DATA}` and reads `$OUTPUT_FOLDER` and `$CV_TEMPLATE` from the career-data config (R-38). The plugin keeps `{{OUTPUT_FOLDER}}` literal; never treat that placeholder as a path. Two access paths, tried in order (R-30). A failed Path A is an environment limitation, not a missing folder — it does not end the run by itself.
 
 **Path A — direct filesystem** (Claude Code, or the output folder is connected to the session):
 
 ```bash
-OUTPUT_DIR="$OUTPUT_FOLDER/applications-$(date +%Y-%m-%d)"
+OUTPUT_DIR="$OUTPUT_FOLDER/${OUTPUT_DIR_PREFIX:-applications}-$(date +%Y-%m-%d)"
 mkdir -p "$OUTPUT_DIR"
 [ -d "$OUTPUT_DIR" ] && echo "Output dir confirmed (Path A): $OUTPUT_DIR"
 ```
@@ -71,7 +71,7 @@ mkdir -p "$OUTPUT_DIR"
 
 **Personal-data files** (load from `${CAREER_DATA}/references/`): `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx`. **Doctrine files** stay on `${CLAUDE_PLUGIN_ROOT}/references/`: the self-checks, `REFERENCES.md`, `remote-compatibility-rules.md`, `he-terminology-guide.md`, and the default `.dotx` templates. Inject `CAREER_DATA=<resolved path>` into every agent spawn prompt so each subagent reads personal data from that same root.
 
-**Config resolution (R-38).** Read the **full** per-install config from `${CAREER_DATA}/references/pipeline-preferences.json` and resolve EVERY `{{CONFIG}}` placeholder from it — the single build keeps them all literal. Keys: `notion_database_id`, `output_folder` (absolute), `cv_template` (relative to `${CAREER_DATA}`, e.g. `references/<lastname>.dotx`), `draft_dir_url_base` (or `skip`), `word_templates_path` (Hebrew; optional), `notion_needs_editing_view_url` (edit pipeline; optional), `gap_handling`. Set the matching shell vars (`$NOTION_DATABASE_ID`, `$OUTPUT_FOLDER`, `$CV_TEMPLATE`, `$DRAFT_DIR_URL_BASE`, `$WORD_TEMPLATES_PATH`, `$NOTION_NEEDS_EDITING_VIEW_URL`), pass them to every spawn and downstream skill, and wherever a skill's text shows one of these `{{...}}` placeholders, use the resolved value. **Required for any run:** `output_folder`, `cv_template`. **Also required for any Notion run:** `notion_database_id`. If a required key is missing or empty, stop with: "career-data is missing config key `<name>` — run `/career-engine:setup --phase 5`." Optional keys absent → treat as unconfigured (`draft_dir_url_base` empty/`skip` ⇒ leave Draft Directory blank; `word_templates_path` empty ⇒ Hebrew export unavailable). This is the gap that broke the first two live runs (R-38): the plugin carries no substituted config, so the config file must supply all of it.
+**Config resolution (R-38).** Read the **full** per-install config from `${CAREER_DATA}/references/pipeline-preferences.json` and resolve EVERY `{{CONFIG}}` placeholder from it — the single build keeps them all literal. Keys: `notion_database_id`, `output_folder` (absolute), `cv_template` (relative to `${CAREER_DATA}`, e.g. `references/<lastname>.dotx`), `draft_dir_url_base` (or `skip`), `output_dir_prefix` (optional; defaults to `applications`), `default_language` (optional; defaults to `English`), `word_templates_path` (Hebrew; optional), `notion_needs_editing_view_url` (edit pipeline; optional), `gap_handling`. Set the matching shell vars (`$NOTION_DATABASE_ID`, `$OUTPUT_FOLDER`, `$CV_TEMPLATE`, `$DRAFT_DIR_URL_BASE`, `$OUTPUT_DIR_PREFIX`, `$DEFAULT_LANGUAGE`, `$WORD_TEMPLATES_PATH`, `$NOTION_NEEDS_EDITING_VIEW_URL`), pass them to every spawn and downstream skill, and wherever a skill's text shows one of these `{{...}}` placeholders, use the resolved value. **Required for any run:** `output_folder`, `cv_template`. **Also required for any Notion run:** `notion_database_id`. If a required key is missing or empty, stop with: "career-data is missing config key `<name>` — run `/career-engine:setup --phase 5`." Optional keys absent → treat as unconfigured (`draft_dir_url_base` empty/`skip` ⇒ leave Draft Directory blank; `output_dir_prefix` absent ⇒ use `applications`; `default_language` absent ⇒ use `English`; `word_templates_path` empty ⇒ Hebrew export unavailable). This is the gap that broke the first two live runs (R-38): the plugin carries no substituted config, so the config file must supply all of it.
 
 **Writing personal data (R-37).** Any write to a personal-data file targets `${CAREER_DATA}/references/...`. In Claude Code, write it directly. In Cowork (the skills mount is read-only), do NOT write the skill — stage the change to the output folder as `pending-career-data-updates.md` and emit the Appendix-A handoff prompt for the user to apply in Chat; never write a divergent copy. After any successful direct write, refresh the `career-data` backup export in the output folder. New Section 7-grade career facts are flagged for approval, never auto-written.
 
@@ -106,7 +106,7 @@ This rule governs every agent that touches cover letter content:
 
 **Job Applications database:** Notion database ID `{{NOTION_DATABASE_ID}}`. Source of job descriptions and destination for per-role updates.
 
-**Output folder:** `{{OUTPUT_FOLDER}}/applications-<YYYY-MM-DD>/`
+**Output folder:** `{{OUTPUT_FOLDER}}/${OUTPUT_DIR_PREFIX:-applications}-<YYYY-MM-DD>/`
 
 Each role's files go in a subdirectory inside the run folder named after the hiring company (see company directory naming convention in `career-engine-export`). After all files for a role are produced and verified **on disk** (confirmed via `ls`), the orchestrator writes the file directory URL to the `Draft Directory` URL property on the Notion row. All English and Hebrew files for the role are accessible from that directory URL.
 
@@ -116,7 +116,7 @@ Each role's files go in a subdirectory inside the run folder named after the hir
 {{DRAFT_DIR_URL_BASE}}<date-folder>%2F<company_dir>%2F
 ```
 
-Where `<date-folder>` = the run folder name (e.g. `applications-2026-05-26`) and `<company_dir>` = the kebab-case company directory name.
+Where `<date-folder>` = the run folder name (e.g. `${OUTPUT_DIR_PREFIX:-applications}-2026-05-26`) and `<company_dir>` = the kebab-case company directory name.
 
 **`Languages` property:** Multi-select on the Notion row. Expected options: `English`, `Hebrew`. If `Hebrew` is present, the pipeline automatically runs the Hebrew localization step (Step 6H) after English DOCX export and produces two additional DOCX files in the same company subdirectory. No extra configuration required.
 
@@ -282,7 +282,7 @@ Run `career-engine-new-application` Steps 1 through 7d exactly as in the standar
 - Step 7d (feedback file) — write as normal.
 
 **Output folder:** same as all other runs:
-`{{OUTPUT_FOLDER}}/applications-<YYYY-MM-DD>/`
+`{{OUTPUT_FOLDER}}/${OUTPUT_DIR_PREFIX:-applications}-<YYYY-MM-DD>/`
 
 Create the folder if it does not exist (same as normal).
 
@@ -356,7 +356,7 @@ Read-only. No agents. No Notion. Just reads the filesystem.
 **Step S1 — Find the most recent run folder**
 
 ```bash
-ls -1d "{{OUTPUT_FOLDER}}/applications-"* | sort | tail -1
+ls -1d "{{OUTPUT_FOLDER}}/${OUTPUT_DIR_PREFIX:-applications}-"* | sort | tail -1
 ```
 
 If no run folder exists, report: "No pipeline runs found."

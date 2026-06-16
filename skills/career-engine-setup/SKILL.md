@@ -411,9 +411,23 @@ Ask: "Do you want to use the included CV template (`cv-template-default.dotx`) o
 - If default: record `cv_template` as `references/cv-template-default.dotx` in the career-data config (ship the default template into `career-data/references/` too, or the orchestrator falls back to the plugin's `${CLAUDE_PLUGIN_ROOT}/references/cv-template-default.dotx`). No plugin-file substitution.
 
 **Draft Directory link base**
-Ask: "Do you use a cloud file-share (Anchorpoint, Dropbox, Google Drive) that produces a stable folder URL for your output folder? If yes, paste the base URL up to (and including) the separator before the date folder. If not, answer `skip`."
+Ask: "Do you use a cloud file-share or file-browser app (e.g. Anchorpoint, Dropbox, Google Drive) that produces a stable folder URL pointing to your output folder? If yes, paste the base URL up to (and including) the separator before the date folder. If not, answer `skip`."
+
+Examples of the expected format (the URL must end just before the date-folder segment):
+- Anchorpoint: `https://app.anchorpoint.app/.../<workspace>/files/<path-to-output-folder>/`
+- iCloud web share: share the output folder once; the link base is the part before the date-folder portion
+- Answer `skip` if you don't use a cloud file browser or don't want Notion links
+
 - Write the answer (or the literal word `skip`) as `draft_dir_url_base` in the career-data config. No plugin-file substitution (R-38).
-- When the value is `skip`, the pipeline leaves the `Draft Directory` Notion property empty (see the unconfigured link base guard in `career-engine-export`).
+- When the value is `skip`, the pipeline leaves the `Draft Directory` Notion property empty.
+
+**Output directory prefix (optional)**
+The pipeline creates a run folder named `<prefix>-YYYY-MM-DD` inside your output folder. Default prefix is `applications` (e.g. `applications-2026-06-15`). If you want a different name (e.g. `jobs`, `cv-runs`, `pipeline`), provide it — otherwise leave blank to use the default.
+- Write the prefix (or omit the key to use the default `applications`) as `output_dir_prefix` in the career-data config.
+
+**Default language**
+Ask: "What is your primary language for CVs and cover letters? (e.g. `English`, `Hebrew`, `French`) This is used when the Notion row's `Languages` field is empty — the pipeline will produce output in this language only."
+- Write the answer as `default_language` in the career-data config. If the user doesn't answer or is unsure, write `English`.
 
 **Gap handling**
 Ask: "Should the pipeline run gap analysis for every role? Gap handling identifies where your background doesn't fully match the JD and gives the coach and writers a strategy for handling each gap.
@@ -431,11 +445,13 @@ If you're not sure, leave it enabled. You can always turn it off per-role when i
     "cv_template": "references/<their-dotx-or-cv-template-default.dotx>",
     "notion_database_id": "<32-char DB id, or empty for non-Notion trackers>",
     "draft_dir_url_base": "<cloud-share base URL, or skip>",
+    "output_dir_prefix": "applications",
+    "default_language": "English",
     "word_templates_path": "<Hebrew .dotx templates dir, or empty>",
     "notion_needs_editing_view_url": "<Needs-Editing view URL, or empty>"
   }
   ```
-  (`gap_handling` is `"enabled"`/`"disabled"`.) **Required for any run:** `output_folder`, `cv_template`; **also required for Notion trackers:** `notion_database_id`. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop if a required key is missing. Never substitute any of these into plugin files.
+  (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted.) **Required for any run:** `output_folder`, `cv_template`; **also required for Notion trackers:** `notion_database_id`. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop if a required key is missing. Never substitute any of these into plugin files.
   (or `"disabled"`, matching the user's choice). Preserve any other keys already present in the file.
 - Apply the **Writing personal data** rule: in Claude Code write `career-data` directly; in Cowork stage the change and emit the Appendix-A handoff. Refresh the `career-data` backup export after a direct write.
 - Do NOT write this preference to `~/.claude/settings.json` — that location is reachable only from the user's own machine and silently falls back to the default everywhere else. The pipeline still reads it as a legacy fallback, but `career-data` is the authority.

@@ -84,6 +84,7 @@ For each page fetched, capture the full row payload including:
 - Position title
 - Job URL
 - `Edit type` — required; options: `CV`, `Letter`, `Both`
+- `Edit notes` — optional; {{USER_FIRST_NAME}}'s specific instructions about what needs to change. When populated, pass to cv-writer (Step E3) and/or letter-writer (Step E7) so they address the exact issues named before applying general improvements. Do not pass to the coach or gatekeeper.
 - Pipeline (New Applications — from {{USER_FIRST_NAME}}'s chat command)
 - All existing property values — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Why I Want This Role`, `CV File Name`, `Letter File Name` (note: these two file-name properties may be absent from the schema — that is not an error; see the run-folder convention below), `Note`, and any other populated fields
 - Any reviewer feedback or notes already on the row
@@ -120,7 +121,7 @@ The employment coach fetches JDs as part of Step E1 — no separate fetch step n
 
 **Content check:** Run only if Edit type is `CV` or `Both`. Spawn `gatekeeper` with `option=content`, passing the existing CV text, the structured JD, and the role's `Keywords` property (from the Notion row — required for the ATS pre-check). Returns either PASS or a content violation list.
 
-**Cover letter check:** Run only if Edit type is `Letter` or `Both`. Skip if no cover letter exists (`Letter File Name` empty or absent AND no letter found by the run-folder convention — if the property is absent from the schema or empty, locate the file via the run-folder convention instead: state.json `cover_letter_path`/`cv_path`, or the Draft Directory company subdirectory with filename patterns `coverletter-*`/`cv-*`). Spawn `gatekeeper` with `option=cover-letter`, passing the existing cover letter text and the structured JD. Returns either PASS or a cover letter violation list.
+**Cover letter check:** Run only if Edit type is `Letter` or `Both`. Locate the existing cover letter in this order: `Letter File Name` from the Notion row → state.json `cover_letter_path` → run-folder pattern search (`coverletter-*` / `cv-*` in the company subdirectory) → Draft Directory company subdirectory. If the file cannot be located by any of these methods, skip the cover letter baseline check entirely and log: "Cover letter baseline check skipped for [Company] — file not locatable (no prior pipeline run or file moved)." Otherwise spawn `gatekeeper` with `option=cover-letter`, passing the existing cover letter text and the structured JD. Returns either PASS or a cover letter violation list.
 
 Run both in parallel. Collect results. Do not loop or fix anything yet — this step is diagnosis only.
 
@@ -152,6 +153,19 @@ Confirm in chat: "Coach verification complete: K properties updated across N rol
 
 Process roles sequentially. For each role, branch on the pipeline {{USER_FIRST_NAME}} specified in chat (same logic as the main pipeline).
 
+**Step E0.pipe — Create scratch directory**
+
+Before starting any role, create a per-role scratch directory for reviewer outputs (mirrors the new-application `$PIPE` pattern):
+
+```
+$PIPE = <output_dir>/<company_dir>/_pipeline/
+```
+
+Path A (Bash): `mkdir -p "$PIPE"`
+Path B (host-bridge MCP): create the directory through the host file tool.
+
+Set `$PIPE` as a variable used throughout this role's steps. Remove it after Step E9.5 (same as the new-application Step 7g cleanup) — non-blocking if removal fails.
+
 ### Pipeline `New Applications`
 
 Agents in this track are explicitly informed they are improving existing work. Pass each agent:
@@ -168,6 +182,7 @@ Spawn `cv-writer` with `option=revision`. Pass:
 - The coach's verified properties as the strategic anchor
 - The baseline content violation list from Step E0.7 (so the cv-writer addresses pre-existing violations immediately, not after another loop)
 - Any recruiter or hiring manager feedback already on the row from the original pipeline run
+- **`Edit notes` content** (from the Step E0 row payload) — if populated, include verbatim with the instruction: "Address these specific edit notes first, before applying general improvements: [content]". Omit if empty.
 
 The cv-writer is improving the existing CV — not drafting a new one.
 
@@ -197,15 +212,15 @@ Spawn `gatekeeper` with `option=content`, passing the revised CV text, the struc
 
 **Step E4 — Recruiter review**
 
-Spawn `recruiter-reviewer` with the structured JD and the revised CV. It returns tiered feedback on the revision. The reviewer is aware this is a revision, not a first draft.
+Spawn `recruiter-reviewer` with the structured JD, the revised CV, and `OUTPUT_PATH=$PIPE/recruiter-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). The reviewer is aware this is a revision, not a first draft.
 
 **Step E5 — Hiring manager review**
 
-Spawn `hiring-manager-reviewer` with the structured JD and the revised CV. It returns structured feedback on the revision.
+Spawn `hiring-manager-reviewer` with the structured JD, the revised CV, and `OUTPUT_PATH=$PIPE/hm-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). It returns structured feedback on the revision.
 
 **Step E6 — CV writer (final revision)**
 
-Spawn `cv-writer` with `option=revision`, passing the revised CV from Step E3, the recruiter feedback from Step E4, and the hiring manager feedback from Step E5. Returns the final CV and revision log.
+Read recruiter feedback from `$PIPE/recruiter-review.md` and hiring manager feedback from `$PIPE/hm-review.md`. Spawn `cv-writer` with `option=revision`, passing the revised CV from Step E3, the recruiter feedback, and the hiring manager feedback. Returns the final CV and revision log.
 
 **Step E6.5 — Gatekeeper (content check)**
 
@@ -228,6 +243,8 @@ Spawn `letter-writer` with `option=revision`. Pass:
 - The verified coach properties from Step E1, including `Gap handling`
 - The final CV (for context)
 - **`Why I Want This Role`** content: if populated, include it as the primary personal content input.
+- **`Edit notes` content** (from the Step E0 row payload) — if populated, include verbatim with the instruction: "Address these specific edit notes first, before applying general improvements: [content]". Omit if empty.
+- `LETTER_PATH=$PIPE/letter-draft.md` — the writer writes its output to this file and returns only a 2-line status + path (R-41 protocol).
 
 The letter-writer improves the existing letter — it does not start from scratch unless the strategic positioning changed significantly in Step E1.
 
@@ -250,7 +267,7 @@ Before passing the revised cover letter to the gatekeeper, compare the old and n
 
 **Step E7.3 — Gatekeeper (cover letter check — initial)**
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, the structured JD (including the Company self-characterization section), {{USER_FIRST_NAME}}'s Why I Want This Role content (retrieved in Step E7 from Notion). Also pass the final CV text for this role (required for the CV-repetition check); if no CV exists for this role, state that explicitly so the gatekeeper reports the skipped check by name.
+Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter (read from `$PIPE/letter-draft.md`), the structured JD (including the Company self-characterization section), {{USER_FIRST_NAME}}'s Why I Want This Role content (retrieved in Step E7 from Notion). Also pass the final CV text for this role (required for the CV-repetition check); if no CV exists for this role, state that explicitly so the gatekeeper reports the skipped check by name.
 
 **If PASS:** proceed to Step E7.4.
 
@@ -258,18 +275,18 @@ Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter text, th
 
 **Step E7.4 — Recruiter review**
 
-Spawn `recruiter-reviewer` with `option=cover-letter`, passing the revised cover letter and the structured JD. The reviewer is aware this is a revision, not a first draft — it returns tiered feedback on what is working, what is not, and what is missing given the JD.
+Spawn `recruiter-reviewer` with `option=cover-letter`, passing the cover letter (read from `$PIPE/letter-draft.md`), the structured JD, and `OUTPUT_PATH=$PIPE/recruiter-cl-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). The reviewer is aware this is a revision, not a first draft.
 
 **Step E7.5 — Hiring manager review**
 
-Spawn `hiring-manager-reviewer` with `option=cover-letter`. Pass the revised cover letter, the structured JD, the final CV (for context), and the recruiter feedback from Step E7.4. Returns structured feedback. If the hiring manager returns a Conditional verdict, quote the condition verbatim in the Step E7.6 prompt.
+Spawn `hiring-manager-reviewer` with `option=cover-letter`, passing the cover letter (read from `$PIPE/letter-draft.md`), the structured JD, the final CV (for context), and `OUTPUT_PATH=$PIPE/hm-cl-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). If the hiring manager returns a Conditional verdict, that verdict is in the file — read it before Step E7.6.
 
 **Step E7.6 — Letter-writer (final revision)**
 
-Spawn `letter-writer` with `option=revision`. Pass:
-- The revised cover letter from Step E7
-- Recruiter feedback from Step E7.4
-- Hiring manager feedback from Step E7.5 (including any Conditional condition verbatim)
+Read recruiter feedback from `$PIPE/recruiter-cl-review.md` and hiring manager feedback from `$PIPE/hm-cl-review.md`. Spawn `letter-writer` with `option=revision`. Pass:
+- The revised cover letter (read from `$PIPE/letter-draft.md`)
+- Recruiter feedback (from disk)
+- Hiring manager feedback (from disk, including any Conditional condition verbatim)
 - The gatekeeper violation list from Step E7.3 if any items were not fully resolved
 
 Returns the final cover letter and a brief revision log (what changed and why, one line per change).
@@ -302,19 +319,51 @@ The humanizer changed the text after the last PASS, so that PASS is no longer va
 
 Follow the same pandoc production protocol as the main pipeline. See `career-engine-export` for the full protocol.
 
-Derive `<company_dir>` from the Company name using the naming convention in `career-engine-export`. The output goes to `<output_dir>/<company_dir>/` — the same subdirectory the original run used. Create the subdirectory if it does not exist; it will already exist for roles that had a prior run.
+Derive `<company_dir>` from the Company name using the naming convention in `career-engine-export`. Convert using the original run folder as the temporary landing pad: write the final CV markdown and cover letter markdown to `/tmp/`, convert with pandoc using the `.dotx` reference templates, update the CV Subtitle, and copy both files to `<output_dir>/<company_dir>/`. If a file with the same name already exists, overwrite it — this is an edit, not a new file.
 
-Write the final CV markdown and cover letter markdown to `/tmp/`, convert with pandoc using the `.dotx` reference templates, update the CV Subtitle, and copy both files to `<output_dir>/<company_dir>/`. If a file with the same name already exists, overwrite it — this is an edit, not a new file.
+Verify both files exist and are nonzero before proceeding to Step E9.5.
 
-Verify both files exist and are nonzero before proceeding to Step E9H.
+**Step E9.5 — Move edited DOCXs to today's dated folder**
 
-**Step E9H — Hebrew localization (conditional)**
+Regardless of what was edited (CV only, letter only, or both), move **both** DOCX files — CV and cover letter — from the original run folder to a new folder named with today's edit date. This keeps the original run folder clean and makes it immediately obvious which files are the most recently edited versions.
 
-**Only runs if `Languages` includes `Hebrew`.** Check the `Languages` property on the Notion row fetched in Step E0. If `Hebrew` is not present, skip this step entirely and proceed to Step E10.
+```
+$EDIT_DIR = $OUTPUT_FOLDER/${OUTPUT_DIR_PREFIX:-applications}-<YYYY-MM-DD-today>/<company_dir>/
+```
+
+Create `$EDIT_DIR` if it does not exist.
+
+**Path A (direct Bash):**
+```bash
+mkdir -p "$EDIT_DIR"
+# Move CV DOCX if it exists
+CV_DOCX="<output_dir>/<company_dir>/<cv-filename>.docx"
+[ -f "$CV_DOCX" ] && mv "$CV_DOCX" "$EDIT_DIR/"
+
+# Move cover letter DOCX if it exists
+CL_DOCX="<output_dir>/<company_dir>/<coverletter-filename>.docx"
+[ -f "$CL_DOCX" ] && mv "$CL_DOCX" "$EDIT_DIR/"
+```
+
+**Path B (host-bridge MCP):** Use the host filesystem tool's move/rename capability for each file.
+
+**If today's folder is the same as the original run folder** (i.e., the original pipeline ran today): skip the move — the files are already in the right place. Set `$EDIT_DIR = <output_dir>/<company_dir>/` and proceed.
+
+**After the move, patch the original `state.json`:** Open the state.json in the original run folder, find the entry for this role's `notion_page_id`, and update `cv_path` and `cover_letter_path` to the new paths under `$EDIT_DIR`. Leave all other fields untouched. This ensures a future edit run finds the files immediately rather than falling back to pattern-search.
+
+Non-blocking: if the move or patch fails, log the failure and continue — the files remain in the original folder and the pipeline proceeds.
+
+**`$PIPE` cleanup:** After the move, remove the `_pipeline/` scratch directory — but **only if Hebrew localization (Step E9H) is not running for this role** (i.e., `Languages` is empty or does not include `Hebrew`). If Hebrew localization will run, delay `$PIPE` cleanup until after Step E9H completes. Cleanup: Path A: `rm -rf "$PIPE"`; Path B: host file tool delete. Non-blocking — log and continue if removal fails. The output folder after cleanup contains only the moved DOCXs (in `$EDIT_DIR`) and the unchanged originals (state.json, feedback.md, revision logs).
+
+**Step E9H — Additional language localization (conditional)**
+
+**Language resolution rule:** If the `Languages` property from Step E0 is **empty or not set**, produce output in `$DEFAULT_LANGUAGE` only — skip this step entirely and proceed to Step E10. If `Languages` is populated, handle all listed languages beyond the default here.
+
+**Hebrew localization — runs only if `Languages` explicitly includes `Hebrew`.** If `Hebrew` is not listed, skip even if other non-default languages are listed. If `Hebrew` is not present, skip this step entirely and proceed to Step E10. **After Step E9H completes (or is skipped), run the `$PIPE` cleanup described in Step E9.5 if it was deferred.**
 
 Spawn `localization` with:
 - The final English CV markdown (from Step E6, in memory)
-- The final English cover letter markdown (from Step E7.6, in memory)
+- The final English cover letter markdown (read from `$PIPE/letter-draft.md`)
 - The structured JD from Step E0.5
 - The exact role title from the JD
 
@@ -357,14 +406,16 @@ ls -lh "<output_dir>/<company_dir>/he-coverletter-{{USER_LAST_NAME}}-<roletitle>
 
 If a Hebrew file with the same name already exists, overwrite it — this is an edit.
 
+After conversion, move the Hebrew DOCX files to `$EDIT_DIR` (same destination as the English files in Step E9.5) using the same Path A/B logic. Non-blocking if the move fails.
+
 **Step E10 — Notion writeback and state update**
 
-1. Confirm both English DOCX files are saved in `<output_dir>/<company_dir>/`.
-2. Write the Draft Directory URL to the `Draft Directory` URL property on the Notion row:
+1. Confirm both English DOCX files are saved in `$EDIT_DIR` (set in Step E9.5 — today's dated folder, or the original folder if today's run date matches).
+2. Write the Draft Directory URL to the `Draft Directory` URL property on the Notion row, using the edit-date folder (today's date, from `$EDIT_DIR`):
    ```
-   Draft Directory: {{DRAFT_DIR_URL_BASE}}<date-folder>%2F<company_dir>%2F
+   Draft Directory: {{DRAFT_DIR_URL_BASE}}<today-date-folder>%2F<company_dir>%2F
    ```
-   Hebrew files (if produced in Step E9H) are in the same directory and are accessible via the same URL — no separate Hebrew property writes needed.
+   This always reflects where the DOCX files actually are after Step E9.5. Hebrew files (if produced in Step E9H) move to the same `$EDIT_DIR` — no separate Hebrew property writes needed.
 3. Update Status from `Needs editing` to `CV Ready for Review`.
 4. Append this role to the editing run's `state.json` (see State file section below) with `status: "completed"`.
 

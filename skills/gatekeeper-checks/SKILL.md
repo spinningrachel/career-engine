@@ -35,7 +35,7 @@ ATS failures mean the document may never reach a human reader regardless of qual
 
 FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 
-**Macro-injected sections — never check for these, never fail on their absence:** `EDUCATION`, `LANGUAGES`, and `ADDITIONAL` are injected automatically by {{USER_FIRST_NAME}}'s Word macros after DOCX export. They are intentionally absent from cv-writer's markdown output. Do not search for them, do not flag their absence, do not fail on them.
+**Macro-injected sections — FAIL if present, never fail on their absence:** `EDUCATION`, `LANGUAGES`, and `ADDITIONAL` are injected automatically by {{USER_FIRST_NAME}}'s Word template. They must NOT appear in cv-writer's markdown output — they are already formatted in the template and will be duplicated if written here. FAIL immediately if any of `## EDUCATION`, `## LANGUAGES`, or `## ADDITIONAL` appear anywhere in the CV text, with the message: "[SECTION] section must not be written — it is part of the Word template and will duplicate." Never fail on their absence.
 
 **`TOOLS` is optional.** Do not fail if absent. If present, confirm it uses the correct `## TOOLS` heading — no other form is acceptable. FAIL if present but not using `## TOOLS` — flag as: "TOOLS section uses non-standard heading [heading] — rename to `## TOOLS`."
 
@@ -57,6 +57,9 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 - ≤120 words, 1 paragraph, ≤4 sentences
 - No tool/platform names, consulting client names, or metrics not documented as summary-appropriate
 - None of these phrases: "comfortable operating across", "proven track record", "passionate about", "results-driven", "dynamic", "extensive experience" — **advisory only if found; do not fail or loop**
+- **Single-instance trap — FAIL if triggered:** The summary claims a pattern. For every concrete claim or named activity in the summary, count how many times the CV body actually demonstrates it across different roles. If a sentence implies "she repeatedly does X" but the CV shows only one instance of X, that sentence is a bullet wearing a summary's clothes. FAIL with: "Summary sentence '[sentence]' implies a repeated pattern but the CV shows only one instance — move the specific detail to a bullet under [role], replace with the breadth claim." A summary that is dense, em-dash-stuffed, or reads structurally like a bullet point is a signal to check this rule.
+- **Absolute-peak numbers in the summary — FAIL if triggered:** A single absolute number for a team size or growth metric (e.g., "a 13-person team", "300% YoY growth") implies that was the sustained state. If the number reflects a peak or a single point in time, it must use range language ("up to 13-person teams", "up to 300% YoY growth"). FAIL with: "Summary uses absolute number '[number]' for a peak value — rewrite as 'up to [number]'."
+- **Roster-level detail in the summary — FAIL if triggered:** Listing the specific functions that made up a team or initiative (e.g., "spanning editorial, technical writing, social, product marketing, and field") is bullet-level detail. The summary carries the scope and the unified outcome, not the org chart. FAIL with: "Summary lists specific team functions — abstract to 'multiple competencies' or equivalent scope language; move the roster to a bullet."
 
 **Experience**
 - `## EXPERIENCE` contains full-time employment only, in reverse-chronological order by end date

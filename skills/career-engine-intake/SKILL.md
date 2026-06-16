@@ -243,7 +243,7 @@ All roles not selected are deferred. Proceed immediately to Step 0.8.
 For each role still in the queue, verify these **writer-needed** fields are populated (non-empty):
 `Role summary`, `Role emphasis`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`.
 
-`JD proof` is **not** checked — it is reference-only (schema: "for Rachel's reference ONLY"), written by the coach during intake, and consumed by no downstream agent, so it must never gate or trigger anything here. `Gap handling` is not required when `gap_handling_mode = disabled`. `Landscape` is coach-research context, not writer input — not required here. A field counts as present if it is non-empty; this is a presence check, not a quality check (a thin-but-present value passes — the writers also draw on `Why I Want This Role` and the JD).
+`JD proof` is **not** checked — it is reference-only (a user-reference property only), written by the coach during intake, and consumed by no downstream agent, so it must never gate or trigger anything here. `Gap handling` is not required when `gap_handling_mode = disabled`. `Landscape` is coach-research context, not writer input — not required here. A field counts as present if it is non-empty; this is a presence check, not a quality check (a thin-but-present value passes — the writers also draw on `Why I Want This Role` and the JD).
 
 - **All writer-needed fields present** → the role is ready; carry its existing coach values forward to the per-role pipeline.
 - **Any writer-needed field missing or empty** → the role is NOT intake-ready and **cannot be handled this run**. Do NOT spawn the coach to repair it. Remove it from the processing queue, leave its Status unchanged, and flag it in the Step 0.9b briefing: "[Company] — [Position]: not processed — missing writer-needed field(s) `<list>`. Run intake first (move the role through Hold / `--coach-skills`), then re-run the New Application pipeline."
@@ -262,7 +262,11 @@ Partial population (any required field missing) is not coach-complete and the ro
 - **Any role has one or more fields missing:** spawn the coach with every role that is not fully complete. Carry existing values forward for coach-complete roles only.
 - **No roles are `coach-complete`:** spawn the coach with all 5 roles as normal.
 
-Spawn `employment-coach` with the applicable roles. Pass full JD data and the complete Notion row properties for each role.
+Spawn `employment-coach` with the applicable roles. Pass:
+- Full JD data and the complete Notion row properties for each role
+- `$NOTION_DATABASE_ID` (resolved from career-data config) — the coach needs this for Notion writebacks
+- `${CAREER_DATA}` (the resolved career-data root) — the coach needs this to read references
+- The SQLite schema reference from Step 0a (as a "Notion schema reference" section) — the coach uses it to write select values that exactly match live Notion options
 
 The coach returns:
 - Priority scores for all roles (Part 0 of the coach's output) — always

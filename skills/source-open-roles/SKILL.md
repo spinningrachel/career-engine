@@ -37,24 +37,59 @@ Preferences are stored in `~/.career-engine-job-prefs.json`. The full schema:
 
 ---
 
-## Search Modes
+## Search Selection Logic
 
-The mode determines which sources are searched. It is resolved in this order:
-1. Explicit override in the invocation prompt (e.g., "quick", "remote", "startup", "broad", "ai", "full", "contract")
-2. Default derived from `remotePreference`:
-   - `remote only` → `remote`
-   - `hybrid` → `broad`
-   - `open to all` → `broad`
+Source selection is layered, not mode-based. Every run starts with the full Tier 1 core, then adds tiers based on preferences and career.
 
-| Mode | Sources searched |
+### Tier 1 — Always search (every run, no exceptions)
+
+| Site | Category |
 |---|---|
-| `quick` | LinkedIn only |
-| `remote` | LinkedIn + all Remote-focused sites |
-| `startup` | LinkedIn + all Startup/tech sites |
-| `broad` | LinkedIn + General boards + HN Who's Hiring + ATS/company career pages |
-| `ai` | LinkedIn + AI/tech-specific sites |
-| `full` | All sources across all categories |
-| `contract` | Upwork + BeBee |
+| LinkedIn Jobs | Core board (MCP) |
+| Indeed | Core board |
+| Glassdoor | Core board |
+| BuiltIn | Core board |
+| Crunchbase | Company intelligence |
+| PitchBook | Company intelligence |
+| Tracxn | Company intelligence |
+
+### Tier 2 — Remote sites (when `remotePreference` includes "remote" or "remote only")
+
+| Site |
+|---|
+| Remote.co |
+| We Work Remotely |
+| Remote OK |
+
+### Tier 3 — Accelerator portfolio boards (every run — pick 2–3 most relevant)
+
+Choose 2–3 from the list below. Selection criteria: portfolio overlap with the user's target company stage/sector, user's target function. Default when no signal: a16z + First Round.
+
+a16z · First Round · Sequoia · Bessemer · NFX · Accel · Lightspeed · Index Ventures · General Catalyst
+
+### Tier 4 — Career-specific boards (choose based on `USER_PROFESSION` and `USER_FUNCTION_SENIORITY_HIERARCHY`)
+
+| Site | Relevant for |
+|---|---|
+| Product Marketing Alliance | Product marketing, PMM |
+| Sharebird | Product marketing, PMM |
+| Exit Five | Marketing broadly |
+| Wellfound | Startup-focused roles, any function |
+| Welcome to the Jungle | Startup-focused roles, any function |
+| Y Combinator Jobs (Work at a Startup) | Startup-focused roles, any function |
+| Techstars Jobs | Startup-focused roles, any function |
+
+Read `USER_PROFESSION` and `USER_FUNCTION_SENIORITY_HIERARCHY` from `career-data` `01-writing-rules.md` §8 before selecting. Include all sites relevant to the user's function; include startup-focused sites when the user's target companies are predominantly early-stage.
+
+### Explicit mode overrides
+
+If the user specifies a mode keyword, apply it as an override on top of the tiers:
+
+| Mode | Effect |
+|---|---|
+| `quick` | LinkedIn MCP only — skip all other sites including the rest of Tier 1 |
+| `full` | All tiers + all career-specific sites + all accelerators |
+| `contract` | Upwork only (contract signals, not ranked roles) |
 
 ---
 
@@ -82,6 +117,16 @@ Collect all `job_ids`. Deduplicate across title searches. Fetch up to 30 job det
 
 All fetched via `WebSearch` using the pattern: `site:<domain> "[title]" [time signal]` where time signal is "posted this week" or "new" depending on the site. Extract all listings that contain at minimum a title, company, and apply URL or description.
 
+**Tier 2 remote sites (search when `remotePreference` includes remote):**
+
+| Site | Fetch method |
+|---|---|
+| Remote.co | `WebFetch("https://remote.co/remote-jobs/")` — filter by title. If sparse: `WebSearch("site:remote.co [title] remote job")` |
+| We Work Remotely | `WebSearch("site:weworkremotely.com [title]")` — blocks direct fetch reliably; use WebSearch. |
+| Remote OK | `WebSearch("site:remoteok.com [title]")` or `WebFetch("https://remoteok.com/remote-[title-slug]-jobs")` |
+
+**Additional remote boards:**
+
 | Site | Fetch method |
 |---|---|
 | Working Nomads | `WebFetch("https://www.workingnomads.com/jobs?category=marketing&tag=[title-slug]")` |
@@ -101,7 +146,6 @@ All fetched via `WebSearch` using the pattern: `site:<domain> "[title]" [time si
 | Site | Fetch method |
 |---|---|
 | startup.jobs | `WebFetch("https://startup.jobs/?q=[title-urlencoded]&remote=true")` |
-| BuiltIn | `WebSearch("site:builtin.com [title] remote")` — BuiltIn blocks direct fetch |
 | MoaiJobs | `WebFetch("https://www.moaijobs.com/")` + `WebSearch("site:moaijobs.com [title]")` |
 | CareerVault | `WebFetch("https://careervault.io/")` + `WebSearch("site:careervault.io [title]")` |
 
@@ -112,6 +156,8 @@ All fetched via `WebSearch` using the pattern: `site:<domain> "[title]" [time si
 | Site | Fetch method |
 |---|---|
 | Indeed | `WebSearch("site:indeed.com [title] [location or remote] job")` — do not attempt direct WebFetch (auth wall). If `mcp__140d3f8f-6ad4-4b39-9df9-84514cae0207__search_jobs` is connected, prefer it. |
+| Glassdoor | `WebSearch("site:glassdoor.com/job-listing [title]")` — blocks direct WebFetch; use WebSearch only. |
+| BuiltIn | `WebSearch("site:builtin.com [title] remote")` — blocks direct fetch; use WebSearch only. |
 | ZipRecruiter | `WebSearch("site:ziprecruiter.com [title] remote")` |
 | BeBee | `WebSearch("site:bebee.com [title]")` |
 | Workable Jobs | `WebSearch("site:jobs.workable.com [title]")` |
@@ -141,6 +187,54 @@ Use these to surface roles posted directly on company career pages via their ATS
 | CareerVault | See Startup section |
 | PitchMeAI | See Remote section |
 | TheirStack | Requires `mcp__theirstack__*` tools. Gate: if not connected, skip and note. |
+
+---
+
+### Accelerator portfolio boards (Tier 3)
+
+Pick 2–3 per run based on portfolio fit. Fetch the board and filter by title; `WebSearch("site:[domain] [title]")` as fallback when direct fetch is blocked or sparse.
+
+| Accelerator | Fetch method |
+|---|---|
+| a16z | `WebFetch("https://jobs.a16z.com/")` — filter by title |
+| First Round | `WebFetch("https://jobs.firstround.com/")` — filter by title |
+| Sequoia | `WebFetch("https://www.sequoiacap.com/jobs/")` or `WebSearch("site:sequoiacap.com jobs [title]")` |
+| Bessemer | `WebFetch("https://www.bvp.com/jobs")` or `WebSearch("site:bvp.com jobs [title]")` |
+| NFX | `WebFetch("https://www.nfx.com/jobs")` or `WebSearch("site:nfx.com jobs [title]")` |
+| Accel | `WebFetch("https://jobs.accel.com/")` — filter by title |
+| Lightspeed | `WebFetch("https://jobs.lsvp.com/")` — filter by title |
+| Index Ventures | `WebFetch("https://jobs.indexventures.com/")` — filter by title |
+| General Catalyst | `WebFetch("https://www.generalcatalyst.com/jobs")` or `WebSearch("site:generalcatalyst.com jobs [title]")` |
+
+---
+
+### Career-specific boards (Tier 4)
+
+Select based on `USER_PROFESSION` / `USER_FUNCTION_SENIORITY_HIERARCHY`.
+
+| Site | Fetch method |
+|---|---|
+| Product Marketing Alliance | `WebFetch("https://productmarketingalliance.com/jobs")` — filter by title. Fallback: `WebSearch("site:productmarketingalliance.com jobs [title]")` |
+| Sharebird | `WebSearch("site:sharebird.com jobs [title]")` |
+| Exit Five | `WebFetch("https://jobs.exitfive.com/")` or `WebSearch("site:exitfive.com jobs [title]")` |
+| Wellfound | `WebFetch("https://wellfound.com/jobs?query=[title-urlencoded]&remote=true")` or `WebSearch("site:wellfound.com [title]")` |
+| Welcome to the Jungle | `WebFetch("https://www.welcometothejungle.com/en/jobs?query=[title-urlencoded]")` or `WebSearch("site:welcometothejungle.com [title]")` |
+| Y Combinator Jobs | `WebFetch("https://www.workatastartup.com/jobs?query=[title-urlencoded]")` or `WebSearch("site:workatastartup.com [title]")` |
+| Techstars Jobs | `WebFetch("https://www.techstars.com/job-board")` — filter by title. Fallback: `WebSearch("site:techstars.com job-board [title]")` |
+
+---
+
+### Company intelligence boards (Tier 1 — last three)
+
+These surfaces list roles at funded/tracked companies not always indexed on general boards. Fetch the jobs or portfolio section and filter by title.
+
+| Site | Fetch method |
+|---|---|
+| Crunchbase | `WebSearch("site:crunchbase.com [title] jobs")` — direct fetch requires login; use WebSearch for role-level results. Also surface as company research context (funding stage, team size) for scored results. |
+| PitchBook | `WebSearch("site:pitchbook.com [title] jobs")` — primarily company intelligence; use to enrich context for discovered roles. |
+| Tracxn | `WebSearch("site:tracxn.com [title] jobs")` — similar to PitchBook; use for company context enrichment. |
+
+**Note on company intelligence sites:** These are less reliable as direct role sources and more useful as enrichment for roles found elsewhere. If a WebSearch returns direct apply links or job pages, add them to the ranked list. If results are company profiles only, use them to enrich the Company field (funding stage, investor list, headcount) for roles discovered via other sites — especially when scoring and building context for the user.
 
 ---
 

@@ -1,3 +1,11 @@
 {
+  "notion_database_id": "",
+  "output_folder": "",
+  "cv_template": "",
+  "draft_dir_url_base": "skip",
+  "output_dir_prefix": "applications",
+  "default_language": "English",
+  "word_templates_path": "",
+  "notion_needs_editing_view_url": "",
   "gap_handling": "enabled"
 }

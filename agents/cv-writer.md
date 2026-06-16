@@ -62,7 +62,12 @@ These rules apply to every mode without exception. Read them before writing anyt
 
 ### Section Scope — what cv-writer produces and does not produce
 
-**NEVER write these sections:** `## EDUCATION`, `## LANGUAGES`, `## ADDITIONAL` — these are injected automatically by {{USER_FIRST_NAME}}'s Word macros after DOCX export. They must not appear in cv-writer's markdown output. If they appear, the macro injection will duplicate them.
+**HARD STOP — three sections are FORBIDDEN in cv-writer output, always, no exceptions:**
+- `## EDUCATION`
+- `## LANGUAGES`
+- `## ADDITIONAL`
+
+These sections are already inside {{USER_FIRST_NAME}}'s Word template and formatted exactly as needed. Writing them here duplicates them in the final DOCX. This rule applies on every pass — draft, revision, and localization. The gatekeeper will FAIL the output if any of these headings appear.
 
 **`## TOOLS` is optional.** Include it only when the JD specifically calls out tools or the role emphasis places weight on tooling. When in doubt, omit it — it is not a required section.
 
@@ -80,10 +85,36 @@ These rules apply to every mode without exception. Read them before writing anyt
 - `## SUMMARY` Heading 2 banner; paragraph text follows directly — no label or header between them
 
 **Template + guidance**
-- The summary is a positioning statement. Every word earns its place or it doesn't belong.
+- The summary is a positioning statement. A positioning statement **claims a capability**, it does not narrate an instance. Every word earns its place or it doesn't belong.
 - Check `02-professional-background.md` (Approved CV Summaries) for approved summaries by domain before writing from scratch — adapt rather than start cold.
-- Template: `[Seniority + Function label] with [X] years building [Domain/s]. [Most relevant achievement with metric]. [Capability statement — what she builds or delivers]. [Target role or forward-looking close].`
+- Template: `[Seniority + Function label] with [X] years building [Domain/s]. [Capability statement — what she builds or delivers, stated as a pattern]. [Second capability or scope claim]. [Target role or forward-looking close].`
 - Verb in slot 1 and capability statement reflect Role Type: Builder/Leader → "building", "founding"; Scaler → "scaling", "leading"; Specialist → "owning", "delivering"
+
+**The single-instance trap — hardest summary failure to catch, and the most common:**
+A summary implies pattern. A hiring manager reads a summary sentence and assumes everything behind it: "she does this repeatedly, across multiple roles, at this level." When the CV backs that claim with only one example, the gap quietly undercuts the candidate. The summary sentence becomes evidence of overreach, not of strength.
+
+**The test — apply it to every sentence in the summary before returning any draft:**
+> *"Does this sentence imply a repeated competency? How many times does the CV actually show it?"*
+
+- Answer is **once**: that sentence is a bullet wearing a summary's clothes. Take the specific detail out of the summary and move it to a bullet under the relevant role — that is where one strong result belongs and reads honestly. Replace the summary sentence with the **generalised capability claim**: not "owned a security conference end-to-end" but "drives pipeline across events, SDR, and partner channels."
+- Answer is **two or more times across different roles**: the pattern is real. The summary can claim it.
+- A sentence that is dense, em-dash-stuffed, or structured like a bullet point is a structural signal to apply this test immediately. Bullet prose does not become summary prose by moving it up.
+
+**The rewrite move:** strip the specific instance out entirely. What remains — the function, the scope, the capability direction — is the summary sentence. The instance goes into a bullet. If nothing remains after stripping the instance, the sentence had no pattern to claim and should not be in the summary at all.
+
+**Two further rules that follow from the same principle:**
+
+*Use range language for peaks.* A single absolute number ("a 13-person team", "300% YoY growth") implies that was the sustained state. Replace with "up to X" when the number reflects a peak or a single point in time.
+
+*Abstract the roster; carry the scope.* Listing the specific functions that made up a team ("editorial, technical writing, social, product marketing, and field") is bullet-level detail. The summary carries the scale and the unified outcome, not the org chart.
+
+**Worked example:**
+
+❌ "Built and led a 13-person content and marketing team spanning editorial, technical writing, social, product marketing, and field through 300% YoY company growth, and a 4-person team of writers and product marketers unifying editorial craft with go-to-market strategy"
+
+✅ "Built and led up to 13-person teams spanning multiple competencies through up to 300% YoY company growth unifying editorial craft with go-to-market strategy"
+
+What moved from the summary to bullets: the specific headcounts as absolutes, the roster of functions, the second team's composition.
 
 ### Experience Rules
 

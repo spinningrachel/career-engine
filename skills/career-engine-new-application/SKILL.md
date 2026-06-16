@@ -252,15 +252,21 @@ Follow the `career-engine-export` skill's Step 6 production protocol exactly —
 
 ---
 
-## Step 6H — Hebrew localization (conditional)
+## Step 6H — Additional language localization (conditional)
 
-**Only runs if `Languages` includes `Hebrew`.** Check the `Languages` property on the Notion row fetched in Step 0. If `Hebrew` is not present, skip this step entirely and proceed to Step 7.
+**Language resolution rule — apply before deciding whether to run this step:**
+
+1. Read the `Languages` property from the Notion row fetched in Step 0.
+2. **If `Languages` is empty or not set:** produce output in `$DEFAULT_LANGUAGE` only. Skip this step entirely and proceed to Step 7.
+3. **If `Languages` is populated:** produce output in every listed language. The `$DEFAULT_LANGUAGE` output has already been produced in Steps 1–5.96. This step handles all additional languages listed in `Languages` beyond the default.
+
+**Hebrew localization — runs only if `Languages` explicitly includes `Hebrew`** (i.e. the `Languages` property is non-empty and `Hebrew` is one of its values). If `Hebrew` is not listed, skip Hebrew localization even if other non-default languages are listed.
 
 ### 6H.1 — Spawn Hebrew localization agent
 
 Spawn `localization` with:
-- The final English CV markdown (from Step 4/4.5, already in memory)
-- The final English cover letter markdown (from Step 5.7, already in memory)
+- The final English CV markdown (read from `$PIPE/cv-final.md`)
+- The final English cover letter markdown (read from `$PIPE/letter-final.md`)
 - The structured JD
 - The exact role title from the JD
 
@@ -324,11 +330,9 @@ Hebrew files land in the same `<company_dir>` subdirectory as the English files.
 
 ## Step 7 — Record file paths and write state
 
-### Step 7a — Notion Draft Directory writeback
+### Step 7a — DOCX existence gate + Draft Directory URL construction
 
 **Hard gate — do not skip, do not proceed on failure.**
-
-Run this bash check first:
 
 ```bash
 ls -lh "<output_dir>/<company_dir>/<cv_filename>.docx"
@@ -337,20 +341,22 @@ ls -lh "<output_dir>/<company_dir>/<cl_filename>.docx"
 
 **If either file is missing or zero bytes: STOP.** Do not write anything to Notion. Do not mark the role complete. Report to {{USER_FIRST_NAME}}: "DOCX export failed for [Company] — files not found on disk. Step 6 did not complete. Notion has not been updated." Then move to the next role in the queue.
 
-**Only if both files exist and are nonzero:** write the Draft Directory URL to the `Draft Directory` URL property on the Notion row (match by Page ID from Step 0), then write `state.json` in Step 7b, then write remaining Notion properties in Step 7c.
+**If both files exist and are nonzero:** construct the Draft Directory URL and store it in `$DRAFT_DIR_URL` for use in Steps 7b and 7c:
 
 ```
-Draft Directory: {{DRAFT_DIR_URL_BASE}}<date-folder>%2F<company_dir>%2F
+DRAFT_DIR_URL=$DRAFT_DIR_URL_BASE<date-folder>%2F<company_dir>%2F
 ```
 
-If the Notion writeback itself fails after files are confirmed, log it and surface it in the final delivery — the files are on disk and state.json captures the data as fallback.
+If `$DRAFT_DIR_URL_BASE` is empty or the literal word `skip`, set `$DRAFT_DIR_URL` to an empty string. Step 7c will omit the `Draft Directory` property from the `notion-update-page` call in that case.
+
+Then proceed to Step 7b.
 
 ### Step 7b — Write state file (crash-recovery)
 
 Append this role's data to:
-`{{OUTPUT_FOLDER}}/applications-<YYYY-MM-DD>/state.json`
+`$OUTPUT_DIR/state.json`
 
-Create the file on the first role; append on subsequent ones. Use the `/tmp→output folder` copy protocol from `career-engine-export`. Use the shortened path format for all paths — `applications-<YYYY-MM-DD>/<filename>` only, never the full output folder path.
+where `$OUTPUT_DIR` is the run directory resolved by the orchestrator (e.g. `{{OUTPUT_FOLDER}}/${OUTPUT_DIR_PREFIX:-applications}-<YYYY-MM-DD>/`). Create the file on the first role; append on subsequent ones. Use the `/tmp→output folder` copy protocol from `career-engine-export`. Use the shortened path format for all paths — `<run-dir-name>/<filename>` only, never the full output folder path.
 
 **To append (role 2+):** Read the existing state.json, parse the `roles` array, push the new role object, and write the full updated JSON back. Do not use `cat >` on a file that already exists — that overwrites the file and loses all previous role entries.
 
@@ -419,7 +425,7 @@ Write the following properties using `notion-update-page`. All values are alread
 | `Hiring Manager's Name` | Hiring manager name and title from the coach's research. Write "Not identified" if none found. |
 | `Last Pipeline Run` | Today's date in ISO format (YYYY-MM-DD). |
 | `Status` | `CV Ready for Review` — set once DOCX export and writeback are confirmed complete. |
-| `Draft Directory` | The Draft Directory URL for this role's directory (generated in export Step 7). Written in Step 7a. |
+| `Draft Directory` | `$DRAFT_DIR_URL` (constructed in Step 7a). **Omit this property from the `notion-update-page` call entirely if `$DRAFT_DIR_URL` is empty** — do not write an empty string to the property. |
 
 **Property discipline** — write only the properties listed above. Nothing else.
 
@@ -508,3 +514,14 @@ Runs for every role in the run whose `Why I Want This Role` field is populated �
 5. **Factual claims route differently:** if her content contains a new durable career fact (an outcome, metric, deliverable, or role detail) that belongs in Section 7 (Role Facts), do NOT write it there — Section 7 entries require her approval. Flag it in the final delivery instead: "New role fact in Why I Want This Role ([Company]): '[quote]' — add to 02-professional-background.md §7 if accurate."
 6. Append-only. Never rewrite, merge, or delete existing entries anywhere in the file.
 7. Log the result in the final delivery per role: "Promoted N new entries to the motivation bank" or "No new content to promote."
+
+### Step 7g — Clean up `_pipeline/` scratch directory
+
+After Step 7f, remove the `_pipeline/` directory for this role. All content needed for delivery (feedback file, revision log) has already been written to the output folder in Step 7d and in the post-Step-4 and post-Step-5.7 staging blocks. The `_pipeline/` files are intermediate scratch — they are not deliverables and do not belong in the user's output folder.
+
+- **Path A:** `rm -rf "$PIPE"`
+- **Path B:** delete `$PIPE` through the host file tool (Desktop Commander `move_file`/delete or equivalent).
+
+If the deletion fails, log it in the final delivery ("_pipeline cleanup failed for [Company] — delete manually") and continue. This step must never block delivery.
+
+The output folder after cleanup contains only: final DOCX files, the feedback markdown, the revision log markdown, and (for Hebrew runs) the Hebrew DOCX files.
