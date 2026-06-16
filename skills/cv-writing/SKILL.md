@@ -59,6 +59,34 @@ ATS systems identify sections by heading name. Non-standard names cause misclass
 
 ---
 
+## Summary
+
+The summary is a strategic positioning statement. Its job is to make the hiring manager's selection decision easier by immediately establishing why this specific candidate is the right person for this specific role.
+
+**What it is not:**
+- A biography or career timeline
+- A list of credentials or everything the candidate has done
+- A general-purpose statement that could accompany any application
+- A personality declaration ("results-driven," "passionate," "dynamic")
+
+**What it must do:**
+
+Stake out a position. "B2B product marketing director who..." is a claim. "Experienced marketing professional with X years across..." is a description. Descriptions don't position. The summary must make the one claim the hiring manager needs to believe in order to move forward.
+
+**How to write it — in order:**
+
+1. **Identify the role's primary objective** — what this role exists to accomplish. Not the list of responsibilities; the underlying goal.
+2. **Identify the candidate's strengths that speak most directly to that objective** — not the most recent, not the most impressive in the abstract, the most relevant to this goal.
+3. **Lead with those.** The first sentence establishes the claim. Everything after it supports it.
+4. **Omit anything that doesn't serve the claim** — if a credential is impressive but irrelevant to this role, leave it out.
+
+**The alignment test:** Read the summary, then read the job description. If the connection between the two isn't immediately obvious, the summary isn't aligned enough. The hiring manager should finish the summary knowing exactly what problem this candidate solves — for this role.
+
+**Format constraints** (enforced by gatekeeper — do not duplicate in copy):
+≤120 words · 1 paragraph · ≤4 sentences · no company or client names · no tool names · no metrics unless summary-appropriate.
+
+---
+
 ## Bullet Writing Formula
 
 Use this when writing a new bullet — i.e., when no approved bullet in `02-professional-background.md` (Role Facts) maps to a JD requirement. The approved bullets are always the first choice; this formula governs new composition only.
@@ -169,6 +197,14 @@ Do not eliminate industry-specific terminology. "SEO" or "content strategy" are 
 ### Terms to avoid outright in CV copy
 
 Results-driven, Passionate, Dynamic, Proactive, Experienced, Highly qualified, Top performer, Think outside the box, Value add, Synergy, Go-to person, Thought leadership, Industry expert, Bottom line, Big picture, Motivated, Track record, Effective, Seasoned, Action-oriented, Customer-focused, Fast-paced, Strong work ethic, Cutting-edge, Groundbreaking, Hit the ground running, Game-changer, Guru, Ninja, Rockstar, World-class, Paradigm shift, Scalable, Disruptive, Innovative, Holistic approach, Agile, Pioneer, **"translating technically complex"** (overused — name what was translated, for whom, and what changed)
+
+**Absolute prohibitions — banned in all CV copy including summaries:**
+- **"that made it land"** — vague AI-assembly phrase; name what it was and what happened instead
+- **"behind the [noun]"** (e.g., "behind the coverage", "behind the strategy") — agent-coined abstraction; name the actual work
+- **"at an inflection point"** — generic AI phrase; name the specific moment or transition instead
+- **"quietly [verb]ing"** (e.g., "quietly building", "quietly scaling") — performative modesty; just name the action
+- **"rare"** as a self-descriptor or claim — never self-apply; if it's true, a specific outcome demonstrates it
+- **"up close"** — filler phrase; cut it
 
 ---
 

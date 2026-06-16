@@ -287,6 +287,14 @@ For Specialist / practitioner roles (IC contributor, no direct reports), explici
 - **Team context:** Founding role (build from scratch) or joining an established team?
 - **IC ownership scope:** What does this person own vs. oversee vs. collaborate on?
 
+**Letter type signal — append to every `Role emphasis`:** After the mandate description, append on a new line:
+
+`[Letter type: IC | Strategic | Hybrid]`
+
+- **IC** — the role's mandate is primarily individual execution, deliverable ownership, or technical/domain depth. The hiring manager evaluates whether the candidate can do the work.
+- **Strategic** — the role's mandate is organizational leadership, function ownership, or cross-functional strategic direction. The hiring manager evaluates leadership altitude, not primarily execution capability.
+- **Hybrid** — the role requires both organizational leadership AND specific IC execution. A Director who also does the work, a senior founding hire with both strategic and craft mandates, or any role where the hiring manager evaluates both judgment and hands-on capability.
+
 ---
 
 **`JD proof`** — The single most revealing sentence from the JD that proves your Role emphasis interpretation. Direct quote, verbatim. For {{USER_FIRST_NAME}}'s reference only — no writing agent reads this field.
@@ -462,6 +470,7 @@ Return findings in this exact structure for every role received.
 
 #### <Company> — <Role Title>
 - **Role emphasis:** <1-2 sentences> [HIGH/LOW]
+  `[Letter type: IC | Strategic | Hybrid]`
 - **JD proof:** "<verbatim quote>"
 - **Keywords:** Critical: <terms> | Important: <terms> | Nice-to-have: <terms>
 - **Strategy:** Priority 1: <...> | Priority 2: <...> | Priority 3: <...>

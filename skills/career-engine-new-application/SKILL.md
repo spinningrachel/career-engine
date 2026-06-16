@@ -52,6 +52,7 @@ Before Step 1, create `<output_dir>/<company_dir>/_pipeline/` (the run's scratch
 ### Step 1 — CV writer (draft)
 
 Spawn `cv-writer` with `option=draft`, passing:
+- `CAREER_DATA=${CAREER_DATA}`
 - `Role summary` (the compressed JD proxy — contains role context, key requirements, and self-characterization section)
 - The coach's output for this role: `Role emphasis`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`
 - `CV_PATH=$PIPE/cv-draft.md` — the writer writes the draft there and returns the path (R-41).
@@ -68,15 +69,15 @@ Spawn `gatekeeper` with `option=content`, passing the CV path `$PIPE/cv-draft.md
 
 ### Step 2 — Recruiter review (CV)
 
-Spawn `recruiter-reviewer` with `Role summary`, the CV path `$PIPE/cv-draft.md` to read, and `OUTPUT_PATH=$PIPE/recruiter-cv.md`. It writes its full review there and returns a 2-line status (R-41).
+Spawn `recruiter-reviewer` with `CAREER_DATA=${CAREER_DATA}`, `Role summary`, the CV path `$PIPE/cv-draft.md` to read, and `OUTPUT_PATH=$PIPE/recruiter-cv.md`. It writes its full review there and returns a 2-line status (R-41).
 
 ### Step 3 — Hiring manager review (CV)
 
-Spawn `hiring-manager-reviewer` with `option=cv`, passing `Role summary`, the CV path `$PIPE/cv-draft.md` to read, and `OUTPUT_PATH=$PIPE/hm-cv.md`. It writes its full review there and returns the short verdict (Yes / Conditional / No) plus the path (R-41); keep the verdict in context — Step 5 needs it.
+Spawn `hiring-manager-reviewer` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, `Role summary`, the CV path `$PIPE/cv-draft.md` to read, and `OUTPUT_PATH=$PIPE/hm-cv.md`. It writes its full review there and returns the short verdict (Yes / Conditional / No) plus the path (R-41); keep the verdict in context — Step 5 needs it.
 
 ### Step 4 — CV writer (revision)
 
-Spawn `cv-writer` with `option=revision`, passing `CV_PATH=$PIPE/cv-final.md` (write), the draft path `$PIPE/cv-draft.md`, and the review paths `$PIPE/recruiter-cv.md` + `$PIPE/hm-cv.md` to read. The writer also writes the CV CHANGES section to `$PIPE/cv-changes.md` and returns the paths (R-41). Step 7d reads `$PIPE/cv-changes.md` for the feedback file.
+Spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `CV_PATH=$PIPE/cv-final.md` (write), the draft path `$PIPE/cv-draft.md`, and the review paths `$PIPE/recruiter-cv.md` + `$PIPE/hm-cv.md` to read. The writer also writes the CV CHANGES section to `$PIPE/cv-changes.md` and returns the paths (R-41). Step 7d reads `$PIPE/cv-changes.md` for the feedback file.
 
 If any recruiter or HM flag identifies a skill or credential gap {{USER_FIRST_NAME}} does not have — do not address it. IT SHOULD BE COMPLETELY OMITTED. Reframing, surfacing, and reordering are permitted; fabrication and scope-hedging ARE ABSOLUTELY PROHIBITED.
 
@@ -127,7 +128,7 @@ Read the following from Notion for this role:
 
 ### Step 5 — Cover letter (draft)
 
-**Before spawning letter-writer:** Read `02-professional-background.md` (Role Facts) for {{USER_FIRST_NAME}}'s role facts — key proof points from `02-professional-background.md` (Role Facts). Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
+**Before spawning letter-writer:** Read `${CAREER_DATA}/references/02-professional-background.md` (Role Facts) for {{USER_FIRST_NAME}}'s role facts — key proof points from `02-professional-background.md` (Role Facts). Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
 
 **Before spawning, pass the following for this role:**
 - **Why I Want This Role property** — use the value retrieved in Pre-Step 5. Do not re-read from Notion.
@@ -140,6 +141,7 @@ Read the following from Notion for this role:
 > STRUCTURE IS NON-NEGOTIABLE. Regardless of any reviewer feedback you receive, the letter structure defined in `cover-letter/SKILL.md` must be observed in full — in particular the tone, voice, and content of the opening paragraph. Reviewer feedback informs what proof to include or emphasise; it does not change how the letter is structured or how the opening is written.
 
 Spawn `letter-writer` with `option=cover-letter`, passing:
+- `CAREER_DATA=${CAREER_DATA}`
 - `LETTER_PATH=$PIPE/letter-draft.md` — the writer writes the draft there and returns the path (R-41)
 - The **final revised CV** path `$PIPE/cv-final.md` to read (for CV/letter coherence)
 - `Role summary` (contains the role context, key requirements, and Company self-characterization section verbatim if present — this is the JD proxy for the letter-writer)
@@ -170,11 +172,12 @@ Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter path `$P
 
 ### Step 5.3 — Recruiter review (cover letter)
 
-Spawn `recruiter-reviewer` with `option=cover-letter`, passing `Role summary`, the cover letter path `$PIPE/letter-draft.md` to read, and `OUTPUT_PATH=$PIPE/recruiter-cl.md`. The recruiter reviews the cover letter for screening-risk issues: does it hold attention past the first sentence, does it establish {{USER_FIRST_NAME}}'s seniority and relevance quickly, does anything read as a red flag before a hiring manager sees her. It writes its full review to the path and returns a 2-line status (R-41).
+Spawn `recruiter-reviewer` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, `Role summary`, the cover letter path `$PIPE/letter-draft.md` to read, and `OUTPUT_PATH=$PIPE/recruiter-cl.md`. The recruiter reviews the cover letter for screening-risk issues: does it hold attention past the first sentence, does it establish {{USER_FIRST_NAME}}'s seniority and relevance quickly, does anything read as a red flag before a hiring manager sees her. It writes its full review to the path and returns a 2-line status (R-41).
 
 ### Step 5.5 — Hiring manager review (cover letter)
 
 Spawn `hiring-manager-reviewer` with `option=cover-letter`, passing:
+- `CAREER_DATA=${CAREER_DATA}`
 - The cover letter path `$PIPE/letter-draft.md` to read
 - The HM CV review path `$PIPE/hm-cv.md` to read (the Step 3 verdict and any Conditional condition)
 - `Role summary`
@@ -185,6 +188,7 @@ It writes its full review (does it address the condition, does it add something 
 ### Step 5.7 — Cover letter revision
 
 Spawn `letter-writer` with `option=revision`, passing:
+- `CAREER_DATA=${CAREER_DATA}`
 - `LETTER_PATH=$PIPE/letter-final.md` (write) and the draft path `$PIPE/letter-draft.md` to read
 - The recruiter feedback path `$PIPE/recruiter-cl.md` to read (from Step 5.3)
 - The hiring manager cover-letter feedback path `$PIPE/hm-cl.md` to read (from Step 5.5)
@@ -215,7 +219,7 @@ Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter path `$P
 
 **Before spawning, snapshot the revert target:** copy `$PIPE/letter-final.md` (the Step 5.8-passing text) to a sibling `$PIPE/letter-final.prehumanizer.md` — the revert target for Step 5.95. (The humanizer edits in place, so this snapshot must be taken first.)
 
-Spawn `cover-letter-humanizer`, passing the final cover letter markdown path `$PIPE/letter-final.md` (it edits in place) and `Role summary`.
+Spawn `cover-letter-humanizer`, passing `CAREER_DATA=${CAREER_DATA}`, the final cover letter markdown path `$PIPE/letter-final.md` (it edits in place), and `Role summary`.
 
 The humanizer is a writing editor and linguistics expert. It loads `skills/cover-letter-humanizer/SKILL.md` and removes AI writing patterns sentence by sentence. It does not change structure, strategy, or content — only language.
 

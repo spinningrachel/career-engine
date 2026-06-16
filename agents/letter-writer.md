@@ -126,6 +126,17 @@ Jump directly to the relevant section. Read only the one you will execute.
 
 ### Before writing
 
+**Step 0 — Determine letter type (run first, before anything else):**
+
+Check `Role emphasis` for a `[Letter type: ...]` tag written by the employment coach. If present, use it directly. If absent, determine from the substance of `Role emphasis` and Strategy Priority 1.
+
+Three types:
+- **IC** — the mandate is primarily individual execution; prove capability at deliverable and domain-fluency level
+- **Strategic** — the mandate is organizational leadership; argue at altitude (strategic POV + identity claim → function-level credentials → organizational differentiator → leadership identity close)
+- **Hybrid** — the mandate requires both leadership AND specific IC execution; blend both — strategic POV grounded with specific deliverables, function ownership with named craft evidence, leadership + builder close
+
+Full structural definition for each type in `skills/cover-letter/SKILL.md` → Letter Type. Hold the type — it governs how the body paragraphs are sequenced and what job each does.
+
 **JD diagnostic — run this before any other step:**
 
 Every job posting exists because something is broken or missing. Before writing anything, answer these three questions:

@@ -492,6 +492,21 @@ grep -ci "stealth" <location>/skills/gatekeeper-checks/SKILL.md                 
 
 **FAIL condition:** any count is 0 or off its stated requirement.
 
+### Check 21m — Two-step view discovery present at all Path B sites (R-45)
+
+Path B view discovery requires two fetches (DB page → collection → views), not one. The instructions at all four query sites must describe fetching the collection URL and stripping dashes from the view UUID.
+
+```bash
+grep -c "collection://" <location>/skills/career-engine-intake/SKILL.md      # must be >= 1
+grep -c "collection://" <location>/skills/career-engine-coach/SKILL.md       # must be >= 1
+grep -c "collection://" <location>/skills/career-engine-edit/SKILL.md        # must be >= 1
+grep -c "collection://" <location>/skills/source-open-roles/SKILL.md         # must be >= 1
+grep -c "remove all dashes" <location>/skills/career-engine-intake/SKILL.md  # must be >= 1
+grep -c "remove all dashes" <location>/skills/career-engine-coach/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** any count is 0.
+
 ### Check 22 — Known regression checks present in CLAUDE.md
 
 In `CLAUDE.md`: verify the file contains "Known regression checks", entries "R-1" through "R-6", and the latest entry "R-37".

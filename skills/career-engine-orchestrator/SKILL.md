@@ -277,7 +277,7 @@ If the coach cannot access the URL: it will report the failure. Tell {{USER_FIRS
 
 **Step N3 — Lightweight employment coach**
 
-Spawn `employment-coach` in pipeline mode with a single role. Pass the structured JD and `01-writing-rules.md`. Instruct the coach: **produce strategic properties only — no Notion writeback, no patterns section, no batch analysis.** Return: Role emphasis, Keywords, Strategy, Role Type, Relationship type, Gap handling. This is a fast single-role pass, not a batch run.
+Spawn `employment-coach` in pipeline mode with a single role. Pass `CAREER_DATA=${CAREER_DATA}`, the structured JD and `01-writing-rules.md`. Instruct the coach: **produce strategic properties only — no Notion writeback, no patterns section, no batch analysis.** Return: Role emphasis, Keywords, Strategy, Role Type, Relationship type, Gap handling. This is a fast single-role pass, not a batch run.
 
 No Notion writeback for coach outputs in `--now` mode.
 

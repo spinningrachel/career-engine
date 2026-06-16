@@ -130,6 +130,51 @@ Why I Want This Role is the sole source for the opener's content and angle. {{US
 
 ---
 
+## Letter Type
+
+Every letter is one of three structural types. The employment coach signals the recommended type via `[Letter type: IC | Strategic | Hybrid]` appended to `Role emphasis` — read that first. If no signal is present, determine from `Role emphasis` substance and Strategy Priority 1. All three types follow every other rule in this skill unchanged — fabrication guards, opener sourcing, CV-repetition prohibition, and word count apply equally.
+
+**Type 1 — IC/Specialist/Builder**
+
+Use when the role's mandate is primarily individual execution: build this function, do this specific work, demonstrate technical or domain depth. The hiring manager is evaluating whether the candidate can perform the work — not whether they can lead an organization.
+
+**Central argument:** I have exactly the skills and experience this role requires.
+
+- **Opener:** Genuine reaction + immediate capability claim or domain match. Energy and specificity land the claim fast. ("I'm one person who does both." / "I nearly screamed when I saw this role. Because I was just doing it.")
+- **Body:** Proves the claim at deliverable and domain-fluency level — named companies, specific things built, technical fluency demonstrated, concrete outputs. Every paragraph adds something the CV can't carry about specific execution.
+- **Close:** Forward-looking about the specific work she'd do here.
+- **Credential scope:** Deliverable and domain level. "I built the founding PMM function at X" / "I speak Kubernetes fluently."
+
+**Type 2 — Senior/Executive/Strategic**
+
+Use when the role's mandate is organizational leadership, function ownership, cross-functional influence, or strategic direction — and the hiring manager is evaluating whether the candidate thinks and leads at the right altitude, not primarily whether they can execute specific deliverables.
+
+**Central argument:** I am the right kind of leader for this organization.
+
+- **Opener:** Same rules as Type 1 — personal reaction, Why I Want This Role as sole source. What differs is that her reaction may center on *why she believes in the organization* or her long-held conviction about the domain, in addition to capability match.
+- **Paragraph 2 — Strategic POV + identity claim:** Stakes a conviction about what the role or function genuinely requires — from her point of view as someone who has owned it — AND claims that identity. "I know that X and Y go hand in hand — and I'm [identity]." This is earned conviction, not analyst commentary about the company.
+- **Paragraph 3 — Function-level credentials:** Proves the conviction at organizational scope. Disciplines owned ("led positioning, messaging, technical documentation, thought leadership"), cross-functional influence, commercial impact at scale. Not individual deliverables — the function as a whole.
+- **Paragraph 4 — Organizational differentiator:** Evidence that she thinks at organizational altitude. A product she built, a decision she made, an approach she took — framed through the buyer's or organization's challenge, not through her skill set.
+- **Close — leadership identity:** Who she is as a leader and steward of the function. Team development, future contribution, organizational identity — not just task enthusiasm.
+- **Credential scope:** Function ownership level. "I've led [disciplines]" / "influenced millions in pipeline."
+
+**Hybrid — Strategic + Builder**
+
+Use when the role requires both organizational leadership AND specific IC execution — a Director who also does the work, a founding senior hire who will set direction and build, a Head role at a company where the mandate is both strategic and craft-level. The hiring manager is evaluating leadership judgment AND demonstrated execution capability.
+
+**Central argument:** I am the right kind of leader AND I can do this specific work.
+
+- **Opener:** Same rules as Types 1 and 2. The reaction may blend both — responding to the company/mission (Type 2 register) and to the specific craft challenge (Type 1 energy).
+- **Paragraph 2 — Strategic POV + specific deliverable:** Stakes a conviction about the domain, then grounds it immediately with a specific named deliverable or technical proof point — not just function ownership. The move: "I know that [X] — here's the specific thing I built that proves it."
+- **Paragraph 3 — Function-level AND craft credentials:** Demonstrates both the function owned AND specific things built within it. "I led [function] — and within that, I built [specific thing that shows craft depth]."
+- **Paragraph 4 — Execution differentiator:** A specific IC output that demonstrates craft, domain depth, or hands-on capability at the level the role requires. Shows she can do the work, not just lead it.
+- **Close — leadership + builder identity:** Stakes both who she is as a leader AND her enthusiasm for the craft. Not just "I am a strategic leader" but "I build what I lead."
+- **Credential scope:** Both function ownership AND specific deliverable level, present in the same letter.
+
+**The key distinctions:** Type 1 answers *why can she do this work?* Type 2 answers *why is she the right leader for this organization?* Hybrid answers both. A Type 2 letter written at Type 1 altitude underpositions a senior candidate. A Hybrid written in pure Type 2 mode undersells the execution capability the role needs.
+
+---
+
 ## Writing Mechanics
 
 **Before writing a single word — this step is MANDATORY and must NEVER BE SKIPPED:** Open 2–3 delivered letters from `references/delivered-letters/` (preferably for similar domain, seniority, or situation) AND the voice fingerprint in `03-framework.md` §Voice fingerprint. Read them for three purposes:
@@ -619,6 +664,14 @@ Test: was the parallel structure built to sound impressive, or does it list real
 **AI vocabulary — ban every instance.**
 *crucial, pivotal, vibrant, showcase/showcasing, tapestry (figurative), underscore (verb), landscape (abstract noun), testament, enduring, foster/fostering, garner, interplay, intricate/intricacies, foundational, transformative, robust, seamless, comprehensive.*
 These words appear far more in AI-generated text. Remove all of them.
+
+**Additional absolute prohibitions — banned in all cover letter copy:**
+- **"that made it land"** — vague AI-assembly phrase; name what it was and what the result was
+- **"behind the [noun]"** (e.g., "behind the coverage", "behind the strategy") — agent-coined abstraction; name the actual work
+- **"at an inflection point"** — generic AI phrase; name the specific moment or transition
+- **"quietly [verb]ing"** (e.g., "quietly building", "quietly scaling") — performative modesty; name the action directly
+- **"rare"** as a self-descriptor — never self-apply; demonstrate through specifics
+- **"up close"** — filler; cut it
 
 **Copula avoidance — ban.**
 "Serves as," "stands as," "marks," "represents" where "is" works fine. Use "is." Also ban substituting elaborate constructions for simple copulas: "functions as a testament to the enduring nature of" → "is."

@@ -74,7 +74,7 @@ Trim the JSON in the shell to page `id` plus the named properties E0 needs; for 
 View URL: {{NOTION_NEEDS_EDITING_VIEW_URL}}
 ```
 
-This view is pre-configured to return only rows with `Status = Needs editing`. Call `notion-query-database-view` with this `view_url` and no other arguments — do not construct your own filter (the A1/A2 direct filters above are the only sanctioned filtered routes). The view URL is a fast path; if it is empty, fails, or is stale (view deleted or reorganised), resolve it by name instead: fetch the database page with `notion-fetch id="{{NOTION_DATABASE_ID}}"`, find the view named "Needs Editing" in the `Views` list, and use that URL.
+This view is pre-configured to return only rows with `Status = Needs editing`. Call `notion-query-database-view` with this `view_url` and no other arguments — do not construct your own filter (the A1/A2 direct filters above are the only sanctioned filtered routes). The view URL is a fast path; if it is empty, fails, or is stale (view deleted or reorganised), resolve it by name instead using a two-step fetch: (1) call `notion-fetch id="{{NOTION_DATABASE_ID}}"` to get the `collection://` URL from the `<data-sources>` block; (2) call `notion-fetch id="<collection_url>"` to list views, find the one with `"name":"Needs Editing"`, take its UUID (from the `view://UUID-with-dashes` format), **remove all dashes**, and construct `https://www.notion.so/<DB_ID_NO_DASHES>?v=<VIEW_ID_NO_DASHES>`.
 
 **The view result is for discovery only (R-1).** `notion-query-database-view` returns a rendered table that is susceptible to column misalignment and shows only the view's visible columns — never enough for the full row payload below. Extract only the page IDs/links from the result (unambiguous even in a misaligned table), then call `notion-fetch id="<page_id>"` on each page and read the full payload from the structured page response. Never read property values out of the rendered table.
 
@@ -127,7 +127,7 @@ Run both in parallel. Collect results. Do not loop or fix anything yet — this 
 
 ## Step E1 — Employment coach verification
 
-Spawn `employment-coach` with the full row data, the structured JD data for every role in the editing queue, and the baseline violation lists from Step E0.7 as additional context.
+Spawn `employment-coach` with `CAREER_DATA=${CAREER_DATA}`, the full row data, the structured JD data for every role in the editing queue, and the baseline violation lists from Step E0.7 as additional context.
 
 The coach's job in this pipeline is verification and refinement — not a fresh start. For each role:
 
@@ -178,6 +178,7 @@ Agents in this track are explicitly informed they are improving existing work. P
 **Step E3 — CV writer (revision mode)**
 
 Spawn `cv-writer` with `option=revision`. Pass:
+- `CAREER_DATA=${CAREER_DATA}`
 - The existing CV text as the draft (from the saved markdown backup at the output path, or extracted using `pandoc "<cv>.docx" -t markdown` if only the DOCX is available)
 - The coach's verified properties as the strategic anchor
 - The baseline content violation list from Step E0.7 (so the cv-writer addresses pre-existing violations immediately, not after another loop)
@@ -212,15 +213,15 @@ Spawn `gatekeeper` with `option=content`, passing the revised CV text, the struc
 
 **Step E4 — Recruiter review**
 
-Spawn `recruiter-reviewer` with the structured JD, the revised CV, and `OUTPUT_PATH=$PIPE/recruiter-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). The reviewer is aware this is a revision, not a first draft.
+Spawn `recruiter-reviewer` with `CAREER_DATA=${CAREER_DATA}`, the structured JD, the revised CV, and `OUTPUT_PATH=$PIPE/recruiter-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). The reviewer is aware this is a revision, not a first draft.
 
 **Step E5 — Hiring manager review**
 
-Spawn `hiring-manager-reviewer` with the structured JD, the revised CV, and `OUTPUT_PATH=$PIPE/hm-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). It returns structured feedback on the revision.
+Spawn `hiring-manager-reviewer` with `CAREER_DATA=${CAREER_DATA}`, the structured JD, the revised CV, and `OUTPUT_PATH=$PIPE/hm-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). It returns structured feedback on the revision.
 
 **Step E6 — CV writer (final revision)**
 
-Read recruiter feedback from `$PIPE/recruiter-review.md` and hiring manager feedback from `$PIPE/hm-review.md`. Spawn `cv-writer` with `option=revision`, passing the revised CV from Step E3, the recruiter feedback, and the hiring manager feedback. Returns the final CV and revision log.
+Read recruiter feedback from `$PIPE/recruiter-review.md` and hiring manager feedback from `$PIPE/hm-review.md`. Spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, the revised CV from Step E3, the recruiter feedback, and the hiring manager feedback. Returns the final CV and revision log.
 
 **Step E6.5 — Gatekeeper (content check)**
 
@@ -238,6 +239,7 @@ Spawn `gatekeeper` with `option=content`, passing the final revised CV text, the
 - **`Why I Want This Role` property** — {{USER_FIRST_NAME}}'s written motivation for this role; passes the gate above, so it is populated. Include the full content.
 
 Spawn `letter-writer` with `option=revision`. Pass:
+- `CAREER_DATA=${CAREER_DATA}`
 - The existing cover letter (from the output run folder using the filename in `Letter File Name`; if the property is absent from the schema or empty, locate the file via the run-folder convention instead: state.json `cover_letter_path`/`cv_path`, or the Draft Directory company subdirectory with filename patterns `coverletter-*`/`cv-*`)
 - The baseline cover letter violation list from Step E0.7
 - The verified coach properties from Step E1, including `Gap handling`
@@ -275,15 +277,16 @@ Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter (read fr
 
 **Step E7.4 — Recruiter review**
 
-Spawn `recruiter-reviewer` with `option=cover-letter`, passing the cover letter (read from `$PIPE/letter-draft.md`), the structured JD, and `OUTPUT_PATH=$PIPE/recruiter-cl-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). The reviewer is aware this is a revision, not a first draft.
+Spawn `recruiter-reviewer` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter (read from `$PIPE/letter-draft.md`), the structured JD, and `OUTPUT_PATH=$PIPE/recruiter-cl-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). The reviewer is aware this is a revision, not a first draft.
 
 **Step E7.5 — Hiring manager review**
 
-Spawn `hiring-manager-reviewer` with `option=cover-letter`, passing the cover letter (read from `$PIPE/letter-draft.md`), the structured JD, the final CV (for context), and `OUTPUT_PATH=$PIPE/hm-cl-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). If the hiring manager returns a Conditional verdict, that verdict is in the file — read it before Step E7.6.
+Spawn `hiring-manager-reviewer` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter (read from `$PIPE/letter-draft.md`), the structured JD, the final CV (for context), and `OUTPUT_PATH=$PIPE/hm-cl-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). If the hiring manager returns a Conditional verdict, that verdict is in the file — read it before Step E7.6.
 
 **Step E7.6 — Letter-writer (final revision)**
 
 Read recruiter feedback from `$PIPE/recruiter-cl-review.md` and hiring manager feedback from `$PIPE/hm-cl-review.md`. Spawn `letter-writer` with `option=revision`. Pass:
+- `CAREER_DATA=${CAREER_DATA}`
 - The revised cover letter (read from `$PIPE/letter-draft.md`)
 - Recruiter feedback (from disk)
 - Hiring manager feedback (from disk, including any Conditional condition verbatim)
@@ -303,7 +306,7 @@ Spawn `gatekeeper` with `option=cover-letter`, passing the final cover letter te
 
 **Step E8 — Humanizer (cover letter)**
 
-Spawn `cover-letter-humanizer`, passing the final cover letter markdown and the structured JD.
+Spawn `cover-letter-humanizer`, passing `CAREER_DATA=${CAREER_DATA}`, the final cover letter markdown, and the structured JD.
 
 The humanizer removes AI writing patterns sentence by sentence. It does not change structure, strategy, or content — only language. Wait for it to return the corrected letter and its change log.
 
