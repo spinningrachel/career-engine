@@ -242,7 +242,7 @@ Spawn `letter-writer` with `option=revision`. Pass:
 - The baseline cover letter violation list from Step E0.7
 - The verified coach properties from Step E1, including `Gap handling`
 - The final CV (for context)
-- **`Why I Want This Role`** content: if populated, include it as the primary personal content input.
+- **`Why I Want This Role` — pass the verbatim text as a quoted block, never paraphrased or distilled.** The letter-writer's Intake Gate requires this field and its instruction rules require working from {{USER_FIRST_NAME}}'s exact words, not thematic summaries of them. If the Edit notes reference this field as the content source, that is even more reason to pass it raw — the writer must receive the actual material, not the orchestrator's interpretation of it. (R-44)
 - **`Edit notes` content** (from the Step E0 row payload) — if populated, include verbatim with the instruction: "Address these specific edit notes first, before applying general improvements: [content]". Omit if empty.
 - `LETTER_PATH=$PIPE/letter-draft.md` — the writer writes its output to this file and returns only a 2-line status + path (R-41 protocol).
 
@@ -321,11 +321,18 @@ Follow the same pandoc production protocol as the main pipeline. See `career-eng
 
 Derive `<company_dir>` from the Company name using the naming convention in `career-engine-export`. Convert using the original run folder as the temporary landing pad: write the final CV markdown and cover letter markdown to `/tmp/`, convert with pandoc using the `.dotx` reference templates, update the CV Subtitle, and copy both files to `<output_dir>/<company_dir>/`. If a file with the same name already exists, overwrite it — this is an edit, not a new file.
 
-Verify both files exist and are nonzero before proceeding to Step E9.5.
+Verify the produced file(s) exist and are nonzero before proceeding to Step E9.5. (Only the file(s) for the active Edit type are produced here — the unedited companion file is handled in E9.5.)
 
 **Step E9.5 — Move edited DOCXs to today's dated folder**
 
 Regardless of what was edited (CV only, letter only, or both), move **both** DOCX files — CV and cover letter — from the original run folder to a new folder named with today's edit date. This keeps the original run folder clean and makes it immediately obvious which files are the most recently edited versions.
+
+**The unedited file must travel too.** Step E9 only produces the file(s) for the active edit type — the other file was not re-converted. Before moving, locate the unedited file in the original run folder (`<output_dir>/<company_dir>/`):
+- Edit type `CV`: locate the existing cover letter DOCX by filename (`Letter File Name` Notion property → state.json `cover_letter_path` → `coverletter-*` glob in the company subdirectory). It must move alongside the freshly produced CV.
+- Edit type `Letter`: locate the existing CV DOCX (`CV File Name` → state.json `cv_path` → `cv-*` glob). It must move alongside the freshly produced cover letter.
+- Edit type `Both`: both files were produced by E9; no special handling needed.
+
+If the unedited file cannot be located, log the missing file and move what is available — do not block the move of the edited file.
 
 ```
 $EDIT_DIR = $OUTPUT_FOLDER/${OUTPUT_DIR_PREFIX:-applications}-<YYYY-MM-DD-today>/<company_dir>/
