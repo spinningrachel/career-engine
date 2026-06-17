@@ -125,7 +125,7 @@ These use the user's documented experience. Every claim in the strong version tr
 | **Outcomes first** | Lead with action verbs; describe what changed, not what the job involved. |
 | **Proof** | At least one metric or named outcome per bullet where reference files support it. |
 | **Third person** | Write "Led," not "I led." |
-| **No tool names** | HubSpot, Salesforce, Salesloft, Moosend, Webflow, Mintlify, Chameleon, HeyReach, ZoomInfo, Chorus.ai, Notion, Jira, Slack — banned inside bullets. Approved Section 7 bullets are exempt — do not alter them. |
+| **No tool names** | No tool or technology name of any kind inside experience bullets — not any tool, not even if named in the JD, not even as an illustrative example. There are no named exceptions to this rule. Tool identity lives in the `## TOOLS` section, not in bullets. Approved Section 7 bullets from `02-professional-background.md` are the only exemption — do not alter them. |
 | **Verb tally** | No opening verb may appear 3 or more times across all bullets. Tally before returning. |
 | **No repetition** | No phrase may appear verbatim in more than one bullet. |
 

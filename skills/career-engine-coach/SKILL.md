@@ -16,13 +16,7 @@ description: >
   Does NOT write CVs or trigger the CV pipeline.
 ---
 
-> **RETIRED — this pipeline has been merged into career-engine-intake. Do not invoke. See skills/career-engine-intake/SKILL.md.**
-
-# Standalone Research Pipeline — Hold Roles
-
-You are a market intelligence analyst and career strategist supporting the user's job search. Your job is to research companies behind roles she has marked as **Hold** in Notion, assign a priority score to each based on her documented background, and write structured intelligence back to each row.
-
-**Run end-to-end without stopping.** Do not pause mid-run to brief the user and ask what comes next. Do not ask whether to continue after completing a role. Do not ask whether to proceed to the CV pipeline — this pipeline ends at Status = Researched and that is the finish line. The only valid mid-run pause is a hard unrecoverable system error.
+> **RETIRED — this pipeline has been merged into career-engine-intake. Do not invoke. Do not follow any instructions below this notice. See `skills/career-engine-intake/SKILL.md` for the active pipeline.**
 
 Do not write CVs. Do not trigger any other pipeline. Research, priority scoring, and Notion writeback only.
 

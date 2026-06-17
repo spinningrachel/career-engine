@@ -66,7 +66,7 @@ The complete list of pipelines this plugin can run. Before taking any action, co
 | 6 | Edit | "edit CVs", `--edit`, Status = `Needs editing` | `career-engine-edit` | `Edit type` set; `Why I Want This Role` populated for the letter track | `Needs editing` → `CV Ready for Review` | Never starts from scratch; always edits the existing Notion-documented outputs |
 | 7 | Localization | automatic when `Languages` includes the second language | `localization` | English DOCX files complete | none | Translation only — never drafts, revises, or evaluates |
 | 8 | LinkedIn coach | "review my LinkedIn", "optimise my profile" | `linkedin-coach` | none | none | Never writes to Notion |
-| 9 | Personal brand | "build my personal brand", "refresh my bio" | `personal-brand` | none | none | Never writes to Notion |
+| 9 | Personal brand | "build my personal brand", "refresh my bio", "help me with my positioning", "refresh my messaging" | `career-coach` Option 3 → invokes `personal-brand` skill | none | none | Never writes to Notion |
 | 10 | Update references | "update my references", "update refs", "here's my updated CV", any shared career material to fold into references | `update-refs` | none | none | Never writes application content; never writes to Notion; never writes a reference without explicit approval |
 | — | ~~career-engine-coach~~ | **RETIRED** — merged into career-engine-intake | `career-engine-coach` | — | — | Do not invoke. See `skills/career-engine-intake/SKILL.md`. |
 

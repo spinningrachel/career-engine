@@ -161,7 +161,7 @@ See `skills/cv-writing/SKILL.md` for bullet rules (outcomes first, proof, third 
 - The goal is to make the transfer argument undeniable. A shift CV that buries the transferable proof loses the shortlist.
 
 **Step-down framing — check Role emphasis first:** If Role emphasis begins with `Step-down:`, this role is materially below the user's typical seniority level. Apply step-down framing:
-- Lead with execution bullets — what she built, shipped, ran, and delivered hands-on. Numbers, outputs, named tools.
+- Lead with execution bullets — what she built, shipped, ran, and delivered hands-on. Numbers and named outputs. No tool names in bullets — this applies even in step-down framing.
 - Suppress strategy and leadership language. Do not surface board presentations, function-building, org design, or budget ownership unless they directly answer a named JD requirement.
 - Summary tone: peer-to-team, not executive. Avoid framing her as "having led" something at scale if the role is an IC execution role.
 - The goal is fit, not flattery. An overframed CV for a step-down role signals mismatch and loses the shortlist faster than an under-framed one.

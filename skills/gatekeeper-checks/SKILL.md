@@ -67,7 +67,7 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 - Any consulting entry flagged as mandatory in `02-professional-background.md` appears somewhere in the CV — either as a standalone entry in `## CONSULTING` or as a bullet within the main consulting section — FAIL if absent entirely
 - The "Earlier:" line appears as the final entry inside `## EXPERIENCE`, before the `## CONSULTING` section header — FAIL if Earlier appears after CONSULTING
 - Claims about target market match `02-professional-background.md` (Role Facts)
-- No app/tool names inside bullets: HubSpot, Salesforce, Salesloft, Moosend, Webflow, Mintlify, Chameleon, HeyReach, ZoomInfo, Chorus.ai, Notion, Jira, Slack — approved bullets from `02-professional-background.md` are exempt
+- No tool or technology name of any kind inside experience bullets — not any tool, not even if named in the JD, not even as an example. Blanket ban. Approved bullets from `02-professional-background.md` are the only exemption.
 - Every named role has a RoleOverview immediately below its RoleTitle — count must match (Earlier: exempt)
 
 **Structure**
