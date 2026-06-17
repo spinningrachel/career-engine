@@ -96,6 +96,14 @@ If the user's Why I Want This Role content was passed alongside the cover letter
 
 If the numbered [WIWTR-N] point list was passed alongside the letter: verify each point is substantively present in the letter text. A point is present if its actual substance (not just its theme) appears somewhere in the letter. Missing points = FAIL. List each missing point by number and quote it. If no [WIWTR-N] list was passed, skip this check and note "WIWTR point list not provided — coverage check skipped."
 
+**Hard-fact scan — FAIL if triggered (run this before any other content check)**
+
+List every sentence in the letter that asserts a specific, checkable event, prediction, outcome, capability, or number attributed to the candidate's history. Examples of the type: "saw the acquisition coming," "predicted X," "increased market share 65%," "knew the buyer trusts permanence over novelty," "understood that the market would demand Y." For each listed sentence, find the specific supporting line in `02-professional-background.md` or `01-writing-rules.md` that documents this fact. If no such line exists, FAIL it as fabrication.
+
+A claim does not pass because it "sounds plausible" or "sounds like her." Plausibility is not evidence. The personal-content exemption covers genuine first-person reactions and opinions — it does not cover factual claims about what she did, concluded, predicted, or knew. Foresight claims, market aphorisms presented as her insight, and acquisition-or-event-attributed-to-her statements are in scope for this check even when they sound earned.
+
+**This scan is mandatory and enumerated: list the claims first, then verify each against the files, one at a time. A holistic read is not sufficient.**
+
 **CV repetition check — FAIL if triggered**
 
 This check requires the final revised CV to be in scope. If the CV was not passed alongside the cover letter, report 'CV not provided — repetition check skipped' as a named line in your output — never skip silently. The pipelines are required to pass the CV; a missing CV is itself a finding.

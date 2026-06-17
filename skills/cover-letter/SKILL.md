@@ -275,6 +275,10 @@ Run this before and during writing the opener. It is not a post-draft check — 
 
 **The balance:** shape the structure; preserve the language. Notes become a paragraph through connectors, sequence, and flow — not by replacing her words with generic professional vocabulary.
 
+**No foresight claims or market aphorisms — these are fabrication unless sourced.**
+
+When writing a proof paragraph about a buyer, market, or domain: do not assert what the candidate *concluded*, *predicted*, or *foresaw* unless that conclusion is a documented fact in career-data. Describe what she *did* — what she positioned, built, or ran at a named company — not what she anticipated or realized. Predictions, foresight claims, and market aphorisms ("position around permanence, not novelty," "the buyer trusts a vendor standing in five years") are fabrication unless the specific insight appears verbatim or near-verbatim in `02-professional-background.md` or `03-framework.md`. If you cannot cite the source, describe the work instead.
+
 **Hard stop — invention is fabrication. No exceptions.**
 
 Step 4 says "write a paragraph from it." That means: from what she actually wrote — the words, phrases, reactions, and comparisons that appear in Why I Want This Role. It does not mean: use her notes as a prompt and construct a paragraph using your own reasoning about what she would say or feel.
