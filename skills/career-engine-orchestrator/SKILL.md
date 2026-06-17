@@ -83,7 +83,7 @@ The New Applications pipeline produces three files per role (CV DOCX, cover lett
 
 If `career-engine-export` is not loaded when you reach the DOCX export step, back up and load it.
 
-**Run end-to-end. Do not stop to ask the user about scope mid-run.**
+**Run end-to-end. Do not stop to ask the user about scope — not before launch, not at the queue report, not mid-run.**
 
 The career coach caps the run and selects which roles process this session. That cap is the decision. Do not pause after Role 1 to ask whether to continue. Do not ask whether to batch DOCX conversion. Do not ask whether the run is too long.
 
@@ -275,7 +275,7 @@ Unscored roles still process — `Priority` affects ordering only; the coach is 
 
 **Open Application hard floor:** roles identifiable as open/speculative applications must sort as `6` regardless of any Priority value set.
 
-Report the queue to the user (company, title, priority or "unscored") and proceed immediately.
+Post exactly one declarative line — e.g. "Queue: Cognyte (P1), hearing.ai (P1), DualBird (P1), Gilat (P2), Datadog (P2). Running all 5." — then immediately begin Step O4. **Do not wait for a reply. Do not ask how to scope the run. The queue is already scoped.**
 
 ### Step O4 — Per-role pipeline
 

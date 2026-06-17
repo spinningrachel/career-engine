@@ -584,6 +584,73 @@ grep -c "Placeholder resolution" <build>/CLAUDE.md                              
 
 ---
 
+## Phase 0 — Cross-reference inventory sweep
+
+**Run this before any named check.** This sweep doesn't require knowing what was renamed — it derives ground truth from the repo and checks everything against it. It catches name drift, dead references, and wiring gaps that no static checklist can anticipate.
+
+### Step 0A — Build the name inventory
+
+List every active agent and skill name from the filesystem:
+
+```bash
+ls <location>/agents/*.md | xargs -I{} basename {} .md   # all agent names
+ls <location>/skills/                                      # all skill directory names
+```
+
+This is the ground truth. Any file referencing a name not in this list is a drift hit.
+
+### Step 0B — Cross-reference every name across the plugin
+
+For each name in the inventory, search all runtime files (agents, skills, references, CLAUDE.md) for references to it. Then do the reverse: search for any agent or skill name in all files and verify it appears in the inventory.
+
+```bash
+# Find all agent name references and flag any that don't exist as agents/*.md
+grep -rh "agents/\|agent=\|subagent_type\|spawn.*agent\|invoke.*agent" <location>/agents <location>/skills --include="*.md" | grep -v "qa-plugin.md"
+# Find all skills/ references and flag any that don't exist as skills/*/
+grep -rh "skills/" <location>/agents <location>/skills --include="*.md" | grep -v "qa-plugin.md"
+```
+
+Read the grep output. For each referenced name, verify it exists. Flag anything that doesn't. This catches renames where the consuming files weren't updated — the failure mode that caused R-46, R-47, R-48, and the career-engine-coach drift found in this session.
+
+### Step 0C — Retired-name search (permanent banned list)
+
+These names have been retired over the plugin's history and must not appear as active references in any runtime file:
+
+```bash
+grep -rn "employment-coach\|career-engine-coach\b" <location>/agents <location>/skills <location>/references --include="*.md" | grep -v "qa-plugin.md" | grep -v "skills/career-engine-coach/SKILL.md" | grep -v "skills/career-engine/SKILL.md"
+grep -rn "cv-campaign-intake\|cv-campaign-setup\|cv-campaign-steps\|cv-campaign-edit\|cv-campaign-orchestrator\|cv-campaign-export" <location> --include="*.md" | grep -v "qa-plugin.md"
+grep -rn "application-intake\|application-edit\|new-application-steps\|applications-orchestrator\|application-files-export" <location> --include="*.md" | grep -v "qa-plugin.md"
+```
+
+**FAIL condition (Step 0A–0C):** any reference to a name not in the current inventory, or any hit on the retired-name list.
+
+---
+
+## Spawn parameter audit
+
+Every agent spawn in every skill must pass `CAREER_DATA=${CAREER_DATA}` explicitly. This is the R-46/R-47 failure class — the single most common cause of silent fallback to blank templates.
+
+### Check 20 — CAREER_DATA in every spawn
+
+Read every skill file that spawns subagents: `career-engine-new-application/SKILL.md`, `career-engine-edit/SKILL.md`, `career-engine-orchestrator/SKILL.md`, `career-engine-intake/SKILL.md`. For each Spawn line or spawn instruction:
+
+1. Confirm `CAREER_DATA=${CAREER_DATA}` is explicitly listed as a parameter
+2. Confirm the receiving agent's file-loading table expects it OR has an R-37 self-locate fallback
+3. Flag any spawn that passes CAREER_DATA implicitly, by inheritance, or not at all
+
+```bash
+grep -n "Spawn\|spawn\|subagent" <location>/skills/career-engine-new-application/SKILL.md | grep -v "^#"
+grep -n "Spawn\|spawn\|subagent" <location>/skills/career-engine-edit/SKILL.md | grep -v "^#"
+grep -n "Spawn\|spawn\|subagent" <location>/skills/career-engine-orchestrator/SKILL.md | grep -v "^#"
+grep -n "Spawn\|spawn\|subagent" <location>/skills/career-engine-intake/SKILL.md | grep -v "^#"
+```
+
+For each Spawn line found, read the surrounding context and verify CAREER_DATA is present. Report every spawn site where it's absent.
+
+**FAIL condition:** any spawn without an explicit `CAREER_DATA=${CAREER_DATA}` parameter.
+
+---
+
 ## Pipeline logic simulation
 
 These checks go beyond file existence and rule presence. For each pipeline skill, you read every step in order and reason about what an agent would actually do — as if you were about to execute it yourself. The goal is to catch failure points before they occur in a live run.
@@ -603,47 +670,55 @@ For each finding, report: the step reference, the failure type (from the list be
 | F5 | **Cross-step contradiction** | Step N asserts X; step M earlier (or a rule in the same file) asserts not-X |
 | F6 | **Tool unavailable at this stage** | A step calls for a tool or capability the agent at this pipeline stage does not have |
 | F7 | **Behavioral drift risk** | An instruction that — based on how agents behave in practice — is likely to be misread, skipped, or partially executed. Advisory, not FAIL. |
+| F8 | **Blocking question risk** | A step outputs information to the user but does not explicitly state whether to proceed immediately or wait for a reply. Agents default to asking when ambiguous. Every user-facing output step must be labelled: declaration (proceed without waiting) or question (wait for reply). If unlabelled and the content could be read as inviting a response, it is F8. |
 
-**FAIL condition:** any finding of type F1–F6. Type F7 is advisory — report it, do not FAIL on it.
+**FAIL condition:** any finding of type F1–F7. Type F7 is advisory — report it, do not FAIL on it. F8 is FAIL.
+
+**F8 note:** this was the failure mode on 2026-06-17 when the orchestrator asked "How should I scope this New Applications run?" instead of declaring the queue and proceeding. The instruction said "report the queue and proceed immediately" but did not say the report was a one-way declaration — so the agent asked. Any step with similar structure is F8.
 
 ### Check 23 — Intake pipeline logic review
 
-Read `skills/career-engine-intake/SKILL.md` from Step −1 through Step 0.9d. Walk every step in order. Apply all seven failure type checks to each step. Report every finding.
+Read `skills/career-engine-intake/SKILL.md` from Step −1 through Step 0.9d. Walk every step in order. Apply all eight failure type checks to each step. Report every finding.
 
 Pay particular attention to:
 - Step 0b: does the notionApi query path have a defined fallback if the query returns zero results vs returns an error?
 - Step 0.5: is the Indeed fallback path unambiguous — would an agent know exactly when to invoke it vs proceed?
 - Step 0.8: is the coach-complete definition exhaustive — could an agent disagree on whether a role is coach-complete?
 - Step 0.9a: is the "write only to empty properties" rule checkable by the agent, or does it require a prior read step that isn't explicitly specified?
+- Every user-facing output step: is it explicitly labelled as declaration or question? (F8)
 
 ### Check 24 — New application steps logic review
 
-Read `skills/career-engine-new-application/SKILL.md` from Step 1 through the final step. Walk every step in order. Apply all seven failure type checks.
+Read `skills/career-engine-new-application/SKILL.md` from Step 1 through the final step. Walk every step in order. Apply all eight failure type checks.
 
 Pay particular attention to:
 - Step sequencing: does each step's output cleanly feed the next step's required input?
 - Gatekeeper loops: are the loop caps and fallback conditions unambiguous?
 - DOCX export: does the export step have all inputs it needs, or does it depend on context that may have been lost across subagent boundaries?
 - Notion writeback: are property names verified against the schema before writing, or assumed?
+- Every user-facing output step: is it explicitly labelled as declaration or question? (F8)
 
 ### Check 25 — Edit pipeline logic review
 
-Read `skills/career-engine-edit/SKILL.md` from Preflight through Step E10. Walk every step in order. Apply all seven failure type checks.
+Read `skills/career-engine-edit/SKILL.md` from Preflight through Step E10. Walk every step in order. Apply all eight failure type checks.
 
 Pay particular attention to:
 - Edit type gate: does it truly block all pipeline work for a role, or does any step proceed before the gate fires?
 - JD content path (Step E0.5): if JD Body is empty AND the URL fetch fails, is the role definitively dropped or does it silently proceed with no JD?
 - Quality comparison gates (E3.25, E7.25): are the pass/fail criteria specific enough that an agent would reach the same verdict consistently?
 - State file interaction: is crash recovery unambiguous — could an agent re-process a role that was already completed?
+- Every user-facing output step: is it explicitly labelled as declaration or question? (F8)
 
 ### Check 26 — Orchestrator logic review
 
-Read `skills/career-engine-orchestrator/SKILL.md`. Walk every step. Apply all seven failure type checks.
+Read `skills/career-engine-orchestrator/SKILL.md`. Walk every step. Apply all eight failure type checks.
 
 Pay particular attention to:
+- **Queue report (Step O3):** the report is explicitly a declaration — "do not wait for a reply, do not ask how to scope the run." If this language is absent or weakened, it is F8.
 - Queue selection logic: is the priority ordering unambiguous when two roles share the same priority value?
-- Role routing: is the handoff to intake and career-engine-new-application clean — no context lost between orchestrator and sub-pipeline?
+- Role routing: is the handoff to career-engine-new-application clean — no context lost between orchestrator and sub-pipeline?
 - Error propagation: if one role fails mid-pipeline, does the orchestrator continue correctly or does it risk aborting the batch?
+- Every user-facing output step: is it explicitly labelled as declaration or question? (F8)
 
 ---
 
@@ -651,9 +726,11 @@ Pay particular attention to:
 
 This is the closest achievable equivalent to a sandboxed execution. You cannot call real tools, but you can reason through what would happen step-by-step with synthetic data — and that reasoning will surface instruction gaps that grep and logic review miss.
 
-**How to run a trace:**
+**The traces are mandatory and must be narrated.** Do not summarize. Write what you would do at each step, what you expect the result to be, and whether the instructions give you enough to proceed without ambiguity. Stop and flag every point of uncertainty.
 
-Use this synthetic role for the intake trace:
+### Synthetic data
+
+**Intake trace role:**
 - Company: TestCorp
 - Position: Head of Marketing
 - Job URL: `https://il.indeed.com/viewjob?jk=abc123redirect`
@@ -662,23 +739,35 @@ Use this synthetic role for the intake trace:
 - Edit type: (not set)
 - All coach properties: empty
 
-Narrate what you (the QA agent) would do at each step if you received this role in the intake pipeline. At each step, state: what action you take, what you expect the result to be, and whether the instructions give you enough information to proceed without ambiguity. When you hit a gap — a step where you would pause, guess, or take a path not explicitly instructed — stop and flag it.
+**Edit trace role:**
+- Same as above, but Status: Needs editing, Edit type: (not set)
 
-Use this synthetic role for the edit trace:
-- Same role as above, but Status: Needs editing, Edit type: (not set)
-- Run through the edit pipeline preflight and Step E0
+**Orchestrator trace queue:**
+- 5 roles: AlphaCo (P1), BetaInc (P1), GammaSoft (P1), DeltaCorp (P2), EpsilonAI (P2)
+- All Interested, all readiness-check passing
 
 ### Check 27 — Intake trace (synthetic data)
 
-Run the intake trace with the synthetic role above. Report every step where you would:
-- Pause or be uncertain what to do next
-- Make an assumption not explicitly authorized by the instructions
-- Produce an output that doesn't match what the next step expects
-- Skip a step because the instructions could be read as conditional when they are mandatory
+Run the intake trace. At each step, state: what you do, what you expect, and whether instructions are unambiguous. Flag every gap.
+
+Specific questions to answer during the trace:
+- At Step 0b: which path do you take (A1/A2/B), and why? What happens if A1 is absent?
+- At Step 0.5 with an Indeed URL and empty JD Body: do you know exactly what to do next without guessing?
+- At Step 0.8: is TestCorp coach-complete? How do you know?
 
 ### Check 28 — Edit trace (synthetic data, missing Edit type)
 
-Run the edit trace with Edit type unset. Verify that the pipeline hard-stops at the Edit type gate and does not proceed to spawn any subagent. Report whether the instructions are unambiguous enough that you stop immediately, or whether there is any reading of the instructions that would let you continue.
+Run the edit trace with Edit type unset. Does the pipeline hard-stop at the Edit type gate? Is the instruction unambiguous enough that you would stop immediately, or is there any reading that would let you continue?
+
+### Check 29 — Orchestrator trace (queue report and proceed)
+
+Run the orchestrator trace with the 5-role queue above. Walk Steps O1–O4.
+
+Specific questions:
+- At Step O3: what exactly do you output to the user? Is it a question or a declaration? Would a different agent reading the same instructions produce the same output, or might they ask a scoping question?
+- At Step O4: do you begin immediately after the queue report, or do you wait? What does the instruction say, exactly?
+
+**This trace is the direct test for the F8 failure mode that occurred on 2026-06-17.** If the trace reveals any ambiguity about whether to wait for a reply after reporting the queue, it is F8 and the orchestrator skill must be fixed before this QA session closes.
 
 ---
 
