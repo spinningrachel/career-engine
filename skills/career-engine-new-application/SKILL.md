@@ -409,18 +409,18 @@ Write the following properties using `notion-update-page`. All values are alread
 
 | Property | Source |
 |---|---|
-| `Role emphasis` | Employment coach output — verbatim |
-| `JD proof` | Employment coach output — verbatim |
-| `Keywords` | Employment coach output — verbatim |
-| `Strategy` | Employment coach output — verbatim |
-| `Role Type` | Employment coach output — verbatim |
-| `Relationship type` | Employment coach output — verbatim |
-| `Gap handling` | Employment coach output — verbatim. If the user edited this in Notion before the pipeline ran, her version is already there; do not overwrite it. |
-| `Role summary` | Employment coach output — verbatim. |
-| `Person who Advertised Role (if not Hiring Manager)` | Employment coach output — verbatim. |
-| `Hiring manager's role` | Employment coach output — verbatim. |
-| `Manager role confirmed` | Employment coach output — verbatim. |
-| `No incumbents in this function` | Employment coach output — verbatim. |
+| `Role emphasis` | Career coach output — verbatim |
+| `JD proof` | Career coach output — verbatim |
+| `Keywords` | Career coach output — verbatim |
+| `Strategy` | Career coach output — verbatim |
+| `Role Type` | Career coach output — verbatim |
+| `Relationship type` | Career coach output — verbatim |
+| `Gap handling` | Career coach output — verbatim. If the user edited this in Notion before the pipeline ran, her version is already there; do not overwrite it. |
+| `Role summary` | Career coach output — verbatim. |
+| `Person who Advertised Role (if not Hiring Manager)` | Career coach output — verbatim. |
+| `Hiring manager's role` | Career coach output — verbatim. |
+| `Manager role confirmed` | Career coach output — verbatim. |
+| `No incumbents in this function` | Career coach output — verbatim. |
 
 **Pipeline-derived properties**
 

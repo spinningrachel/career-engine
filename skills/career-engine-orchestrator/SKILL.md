@@ -136,7 +136,7 @@ Load these skills in order before doing anything else. Do not begin processing u
 
 Each Notion property in the Job Applications database has a single designated owner. Agents write each piece of information once, to the correct field, and must not duplicate content across properties.
 
-**Employment coach owns exclusively:**
+**Career coach owns exclusively:**
 
 *Strategic properties (written for all roles — triage-exit and full-research):*
 `Priority`, `Priority Reason`, `JD Body`, `JD Fetch Status`, `Role Type`, `Relationship type`, and the location compatibility property (name from `pipeline-preferences.json` → `location_compatibility.notion_property`; written only if configured).

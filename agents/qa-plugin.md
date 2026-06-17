@@ -84,7 +84,7 @@ For each subdirectory in `skills/`, verify it contains either:
 
 ### Check 4 — No retired skill-name generations referenced
 
-Two retired naming generations must not appear anywhere in runtime files. Generation 1 (pre-June 8): `cv-campaign-intake`, `cv-campaign-setup`, `cv-campaign-steps`, `cv-campaign-edit`, `cv-campaign-orchestrator`, `cv-campaign-export`. Generation 2 (June 8 – June 11): `application-intake`, `application-edit`, `new-application-steps`, `applications-orchestrator`, `application-files-export`. The current names are `career-engine-intake`, `career-engine-edit`, `career-engine-new-application`, `career-engine-orchestrator`, `career-engine-export`, `career-engine-coach`, `career-engine-setup`.
+Two retired naming generations must not appear anywhere in runtime files. Generation 1 (pre-June 8): `cv-campaign-intake`, `cv-campaign-setup`, `cv-campaign-steps`, `cv-campaign-edit`, `cv-campaign-orchestrator`, `cv-campaign-export`. Generation 2 (June 8 – June 11): `application-intake`, `application-edit`, `new-application-steps`, `applications-orchestrator`, `application-files-export`. The current names are `career-engine-intake`, `career-engine-edit`, `career-engine-new-application`, `career-engine-orchestrator`, `career-engine-export`, `career-engine-setup`. Note: `career-engine-coach` is retired (R-48) — its directory still exists with a RETIRED notice, but it is not an active pipeline skill. The active coach skill is `career-coach`.
 
 **Note:** the literal legacy *output folder* pattern `cv-campaign-YYYY-MM-DD` (and `cv-campaign-<YYYY-MM-DD>`) is NOT banned — it matches real folders on disk from old runs and is required by the R-8 crash-recovery search. It does not match any banned skill name below.
 
@@ -324,10 +324,10 @@ grep -c "command -v ntn" <location>/skills/career-engine-intake/SKILL.md
 grep -c "API-query-data-source" <location>/skills/career-engine-intake/SKILL.md
 grep -c "Path B" <location>/skills/career-engine-intake/SKILL.md
 grep -c "misaligned rendered table" <location>/skills/career-engine-intake/SKILL.md
-grep -c "command -v ntn" <location>/skills/career-engine-coach/SKILL.md
+grep -c "command -v ntn" <location>/skills/career-coach/SKILL.md
 grep -c "command -v ntn" <location>/skills/career-engine-edit/SKILL.md
 grep -c "command -v ntn" <location>/skills/source-open-roles/SKILL.md
-grep -c "API-query-data-source" <location>/skills/career-engine-coach/SKILL.md
+grep -c "API-query-data-source" <location>/skills/career-coach/SKILL.md
 grep -c "API-query-data-source" <location>/skills/career-engine-edit/SKILL.md
 ```
 
@@ -350,7 +350,7 @@ Rendered view tables are never parsed for property values; they are used only to
 ```bash
 grep -c "discovery only" <location>/skills/career-engine-intake/SKILL.md
 grep -c "discovery only (R-1)" <location>/skills/career-engine-edit/SKILL.md
-grep -c "discovery only (R-1)" <location>/skills/career-engine-coach/SKILL.md
+grep -c "discovery only (R-1)" <location>/skills/career-coach/SKILL.md
 ```
 
 **FAIL condition:** any count is zero.
@@ -370,7 +370,7 @@ grep -c "If the schema fetch fails" <location>/skills/career-engine-intake/SKILL
 ```bash
 # Each connector query site states the constraint (no bare DB URL / view URL required)
 grep -c "never the bare database URL" <location>/skills/career-engine-intake/SKILL.md
-grep -c "never the bare database URL" <location>/skills/career-engine-coach/SKILL.md
+grep -c "never the bare database URL" <location>/skills/career-coach/SKILL.md
 grep -c "never the bare database URL" <location>/skills/career-engine-edit/SKILL.md
 grep -c "never the bare database URL" <location>/skills/source-open-roles/SKILL.md
 # Intake all-paths-fail forbids notion-search for discovery
@@ -498,14 +498,64 @@ Path B view discovery requires two fetches (DB page → collection → views), n
 
 ```bash
 grep -c "collection://" <location>/skills/career-engine-intake/SKILL.md      # must be >= 1
-grep -c "collection://" <location>/skills/career-engine-coach/SKILL.md       # must be >= 1
+grep -c "collection://" <location>/skills/career-coach/SKILL.md               # must be >= 1
 grep -c "collection://" <location>/skills/career-engine-edit/SKILL.md        # must be >= 1
 grep -c "collection://" <location>/skills/source-open-roles/SKILL.md         # must be >= 1
 grep -c "remove all dashes" <location>/skills/career-engine-intake/SKILL.md  # must be >= 1
-grep -c "remove all dashes" <location>/skills/career-engine-coach/SKILL.md   # must be >= 1
+grep -c "remove all dashes" <location>/skills/career-coach/SKILL.md          # must be >= 1
 ```
 
 **FAIL condition:** any count is 0.
+
+### Check 21n — Job site preferences present (R-48 feature)
+
+`pipeline-preferences.json` must contain `preferred_job_sites` and `local_job_sites`; setup must ask the user for both; source-open-roles must read them.
+
+```bash
+grep -c "preferred_job_sites" <location>/references/pipeline-preferences.json     # must be >= 1
+grep -c "local_job_sites" <location>/references/pipeline-preferences.json         # must be >= 1
+grep -c "preferred_job_sites" <location>/skills/career-engine-setup/SKILL.md      # must be >= 1
+grep -c "local_job_sites" <location>/skills/career-engine-setup/SKILL.md          # must be >= 1
+grep -c "preferred_job_sites" <location>/skills/source-open-roles/SKILL.md        # must be >= 1
+```
+
+**FAIL condition:** any count is 0.
+
+### Check 21o — WIWTR mandatory enumeration present (session feature)
+
+The cover letter skill must mandate [WIWTR-N] enumeration, not just a strong preference. The letter-writer must have a pre-draft parse step. The gatekeeper must check each point.
+
+```bash
+grep -c "WIWTR-" <location>/skills/cover-letter/SKILL.md                          # must be >= 1
+grep -c "MANDATORY" <location>/skills/cover-letter/SKILL.md                       # must be >= 1
+grep -c "Step 0.5" <location>/agents/letter-writer.md                             # must be >= 1
+grep -c "WIWTR-" <location>/agents/gatekeeper.md                                  # must be >= 1
+```
+
+**FAIL condition:** any count is 0.
+
+### Check 21p — Banned phrase enforcement via Grep tool required (session feature)
+
+Gatekeeper-checks skill must require literal Grep tool use for banned phrase checks, not mental review.
+
+```bash
+grep -c "Grep tool" <location>/skills/gatekeeper-checks/SKILL.md                  # must be >= 1
+grep -c "mental.*review\|mental.*check" <location>/skills/gatekeeper-checks/SKILL.md  # must be 0
+```
+
+**FAIL condition:** first count is 0 or second count is nonzero.
+
+### Check 21q — career-coach is the active coach; career-engine-coach is retired (R-48)
+
+The active coach agent/skill is `career-coach`. The retired pipeline skill `career-engine-coach` must carry a RETIRED notice and must not be invoked from any active pipeline.
+
+```bash
+grep -c "RETIRED" <location>/skills/career-engine-coach/SKILL.md                  # must be >= 1
+grep -rn "career-engine-coach" <location>/skills <location>/agents --include="*.md" | grep -v "qa-plugin.md" | grep -v "career-engine-coach/SKILL.md" | grep -v "career-engine/SKILL.md" | wc -l  # must be 0
+grep -c "career-coach" <location>/agents/career-coach.md                          # must be >= 1
+```
+
+**FAIL condition:** RETIRED notice missing, active pipeline references found, or career-coach agent absent.
 
 ### Check 22 — Known regression checks present in CLAUDE.md
 
@@ -514,7 +564,7 @@ In `CLAUDE.md`: verify the file contains "Known regression checks", entries "R-1
 ```bash
 grep -c "Known regression checks" <build>/CLAUDE.md
 grep -c "R-1" <build>/CLAUDE.md
-grep -c "R-37" <build>/CLAUDE.md
+grep -c "R-48" <build>/CLAUDE.md
 ```
 
 **FAIL condition:** any string not found.
