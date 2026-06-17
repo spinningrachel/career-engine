@@ -113,7 +113,7 @@ Each role's files go in a subdirectory inside the run folder named after the hir
 **`Draft Directory` property:** URL property. Written in Step 7a — only after both DOCX files are confirmed present and nonzero on disk via `ls`. **Never written before files are confirmed on disk.** If the `ls` check fails, the role is flagged as incomplete and Notion is not updated for that role. Value formula:
 
 ```
-{{DRAFT_DIR_URL_BASE}}<date-folder>%2F<company_dir>%2F
+$DRAFT_DIR_URL_BASE<date-folder>%2F<company_dir>%2F
 ```
 
 Where `<date-folder>` = the run folder name (e.g. `${OUTPUT_DIR_PREFIX:-applications}-2026-05-26`) and `<company_dir>` = the kebab-case company directory name.
@@ -280,6 +280,8 @@ Post exactly one declarative line — e.g. "Queue: Cognyte (P1), hearing.ai (P1)
 ### Step O4 — Per-role pipeline
 
 Run `career-engine-new-application` Steps 1 through 8 for each role in queue order.
+
+**Carry all resolved config vars into every role's execution.** The preflight set `$OUTPUT_FOLDER`, `$DRAFT_DIR_URL_BASE`, `$CV_TEMPLATE`, `$DEFAULT_LANGUAGE`, `$OUTPUT_DIR_PREFIX`, `$CAREER_DATA`, and `$NOTION_DATABASE_ID`. These must remain in scope through every step of new-application — including Step 7a (which builds the Draft Directory URL from `$DRAFT_DIR_URL_BASE`) and Step 6 (which uses `$CV_TEMPLATE` and `$OUTPUT_FOLDER`). If any of these is unset when a step needs it, stop and report rather than silently defaulting or skipping.
 
 **Pipeline is determined by the user's chat command**, not by a Notion property she sets per-role. All `Interested` roles default to the standard cv pipeline unless the user specifies otherwise in chat.
 
@@ -508,7 +510,7 @@ If the pipeline produced both DOCX files and the feedback file but crashed befor
 1. Run `--status` to confirm the files are on disk.
 2. In Notion, manually set the row's Status to `CV Ready for Review`.
 3. Write the Draft Directory URL to the `Draft Directory` URL property. Construct it from the `draft_dir_url` field in state.json, or derive it using the formula:
-   `{{DRAFT_DIR_URL_BASE}}<date-folder>%2F<company_dir>%2F`
+   `$DRAFT_DIR_URL_BASE<date-folder>%2F<company_dir>%2F`
 4. The role is done. Do not re-run it — the documents are good.
 
 ---

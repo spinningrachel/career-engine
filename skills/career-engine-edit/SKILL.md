@@ -411,8 +411,9 @@ After conversion, move the Hebrew DOCX files to `$EDIT_DIR` (same destination as
 1. Confirm both English DOCX files are saved in `$EDIT_DIR` (set in Step E9.5 — today's dated folder, or the original folder if today's run date matches).
 2. Write the Draft Directory URL to the `Draft Directory` URL property on the Notion row, using the edit-date folder (today's date, from `$EDIT_DIR`):
    ```
-   Draft Directory: {{DRAFT_DIR_URL_BASE}}<today-date-folder>%2F<company_dir>%2F
+   Draft Directory: $DRAFT_DIR_URL_BASE<today-date-folder>%2F<company_dir>%2F
    ```
+   Use `$DRAFT_DIR_URL_BASE` — the value resolved from `pipeline-preferences.json` in the orchestrator preflight (or edit skill preflight for standalone runs). If `$DRAFT_DIR_URL_BASE` is empty or `skip`, omit this property from the writeback entirely. Do not write an empty string or the literal word "skip" to the Notion property.
    This always reflects where the DOCX files actually are after Step E9.5. Hebrew files (if produced in Step E9H) move to the same `$EDIT_DIR` — no separate Hebrew property writes needed.
 3. Update Status from `Needs editing` to `CV Ready for Review`.
 4. Append this role to the editing run's `state.json` (see State file section below) with `status: "completed"`.

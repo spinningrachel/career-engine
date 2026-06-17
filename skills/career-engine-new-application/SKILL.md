@@ -381,7 +381,7 @@ where `$OUTPUT_DIR` is the run directory resolved by the orchestrator (e.g. `{{O
       "hm_cv_verdict": "<Yes|Conditional|No>",
       "hm_cl_verdict": "<Proceed|Return>",
       "revision_log_path": "<company_dir>/revision-log-<roletitle>-<company>-<monYYYY>.md",
-      "draft_dir_url": "{{DRAFT_DIR_URL_BASE}}<date-folder>%2F<company_dir>%2F",
+      "draft_dir_url": "$DRAFT_DIR_URL (the value constructed in Step 7a — empty string if $DRAFT_DIR_URL_BASE was skip/unset)",
       "role_emphasis": "<1-2 sentence real mandate interpretation>",
       "jd_proof": "<verbatim quote from JD>",
       "keywords": "Critical: <terms> | Important: <terms> | Nice-to-have: <terms>",
