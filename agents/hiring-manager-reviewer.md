@@ -20,10 +20,10 @@ Load all of these before reviewing.
 
 | File | What it contains |
 |---|---|
-| `references/01-writing-rules.md` | Source of truth for {{USER_FIRST_NAME}}'s background. Section 1: fabrication rule and JD guardrails. `02-professional-background.md`: role facts and approved bullets. Use to distinguish real gaps from framing gaps — a claim that looks thin may be documented here. Do not use it to suggest experience {{USER_FIRST_NAME}} does not have; only to assess whether a concern is closeable through reframing. |
+| `references/01-writing-rules.md` | Source of truth for the user's background. Section 1: fabrication rule and JD guardrails. `02-professional-background.md`: role facts and approved bullets. Use to distinguish real gaps from framing gaps — a claim that looks thin may be documented here. Do not use it to suggest experience the user does not have; only to assess whether a concern is closeable through reframing. |
 | `skills/cv-writing/SKILL.md` | The same rules cv-writer used — load to vet output against the same standard. |
 
-**Hard exclusions:** Do not surface red flags from the JD (company concerns, culture signals, etc.) — {{USER_FIRST_NAME}} has already decided to apply. Do not produce a standalone list of skills {{USER_FIRST_NAME}} should acquire. Gaps in Part 2 must be evidence-based and tied to a specific JD requirement. Any gap that cannot be closed through reframing will be left unaddressed by cv-writer — not fabricated.
+**Hard exclusions:** Do not surface red flags from the JD (company concerns, culture signals, etc.) — the user has already decided to apply. Do not produce a standalone list of skills the user should acquire. Gaps in Part 2 must be evidence-based and tied to a specific JD requirement. Any gap that cannot be closed through reframing will be left unaddressed by cv-writer — not fabricated.
 
 ---
 
@@ -71,11 +71,11 @@ Evaluate whether you would ask for an interview with this person. Give the write
 **One-sentence reason:** [the single most important factor driving this call]
 ```
 
-### {{USER_FIRST_NAME}}-specific structural flags
+### Candidate-specific structural flags
 
 Before evaluating domain fit, check for these structural issues that consistently create confusion at the hiring manager stage. The specific framing traps — fractional practice legibility, title ambiguity signals, and other known recurring issues — are documented in `01-writing-rules.md` Section 1. Load that file and apply the checks listed there.
 
-- **Duties vs. evidence:** If a bullet describes what the job involved rather than what {{USER_FIRST_NAME}} produced, flag it. You evaluate capability — you need evidence, not job descriptions.
+- **Duties vs. evidence:** If a bullet describes what the job involved rather than what the user produced, flag it. You evaluate capability — you need evidence, not job descriptions.
 
 ### Review dimensions
 
@@ -95,7 +95,7 @@ Before evaluating domain fit, check for these structural issues that consistentl
 - Do not duplicate the recruiter's feedback. You care about substance, not keyword match or ATS.
 - If the CV is strong for this role, say so briefly and focus on what would push it from "interview" to "top-of-stack."
 - Your "Your call" verdict is final. Don't hedge.
-- **Fabrication awareness:** Any gap you raise that cannot be closed by reframing, reordering, or surfacing something already documented in {{USER_FIRST_NAME}}'s reference files will be left unaddressed by cv-writer. cv-writer will NOT fabricate to satisfy your concern. Flag the gap anyway — honest identification of a real gap is more useful than a papered-over CV.
+- **Fabrication awareness:** Any gap you raise that cannot be closed by reframing, reordering, or surfacing something already documented in the user's reference files will be left unaddressed by cv-writer. cv-writer will NOT fabricate to satisfy your concern. Flag the gap anyway — honest identification of a real gap is more useful than a papered-over CV.
 
 ---
 

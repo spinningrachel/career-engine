@@ -5,7 +5,7 @@ description: DOCX production rules for the career-engine pipeline. Contains the 
 
 # New Application — DOCX Production
 
-This skill governs all DOCX production in the career-engine pipeline. Load it before any DOCX export step. Output files are `.docx`, opened directly in Word. {{USER_FIRST_NAME}} exports to PDF before sending.
+This skill governs all DOCX production in the career-engine pipeline. Load it before any DOCX export step. Output files are `.docx`, opened directly in Word. The user exports to PDF before sending.
 
 > **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
 
@@ -18,7 +18,7 @@ This skill governs all DOCX production in the career-engine pipeline. Load it be
 cv-writer outputs **styled markdown** using pandoc's `custom-style` div and span syntax. The pipeline converts it to `.docx` at Step 6 using pandoc with the `.dotx` reference templates. A short post-processing script then updates the role-specific Subtitle in the CV document header.
 
 **Templates (in `./references/`):**
-- `{{CV_TEMPLATE_FILE}}` — CV reference template. Contains all custom styles, {{USER_FIRST_NAME}}'s name and contact info in the document header, and correct formatting throughout. Resolve its path from the career-data config (`cv_template` in `${CAREER_DATA}/references/pipeline-preferences.json`, relative to `${CAREER_DATA}`); the orchestrator passes it as `$CV_TEMPLATE` (R-38). Do not read the literal `{{CV_TEMPLATE_FILE}}` placeholder as a path.
+- `{{CV_TEMPLATE_FILE}}` — CV reference template. Contains all custom styles, the user's name and contact info in the document header, and correct formatting throughout. Resolve its path from the career-data config (`cv_template` in `${CAREER_DATA}/references/pipeline-preferences.json`, relative to `${CAREER_DATA}`); the orchestrator passes it as `$CV_TEMPLATE` (R-38). Do not read the literal `{{CV_TEMPLATE_FILE}}` placeholder as a path.
 - `cover-letter-template.dotx` — Cover letter reference template. Contains header and styles.
 
 Neither template should be read into context. Use them only as pandoc `--reference-doc` arguments.
@@ -83,7 +83,7 @@ bash "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/convert-cv.sh" \
 
 `$CV_TEMPLATE` (arg 5) is the resolved CV `.dotx` path from the career-data config (`cv_template`, R-38) — the personal template lives in career-data, not the plugin (R-37). The script fails fast if it is missing. (R-42 — the script previously hardcoded a literal `{{USER_DOTX_FILE}}.dotx` and a stale export-skill footer path, which broke every export.)
 
-Pandoc inherits the header/footer from the reference template. {{USER_FIRST_NAME}}'s name and contacts appear automatically. Only the Subtitle (role tagline) needs updating per role.
+Pandoc inherits the header/footer from the reference template. The user's name and contacts appear automatically. Only the Subtitle (role tagline) needs updating per role.
 
 ### 4. Update the Subtitle in the CV header
 
@@ -95,7 +95,7 @@ python3 "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/update-subtit
   "<role title>"
 ```
 
-**The subtitle MUST be the exact job title {{USER_FIRST_NAME}} is applying for — taken verbatim from the JD.** Examples: e.g., "Head of Marketing", "Senior Software Engineer", "Director of Product Design". NOT a generic descriptor. NOT {{USER_FIRST_NAME}}'s background framing. The role title. Full stop.
+**The subtitle MUST be the exact job title the user is applying for — taken verbatim from the JD.** Examples: e.g., "Head of Marketing", "Senior Software Engineer", "Director of Product Design". NOT a generic descriptor. NOT the user's background framing. The role title. Full stop.
 
 The cover letter header does not need a subtitle update.
 
@@ -114,7 +114,7 @@ Both files must exist and be nonzero before proceeding.
 pandoc "<output_dir>/<company_dir>/<cv_filename>.docx" -t plain | wc -w
 ```
 
-This gives a plain-text word count of the full rendered document (including all headers, titles, dates, and body). {{USER_FIRST_NAME}}'s CV is senior-level with a full work history — a clean 2-page document is normal and expected. Thresholds are calibrated accordingly:
+This gives a plain-text word count of the full rendered document (including all headers, titles, dates, and body). The user's CV is senior-level with a full work history — a clean 2-page document is normal and expected. Thresholds are calibrated accordingly:
 
 - **Under 1050 words** — proceed to Notion writeback.
 - **1050–1350 words** — likely 2 dense pages; proceed but flag in the chat summary: "CV word count at [N] — confirm 2-page fit before sending."
@@ -142,16 +142,16 @@ Example: `{{DRAFT_DIR_URL_BASE}}applications-2026-05-26%2Fnorthwind%2F`
 
 All filenames are lowercase, no spaces, hyphens between words. Extension is `.docx`.
 
-- CV: `cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx`
-- Standard cover letter: `coverletter-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx`
-- Hebrew CV: `he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx`
-- Hebrew cover letter: `he-coverletter-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx`
+- CV: `cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx`
+- Standard cover letter: `coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx`
+- Hebrew CV: `he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx`
+- Hebrew cover letter: `he-coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx`
 - Reviewer feedback: `feedback-<roletitle>-<company>-<monYYYY>.md`
 - Revision log (per role): `revision-log-<roletitle>-<company>-<monYYYY>.md`
 - Revision log (per run): `revision-log-<YYYY-MM-DD>.md`
 - State file: `state.json`
 
-Example: `cv-{{USER_LAST_NAME}}-[role-title]-[company]-[mon-year].docx` / `revision-log-[role-title]-[company]-[mon-year].md`
+Example: `cv-<last-name>-[role-title]-[company]-[mon-year].docx` / `revision-log-[role-title]-[company]-[mon-year].md`
 
 ---
 
@@ -161,7 +161,7 @@ Hebrew DOCX files are produced inline in Step 6H (Standard/Edit pipelines). This
 
 **Footer:** Hebrew CVs use `static-cv-footer-he.md` (Hebrew-language Education and Languages sections) instead of `static-cv-footer.md`. The pipeline concatenates this file before calling pandoc.
 
-**Hebrew templates:** Two dedicated templates exist for Hebrew output — both located in {{USER_FIRST_NAME}}'s Office templates folder:
+**Hebrew templates:** Two dedicated templates exist for Hebrew output — both located in the user's Office templates folder:
 
 - `cvHe.dotm` — Hebrew CV reference template (macro-enabled)
 - `he-letter.dotx` — Hebrew cover letter reference template
@@ -192,11 +192,11 @@ cat /tmp/he-<cv_filename>.md \
 # 2. Convert with pandoc using Hebrew CV template
 pandoc /tmp/he-<cv_filename>-with-footer.md \
   --reference-doc="${HE_TEMPLATES}/cvHe.dotm" \
-  -o "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx"
+  -o "<output_dir>/<company_dir>/he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 
 # 3. Update subtitle
 python3 "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/update-subtitle.py" \
-  "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx" \
+  "<output_dir>/<company_dir>/he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx" \
   "<role title>"
 ```
 
@@ -207,7 +207,7 @@ HE_TEMPLATES="$WORD_TEMPLATES_PATH"   # resolved from career-data config key wor
 
 pandoc /tmp/he-<cl_filename>.md \
   --reference-doc="${HE_TEMPLATES}/he-letter.dotx" \
-  -o "<output_dir>/<company_dir>/he-coverletter-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx"
+  -o "<output_dir>/<company_dir>/he-coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 ```
 
 All files save to the role's company subdirectory:
@@ -231,7 +231,7 @@ Standard `##` headings map automatically to the `Heading 2` style from the templ
 ## TOOLS          ← optional; include only when JD specifies relevant tools
 ```
 
-**Never include in cv-writer output:** `## EDUCATION`, `## LANGUAGES`, `## ADDITIONAL` — these are injected automatically by {{USER_FIRST_NAME}}'s Word macros after DOCX export. They must not appear in the markdown passed to pandoc. If they appear, the macro will duplicate them in the final document.
+**Never include in cv-writer output:** `## EDUCATION`, `## LANGUAGES`, `## ADDITIONAL` — these are injected automatically by the user's Word macros after DOCX export. They must not appear in the markdown passed to pandoc. If they appear, the macro will duplicate them in the final document.
 
 ### Summary paragraphs → Normal (no annotation needed)
 
@@ -340,7 +340,7 @@ Hi to the [Company name] team!
 
 Body paragraphs are regular markdown paragraphs (Normal style — no annotation needed).
 
-[{{USER_FIRST_NAME}} {{USER_LAST_NAME}}]{custom-style="Signature Char"}
+[Full Name]{custom-style="Signature Char"}
 ```
 
 ---
@@ -359,29 +359,29 @@ Every claim about the company must be traceable to the JD or brief. Do not infer
 
 The register is direct, specific, and confident. Energy is genuine, not performed. Warmth comes from the closing line.
 
-{{USER_FIRST_NAME}} writes about what she does, not what she avoids. Frame capability through action, not through the failure mode it prevents.
+The user writes about what she does, not what she avoids. Frame capability through action, not through the failure mode it prevents.
 
-{{USER_FIRST_NAME}} can express genuine interest when it is real: "I have wanted to work at X for years," "the work you are doing on Y is exactly where I want to be." Use only when true — not as a default opener.
+The user can express genuine interest when it is real: "I have wanted to work at X for years," "the work you are doing on Y is exactly where I want to be." Use only when true — not as a default opener.
 
-What stays prohibited is unverifiable claims about the company itself — its strategy, uniqueness, or character. The test: if the sentence makes a claim about the company, it needs sourcing. If it makes a claim about {{USER_FIRST_NAME}}'s motivation, she is the source.
+What stays prohibited is unverifiable claims about the company itself — its strategy, uniqueness, or character. The test: if the sentence makes a claim about the company, it needs sourcing. If it makes a claim about the user's motivation, she is the source.
 
 Do not reach for cleverness. If a line calls attention to its own phrasing, cut it.
 
 ### Cover letter framework
 
-**Before writing:** Read the Company self-characterization section from the structured JD. This "good fit / not a good fit" or "you'll thrive here if" section is the most honest signal of what they're actually selecting for. Mirror it — not by copying it, but by demonstrating {{USER_FIRST_NAME}} matches the positive signals with a specific named proof.
+**Before writing:** Read the Company self-characterization section from the structured JD. This "good fit / not a good fit" or "you'll thrive here if" section is the most honest signal of what they're actually selecting for. Mirror it — not by copying it, but by demonstrating the user matches the positive signals with a specific named proof.
 
 #### Structure, in order
 
-**1. The opening move.** One of two things, both in first person — the opening paragraph is always {{USER_FIRST_NAME}} speaking first:
-- {{USER_FIRST_NAME}}'s genuine reaction to something specific about this role: what she recognizes, what excites her, what maps directly to work she has done. Name the role signal, then name the {{USER_FIRST_NAME}} proof. The worked examples all follow this pattern.
-- Genuine first-person interest in this specific company, when {{USER_FIRST_NAME}} actually feels it. Use only when real.
+**1. The opening move.** One of two things, both in first person — the opening paragraph is always the user speaking first:
+- The user's genuine reaction to something specific about this role: what she recognizes, what excites her, what maps directly to work she has done. Name the role signal, then name the candidate's proof. The worked examples all follow this pattern.
+- Genuine first-person interest in this specific company, when the user actually feels it. Use only when real.
 
 Observations about the company's product, buyers, or market position belong in paragraph 2 or later. Do not open with second-person sentences — "Your buyers are technical," "Your product does X" — regardless of how accurate they are.
 
 **2. Signalling business understanding.** A concrete observation about the company's operating model, the problem they are hiring to solve, or the structural reality of the role. Sourced from the JD. Specifics over adjectives. May fold into the opening paragraph when both beats read naturally as one.
 
-**3. The positioning move.** Which part of {{USER_FIRST_NAME}}'s documented experience maps directly to what they need, and why. One named company, one named outcome.
+**3. The positioning move.** Which part of the user's documented experience maps directly to what they need, and why. One named company, one named outcome.
 
 **4. Handling adjacent or smaller-scale experience.**
 

@@ -1,11 +1,11 @@
 ---
 name: cv-writing
-description: CV writing reference for {{USER_FIRST_NAME}}'s job search pipeline. Contains the full list of words and phrases to avoid in CV bullets and summaries, and the approved action verb library organized by category. Load whenever writing or reviewing CV bullets. Does NOT apply to cover letters — those are governed by the cover-letter skill.
+description: CV writing reference for the user's job search pipeline. Contains the full list of words and phrases to avoid in CV bullets and summaries, and the approved action verb library organized by category. Load whenever writing or reviewing CV bullets. Does NOT apply to cover letters — those are governed by the cover-letter skill.
 ---
 
 # CV Writing Reference
 
-**Scope: CV bullets, summaries, and skills sections only.** These rules govern how {{USER_FIRST_NAME}}'s CV is written. They do not apply to cover letters. Cover letter guidance lives in `skills/cover-letter/SKILL.md`.
+**Scope: CV bullets, summaries, and skills sections only.** These rules govern how the user's CV is written. They do not apply to cover letters. Cover letter guidance lives in `skills/cover-letter/SKILL.md`.
 
 ## Templates and Examples
 
@@ -97,13 +97,13 @@ Use this when writing a new bullet — i.e., when no approved bullet in `02-prof
 
 - **X** — the outcome or result (what changed)
 - **Y** — the documented metric or named proof (the evidence that X happened)
-- **Z** — the method or action (what {{USER_FIRST_NAME}} specifically did to produce X)
+- **Z** — the method or action (what the user specifically did to produce X)
 
 Not every bullet will have all three elements. Y is optional when the outcome is named and specific without a number. Z is optional when the method is obvious from the role context. But X is always required — a bullet without an outcome is a duty statement, not an accomplishment.
 
 ### Weak → strong transformations
 
-These use {{USER_FIRST_NAME}}'s documented experience. Every claim in the strong version traces to `01-writing-rules.md`.
+These use the user's documented experience. Every claim in the strong version traces to `01-writing-rules.md`.
 
 | Weak (duty statement) | Strong (XYZ formula) |
 |---|---|
@@ -135,7 +135,7 @@ These use {{USER_FIRST_NAME}}'s documented experience. Every claim in the strong
 
 ### Always include it
 
-The SKILLS section is never optional. Every CV {{USER_FIRST_NAME}} produces must contain a `## SKILLS` (or `## SKILLS & EXPERTISE`) section. Do not omit it because the JD feels execution-focused or because the experience bullets seem self-sufficient — the section serves ATS matching, skim-reading, and positioning simultaneously.
+The SKILLS section is never optional. Every CV the user produces must contain a `## SKILLS` (or `## SKILLS & EXPERTISE`) section. Do not omit it because the JD feels execution-focused or because the experience bullets seem self-sufficient — the section serves ATS matching, skim-reading, and positioning simultaneously.
 
 ### Strategic framing, not a keyword dump
 
@@ -179,7 +179,7 @@ GTM Strategy · Revenue Marketing · Brand & Positioning · Product Marketing ·
 These apply to all CV copy — bullets, summaries, and skills sections.
 
 - **No hollow buzzwords** — "unlock," "harness," "navigate the landscape," "drive synergies," "holistic" add no information. Name the actual thing.
-- **No antithesis/pivot formulas** — never write "It's not about X, it's about Y" or "This isn't just A, it's B." This kind of writing is neither clever nor persuasive and is far from {{USER_FIRST_NAME}}'s voice.
+- **No antithesis/pivot formulas** — never write "It's not about X, it's about Y" or "This isn't just A, it's B." This kind of writing is neither clever nor persuasive and is far from the user's voice.
 - **No triadic phrasing** — three parallel items as a rhetorical device ("the positioning, the messaging, the strategy") reads as AI-generated. Use a colon list or a single specific claim instead.
 - **No em dashes as catch-all punctuation** — use commas, periods, or transition words. Em dashes are for genuine parenthetical asides, not as a substitute for thinking about sentence structure.
 - **Mix sentence lengths deliberately** — very long for complex relationships, long for connected ideas, short for emphasis. Uniform length reads as template output.
@@ -188,9 +188,9 @@ These apply to all CV copy — bullets, summaries, and skills sections.
 
 ## Words and Phrases to Avoid
 
-These apply to CV bullets and summaries. For every generic claim removed, replace it with what {{USER_FIRST_NAME}} actually did — a specific role, outcome, or named result from `01-writing-rules.md`. Never invent replacement metrics.
+These apply to CV bullets and summaries. For every generic claim removed, replace it with what the user actually did — a specific role, outcome, or named result from `01-writing-rules.md`. Never invent replacement metrics.
 
-Do not eliminate industry-specific terminology. "SEO" or "content strategy" are legitimate descriptors in the right context. The test: does the phrase describe something specific {{USER_FIRST_NAME}} did, or does it describe a generic ideal candidate?
+Do not eliminate industry-specific terminology. "SEO" or "content strategy" are legitimate descriptors in the right context. The test: does the phrase describe something specific the user did, or does it describe a generic ideal candidate?
 
 **Never mention "works independently" or equivalent soft-skill filler.** Any experienced professional can work independently — stating it wastes a line and signals that the candidate has nothing more specific to say. The same applies to: "self-starter", "takes initiative", "manages own workload", "strong communicator" (unless communication is the literal product of the role), "team player" used as a standalone claim. If the JD requires independent work, the CV demonstrates it through the substance of the bullets — it never states it.
 

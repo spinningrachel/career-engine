@@ -1,13 +1,13 @@
 ---
 name: career-engine-edit
-description: Editing pipeline for the career-engine plugin. Triggers when {{USER_FIRST_NAME}} says "edit CVs", "run CV edits", "process the Needs editing queue", or any similar phrase. Retrieves all Job Applications rows with Status = Needs editing, runs the employment coach first to verify and update its owned properties, then routes each role through the appropriate pipeline agents to improve existing outputs — not to start from scratch. Agents in this pipeline are explicitly informed they are refining existing work, not generating from zero.
+description: Editing pipeline for the career-engine plugin. Triggers when the user says "edit CVs", "run CV edits", "process the Needs editing queue", or any similar phrase. Retrieves all Job Applications rows with Status = Needs editing, runs the employment coach first to verify and update its owned properties, then routes each role through the appropriate pipeline agents to improve existing outputs — not to start from scratch. Agents in this pipeline are explicitly informed they are refining existing work, not generating from zero.
 ---
 
 # New Application — Editing Pipeline
 
 > **Registry:** this pipeline is listed in the Pipeline Registry in `skills/career-engine/SKILL.md`. Actions owned by another pipeline's registry row are out of scope here — route to that pipeline instead of improvising.
 
-This skill handles the editing pipeline for roles {{USER_FIRST_NAME}} has flagged as needing revision. It runs separately from the main pipeline and is triggered by Status = `Needs editing` in the Job Applications database.
+This skill handles the editing pipeline for roles the user has flagged as needing revision. It runs separately from the main pipeline and is triggered by Status = `Needs editing` in the Job Applications database.
 
 The key difference from the main pipeline: **agents are not starting from scratch.** Existing CV text, cover letter text, coach properties, and reviewer feedback are all in the Notion row. The goal is to improve what exists, informed by what is already documented there.
 
@@ -34,7 +34,7 @@ ls "{{OUTPUT_FOLDER}}/" 2>/dev/null && echo "Output path confirmed (Path A)."
 
 **Path B — host-bridge MCP:** if Path A fails (sandboxed environment — an environment limitation, not a missing folder), discover host filesystem tools via ToolSearch (`Desktop Commander`, `read_file`, `write_file`, `create_directory`, `start_process`, or equivalent) and verify access by listing `{{OUTPUT_FOLDER}}` through the strongest available tool. If confirmed, proceed — and route ALL of this run's file operations through those tools: reading the existing CV/letter DOCX files, the pandoc text extractions (E0.7 baseline, existing letter text), every conversion, and every write back to the run folder (pandoc runs via the host process tool; intermediate markdown is written through the host tool, not sandbox `/tmp/`).
 
-**Both paths fail → stop the run immediately** and report to {{USER_FIRST_NAME}}: the run needs either the output folder connected to the session or a host filesystem tool (e.g. Desktop Commander) enabled.
+**Both paths fail → stop the run immediately** and report to the user: the run needs either the output folder connected to the session or a host filesystem tool (e.g. Desktop Commander) enabled.
 
 **The no-scratchpad rule applies on both paths.** Do not use `./outputs/`, relative paths, or any path containing "local-agent-mode-sessions" or "Application Support". If host access is lost mid-run, retry once; if still unreachable, deliver the remaining file contents in chat flagged for manual save and log the failure — never write to a substitute location.
 
@@ -84,8 +84,8 @@ For each page fetched, capture the full row payload including:
 - Position title
 - Job URL
 - `Edit type` — required; options: `CV`, `Letter`, `Both`
-- `Edit notes` — optional; {{USER_FIRST_NAME}}'s specific instructions about what needs to change. When populated, pass to cv-writer (Step E3) and/or letter-writer (Step E7) so they address the exact issues named before applying general improvements. Do not pass to the coach or gatekeeper.
-- Pipeline (New Applications — from {{USER_FIRST_NAME}}'s chat command)
+- `Edit notes` — optional; the user's specific instructions about what needs to change. When populated, pass to cv-writer (Step E3) and/or letter-writer (Step E7) so they address the exact issues named before applying general improvements. Do not pass to the coach or gatekeeper.
+- Pipeline (New Applications — from the user's chat command)
 - All existing property values — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Why I Want This Role`, `CV File Name`, `Letter File Name` (note: these two file-name properties may be absent from the schema — that is not an error; see the run-folder convention below), `Note`, and any other populated fields
 - Any reviewer feedback or notes already on the row
 
@@ -94,7 +94,7 @@ For each page fetched, capture the full row payload including:
 - **`Edit type` is empty or not one of `CV`, `Letter`, `Both`:** do not proceed with this role under any circumstances. Do not default to `Both`. Log the skip: "[Company] — [Role Title]: skipped — Edit type not set. Add CV, Letter, or Both to the Edit type field in Notion." No subagent is spawned for this role.
 - **`Edit type` is `CV`, `Letter`, or `Both`:** proceed with that role using the routing below.
 
-Report the count to {{USER_FIRST_NAME}}: "Found N roles marked Needs editing (M skipped — Edit type missing)." If the count after skipping is 0, **stop immediately and report that.** Do not continue the pipeline.
+Report the count to the user: "Found N roles marked Needs editing (M skipped — Edit type missing)." If the count after skipping is 0, **stop immediately and report that.** Do not continue the pipeline.
 
 **Routing by Edit type — hard gate, checked again before each subagent spawn:**
 - `CV` — run CV editing steps only (E0.7 content check, E3–E6.5, CV DOCX export). Skip ALL cover letter steps. Do not spawn letter-writer, do not run cover letter gatekeeper.
@@ -131,13 +131,13 @@ Spawn `employment-coach` with `CAREER_DATA=${CAREER_DATA}`, the full row data, t
 
 The coach's job in this pipeline is verification and refinement — not a fresh start. For each role:
 
-1. **Review the existing coach-owned properties** (`Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`) already on the Notion row. Assess whether they are accurate, complete, and well-calibrated given the full JD data and {{USER_FIRST_NAME}}'s documented background.
+1. **Review the existing coach-owned properties** (`Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`) already on the Notion row. Assess whether they are accurate, complete, and well-calibrated given the full JD data and the user's documented background.
 
 2. **If a property is correct:** keep it. Do not rewrite it for the sake of rewriting.
 
 3. **If a property needs correction or improvement:** return the updated value with a one-sentence note explaining what changed and why.
 
-4. **For `Gap handling` specifically:** if {{USER_FIRST_NAME}} has edited this in Notion, treat her version as authoritative and do not overwrite it. If it was set by a prior coach run and is still accurate, carry it forward. If it needs correction given the current JD, return an updated value with a one-sentence explanation.
+4. **For `Gap handling` specifically:** if the user has edited this in Notion, treat her version as authoritative and do not overwrite it. If it was set by a prior coach run and is still accurate, carry it forward. If it needs correction given the current JD, return an updated value with a one-sentence explanation.
 
 5. **Return writing guidance** for the editing run — the same batch analysis, base CV recommendation, and per-role focus format as the main pipeline. This guidance informs how the cv-writer approaches the revision.
 
@@ -151,7 +151,7 @@ Confirm in chat: "Coach verification complete: K properties updated across N rol
 
 ## Per-role editing pipeline
 
-Process roles sequentially. For each role, branch on the pipeline {{USER_FIRST_NAME}} specified in chat (same logic as the main pipeline).
+Process roles sequentially. For each role, branch on the pipeline the user specified in chat (same logic as the main pipeline).
 
 **Step E0.pipe — Create scratch directory**
 
@@ -209,7 +209,7 @@ Spawn `gatekeeper` with `option=content`, passing the revised CV text, the struc
 
 **If PASS:** proceed to Step E4.
 
-**If FAIL:** spawn `cv-writer` with `option=revision`, passing the revised CV and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL; a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again. Repeat until PASS. Cap: 3 revision passes. After the third FAIL, stop looping, log the unresolved violations, flag the role in the final report, and continue the pipeline. Do not surface this loop to {{USER_FIRST_NAME}}. Log all violation rounds internally.
+**If FAIL:** spawn `cv-writer` with `option=revision`, passing the revised CV and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL; a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again. Repeat until PASS. Cap: 3 revision passes. After the third FAIL, stop looping, log the unresolved violations, flag the role in the final report, and continue the pipeline. Do not surface this loop to the user. Log all violation rounds internally.
 
 **Step E4 — Recruiter review**
 
@@ -236,7 +236,7 @@ Spawn `gatekeeper` with `option=content`, passing the final revised CV text, the
 **Gate — Why I Want This Role is mandatory for the letter track.** Check the `Why I Want This Role` value from the Step E0 row payload before spawning anything. If it is empty: do NOT spawn letter-writer — its Intake Gate refuses to write without this content, and that refusal has no recovery path inside this pipeline. Instead: for Edit type `Both`, skip Steps E7–E8 and continue with the CV track only; for Edit type `Letter`, skip the role entirely. In both cases log and surface: "Letter edit skipped for [Company] — [Role Title]: the Why I Want This Role field in Notion is empty. Fill it in and re-run edit for this role."
 
 **Before spawning letter-writer:** Read the following from the Notion row payload collected in Step E0 (all are part of the full row payload already in memory):
-- **`Why I Want This Role` property** — {{USER_FIRST_NAME}}'s written motivation for this role; passes the gate above, so it is populated. Include the full content.
+- **`Why I Want This Role` property** — the user's written motivation for this role; passes the gate above, so it is populated. Include the full content.
 
 Spawn `letter-writer` with `option=revision`. Pass:
 - `CAREER_DATA=${CAREER_DATA}`
@@ -244,7 +244,7 @@ Spawn `letter-writer` with `option=revision`. Pass:
 - The baseline cover letter violation list from Step E0.7
 - The verified coach properties from Step E1, including `Gap handling`
 - The final CV (for context)
-- **`Why I Want This Role` — pass the verbatim text as a quoted block, never paraphrased or distilled.** The letter-writer's Intake Gate requires this field and its instruction rules require working from {{USER_FIRST_NAME}}'s exact words, not thematic summaries of them. If the Edit notes reference this field as the content source, that is even more reason to pass it raw — the writer must receive the actual material, not the orchestrator's interpretation of it. (R-44)
+- **`Why I Want This Role` — pass the verbatim text as a quoted block, never paraphrased or distilled.** The letter-writer's Intake Gate requires this field and its instruction rules require working from the user's exact words, not thematic summaries of them. If the Edit notes reference this field as the content source, that is even more reason to pass it raw — the writer must receive the actual material, not the orchestrator's interpretation of it. (R-44)
 - **`Edit notes` content** (from the Step E0 row payload) — if populated, include verbatim with the instruction: "Address these specific edit notes first, before applying general improvements: [content]". Omit if empty.
 - `LETTER_PATH=$PIPE/letter-draft.md` — the writer writes its output to this file and returns only a 2-line status + path (R-41 protocol).
 
@@ -257,7 +257,7 @@ The cover letter is written to the DOCX file only. Do not write cover letter tex
 Before passing the revised cover letter to the gatekeeper, compare the old and new versions on four dimensions:
 
 1. **Opening strength** — does it pull the reader in immediately, or start with a generic frame?
-2. **Specificity** — does it name concrete things about this company, this role, or this intersection of {{USER_FIRST_NAME}}'s background?
+2. **Specificity** — does it name concrete things about this company, this role, or this intersection of the user's background?
 3. **Voice naturalness** — does it sound like a person talking, or like assembled copy?
 4. **Closing force** — does it end with a reason to respond, or trail off?
 
@@ -269,7 +269,7 @@ Before passing the revised cover letter to the gatekeeper, compare the old and n
 
 **Step E7.3 — Gatekeeper (cover letter check — initial)**
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter (read from `$PIPE/letter-draft.md`), the structured JD (including the Company self-characterization section), {{USER_FIRST_NAME}}'s Why I Want This Role content (retrieved in Step E7 from Notion). Also pass the final CV text for this role (required for the CV-repetition check); if no CV exists for this role, state that explicitly so the gatekeeper reports the skipped check by name.
+Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter (read from `$PIPE/letter-draft.md`), the structured JD (including the Company self-characterization section), the user's Why I Want This Role content (retrieved in Step E7 from Notion). Also pass the final CV text for this role (required for the CV-repetition check); if no CV exists for this role, state that explicitly so the gatekeeper reports the skipped check by name.
 
 **If PASS:** proceed to Step E7.4.
 
@@ -296,7 +296,7 @@ Returns the final cover letter and a brief revision log (what changed and why, o
 
 **Step E7.7 — Gatekeeper (cover letter check — final)**
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the final cover letter text, the structured JD, {{USER_FIRST_NAME}}'s Why I Want This Role content, and the final CV text (same as Step E7.3).
+Spawn `gatekeeper` with `option=cover-letter`, passing the final cover letter text, the structured JD, the user's Why I Want This Role content, and the final CV text (same as Step E7.3).
 
 **If PASS:** proceed to Step E8 (humanizer).
 
@@ -399,19 +399,19 @@ cat /tmp/he-<cv_filename>.md \
 
 pandoc /tmp/he-<cv_filename>-with-footer.md \
   --reference-doc="${HE_TEMPLATES}/cvHe.dotm" \
-  -o "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx"
+  -o "<output_dir>/<company_dir>/he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 
 python3 "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/update-subtitle.py" \
-  "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx" \
+  "<output_dir>/<company_dir>/he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx" \
   "<role title>"
 
 # Hebrew cover letter
 pandoc /tmp/he-<cl_filename>.md \
   --reference-doc="${HE_TEMPLATES}/he-letter.dotx" \
-  -o "<output_dir>/<company_dir>/he-coverletter-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx"
+  -o "<output_dir>/<company_dir>/he-coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 
-ls -lh "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx"
-ls -lh "<output_dir>/<company_dir>/he-coverletter-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx"
+ls -lh "<output_dir>/<company_dir>/he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
+ls -lh "<output_dir>/<company_dir>/he-coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 ```
 
 If a Hebrew file with the same name already exists, overwrite it — this is an edit.
@@ -464,7 +464,7 @@ Same format as the main pipeline:
 
 - **Agents are improving existing work, not starting from scratch.** Every agent in this pipeline receives the existing outputs as context. The instruction "improve what exists" must be explicit in every sub-agent spawn.
 - **Coach properties are the anchor.** The cv-writer, reviewers, and other agents take the coach's verified properties as given. They do not reinterpret strategic positioning.
-- **Property discipline.** Each property is written once, by its owner. Do not duplicate content across fields. The `Note` field is {{USER_FIRST_NAME}}'s space.
+- **Property discipline.** Each property is written once, by its owner. Do not duplicate content across fields. The `Note` field is the user's space.
 - **Fabrication rule is absolute.** See 01-writing-rules.md. Editing does not license invention.
 - **Status update is the final step.** Only update Status to `CV Ready for Review` after the DOCX export and Notion writeback are confirmed complete.
-- **Do not pause mid-run.** Process all roles in the editing queue without stopping to ask {{USER_FIRST_NAME}} about scope.
+- **Do not pause mid-run.** Process all roles in the editing queue without stopping to ask the user about scope.

@@ -1,9 +1,9 @@
 ---
 name: cover-letter
-description: Apply {{USER_FIRST_NAME}}'s voice, tone, and writing identity when writing a cover letter for {{USER_FIRST_NAME}}, applying for jobs and/or opportunities. Use this skill whenever {{USER_FIRST_NAME}} asks to write, edit, review, or improve any professional content designed for generating income - consulting proposals, Fiverr service descriptions, and especially cover letters for the purpose of cold outreach. Also use when she asks to draft any content of this kind "in my voice" or "the way I'd say it." If the content is meant to represent {{USER_FIRST_NAME}} as an individual professional seeking opportunities for new income, this skill applies.
+description: Apply the user's voice, tone, and writing identity when writing a cover letter for the user, applying for jobs and/or opportunities. Use this skill whenever the user asks to write, edit, review, or improve any professional content designed for generating income - consulting proposals, Fiverr service descriptions, and especially cover letters for the purpose of cold outreach. Also use when she asks to draft any content of this kind "in my voice" or "the way I'd say it." If the content is meant to represent the user as an individual professional seeking opportunities for new income, this skill applies.
 ---
 
-# {{USER_FIRST_NAME}}'s Cover Letter Skill
+# Cover Letter Skill
 
 The authoritative source for cover letter mechanics, structure, and use-case patterns. Write the letter first — then use this file to check it.
 
@@ -14,13 +14,13 @@ The authoritative source for cover letter mechanics, structure, and use-case pat
 
 **Authority is tiered. Know which tier a rule lives in before enforcing it.**
 
-**Tier 1 — Truth. Absolute over everything, including {{USER_FIRST_NAME}}'s own written instructions.** Fabrication guards, attribution rules, and factual accuracy. No input — Why I Want This Role, coach output, reviewer feedback, or {{USER_FIRST_NAME}} herself — can authorize a claim that isn't traceable to her documented background. Her words are still her voice: leverage her vocabulary and her content wherever usable. But an unevidenced factual claim stays out, whoever wrote it.
+**Tier 1 — Truth. Absolute over everything, including the user's own written instructions.** Fabrication guards, attribution rules, and factual accuracy. No input — Why I Want This Role, coach output, reviewer feedback, or the user herself — can authorize a claim that isn't traceable to her documented background. Her words are still her voice: leverage her vocabulary and her content wherever usable. But an unevidenced factual claim stays out, whoever wrote it.
 
 **Tier 2 — Structure. Absolute, exactly as strict as written.** The opening-paragraph content and sourcing rules (Why I Want This Role as the sole opener source, first sentence names the role, NEVER strategy-analysis or plan openers, the context gate), the letter structure rules (greeting format, paragraph jobs, close as its own paragraph), and the CV-repetition prohibition. Reviewer feedback cannot override these. If Why I Want This Role content would produce a bad opener or fail the context gate: set that piece aside. If coach Strategy points toward a framing that breaks a Tier 2 rule: don't use that framing.
 
-**Tier 3 — Voice and register. The delivered-letters archive and the voice fingerprint (`03-framework.md` §Voice fingerprint) are the governing authority.** Style and syntax rules in this tier are agent-drafting defaults plus a short list of hard slop prohibitions that always hold (zero em dashes and colons, the banned-vocabulary true tells, no synonym upgrades). When a Tier 3 rule conflicts with a consistent pattern across the delivered letters, do not silently "fix" the text toward the rule — keep {{USER_FIRST_NAME}}'s register and flag the conflict for a rule audit in the revision log.
+**Tier 3 — Voice and register. The delivered-letters archive and the voice fingerprint (`03-framework.md` §Voice fingerprint) are the governing authority.** Style and syntax rules in this tier are agent-drafting defaults plus a short list of hard slop prohibitions that always hold (zero em dashes and colons, the banned-vocabulary true tells, no synonym upgrades). When a Tier 3 rule conflicts with a consistent pattern across the delivered letters, do not silently "fix" the text toward the rule — keep the user's register and flag the conflict for a rule audit in the revision log.
 
-**{{USER_FIRST_NAME}}'s own words — Why I Want This Role, the motivation bank, archive phrasings — are voice to leverage wherever possible.** Preserved by default; set aside only for Tier 1 or Tier 2 compliance, never for Tier 3 styling.
+**The user's own words — Why I Want This Role, the motivation bank, archive phrasings — are voice to leverage wherever possible.** Preserved by default; set aside only for Tier 1 or Tier 2 compliance, never for Tier 3 styling.
 
 The only exception is a gatekeeper Pattern A–H violation, which authorizes a rewrite of paragraph 1 only.
 
@@ -30,15 +30,15 @@ The only exception is a gatekeeper Pattern A–H violation, which authorizes a r
 
 **Prohibited content:** Syntax and AI-pattern rules are defined in the Mandatory Revision Pass section of this skill file. Fabrication traps, strategic forbidden structures, opening source rules, and voice vocabulary bans are defined in `references/cover-letter-self-check.md`.
 
-**Voice profile:** {{USER_FIRST_NAME}}'s voice description is in `references/01-writing-rules.md` Section 5.
+**Voice profile:** The user's voice description is in `references/01-writing-rules.md` Section 5.
 
 ---
 
 ## The Letter as a Positioning Exercise
 
-At its core, writing this letter is a positioning, messaging, and strategy exercise. {{USER_FIRST_NAME}} is the product. The hiring manager is the buyer. The JD is the brief. The letter is the positioning document.
+At its core, writing this letter is a positioning, messaging, and strategy exercise. The user is the product. The hiring manager is the buyer. The JD is the brief. The letter is the positioning document.
 
-**Positioning** means taking a specific, chosen stance: who {{USER_FIRST_NAME}} is *for this role*, against the implicit alternatives, on the dimension of value this particular HM cares about. Position is selected, not described. A letter that tries to cover everything has no position.
+**Positioning** means taking a specific, chosen stance: who the user is *for this role*, against the implicit alternatives, on the dimension of value this particular HM cares about. Position is selected, not described. A letter that tries to cover everything has no position.
 
 **Messaging** means selecting which true things to say and in what order. The same proof points land differently depending on who's reading. Messages are chosen and sequenced for *this* buyer, not for the general case.
 
@@ -48,13 +48,13 @@ At its core, writing this letter is a positioning, messaging, and strategy exerc
 
 ## What the Letter Must Do
 
-**Unique fit — not generic competence.** The CV lists what {{USER_FIRST_NAME}} can do. The letter makes the case that her specific background is non-generically right for this company's specific problem, right now. Test: could this letter have been sent to a different company without changing a word? If yes, it is not a cover letter yet.
+**Unique fit — not generic competence.** The CV lists what the user can do. The letter makes the case that her specific background is non-generically right for this company's specific problem, right now. Test: could this letter have been sent to a different company without changing a word? If yes, it is not a cover letter yet.
 
 **Personality and soft skills — through proof only.** CVs are blunt instruments for character. The letter is where judgment, curiosity, adaptability, and working style become visible — but only through proof. "I'm adaptable" is noise. A story about a cancelled initiative, a pivot, a hard call — that is a story about adaptability. Show; never claim.
 
-**Context the CV cannot carry.** A bullet point states an outcome. The letter explains what it required — what {{USER_FIRST_NAME}} learned, what she built when nothing existed, why the outcome changed because of a specific decision she made.
+**Context the CV cannot carry.** A bullet point states an outcome. The letter explains what it required — what the user learned, what she built when nothing existed, why the outcome changed because of a specific decision she made.
 
-**Gaps are not the letter's job.** The letter does not address gaps, work around gaps, or frame against gaps. If {{USER_FIRST_NAME}} wanted a gap addressed, she wrote about it in her Why I Want This Role. If she didn't write it, don't touch it.
+**Gaps are not the letter's job.** The letter does not address gaps, work around gaps, or frame against gaps. If the user wanted a gap addressed, she wrote about it in her Why I Want This Role. If she didn't write it, don't touch it.
 
 **Emotional resonance alongside credentials.** A letter that lands a real emotion — recognition, excitement, a sense of "she gets it" — changes the calculus. The way to create that resonance is not to repeat what the CV already says — it is to expand on it. Add the story behind the outcome, the decision that made it happen, the context the bullet cannot carry. Enhancement creates resonance. Repetition does not.
 
@@ -87,7 +87,7 @@ At its core, writing this letter is a positioning, messaging, and strategy exerc
 - Stories that explain *why* an outcome happened
 - Adjacent proof the CV doesn't cover in detail (freelance work, mentorship, side projects)
 - Specific decisions or moments the CV bullet can only gesture at
-- Voice — how {{USER_FIRST_NAME}} thinks, what she notices, what she cares about
+- Voice — how the user thinks, what she notices, what she cares about
 
 **Hard floor:** Any metric, credential, or claim that appears anywhere in the CV must not be **restated** in the letter — not as a primary claim, not in equivalent words, not in passing. **Enhancement is the one lawful use of a CV fact:** the fact may be *named once as the anchor* of genuinely new material (the story behind it, the decision logic, the context the bullet cannot carry) — the Enhance test above governs. A CV fact standing on its own, doing the same job it does in the CV, fails regardless of rewording.
 
@@ -103,18 +103,18 @@ At its core, writing this letter is a positioning, messaging, and strategy exerc
 
 These rules govern how pipeline inputs interact and which source takes precedence for each decision. Read before writing anything.
 
-**Why I Want This Role is the letter's primary personal-content source — and it is mandatory.** The pipeline does not write a letter without it: the Pre-Step 5 gate skips the letter entirely when the field is empty, and it is the sole source for the opener. What is optional is any individual piece of its content — nothing in it has to be used, and whatever IS used must comply fully with every rule and prohibition in this skill. Why I Want This Role content does not override or exempt any prohibition. If something {{USER_FIRST_NAME}} wrote in Why I Want This Role would produce a bad opener, violate the analyst paragraph ban, break a framing rule, or fail the context gate, set that piece aside and write from the rest. The rules always win.
+**Why I Want This Role is the letter's primary personal-content source — and it is mandatory.** The pipeline does not write a letter without it: the Pre-Step 5 gate skips the letter entirely when the field is empty, and it is the sole source for the opener. What is optional is any individual piece of its content — nothing in it has to be used, and whatever IS used must comply fully with every rule and prohibition in this skill. Why I Want This Role content does not override or exempt any prohibition. If something the user wrote in Why I Want This Role would produce a bad opener, violate the analyst paragraph ban, break a framing rule, or fail the context gate, set that piece aside and write from the rest. The rules always win.
 
 **The integration model:** Coach output (Role emphasis, Strategy, Gap handling) defines what the letter must accomplish. Why I Want This Role is the source of voice, angle, and raw material — used only where the content is genuinely usable and compliant. A letter that uses Why I Want This Role content but ignores Role emphasis has voice but no direction. A letter that follows Strategy but ignores Why I Want This Role sounds like a template — but a letter that forces unusable Why I Want This Role content into a compliant shape is worse than either.
 
-**The integration rule:** Read Role emphasis and Strategy first — understand what this letter needs to accomplish. Then read Why I Want This Role to find {{USER_FIRST_NAME}}'s voice, her specific angles, and her raw content. Write the letter so her own words are doing the strategic work the coach identified.
+**The integration rule:** Read Role emphasis and Strategy first — understand what this letter needs to accomplish. Then read Why I Want This Role to find the user's voice, her specific angles, and her raw content. Write the letter so her own words are doing the strategic work the coach identified.
 
 **Opener source — non-negotiable.**
-Why I Want This Role is the sole source for the opener's content and angle. {{USER_FIRST_NAME}}'s genuine reaction to the role, her specific angle on this company, and the raw material she wrote goes first, in her voice — polished to be appropriate for formal writing, but not replaced with generic professional language. The Use-Case Structures tell you how to frame it — not what to say, not in what order, not in which paragraph. Take {{USER_FIRST_NAME}}'s input and place each part where it best serves the Use-Case Structure you choose.
+Why I Want This Role is the sole source for the opener's content and angle. The user's genuine reaction to the role, her specific angle on this company, and the raw material she wrote goes first, in her voice — polished to be appropriate for formal writing, but not replaced with generic professional language. The Use-Case Structures tell you how to frame it — not what to say, not in what order, not in which paragraph. Take the user's input and place each part where it best serves the Use-Case Structure you choose.
 
-**NEVER open with strategy analysis.** No market observations, no industry framing, no role-stakes setup, and no expert claims derived from reading the role — regardless of whether {{USER_FIRST_NAME}} is the grammatical subject. "I know this buyer" is strategy analysis. "I understand this buying motion" is strategy analysis. If she didn't write it, it doesn't belong in the opener.
+**NEVER open with strategy analysis.** No market observations, no industry framing, no role-stakes setup, and no expert claims derived from reading the role — regardless of whether the user is the grammatical subject. "I know this buyer" is strategy analysis. "I understand this buying motion" is strategy analysis. If she didn't write it, it doesn't belong in the opener.
 
-**NEVER open with a plan.** "My first priority at [Company] will be..." / "The first thing I'd do is..." / "Before writing a word of copy, I'd..." — these describe what you'd do if hired, not why you're writing. They answer the wrong question. Plans and approach descriptions belong in the body. The opener answers: why is {{USER_FIRST_NAME}} writing to this company right now?
+**NEVER open with a plan.** "My first priority at [Company] will be..." / "The first thing I'd do is..." / "Before writing a word of copy, I'd..." — these describe what you'd do if hired, not why you're writing. They answer the wrong question. Plans and approach descriptions belong in the body. The opener answers: why is the user writing to this company right now?
 
 **When Why I Want This Role mirrors the CV.** Sometimes her proudest story IS a CV bullet, or her written motivation restates CV facts. Her voice and angle still govern the opener — but the CV-repetition prohibition is Tier 2 and is not waived by the personal-content exemption (that exemption covers voice and personal claims, not duplication). Resolution: keep her framing and vocabulary, and write the *enhancement* of the fact — the why, the story, the decision — rather than the fact itself. If a piece of her content cannot be used without restating the CV, use its angle, not its words, and log the set-aside.
 
@@ -122,11 +122,11 @@ Why I Want This Role is the sole source for the opener's content and angle. {{US
 
 **Proof-point partitioning — run before drafting.** The CV and the letter draw from the same documented background, and the CV is written first — so list what the CV already spends (summary claims, bullet outcomes, metrics) before selecting the letter's proof. The letter's named proof comes from what the CV does NOT carry: the detail layers in `02-professional-background.md` §7 ("What you built / delivered" runs deeper than any bullet), adjacent engagements, stories and decision logic behind the bullets, §9 testimonials, §10 portfolio artifacts. If every documented proof point is CV-spent, enhance the strongest one (story behind it) instead of importing a restatement — and a named non-numeric specific (deliverable, methodology, artifact) satisfies any need for concreteness when all numbers are CV-spent.
 
-**Role emphasis governs proof selection.** Which companies to surface, which outcomes to lead with, what the proof paragraphs need to demonstrate — this is the coach's call, not {{USER_FIRST_NAME}}'s Why I Want This Role. If her Why I Want This Role gives you a great story, ask: does it address what Role emphasis says the letter needs to prove? If yes, use it prominently. If the story is interesting but off-strategy, include it briefly where it fits — setting a piece of her content aside entirely is a last resort, reserved for content that is non-compliant or genuinely unusable.
+**Role emphasis governs proof selection.** Which companies to surface, which outcomes to lead with, what the proof paragraphs need to demonstrate — this is the coach's call, not the user's Why I Want This Role. If her Why I Want This Role gives you a great story, ask: does it address what Role emphasis says the letter needs to prove? If yes, use it prominently. If the story is interesting but off-strategy, include it briefly where it fits — setting a piece of her content aside entirely is a last resort, reserved for content that is non-compliant or genuinely unusable.
 
-**Discarded and unreadable input is always surfaced — never silent.** When Tier 1 sets aside a piece of {{USER_FIRST_NAME}}'s own input (a claim not traceable to her documented background), or any input is uninterpretable (garbled tokens like a stray "cfx", instructions referencing text that no longer exists, degenerate properties): exclude it from the letter, log it in the revision log, and surface it in the final chat delivery as a named ask-back — "Set-aside personal input for [Company]: '[fragment]' — confirm it, correct it, or add it to 02-professional-background.md and re-run." She can only fix what she can see.
+**Discarded and unreadable input is always surfaced — never silent.** When Tier 1 sets aside a piece of the user's own input (a claim not traceable to her documented background), or any input is uninterpretable (garbled tokens like a stray "cfx", instructions referencing text that no longer exists, degenerate properties): exclude it from the letter, log it in the revision log, and surface it in the final chat delivery as a named ask-back — "Set-aside personal input for [Company]: '[fragment]' — confirm it, correct it, or add it to 02-professional-background.md and re-run." She can only fix what she can see.
 
-**Do not reference the hiring company's positioning.** Do not analyse, describe, or comment on the company's positioning, public messaging, or how they frame their product in the market — anywhere in the letter. This includes indirect references ("a company that gets the importance of X"), framing that implies you've studied their positioning, and any sentence where {{USER_FIRST_NAME}} reads as an observer of their market strategy. When in doubt, cut it.
+**Do not reference the hiring company's positioning.** Do not analyse, describe, or comment on the company's positioning, public messaging, or how they frame their product in the market — anywhere in the letter. This includes indirect references ("a company that gets the importance of X"), framing that implies you've studied their positioning, and any sentence where the user reads as an observer of their market strategy. When in doubt, cut it.
 
 ---
 
@@ -192,26 +192,26 @@ That said — these principles will keep you out of the most egregious patterns:
 ### Drafting principles
 
 **Always:**
-- "I" or a named entity as the subject — the drafting default. Archive-consistent ramps (dependent clauses, prepositional openers, as in the delivered letters) are {{USER_FIRST_NAME}}'s register and are fine. Never an expletive ("There was/is") or an abstract label noun-phrase subject ("The X part is...")
+- "I" or a named entity as the subject — the drafting default. Archive-consistent ramps (dependent clauses, prepositional openers, as in the delivered letters) are the user's register and are fine. Never an expletive ("There was/is") or an abstract label noun-phrase subject ("The X part is...")
 - Complexity after the verb, not before it — via appositive or short follow-on sentence
 - Vary sentence length deliberately. Short sentences land emphasis. Longer ones carry nuance.
 - Specific company names, numbers, and named outcomes. Never generic claims.
 
 **The top 3 — treat these as absolute during drafting:**
 1. **Zero em dashes.** Use a period or comma instead. Every time, without exception.
-2. **Rule of three: don't build contrived tricolons.** Parallel lists of real things are {{USER_FIRST_NAME}}'s style and are welcome. What's banned is the rhetorical tricolon assembled to sound impressive rather than to list real things, and reusing the same sentence opening three or more times in a row. The humanizer will catch any you miss.
+2. **Rule of three: don't build contrived tricolons.** Parallel lists of real things are the user's style and are welcome. What's banned is the rhetorical tricolon assembled to sound impressive rather than to list real things, and reusing the same sentence opening three or more times in a row. The humanizer will catch any you miss.
 3. **-ing phrases appended to a main clause: three per letter maximum, every one content-bearing.** A tail that lists real things or states a real outcome is fine; a decorative tail ("...showcasing expertise," "...highlighting my ability to...") is banned at any count.
 
-**Composition lens — What you bring vs. How you work:** During drafting, hold these two things separately. *What you bring* is the credential layer — named companies, outcomes, numbers, specific deliverables. This is the "why pick me" content. *How you work* is the methodology layer — {{USER_FIRST_NAME}}'s research-first approach, operating philosophy, the frameworks in `references/03-framework.md` §Professional methodology and POV. Both belong in the letter body but do different jobs and should not be collapsed into the same paragraph. Credentials prove she can do the work. Methodology signals how she thinks — which is what seniority looks like on paper.
+**Composition lens — What you bring vs. How you work:** During drafting, hold these two things separately. *What you bring* is the credential layer — named companies, outcomes, numbers, specific deliverables. This is the "why pick me" content. *How you work* is the methodology layer — the user's research-first approach, operating philosophy, the frameworks in `references/03-framework.md` §Professional methodology and POV. Both belong in the letter body but do different jobs and should not be collapsed into the same paragraph. Credentials prove she can do the work. Methodology signals how she thinks — which is what seniority looks like on paper.
 
-**For senior roles especially:** Hiring managers evaluating Director, Head, or VP candidates are not primarily looking for credential lists — they are evaluating whether the candidate thinks at the right altitude. A letter that primarily focuses on how {{USER_FIRST_NAME}} approaches the function (methodology, conviction, diagnostic discipline) signals seniority more clearly than a letter that stacks company names and outcomes. When a role is senior, look to `03-framework.md` §Professional methodology and POV before credential paragraphs.
+**For senior roles especially:** Hiring managers evaluating Director, Head, or VP candidates are not primarily looking for credential lists — they are evaluating whether the candidate thinks at the right altitude. A letter that primarily focuses on how the user approaches the function (methodology, conviction, diagnostic discipline) signals seniority more clearly than a letter that stacks company names and outcomes. When a role is senior, look to `03-framework.md` §Professional methodology and POV before credential paragraphs.
 
 **Half the words, twice the examples.** If a paragraph makes a claim, cut half the claim and replace it with a specific named example. Density of proof beats length of argument every time. A three-sentence paragraph with two named companies and a number beats a six-sentence paragraph making the same point in generalities.
 
 **One example, one appearance per application.** If you've already used an example in the letter, don't use it again. If an example already appears in the related CV, don't reuse it in the letter unless the letter adds context the CV doesn't have.
 
 **Opener rule — non-negotiable:**
-FIRST AND FOREMOST, AND COMPLETELY MANDATORY AND NON-NEGOTIABLE: The first sentence must name the role {{USER_FIRST_NAME}} is applying for. The role does not have to lead the sentence, but it must be clear and specific. The opener MUST express {{USER_FIRST_NAME}}'s genuine reaction to this specific role, based solely on Why I Want This Role — her actual tone, vocabulary, and phrasing, polished for formal writing. If Why I Want This Role is empty or too sparse to write from, write `[{{USER_FIRST_NAME}} TO FILL IN]`. Do not construct an opener from your own reading of the JD. Do not write strategy analysis, expert claims, or methodology descriptions as openers.
+FIRST AND FOREMOST, AND COMPLETELY MANDATORY AND NON-NEGOTIABLE: The first sentence must name the role the user is applying for. The role does not have to lead the sentence, but it must be clear and specific. The opener MUST express the user's genuine reaction to this specific role, based solely on Why I Want This Role — her actual tone, vocabulary, and phrasing, polished for formal writing. If Why I Want This Role is empty or too sparse to write from, write `[{{USER_FIRST_NAME}} TO FILL IN]`. Do not construct an opener from your own reading of the JD. Do not write strategy analysis, expert claims, or methodology descriptions as openers.
 
 ---
 
@@ -227,10 +227,10 @@ FIRST AND FOREMOST, AND COMPLETELY MANDATORY AND NON-NEGOTIABLE: The first sente
 
 ## The Letter Structure {#structure}
 
-The CV shows what {{USER_FIRST_NAME}} did. The cover letter shows **why** this company, **why** this role, and **what** the CV cannot say. If a paragraph could be replaced by pointing to a CV bullet, it should **not** be in the letter at all. Every sentence must add something new — a perspective, a reaction to something in the JD, or a story that proves a claim the CV only states.
+The CV shows what the user did. The cover letter shows **why** this company, **why** this role, and **what** the CV cannot say. If a paragraph could be replaced by pointing to a CV bullet, it should **not** be in the letter at all. Every sentence must add something new — a perspective, a reaction to something in the JD, or a story that proves a claim the CV only states.
 
 **The core principle for every opener:**
-An analyst describes the market. A candidate tells you what the opportunity did to them when they read it, then demonstrates why they're credible to have that reaction. {{USER_FIRST_NAME}} is always the candidate — never the analyst.
+An analyst describes the market. A candidate tells you what the opportunity did to them when they read it, then demonstrates why they're credible to have that reaction. The user is always the candidate — never the analyst.
 
 ### What paragraph 1 must do
 
@@ -240,10 +240,10 @@ How it achieves that varies. Delivered letters have used:
 - A genuine emotional reaction + the credential that earns it ("I nearly screamed when I saw this role. Because I was just doing it at [Company]...")
 - An existing relationship ("I've worked for [Company] already when I was freelancing...")
 - A personal tension that explains the application ("I daydream about consumer campaigns. I've spent 15 years in B2B...")
-- A value claim that names their mandate and pivots to {{USER_FIRST_NAME}}'s answer ("You're looking for a strategic builder — that's the work I do.")
+- A value claim that names their mandate and pivots to the user's answer ("You're looking for a strategic builder — that's the work I do.")
 - A warm connection that sets human context first ("Thanks for the [prior conversation]...")
 
-There is no required sentence count and no required sequence. The only test: finish reading the opener and ask — does the reader now know why {{USER_FIRST_NAME}}, why here, why now? If not, rewrite it.
+There is no required sentence count and no required sequence. The only test: finish reading the opener and ask — does the reader now know why this person, why here, why now? If not, rewrite it.
 
 **The opener is never:**
 - Generic enthusiasm that could apply to any company ("I am excited to apply")
@@ -251,15 +251,15 @@ There is no required sentence count and no required sequence. The only test: fin
 - An expert claim derived from reading the JD ("I know this buyer," "I understand this motion")
 - A description of the company's own product or positioning back to them
 - A methodology announcement ("My research-first approach means...")
-- **An anonymous opener that doesn't name the company or role.** Phrases like "Reading this posting," "When I saw this role," "This opportunity," or "This position" leave the reader without context — they don't know what {{USER_FIRST_NAME}} is responding to. The opener must name the company, the role title, or both. "Reading [Company]'s [Role Title] posting" sets context. "Reading this posting" does not.
+- **An anonymous opener that doesn't name the company or role.** Phrases like "Reading this posting," "When I saw this role," "This opportunity," or "This position" leave the reader without context — they don't know what the user is responding to. The opener must name the company, the role title, or both. "Reading [Company]'s [Role Title] posting" sets context. "Reading this posting" does not.
 
 ### Opener Execution Protocol
 
 Run this before and during writing the opener. It is not a post-draft check — it governs composition itself.
 
 **Before writing the first sentence:**
-1. Open **Why I Want This Role** for this role. This is the sole source for the opener — not the JD, not coach output. The opening sentence must be explicit and give the hiring team immediate context for why {{USER_FIRST_NAME}} is writing to them.
-2. Identify the substance: what angle did {{USER_FIRST_NAME}} take? What specific reactions, comparisons, or ideas did she provide? What is she actually saying she wants from this role?
+1. Open **Why I Want This Role** for this role. This is the sole source for the opener — not the JD, not coach output. The opening sentence must be explicit and give the hiring team immediate context for why the user is writing to them.
+2. Identify the substance: what angle did the user take? What specific reactions, comparisons, or ideas did she provide? What is she actually saying she wants from this role?
 3. Your opener must express that angle and those ideas — not a different framing you derived from reading the JD, and not a generic opener that could fit any application.
 4. **Why I Want This Role is raw material — not a draft paragraph.** It is notes: first-person, often unpolished, written to herself. Your job is to write a paragraph from it, not to copy it. Extract the angle, the specific reaction, the thing she's saying — then write a letter paragraph that expresses that. The paragraph should sound like a letter, not like her notes.
 5. Preserve her specific content AND her specific language. The comparisons she drew, the aspects she named, the reactions she expressed — and the words she used to express them. Where her phrasing can function as letter language, carry it forward. Do not replace her vocabulary with polished alternatives. Do not invent new reactions she didn't write. Do not replace her substance with analysis of the JD. Do write it — craft sentences, create flow, ensure it reads as a coherent opening paragraph — but shape the structure, not the words. The result should be recognisably hers, polished to be appropriate for formal writing.
@@ -326,7 +326,7 @@ A bullet list is appropriate in exactly two situations:
 
 1. **Greeting.** Always "Hi to the [Company] team!" — or "Hi to [Name]!" if writing directly to a named person. Never "Dear Hiring Manager."
 
-2. **Opener paragraph.** Choose from the Use-Case Structures below. {{USER_FIRST_NAME}}'s reaction or observation comes first. Her background enters in service of that, not as the subject. If no documented reaction exists in Why I Want This Role, write `[{{USER_FIRST_NAME}} TO FILL IN]` — do not manufacture enthusiasm.
+2. **Opener paragraph.** Choose from the Use-Case Structures below. The user's reaction or observation comes first. Her background enters in service of that, not as the subject. If no documented reaction exists in Why I Want This Role, write `[{{USER_FIRST_NAME}} TO FILL IN]` — do not manufacture enthusiasm.
 
 3. **Proof paragraph(s) — one job each.** One to three paragraphs, each doing exactly one thing: a pattern of experience across companies, a specific story that adds something the CV doesn't say, or documented product/company familiarity.
 
@@ -336,7 +336,7 @@ A bullet list is appropriate in exactly two situations:
 
    **The coverage paragraph — entry beat, substance, exit beat.** The paragraph that handles career background, gap coverage, or career-pivot context is the paragraph most likely to read as a CV dump. Every coverage paragraph needs three things: (1) an **entry beat** — a connector from the prior paragraph, not a fresh restart. "My career started at..." restarts the letter from zero; "That function built on..." continues from the proof just given. (2) the **substance** — named companies, numbers, specific context. (3) an **exit beat** — one sentence that answers "so what?" for this specific hiring manager and connects the evidence to the mandate of the role. Without an entry and exit beat, the reader says "who cares?" The letter should never make the hiring manager do the interpretive work of connecting evidence to relevance. That is the letter's job.
 
-   **Deliberate fragments — protected {{USER_FIRST_NAME}} voice.** A single sentence fragment used for conviction or pacing ("Because that's where I've always done my best work.") is {{USER_FIRST_NAME}}'s deliberate voice. Do not flag it for revision unless it is genuinely ambiguous in intent (i.e. it does not follow a complete sentence and does not add emphasis). The test: does it follow a complete sentence? Does it add a beat of conviction rather than state a fact? Does it appear only once? If yes to all three: it is intentional — protect it.
+   **Deliberate fragments — protected user voice.** A single sentence fragment used for conviction or pacing ("Because that's where I've always done my best work.") is the user's deliberate voice. Do not flag it for revision unless it is genuinely ambiguous in intent (i.e. it does not follow a complete sentence and does not add emphasis). The test: does it follow a complete sentence? Does it add a beat of conviction rather than state a fact? Does it appear only once? If yes to all three: it is intentional — protect it.
 
 4. **Closing.** Choose from the options below. One ask, direct, always tight.
 
@@ -346,10 +346,10 @@ A bullet list is appropriate in exactly two situations:
 
 ### Close options
 
-All of these work. Choose based on the role and {{USER_FIRST_NAME}}'s genuine register for this application:
+All of these work. Choose based on the role and the user's genuine register for this application:
 
 - *Function-builder tricolon:* "I've built [this function / this type of work] from [scratch / different angles / more than once]. I loved it every time. I'd love to build it at [Company]." — three sentences mandatory, all three required
-- *Capability statement:* Names the specific problem the role is trying to solve, states that {{USER_FIRST_NAME}} has solved it, and names what she'd do here
+- *Capability statement:* Names the specific problem the role is trying to solve, states that the user has solved it, and names what she'd do here
 - *Direct enthusiastic:* "I can't wait to speak with you about this role." / "I can't wait to hear more about the opportunity."
 - *Active CTA:* "If you're ready for these results, I'd love to have that conversation." / "I'm looking forward to speaking with you further."
 
@@ -361,25 +361,25 @@ The test for any close: does it name the outcome and ask for it directly? Or doe
 
 These rules apply to every claim and every framing decision in the letter body.
 
-**Managed-vs-executed:** When {{USER_FIRST_NAME}} managed a team or function, language credits her with management and ownership — not personal execution of every deliverable. "Oversaw analyst relations" not "ran analyst relations." "Managed the AR owner" not "led analyst relations personally." If in doubt, check `01-writing-rules.md` Section 1 for the approved phrasing.
+**Managed-vs-executed:** When the user managed a team or function, language credits her with management and ownership — not personal execution of every deliverable. "Oversaw analyst relations" not "ran analyst relations." "Managed the AR owner" not "led analyst relations personally." If in doubt, check `01-writing-rules.md` Section 1 for the approved phrasing.
 
 **Demand-gen framing:** When a JD signals demand-gen ownership, do not frame the absence of a standalone pipeline attribution number as a gap or limitation in the letter. Surface the builder evidence instead: outbound infrastructure at VL, content production, G-CMO Early Stage Marketing training. For seed/early Series A build roles this is a match, not a gap.
 
 **Unfamiliar domains:** Do NOT frame any domain as "not her background." Do not call it out. Lead with what transfers — see Use-Case Structure #2 below.
 
-**The twist as a narrative tool.** When {{USER_FIRST_NAME}}'s background doesn't map directly to the role, that gap is not a weakness to manage — it is a story to tell. Name the unexpected credential, name what it proves at the level of skill or judgment, name why that is actually exactly what this role needs. A twist is more memorable than a straight line. The failure mode: apologizing for the gap instead of reframing it as an asset.
+**The twist as a narrative tool.** When the user's background doesn't map directly to the role, that gap is not a weakness to manage — it is a story to tell. Name the unexpected credential, name what it proves at the level of skill or judgment, name why that is actually exactly what this role needs. A twist is more memorable than a straight line. The failure mode: apologizing for the gap instead of reframing it as an asset.
 
-**Research company pains, not just company values.** When a role warrants deep research, go beyond the JD and the about page. Primary sources — investor relations pages, annual reports, quarterly earnings letters, earnings calls — reveal what the company is actually worried about right now. Opening from a documented company challenge (sourced from their own words) is categorically stronger than opening from admiration of their product or culture. The discipline: {{USER_FIRST_NAME}} names the pain in the company's own language, then immediately names a parallel moment from her own history. She does not analyze their pain — she parallels it. **Critical caveat:** this approach is only valid when {{USER_FIRST_NAME}} connects the company's challenge to her OWN parallel experience in first person, immediately and specifically. The opener must still be {{USER_FIRST_NAME}} speaking — not an analysis frame about the company. If the first sentence describes the company's challenge before {{USER_FIRST_NAME}} appears as a reacting subject, it fails Pattern I (setup opener) in the gatekeeper. The company's pain is the context; {{USER_FIRST_NAME}}'s reaction to it is the opener.
+**Research company pains, not just company values.** When a role warrants deep research, go beyond the JD and the about page. Primary sources — investor relations pages, annual reports, quarterly earnings letters, earnings calls — reveal what the company is actually worried about right now. Opening from a documented company challenge (sourced from their own words) is categorically stronger than opening from admiration of their product or culture. The discipline: the user names the pain in the company's own language, then immediately names a parallel moment from her own history. She does not analyze their pain — she parallels it. **Critical caveat:** this approach is only valid when the user connects the company's challenge to her OWN parallel experience in first person, immediately and specifically. The opener must still be the user speaking — not an analysis frame about the company. If the first sentence describes the company's challenge before the user appears as a reacting subject, it fails Pattern I (setup opener) in the gatekeeper. The company's pain is the context; the user's reaction to it is the opener.
 
 **"I am drawn to [Company]'s approach/commitment to..."** — permitted when genuine. One clause, move to proof immediately. Never as a standalone paragraph.
 
-**JD-dimension mirroring — forbidden in prose.** Never write as though addressing a JD section, requirement, or dimension by name. "I can also speak to the OEM engagement dimension directly" → "I also have broad experience working with OEMs." The letter must feel like {{USER_FIRST_NAME}} is naturally describing her own experience — not reading from the JD and checking boxes.
+**JD-dimension mirroring — forbidden in prose.** Never write as though addressing a JD section, requirement, or dimension by name. "I can also speak to the OEM engagement dimension directly" → "I also have broad experience working with OEMs." The letter must feel like the user is naturally describing her own experience — not reading from the JD and checking boxes.
 
 **Exception — transferability bullet lists only.** When a bullet list is used to demonstrate skill transferability, using the JD's vocabulary in the bullets is correct and deliberate. The whole point is to show the mapping. This exception applies only to the bullet list itself, not to prose anywhere in the letter.
 
 **Colons — entirely forbidden.** No colons anywhere in the letter body. Not for role labeling, not for introducing explanations, not before lists, not as an em dash substitute. If you find yourself reaching for a colon, restructure the sentence.
 
-**"Most of my career has been [gerund]" — forbidden.** "My career" is not a subject. This construction buries {{USER_FIRST_NAME}}. Write "For most of my career, I've [verb]..." — {{USER_FIRST_NAME}} is the subject, the career is the context.
+**"Most of my career has been [gerund]" — forbidden.** "My career" is not a subject. This construction buries the user. Write "For most of my career, I've [verb]..." — the user is the subject, the career is the context.
 
 **"I'm passionate about..."** — not banned, but do not overdo it. Once per letter at most.
 
@@ -387,14 +387,14 @@ These rules apply to every claim and every framing decision in the letter body.
 
 **Temporal motivation hedges — forbidden.** Phrases like "the seat I want most right now," "at this stage of my career," "what I'm looking for right now" make motivation sound provisional and shopping-among-options. A genuine reaction to a specific role needs no time qualifier. Cut any phrase that implies "…as opposed to what I'll want later." If the motivation is real, state it directly without the temporal hedge.
 
-**Voice mechanics for self-description:** When describing {{USER_FIRST_NAME}}'s approach or working style, use first-person direct construction — not analysis from outside. "In my work, I emphasize..." not "My approach emphasizes..." / "I tend to..." not "My style involves..." The content is the same; the subject is {{USER_FIRST_NAME}}, not a description of {{USER_FIRST_NAME}}.
+**Voice mechanics for self-description:** When describing the user's approach or working style, use first-person direct construction — not analysis from outside. "In my work, I emphasize..." not "My approach emphasizes..." / "I tend to..." not "My style involves..." The content is the same; the subject is the user, not a description of the user.
 - **Approach-announcement via label — forbidden:** "My approach is deliberately X: Y, Z, W." / "I take a research-first approach to positioning." These announce the methodology as a named label before demonstrating it. Show the approach in action. **Fail:** "My thought leadership approach is deliberately slow-is-the-winner: every deliverable I produce is backed by a thinking process I can stand behind." **Fix:** "At [Company], I spent the first three weeks interviewing buyers before writing a line of copy."
 
 ---
 
 ## Use-Case Structures
 
-Use these for the opening paragraph when a specific situation calls for it. Each has a literal template — fill in the bracketed slots with {{USER_FIRST_NAME}}'s actual content. Nothing should remain as-is from the template. {{USER_FIRST_NAME}}'s example for each structure lives below it.
+Use these for the opening paragraph when a specific situation calls for it. Each has a literal template — fill in the bracketed slots with the user's actual content. Nothing should remain as-is from the template. The user's example for each structure lives below it.
 
 **IMPORTANT:** The names in quotes below (e.g. "I was just doing this job") are structural labels — identifiers for the pattern type. They are NOT phrases to use in the letter. Do not write them. Do not quote them. They are shorthand for the agent only.
 
@@ -402,12 +402,12 @@ Use these for the opening paragraph when a specific situation calls for it. Each
 
 **1. Direct parallel** *[label: the job overlap]*
 
-**When:** {{USER_FIRST_NAME}}'s most recent role was doing essentially the same thing this role requires — same product category, same buyer, same GTM challenge.
+**When:** The user's most recent role was doing essentially the same thing this role requires — same product category, same buyer, same GTM challenge.
 
-**The move:** Optional identity fragment ("{{USER_FIRST_NAME}} here."), then the reaction to the coincidence, then land the credential as a causal fragment.
+**The move:** Optional identity fragment ("[Name] here."), then the reaction to the coincidence, then land the credential as a causal fragment.
 
 **Template:**
-> [Optional: "{{USER_FIRST_NAME}} here." as identity fragment.] [Reaction — why this specific overlap hit differently when you read it]. Because I was just doing it — as [role] at [Company], a [one-phrase descriptor] that [key outcome].
+> [Optional: "[Name] here." as identity fragment.] [Reaction — why this specific overlap hit differently when you read it]. Because I was just doing it — as [role] at [Company], a [one-phrase descriptor] that [key outcome].
 
 **Example:** [from `references/delivered-letters/`: see any letter with an "existing relationship" or "just did it" opener]
 
@@ -415,7 +415,7 @@ Use these for the opening paragraph when a specific situation calls for it. Each
 
 **2. Unfamiliar domain** *[label: the transfer argument]*
 
-**When:** The role requires domain experience {{USER_FIRST_NAME}} doesn't have, but her experience is genuinely transferable at the level of buyer motion, technical complexity, or GTM challenge.
+**When:** The role requires domain experience the user doesn't have, but her experience is genuinely transferable at the level of buyer motion, technical complexity, or GTM challenge.
 
 **The move:** Lead with what she knows — domain breadth and why it transfers. Name the connecting insight. Map specifically to this company. Never name the gap.
 
@@ -471,7 +471,7 @@ I absolutely love building things from scratch and that's probably why I'm also 
 
 **6. Multi-domain pattern** *[label: the range proof]*
 
-**When:** {{USER_FIRST_NAME}} needs to show she's encountered the same underlying problem across multiple companies — rapid proof that a pattern is real, not a one-off.
+**When:** The user needs to show she's encountered the same underlying problem across multiple companies — rapid proof that a pattern is real, not a one-off.
 
 **The move — two options:**
 - **(A) Horizontal competence claim:** Lead with what she knows how to do, ground it with breadth evidence, then name what's consistently true.
@@ -490,7 +490,7 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 
 **7. Proof bullets that earn their place** *[label: the earned list]*
 
-**When:** {{USER_FIRST_NAME}} has 2–3 metric-backed outcomes that land harder as a short bulleted list than as prose.
+**When:** The user has 2–3 metric-backed outcomes that land harder as a short bulleted list than as prose.
 
 **The move:** A confident, direct setup line earns the list — with energy, not "as you can see from the following."
 
@@ -503,7 +503,7 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 
 **8. Warm connection / referral** *[label: the human in the room]*
 
-**When:** {{USER_FIRST_NAME}} has spoken to someone at the company directly, or has a named referral who opened the door.
+**When:** The user has spoken to someone at the company directly, or has a named referral who opened the door.
 
 **The move:** Name the person and the context (one sentence), move immediately to proof. The connection front-loads trust; the proof earns the interview. Do not spend more than one sentence on the connection itself.
 
@@ -517,7 +517,7 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 
 **9. Anticipated question** *[label: the preemptive answer]*
 
-**When:** There is an obvious question the reader will have about {{USER_FIRST_NAME}}'s application — a domain gap, a seniority mismatch, a non-linear background — and addressing it directly is stronger than hoping they won't notice.
+**When:** There is an obvious question the reader will have about the user's application — a domain gap, a seniority mismatch, a non-linear background — and addressing it directly is stronger than hoping they won't notice.
 
 **The move:** Name the question the reader is silently holding, then answer it immediately with proof. Write *to* the reader, not about yourself. Carmen's structure.
 
@@ -531,11 +531,11 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 
 **10. Problem-first** *[label: the observation opener]*
 
-**When:** {{USER_FIRST_NAME}} has a genuine professional observation about the recurring problem she's spent her career solving — and this role is the next instance of that problem. Best for senior, founding, or strategically complex roles.
+**When:** The user has a genuine professional observation about the recurring problem she's spent her career solving — and this role is the next instance of that problem. Best for senior, founding, or strategically complex roles.
 
-**The move:** Open with {{USER_FIRST_NAME}} as the subject — her experience, her position in the room. The market observation follows as supporting context, not as the opener. **{{USER_FIRST_NAME}} must be the grammatical subject of the first sentence.** Opening with "So many marketers..." or any market-category claim is Pattern G in the gatekeeper — a hard fail. The observation from her Why I Want This Role content (or the motivation bank in `02-professional-background.md` §5) belongs in sentence 2 or 3, after {{USER_FIRST_NAME}} has established her position.
+**The move:** Open with the user as the subject — her experience, her position in the room. The market observation follows as supporting context, not as the opener. **The user must be the grammatical subject of the first sentence.** Opening with "So many marketers..." or any market-category claim is Pattern G in the gatekeeper — a hard fail. The observation from her Why I Want This Role content (or the motivation bank in `02-professional-background.md` §5) belongs in sentence 2 or 3, after the user has established her position.
 
-**Core observation (from the motivation bank — use as supporting context after {{USER_FIRST_NAME}} is established as subject):**
+**Core observation (from the motivation bank — use as supporting context after the user is established as subject):**
 > "So many marketers lack the technical know-how to truly understand why or what is so different about the product itself — and this is often the case even for seemingly 'not' technical products."
 
 **Template:**
@@ -548,14 +548,14 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 
 **11. Value claim opener** *[label: the direct pitch]*
 
-**When:** The best, most natural opener. Use whenever the role allows a confident, direct statement of what {{USER_FIRST_NAME}} does and why this company is the right fit for it. Especially strong for strategic/senior roles, regulated-industry companies, and roles where {{USER_FIRST_NAME}}'s positioning/research edge is the core credential.
+**When:** The best, most natural opener. Use whenever the role allows a confident, direct statement of what the user does and why this company is the right fit for it. Especially strong for strategic/senior roles, regulated-industry companies, and roles where the user's positioning/research edge is the core credential.
 
 **The move:** Name the company and the posting (one clause) → observe what they need → pivot immediately to the value claim ("that's the work I do") → state HOW in one concise clause → thread the domain connection (why this company is the natural next chapter, not just a job) → close with a warm, confident one-liner.
 
-**The rule:** {{USER_FIRST_NAME}} is the subject by the second sentence at the latest. The company observation is the setup; {{USER_FIRST_NAME}}'s claim is the payload. Do not narrate methodology — name it in a clause.
+**The rule:** The user is the subject by the second sentence at the latest. The company observation is the setup; the user's claim is the payload. Do not narrate methodology — name it in a clause.
 
 **Template:**
-> Reading the [Company] posting, it was clear you're looking for [what they need] — and that's the work I do. [Value proposition in one sentence — what {{USER_FIRST_NAME}} does, what integrity/outcome it produces.] I get there by [HOW in a brief, non-exhaustive clause]. [Domain connection — why this company is the natural next step, grounded in a specific, named thread from {{USER_FIRST_NAME}}'s background.] And I'm confident the team at [Company] won't be sorry.
+> Reading the [Company] posting, it was clear you're looking for [what they need] — and that's the work I do. [Value proposition in one sentence — what the user does, what integrity/outcome it produces.] I get there by [HOW in a brief, non-exhaustive clause]. [Domain connection — why this company is the natural next step, grounded in a specific, named thread from the user's background.] And I'm confident the team at [Company] won't be sorry.
 
 **Example:** [Example from your background — see your worked examples in your `career-data` background]
 
@@ -567,9 +567,9 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 
 One paragraph from the Ultralytics letter, annotated for the syntactic choices that make it work. Mirror these choices when writing — not just the content.
 
-> *{{USER_FIRST_NAME}} here.*
+> *[Name] here.*
 
-"{{USER_FIRST_NAME}}" as grammatical subject — a proper noun, two syllables, nothing embedded. The predicate is implied. Deliberate identity fragment: complete as a sentence.
+"[Name]" as grammatical subject — a proper noun, two syllables, nothing embedded. The predicate is implied. Deliberate identity fragment: complete as a sentence.
 
 > *I'll be honest — I nearly screamed when I saw this role.*
 
@@ -590,13 +590,13 @@ This pattern appears in the body as often as the opener. It is banned everywhere
 - Making a market observation from outside the room: "Runtime-first detection is a genuinely differentiated story in a crowded CNAPP market."
 - Announcing a capability instead of naming proof: "That translation is where I live." / "That's the work I do." / "That's where I operate best." / "That's where I want my marketing to land." Demonstrative declarations ("that's where...", "that's what...", "that's the kind of...") point at an abstraction rather than naming a result. Replace with a company name and an outcome.
 - Telling the hiring team what their buyers need or how their market works.
-- Any sentence where {{USER_FIRST_NAME}} is the analyst commenting on the company rather than the practitioner speaking from her own experience.
+- Any sentence where the user is the analyst commenting on the company rather than the practitioner speaking from her own experience.
 
-**Why it keeps appearing:** It sounds like research. It isn't. It positions {{USER_FIRST_NAME}} as an outside observer who has done homework, not as someone who belongs in the room. It is presumptuous regardless of how accurate it is — nobody needs to be told about their own product.
+**Why it keeps appearing:** It sounds like research. It isn't. It positions the user as an outside observer who has done homework, not as someone who belongs in the room. It is presumptuous regardless of how accurate it is — nobody needs to be told about their own product.
 
-**The test for every body paragraph:** Is {{USER_FIRST_NAME}} the subject, speaking from her own named experience? Or is she describing the company/market/buyer from outside? If the latter: cut it or rewrite it so {{USER_FIRST_NAME}} is the subject and the proof is a company name, number, or named deliverable.
+**The test for every body paragraph:** Is the user the subject, speaking from her own named experience? Or is she describing the company/market/buyer from outside? If the latter: cut it or rewrite it so the user is the subject and the proof is a company name, number, or named deliverable.
 
-**Replacement pattern:** One sentence naming what {{USER_FIRST_NAME}} has done, from her own experience, that is directly parallel to what this company needs. No market commentary. No capability announcements. Named proof only.
+**Replacement pattern:** One sentence naming what the user has done, from her own experience, that is directly parallel to what this company needs. No market commentary. No capability announcements. Named proof only.
 
 ---
 
@@ -604,13 +604,13 @@ This pattern appears in the body as often as the opener. It is banned everywhere
 
 Run before writing the first sentence.
 
-**Q1 — What is the one specific thing {{USER_FIRST_NAME}} reacted to?** Must be specific to THIS role, THIS company, THIS moment. Test: could this sentence appear unchanged in a letter to a different company? If yes, it fails.
+**Q1 — What is the one specific thing the user reacted to?** Must be specific to THIS role, THIS company, THIS moment. Test: could this sentence appear unchanged in a letter to a different company? If yes, it fails.
 - Pass: "Direct competitor — she just wrapped the exact same job at [Company]." / "Compliance is the GTM motion AND build-from-scratch AND PLG — three things she loves, all in one role."
 - Fail: "I love building PMM from scratch." (true of every letter)
 
 **Q2 — What makes that reaction credible, in one sentence?** A company name, a number, or a named deliverable. One sentence only.
 
-**Q3 — What do we know about the hiring manager?** The opener must connect to the HM — their likely priorities, background, or the specific problem they're trying to solve by filling this role. If a named HM is confirmed: check their LinkedIn briefly before writing — a specific signal (their background, a post they made, a company they came from) can anchor the first sentence in a way that reads as genuine and not generic. If HM is unknown or unconfirmable: the connection can be implicit (a Head of Marketing at a seed-stage AI company will almost certainly care about X) — make the implicit explicit. Write `[{{USER_FIRST_NAME}} TO FILL IN — HM CONNECTION]` only if the connection requires something {{USER_FIRST_NAME}} would know from direct personal contact that no research could surface.
+**Q3 — What do we know about the hiring manager?** The opener must connect to the HM — their likely priorities, background, or the specific problem they're trying to solve by filling this role. If a named HM is confirmed: check their LinkedIn briefly before writing — a specific signal (their background, a post they made, a company they came from) can anchor the first sentence in a way that reads as genuine and not generic. If HM is unknown or unconfirmable: the connection can be implicit (a Head of Marketing at a seed-stage AI company will almost certainly care about X) — make the implicit explicit. Write `[{{USER_FIRST_NAME}} TO FILL IN — HM CONNECTION]` only if the connection requires something the user would know from direct personal contact that no research could surface.
 
 **Opener structure:** Sentence 1 → the reaction, belief, or hook. Sentence 2 → the credential. Rest → optional expansion, including HM-connected framing if it fits naturally.
 

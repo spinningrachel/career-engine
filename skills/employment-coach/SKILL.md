@@ -11,7 +11,7 @@ description: Analysis procedures for the employment-coach agent (Option 2 — Pi
 
 **─── FRAMEWORK PRIMACY — GOVERNS EVERY ANALYSIS ───**
 
-**`03-framework.md` is the primary source of truth about who {{USER_FIRST_NAME}} is, how she works, and what she is positioning toward.** Form your understanding of her from the framework first. A single JD, a single application, or any one run's signals are situational context — they never redefine her goals, identity, or positioning.
+**`03-framework.md` is the primary source of truth about who the user is, how she works, and what she is positioning toward.** Form your understanding of her from the framework first. A single JD, a single application, or any one run's signals are situational context — they never redefine her goals, identity, or positioning.
 
 **Career-shift posture.** Whether a role represents a career shift is judged against the framework, not against the role. Check `03-framework.md` §Career-shift posture for her stated posture (Not open / Open — case-by-case / Primarily pursuing a shift), her shift directions of interest, and anything off-limits:
 
@@ -25,7 +25,7 @@ This rule binds every pipeline that spawns the coach: intake, new application, a
 
 ## Research Phase
 
-**Research standard:** Research comprehensively. The output is distilled — but the research itself must be thorough. {{USER_FIRST_NAME}} uses this output to make go/no-go decisions about roles: whether to apply, whether to accept an interview, whether to pull out. Incomplete research means she acts on a partial picture and wastes time on roles that should have been screened out early, or misses signals that would have changed her approach. The bar is: if a competent human recruiter spending 20 minutes on LinkedIn and Google could have found it, you should find it too. Surface what materially changes the fit assessment, strategy, or risk picture — but do not stop researching before you have genuinely checked.
+**Research standard:** Research comprehensively. The output is distilled — but the research itself must be thorough. The user uses this output to make go/no-go decisions about roles: whether to apply, whether to accept an interview, whether to pull out. Incomplete research means she acts on a partial picture and wastes time on roles that should have been screened out early, or misses signals that would have changed her approach. The bar is: if a competent human recruiter spending 20 minutes on LinkedIn and Google could have found it, you should find it too. Surface what materially changes the fit assessment, strategy, or risk picture — but do not stop researching before you have genuinely checked.
 
 **Research principles:**
 - Keep research objective and evidence-led. Conclusions must be traceable to a named source. Do not interpolate, speculate, or fill gaps with assumptions.
@@ -53,10 +53,10 @@ Exactly 5 competitors:
 **5. What this role actually means in context**
 IC vs. team lead, reporting chain if findable, what the key JD phrases mean for *this* company specifically. The same title at a 10-person stealth startup means something entirely different than at a 300-person company — founding role vs. inheriting a team and process. Translate the JD into what the person will actually spend their time doing.
 
-**6. Fit/gap for {{USER_FIRST_NAME}}**
+**6. Fit/gap for the user**
 Draw ONLY from `02-professional-background.md` (Role Facts) and `03-framework.md` §Domain depth (per-vertical narratives). These are the only authoritative sources. Do not infer, extrapolate, or invent.
 
-- **Strongest credential:** The single most relevant, specific thing {{USER_FIRST_NAME}} has done that maps to what this role needs. Must name a real company from Section 7 and a documented outcome. If you cannot find a direct credential in Section 7 or `03-framework.md` §Domain depth, write "No direct credential documented for this requirement" — never invent one.
+- **Strongest credential:** The single most relevant, specific thing the user has done that maps to what this role needs. Must name a real company from Section 7 and a documented outcome. If you cannot find a direct credential in Section 7 or `03-framework.md` §Domain depth, write "No direct credential documented for this requirement" — never invent one.
 - **Gap to prep:** One honest, specific gap or angle to prepare for, traceable to what the JD requires vs. what is documented. If there is a hard disqualifier (e.g., US residency required, domain not documented in `03-framework.md` §Domain depth), flag it clearly.
 
 **Anti-fabrication rule:** If the strongest credential you can name is not traceable to a named company and documented outcome in `02-professional-background.md` (Role Facts), do not write it. This rule is absolute.
@@ -166,7 +166,7 @@ Check for: "The company appears to value X," "Culture signals suggest Y," "The h
 If research found anything risk-relevant — leadership churn, hiring freeze just ended, a round 18+ months old with no follow-on, a role open 90+ days — it must appear in Recent news or Patterns.
 
 **5. Org depth checked?**
-Did you scan LinkedIn for ALL {{USER_PROFESSION}} team members at this company, not just the most senior person? If there is any {{USER_PROFESSION}} leader between the top title and this role, it must be named in `Hiring Manager's Name` and flagged in `Patterns`. Leaving this unresolved costs {{USER_FIRST_NAME}} time she cannot get back.
+Did you scan LinkedIn for ALL {{USER_PROFESSION}} team members at this company, not just the most senior person? If there is any {{USER_PROFESSION}} leader between the top title and this role, it must be named in `Hiring Manager's Name` and flagged in `Patterns`. Leaving this unresolved costs the user time she cannot get back.
 
 ```
 ### Research confidence check — <Company> — <Role Title>
@@ -200,12 +200,12 @@ This step runs only for roles that reached full research (Priority 1–4 from tr
 Apply the Priority Framework in `01-writing-rules.md` Section 1, now with full research context:
 
 **Step 1 — Open Application check (run this before everything else):**
-Is this role an open application, unsolicited application, or speculative application — i.e., {{USER_FIRST_NAME}} is applying without a specific open listing? If yes: the priority is `Fifth`. Stop. Do not apply domain fit or any other criterion. Write `Fifth` and the reason: "Open application — hard floor override." This is non-negotiable regardless of domain fit, seniority match, company stage, or any other factor.
+Is this role an open application, unsolicited application, or speculative application — i.e., the user is applying without a specific open listing? If yes: the priority is `Fifth`. Stop. Do not apply domain fit or any other criterion. Write `Fifth` and the reason: "Open application — hard floor override." This is non-negotiable regardless of domain fit, seniority match, company stage, or any other factor.
 
 **Step 2 — Standard scoring (only if Step 1 did not apply):**
 1. Apply the Priority Framework criteria in order, now informed by the full research (location deep-scan, company signals, HM research, competitive landscape, JD decoding).
 2. **Apply favorite-brand boost** — read `favorite_brands` from `pipeline-preferences.json`. If the company matches any entry (case-insensitive), apply +1 boost: final priority = scored priority − 1, minimum 1. Append "(+1 favorite brand)" to `Priority Reason`. Open-application roles are exempt — the Fifth override from Step 1 is absolute.
-3. Write a tight one-sentence **`Priority Reason`** grounded in {{USER_FIRST_NAME}}'s documented background and the JD, including the brand boost note if applied. This is the final `Priority Reason` for Notion.
+3. Write a tight one-sentence **`Priority Reason`** grounded in the user's documented background and the JD, including the brand boost note if applied. This is the final `Priority Reason` for Notion.
 4. Mark as `confirmed` if a prior value existed and your score agrees, `revised` if your research produces a different score, or `new` if no prior value existed.
 5. If the final Priority differs from the preliminary triage score, note both in Patterns.
 
@@ -234,7 +234,7 @@ Before setting any strategic property, decode the job posting. JDs are written b
 **Break the JD into layers and read each deliberately:**
 
 **Layer 1 — Core responsibilities (what you will actually do)**
-Tasks at the top or repeated frequently are the real priorities. Map the day-in-the-life against {{USER_FIRST_NAME}}'s documented experience. Ignore the generic HR filler ("collaborate cross-functionally", "drive results") — focus on the specific, named activities.
+Tasks at the top or repeated frequently are the real priorities. Map the day-in-the-life against the user's documented experience. Ignore the generic HR filler ("collaborate cross-functionally", "drive results") — focus on the specific, named activities.
 
 **Layer 2 — Qualifications (must-haves vs. nice-to-haves)**
 "Must / required / expect" = hard requirements. "Ideally / preferred / bonus" = nice-to-haves — these are NOT gaps if the candidate doesn't have them. A "preferred" degree signals openness to equivalent experience. Vague soft skills (e.g., "team player", "strong communicator") carry no analytical weight — ignore them. Hard skills, named tools, specific domain experience: these matter.
@@ -245,22 +245,22 @@ Why does this role exist? What breaks if it goes unfilled? What does the hire ne
 **Layer 4 — Seniority signals (what level this role actually is)**
 Titles are unreliable. Read seniority from: required years of experience, whether the role owns budget, has direct reports, sets strategy vs. executes it, reports to C-suite vs. middle management. A "Senior Manager" with no direct reports and execution-heavy responsibilities is an IC role with a flattering title. A "Specialist" who owns P&L and presents to board is a leadership role. Identify the real level — it governs how the CV and letter are framed.
 
-**Step-down identification — critical:** If the role's actual level is materially below {{USER_FIRST_NAME}}'s documented seniority (e.g., an IC execution role when she has been a VP, or a manager role when she has led functions), flag it explicitly in Role emphasis as: `Step-down: [reason — e.g., execution IC role vs. her VP-level background]`. This signals to the cv-writer to lead with execution and suppress strategy/leadership framing. Do not obscure or soften this — naming it is how the CV gets written correctly.
+**Step-down identification — critical:** If the role's actual level is materially below the user's documented seniority (e.g., an IC execution role when she has been a VP, or a manager role when she has led functions), flag it explicitly in Role emphasis as: `Step-down: [reason — e.g., execution IC role vs. her VP-level background]`. This signals to the cv-writer to lead with execution and suppress strategy/leadership framing. Do not obscure or soften this — naming it is how the CV gets written correctly.
 
 **Layer 5 — Compensation and culture signals**
 Salary range signals the real budget and seniority expectation. Language like "fast-paced", "wear many hats", "startup environment" signals a generalist/execution context. "Cross-functional stakeholder management" signals internal politics and matrix orgs. These inform Strategy and framing.
 
 **Layer 6 — Nice-to-haves and advantages are exactly that**
-If {{USER_FIRST_NAME}} has a "nice-to-have" or "advantage" qualification: call it out in JD proof — it is a differentiator. If she doesn't have it: it is NOT a gap. Never flag a preferred/bonus requirement as a gap unless it is genuinely screening-critical in context. Write `satisfied via [Y] — [X] is additive` or simply omit it from Gap handling.
+If the user has a "nice-to-have" or "advantage" qualification: call it out in JD proof — it is a differentiator. If she doesn't have it: it is NOT a gap. Never flag a preferred/bonus requirement as a gap unless it is genuinely screening-critical in context. Write `satisfied via [Y] — [X] is additive` or simply omit it from Gap handling.
 
 **Application instructions**
-If the JD specifies an unusual application instruction (e.g., "include a cover letter with your answer to X"), flag it in Patterns so {{USER_FIRST_NAME}} sees it before applying.
+If the JD specifies an unusual application instruction (e.g., "include a cover letter with your answer to X"), flag it in Patterns so the user sees it before applying.
 
 ---
 
 ### Part 2 — Strategic properties
 
-These properties are owned exclusively by the employment-coach. Set them based on your expert reading of the JD and {{USER_FIRST_NAME}}'s documented fit — not on what the CV says, which comes later.
+These properties are owned exclusively by the employment-coach. Set them based on your expert reading of the JD and the user's documented fit — not on what the CV says, which comes later.
 
 **Read between the lines — this is the most important analytical discipline here.** JDs are written by committee and filtered through HR templates. What the JD says explicitly is the floor, not the ceiling. For `Strategy` and `Role emphasis` in particular:
 
@@ -297,7 +297,7 @@ For Specialist / practitioner roles (IC contributor, no direct reports), explici
 
 ---
 
-**`JD proof`** — The single most revealing sentence from the JD that proves your Role emphasis interpretation. Direct quote, verbatim. For {{USER_FIRST_NAME}}'s reference only — no writing agent reads this field.
+**`JD proof`** — The single most revealing sentence from the JD that proves your Role emphasis interpretation. Direct quote, verbatim. For the user's reference only — no writing agent reads this field.
 
 ---
 
@@ -315,7 +315,7 @@ Keywords are for CV text only — they do not set the agenda for the cover lette
 
 **`Strategy`** — Exactly 3 labeled HM priorities. No summary direction. No sentences. Each priority is one tight line naming what the hiring manager is actually screening for — read between the lines to find it.
 
-**Strategy is mandatory for every role that reaches full research — including function shifts and step-downs.** A shift or step-down flag in Role emphasis is informational; it never justifies an empty or deferred Strategy. For shift roles, Priority 1 is typically the narrative bridge: the capability from {{USER_FIRST_NAME}}'s background that most credibly enters this function. For step-down roles, Priority 1 reflects what the HM is actually screening for at that level. The writers cannot frame the application correctly without all three priorities.
+**Strategy is mandatory for every role that reaches full research — including function shifts and step-downs.** A shift or step-down flag in Role emphasis is informational; it never justifies an empty or deferred Strategy. For shift roles, Priority 1 is typically the narrative bridge: the capability from the user's background that most credibly enters this function. For step-down roles, Priority 1 reflects what the HM is actually screening for at that level. The writers cannot frame the application correctly without all three priorities.
 
 Format:
 ```
@@ -326,13 +326,13 @@ Priority 3: [third screening criterion]
 
 Each priority is a noun phrase, not a sentence. Name the capability or signal precisely. "PLG execution credibility — activation frameworks, PQL design, in-product lifecycle" is correct. "Someone who can drive growth through product-led strategies" is not.
 
-No {{USER_FIRST_NAME}} references, no credential names, no company names from her background. The cv-writer and letter-writer read her background separately — Strategy tells them what the HM is screening for, not what to write. These three priorities ARE the summary direction: the cv-writer leads with the strongest match to Priority 1, anchors the middle on Priority 2, and closes on Priority 3.
+No candidate references, no credential names, no company names from her background. The cv-writer and letter-writer read her background separately — Strategy tells them what the HM is screening for, not what to write. These three priorities ARE the summary direction: the cv-writer leads with the strongest match to Priority 1, anchors the middle on Priority 2, and closes on Priority 3.
 
 **Strategic framing — GTM lens:**
 
-The best strategies treat the application as a go-to-market problem: {{USER_FIRST_NAME}} is the product, the hiring manager is the buyer, the JD is the RFP. Frame the strategy around three questions:
+The best strategies treat the application as a go-to-market problem: the candidate is the product, the hiring manager is the buyer, the JD is the RFP. Frame the strategy around three questions:
 
-1. **Why you** — what unique proof makes {{USER_FIRST_NAME}} the credible choice? Not a list of skills — a specific, traceable result.
+1. **Why you** — what unique proof makes the candidate the credible choice? Not a list of skills — a specific, traceable result.
 2. **Why them** — what specifically about this company, this stage, this team makes this the right move? Business logic, not flattery.
 3. **Why now** — what makes this the right moment for both parties?
 
@@ -340,7 +340,7 @@ These questions anchor the opening of the cover letter and the interview narrati
 
 **Weighted prioritization model:**
 
-When scoring priority across multiple roles, weight: Company culture and stage fit (40%) + {{USER_FIRST_NAME}}'s documented credential match (40%) + role level and growth trajectory (20%). A role that scores high on culture and credentials but offers a lateral move ranks above a role with a step up but culture misalignment or credential stretch.
+When scoring priority across multiple roles, weight: Company culture and stage fit (40%) + the user's documented credential match (40%) + role level and growth trajectory (20%). A role that scores high on culture and credentials but offers a lateral move ranks above a role with a step up but culture misalignment or credential stretch.
 
 ---
 
@@ -363,20 +363,20 @@ Format: `[Gap]: [handling]`
 Handling options:
 - `surface [X] instead` — a documented experience addresses the gap if reframed; name what to surface
 - `letter addresses via [angle]` — the CV cannot carry this, but the cover letter can address it with context or framing; name the angle
-- `ignore — not a screening risk` — the gap exists but won't cost {{USER_FIRST_NAME}} a first call
+- `ignore — not a screening risk` — the gap exists but won't cost the user a first call
 - `satisfied via [Y] — [X] is additive` — for preferred requirements where she satisfies one alternative
 
 **What are NOT gaps:** Adjacent experience, transferable skills, and credible adjacent verticals are not gaps — they are the story. Do not manufacture gap handling for something that is genuinely a match.
 
 **Never flag "works independently" as a gap or callout.** The ability to work autonomously is implied for any experienced professional and is embarrassing to name explicitly. For a junior user this could appear only as gap handling if the JD makes it genuinely screening-critical — but for an experienced candidate it is never flagged, noted, or addressed. The same applies to equivalent soft-skill filler phrases ("self-starter", "takes initiative", "manages own workload").
 
-**"Preferred" requirements with alternatives.** When a JD says "X or Y experience preferred" and {{USER_FIRST_NAME}} satisfies at least one alternative, she satisfies the requirement. The unsatisfied alternative is additive, not a gap. Write `satisfied via [Y] — [X] is additive`, or omit it.
+**"Preferred" requirements with alternatives.** When a JD says "X or Y experience preferred" and the user satisfies at least one alternative, she satisfies the requirement. The unsatisfied alternative is additive, not a gap. Write `satisfied via [Y] — [X] is additive`, or omit it.
 
-**AI product specificity.** "AI" is not a single category. Computer vision, conversational AI / NLP, LLMs, recommendation systems, and cybersecurity AI are distinct GTM contexts with different buyers, trust models, and proof requirements. When the role is at an AI company, identify the specific AI product category the company builds, then check whether {{USER_FIRST_NAME}}'s documented AI experience maps to that category.
+**AI product specificity.** "AI" is not a single category. Computer vision, conversational AI / NLP, LLMs, recommendation systems, and cybersecurity AI are distinct GTM contexts with different buyers, trust models, and proof requirements. When the role is at an AI company, identify the specific AI product category the company builds, then check whether the user's documented AI experience maps to that category.
 
-Check `02-professional-background.md` (Role Facts) to determine which AI product categories {{USER_FIRST_NAME}}'s documented experience maps to. Use only what is documented there.
+Check `02-professional-background.md` (Role Facts) to determine which AI product categories the user's documented experience maps to. Use only what is documented there.
 
-If the specific AI category (e.g., conversational AI, NLP, voice agents) is not documented in {{USER_FIRST_NAME}}'s background, name it as a product-category gap separately from any domain/vertical gap.
+If the specific AI category (e.g., conversational AI, NLP, voice agents) is not documented in the user's background, name it as a product-category gap separately from any domain/vertical gap.
 
 **Domain gap vs. product-category gap are distinct.** A company can require both domain experience (e.g., healthcare) and product-category experience (e.g., conversational AI). Flag each separately. Do not collapse them.
 
@@ -399,13 +399,13 @@ If the specific AI category (e.g., conversational AI, NLP, voice agents) is not 
 5. **Check B2B intelligence platforms.** Search theorg.com, Crunchbase, and ZoomInfo for the company — these often list org structure, named leaders, and reporting chains without requiring sign-in. A Google search for `[company name] theorg` or `[company name] site:theorg.com` is a fast entry point.
 6. **Apply org-layer logic.** If both a top-tier and a mid-tier {{USER_PROFESSION}} leader are visible (per {{USER_FUNCTION_SENIORITY_HIERARCHY}}), the mid-tier leader is the likely hiring manager for any role below the top tier. Do not default to the most senior title.
 7. **If a name is found, check their digital footprint.** Review their LinkedIn posts, company blog articles, X/Twitter if public, and any published interviews — this surfaces culture signals, priorities, and framing that feeds `Strategy`.
-8. Flag explicitly in `Patterns` if there is a layer between the most senior {{USER_PROFESSION}} leader and this role — this affects {{USER_FIRST_NAME}}'s go/no-go decision and cannot be left unresolved.
+8. Flag explicitly in `Patterns` if there is a layer between the most senior {{USER_PROFESSION}} leader and this role — this affects the user's go/no-go decision and cannot be left unresolved.
 
 **`Person who Advertised Role (if not Hiring Manager)`** — Name + title | Same as hiring manager | Not identifiable. [HIGH/LOW]
 
 **How to identify:** Check the JD posting on the source job board for a poster name or recruiter byline. Search LinkedIn for the company's recruiter or talent team — cross-reference any name visible on the job posting. Review the poster's profile for context on who is screening (internal recruiter, external agency, or hiring manager posting directly).
 
-**`Hiring manager's role`** — Title + 1 sentence on what their org position implies for {{USER_FIRST_NAME}}'s seniority and accountability. Hypothesis flag if not confirmed. [HIGH/LOW]
+**`Hiring manager's role`** — Title + 1 sentence on what their org position implies for the user's seniority and accountability. Hypothesis flag if not confirmed. [HIGH/LOW]
 
 **`Manager role confirmed`** — `Yes` or `No; this is only a hypothesis`.
 
@@ -415,7 +415,7 @@ If the specific AI category (e.g., conversational AI, NLP, voice agents) is not 
 
 **`Funding context`** — Most recent round, amount, date, investors — or "No recent funding news found."
 
-**`Role summary`** — A compressed summary of the JD itself. Not about {{USER_FIRST_NAME}}. This property serves as the JD proxy for all downstream agents — they read this instead of the full JD body.
+**`Role summary`** — A compressed summary of the JD itself. Not about the user. This property serves as the JD proxy for all downstream agents — they read this instead of the full JD body.
 
 **Hard limit: 400 characters total including spaces.** Count before writing. This is a Notion property field, not a document — it must be short enough to be read at a glance. If you need to choose between coverage and brevity: cut coverage, keep brevity.
 
@@ -424,7 +424,7 @@ Write from the JD body only. Structure: one short paragraph (what the role is, k
 Rules:
 - Use the JD's own vocabulary where possible
 - Simple, clear, concise language — no verbosity, no repetition
-- Never reference {{USER_FIRST_NAME}}, candidate fit, or anything not in the JD
+- Never reference the candidate by name, candidate fit, or anything not in the JD
 - Never include contact information or location
 - If the JD is empty of content: write exactly `No content`
 - If the JD contains a self-characterization section ("you'll thrive here if", "good fit / not a good fit") — include it as the final bullet, labeled `Self-characterization:` followed by the verbatim text (within the 400-char total)
@@ -433,7 +433,7 @@ Rules:
 
 ### Part 3 — Patterns
 
-Surface patterns {{USER_FIRST_NAME}} should think about: clusters of similar roles, missing data, roles that look unusually strong, track mismatches, anything worth flagging before the pipeline runs.
+Surface patterns the user should think about: clusters of similar roles, missing data, roles that look unusually strong, track mismatches, anything worth flagging before the pipeline runs.
 
 ---
 
@@ -451,13 +451,13 @@ Return findings in this exact structure for every role received.
   - Priority Reason: <one tight sentence — key factor(s) that drove the score>
   - Triage exit: <Yes — full research skipped | No — full research completed>
 
-### Patterns and notes for {{USER_FIRST_NAME}}
+### Patterns and notes for the user
 - <observation about the batch>
 
 ### Writing guidance
 
 #### Batch analysis
-- Common gaps across the queue: <what {{USER_FIRST_NAME}}'s background doesn't fully cover for this batch>
+- Common gaps across the queue: <what the user's background doesn't fully cover for this batch>
 - Shared keywords: <terms appearing across 3+ JDs>
 
 #### Base CV recommendation
@@ -515,7 +515,7 @@ Return findings in this exact structure for every role received.
 
 This applies to all coach-owned properties without exception: `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, `Company Stage`, `Culture`, `Person who Advertised Role (if not Hiring Manager)`, `Priority`, `Priority Reason`, `Landscape`, and all research-derived properties (`Hiring Manager's Name`, `Recent news`, `Funding context`, etc.), as well as the location compatibility property (name resolved from `pipeline-preferences.json`).
 
-**`Priority` exception:** If the coach's analysis produces a materially different priority than what is set (e.g., role is identifiable as an open application that must be `Fifth`, or research reveals a hard disqualifier that changes the score), flag the discrepancy in Patterns and note the recommended value — but still do not overwrite. {{USER_FIRST_NAME}} decides.
+**`Priority` exception:** If the coach's analysis produces a materially different priority than what is set (e.g., role is identifiable as an open application that must be `Fifth`, or research reveals a hard disqualifier that changes the score), flag the discrepancy in Patterns and note the recommended value — but still do not overwrite. The user decides.
 
 **`N/A` counts as a value.** Do not overwrite `N/A` with new content. A field set to `N/A` was deliberately set that way.
 

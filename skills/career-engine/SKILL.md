@@ -34,7 +34,7 @@ allowed-tools:
 
 ## What This Does
 
-This command runs {{USER_FIRST_NAME}}'s multi-agent career engine from start to finish. It fetches roles from her Notion Job Applications database, runs the employment coach for prioritization and writing guidance, generates tailored CVs and cover letters through a staged review pipeline, converts them to DOCX using pandoc, and saves files to the configured output folder. Per-role results are written back to Notion.
+This command runs the user's multi-agent career engine from start to finish. It fetches roles from her Notion Job Applications database, runs the employment coach for prioritization and writing guidance, generates tailored CVs and cover letters through a staged review pipeline, converts them to DOCX using pandoc, and saves files to the configured output folder. Per-role results are written back to Notion.
 
 Without arguments, the command runs the main run against all roles with Status = `Interested`. Two flags shift the mode.
 
@@ -48,8 +48,8 @@ Without arguments, the command runs the main run against all roles with Status =
 | `--coach` | Direct coaching — employment coach responds conversationally to a role question, fit assessment, or strategic framing question; no Notion writeback |
 | `--now <url or JD text>` | Single-role fast track — skips Notion entirely; takes a URL or pasted JD directly; coach fetches and analyses in one pass; full per-role pipeline; outputs DOCX to the configured output folder |
 | `--status` | Read state.json from the most recent run and print a completion table — which roles finished, which files exist on disk, verdicts, and any files listed in state.json that are missing |
-| `--check` | Run the gatekeeper on a CV or cover letter {{USER_FIRST_NAME}} pastes or provides. Paste the document in chat and specify CV or cover letter. JD is optional but improves checks that require JD comparison. Returns PASS or FAIL with violations. One pass only — no loop. |
-| `--review` | Run recruiter and hiring manager review on a CV or cover letter {{USER_FIRST_NAME}} provides. Paste the document and JD in chat. Returns both reviews in sequence. Treats prior verdicts as N/A when none exist. One pass only. |
+| `--check` | Run the gatekeeper on a CV or cover letter the user pastes or provides. Paste the document in chat and specify CV or cover letter. JD is optional but improves checks that require JD comparison. Returns PASS or FAIL with violations. One pass only — no loop. |
+| `--review` | Run recruiter and hiring manager review on a CV or cover letter the user provides. Paste the document and JD in chat. Returns both reviews in sequence. Treats prior verdicts as N/A when none exist. One pass only. |
 | `--write-letter` | Write a cover letter for a single role without the full pipeline. Provide a URL or JD text. Spawns `letter-writer` in standalone mode — no CV required, no reviewers, no gatekeeper loop. Returns a cover letter draft. |
 
 ## Pipeline Registry
@@ -89,7 +89,7 @@ Load in order: `01-writing-rules.md`, `career-engine-export`, `career-engine-edi
 Load `career-engine-coach` only. Follow that skill and stop.
 
 **`--coach` flag:**
-Load `01-writing-rules.md` first. Then spawn `employment-coach` in direct coaching mode. Pass {{USER_FIRST_NAME}}'s question, role URL, or JD text as the input. The coach responds conversationally — no structured output format, no Notion writeback.
+Load `01-writing-rules.md` first. Then spawn `employment-coach` in direct coaching mode. Pass the user's question, role URL, or JD text as the input. The coach responds conversationally — no structured output format, no Notion writeback.
 
 **`--now <url or JD text>` flag:**
 Load in order: `01-writing-rules.md`, `career-engine-orchestrator` (read the `--now` mode section), `career-engine-new-application`, `career-engine-export`. Follow the `--now` flow defined in `career-engine-orchestrator`.
@@ -99,23 +99,23 @@ Load `career-engine-orchestrator` (read the `--status` section). No other skills
 
 **`--check` flag:**
 Load `01-writing-rules.md` first. Then spawn `gatekeeper` directly:
-- If {{USER_FIRST_NAME}} says "check my CV" or pastes CV text → spawn with `option=content`. Pass the CV text and JD if provided. If no JD, note that checks requiring JD comparison (keyword coverage and JD phrase checks) will be skipped.
-- If {{USER_FIRST_NAME}} says "check my cover letter" or pastes letter text → spawn with `option=cover-letter`. Pass the letter text and JD if provided. If no JD, note that Check 7 (company self-characterization) will be skipped.
+- If the user says "check my CV" or pastes CV text → spawn with `option=content`. Pass the CV text and JD if provided. If no JD, note that checks requiring JD comparison (keyword coverage and JD phrase checks) will be skipped.
+- If the user says "check my cover letter" or pastes letter text → spawn with `option=cover-letter`. Pass the letter text and JD if provided. If no JD, note that Check 7 (company self-characterization) will be skipped.
 Return the gatekeeper's PASS or FAIL result directly. No loop.
 
 **`--review` flag:**
-Load `01-writing-rules.md` first. Ask {{USER_FIRST_NAME}} to paste the document (CV or cover letter) and the JD if she hasn't already. Then:
+Load `01-writing-rules.md` first. Ask the user to paste the document (CV or cover letter) and the JD if she hasn't already. Then:
 1. Spawn `recruiter-reviewer` with the document and JD. Return results.
 2. Spawn `hiring-manager-reviewer` with the document and JD. For cover letter review, treat prior HM CV verdict as N/A. Return results.
 Deliver both reviews together. No revision loop.
 
 **`--write-letter` flag:**
-Load `01-writing-rules.md` and `cover-letter` skill. Ask {{USER_FIRST_NAME}} for the URL or JD text if not provided. Then spawn `letter-writer` using the Standalone Invocation path — no final CV required, no reviewer loop, no gatekeeper spawn. Return the cover letter draft directly for {{USER_FIRST_NAME}} to use or refine.
+Load `01-writing-rules.md` and `cover-letter` skill. Ask the user for the URL or JD text if not provided. Then spawn `letter-writer` using the Standalone Invocation path — no final CV required, no reviewer loop, no gatekeeper spawn. Return the cover letter draft directly for the user to use or refine.
 
 ## Rules
 
 - Load all required skills before spawning any sub-agent.
-- Route each role by the pipeline {{USER_FIRST_NAME}} specified in chat: `New Applications` (default) → cv pipeline.
+- Route each role by the pipeline the user specified in chat: `New Applications` (default) → cv pipeline.
 - Do not pause mid-run to ask scope questions. The employment coach caps the run — that cap is final.
 - If a single role fails, log the failure and continue to the next role.
-- All DOCX output goes to {{USER_FIRST_NAME}}'s configured output folder, not to a session scratchpad.
+- All DOCX output goes to the user's configured output folder, not to a session scratchpad.

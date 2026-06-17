@@ -34,7 +34,7 @@ Read `gap_handling` from `${CLAUDE_PLUGIN_ROOT}/references/pipeline-preferences.
 - File or key missing → fall back to reading `gap_handling` from `~/.claude/settings.json` (legacy location, reachable only in Claude Code on the user's own machine); apply the same mapping.
 - Key missing in both locations, or any other value → `gap_handling_mode = enabled` (default). Never treat an unreadable legacy file as an error — the plugin file is the authority.
 
-Do not ask {{USER_FIRST_NAME}} about this. The preference was set during setup (Phase 5). If she wants to change the default, she updates `references/pipeline-preferences.json` (or re-runs setup Phase 5). To suppress gap handling for a single run without changing the setting, she can add "no gap handling" to her prompt — check for that phrase in the current prompt and override to `disabled` if found.
+Do not ask the user about this. The preference was set during setup (Phase 5). If she wants to change the default, she updates `references/pipeline-preferences.json` (or re-runs setup Phase 5). To suppress gap handling for a single run without changing the setting, she can add "no gap handling" to her prompt — check for that phrase in the current prompt and override to `disabled` if found.
 
 **If `gap_handling_mode = disabled`:**
 - Instruct the coach (in Step 0.8) to skip the `Gap handling` property entirely — do not populate it, do not write `N/A`.
@@ -63,7 +63,7 @@ The database ID for this run: `$NOTION_DATABASE_ID` (resolved from the career-da
 notion-fetch id="{{NOTION_DATABASE_ID}}"
 ```
 
-If the schema fetch fails (tool error, empty response) or the response contains no `CREATE TABLE` block, stop immediately and report the error to {{USER_FIRST_NAME}} — do not proceed without a schema reference and do not improvise one.
+If the schema fetch fails (tool error, empty response) or the response contains no `CREATE TABLE` block, stop immediately and report the error to the user — do not proceed without a schema reference and do not improvise one.
 
 Extract the SQLite `CREATE TABLE` block from the response. This is your **schema reference** for the entire run — the authoritative list of property names and valid select option values. Keep it in context.
 
@@ -145,7 +145,7 @@ This returns a JSON array of page objects. Each object has an `id` field and a `
 
 The result should contain only rows matching the target status. If unfiltered rows appear, discard non-matching ones in memory and log a warning. Do not process any row whose Status does not match the target.
 
-If all paths fail with tool errors or unparseable responses, stop immediately and report the error to {{USER_FIRST_NAME}} — do not treat it as zero results and do not improvise a query route outside the ladder. In particular, **never fall back to `notion-search` (or any semantic/keyword search) to discover queue rows** (R-39): it is relevance-ranked and capped, cannot enumerate the queue, and will silently miss roles — producing a false "no roles" when roles exist.
+If all paths fail with tool errors or unparseable responses, stop immediately and report the error to the user — do not treat it as zero results and do not improvise a query route outside the ladder. In particular, **never fall back to `notion-search` (or any semantic/keyword search) to discover queue rows** (R-39): it is relevance-ranked and capped, cannot enumerate the queue, and will silently miss roles — producing a false "no roles" when roles exist.
 
 Skip any entry where neither a Job URL nor job description details in the RTF body of the record are populated.
 
@@ -163,9 +163,9 @@ For each matching entry, capture the full row payload including:
 - Position title (use inferred value if Position field is empty, per the rules above)
 - Job URL
 - Every other property set on the row (notes, tags, source, and any existing priority value) — pass these through verbatim; do not interpret them yet
-- In orchestrator mode only: the pipeline {{USER_FIRST_NAME}} is running (New Applications) — from her chat command, not from a Notion property. Default is `New Applications` unless {{USER_FIRST_NAME}} specifies otherwise. Not applicable in standalone intake mode.
+- In orchestrator mode only: the pipeline the user is running (New Applications) — from her chat command, not from a Notion property. Default is `New Applications` unless the user specifies otherwise. Not applicable in standalone intake mode.
 
-Report the count to {{USER_FIRST_NAME}}: "Found N roles in Hold status. Sending to the employment coach." If the count is 0, stop and report that. If the query call returns a tool error or an unparseable response rather than a result array, stop and report the error to {{USER_FIRST_NAME}} — do not treat it as zero results. Do not wait for a response — proceed immediately to the next step.
+Report the count to the user: "Found N roles in Hold status. Sending to the employment coach." If the count is 0, stop and report that. If the query call returns a tool error or an unparseable response rather than a result array, stop and report the error to the user — do not treat it as zero results. Do not wait for a response — proceed immediately to the next step.
 
 ## Step 0.5 — Prepare JD content for the coach
 
@@ -195,7 +195,7 @@ For each role:
      - **Fetcher rule (all rungs):** fetch candidate URLs with the strongest extractor found in rung 1, not plain `WebFetch`. A mirror that returns a JavaScript shell to `WebFetch` will usually yield its full content to a rendering-capable extractor.
      - **Match guard (all rungs):** accepted content must match both the company and the position title on the Notion row. Never substitute a similar-but-different posting (different seniority, different location, or a different open role at the same company). Log near-misses in the revision log and keep going.
      - Any rung that succeeds via search: mark `url-fetched-via-search` (unless a more specific marker above applies), record the alternate source URL in the run-level revision log, and pass the content to the coach noting that the source URL differs from the saved Job URL.
-   - **Every rung failed:** log the failure, listing which fallbacks were attempted (direct fetch, domain connector, rendering-capable extraction, LinkedIn MCP search, careers page, board mirrors, exact-title search). If `JD Body` is populated, mark `content-exists` and proceed on that. If `JD Body` is also empty, mark `needs-manual` and log to the run-level revision log — do not drop the role yet, flag it for {{USER_FIRST_NAME}} to resolve. A `needs-manual` flag whose log entry does not list the attempted fallbacks is invalid — the Step 0.9b briefing must show that the full ladder was exhausted.
+   - **Every rung failed:** log the failure, listing which fallbacks were attempted (direct fetch, domain connector, rendering-capable extraction, LinkedIn MCP search, careers page, board mirrors, exact-title search). If `JD Body` is populated, mark `content-exists` and proceed on that. If `JD Body` is also empty, mark `needs-manual` and log to the run-level revision log — do not drop the role yet, flag it for the user to resolve. A `needs-manual` flag whose log entry does not list the attempted fallbacks is invalid — the Step 0.9b briefing must show that the full ladder was exhausted.
 
 2. **No Job URL — `JD Body` property is populated** — mark `content-exists`. Pass it to the coach as-is.
 
@@ -275,7 +275,7 @@ The coach returns:
 - Priority scores for all roles (Part 0 of the coach's output) — always
 - Batch analysis and per-role writing guidance (Part 1)
 - Strategic Notion properties: Role emphasis, JD proof, Keywords, Strategy, Company Stage, Role Type, Relationship type, Gap handling (Part 2)
-- Patterns and notes for {{USER_FIRST_NAME}} (Part 3)
+- Patterns and notes for the user (Part 3)
 
 Hold the coach output in memory. Proceed immediately to Step 0.8.5.
 
@@ -291,7 +291,7 @@ Spawn `gatekeeper` with `option=coach-output`, passing:
 
 **If FAIL:** the gatekeeper returns a list of specific unverifiable claims per role and per property. Return those claims to the employment coach with this instruction: "The following claims in your output cannot be traced to `01-writing-rules.md`. Revise the affected properties to remove or correct them. Do not substitute alternative fabrications — if a claim cannot be grounded in the reference file, omit it." Spawn the coach with only the affected roles and properties.
 
-**Cap: 2 revision passes.** If still failing after pass 2, strip the unverifiable claims from the affected properties (replace with `[UNVERIFIABLE — removed]`), log all removed claims in the run-level revision log under `## Coach Fact Check — Unverifiable Claims Removed`, flag for {{USER_FIRST_NAME}} in final delivery, and proceed to Step 0.9.
+**Cap: 2 revision passes.** If still failing after pass 2, strip the unverifiable claims from the affected properties (replace with `[UNVERIFIABLE — removed]`), log all removed claims in the run-level revision log under `## Coach Fact Check — Unverifiable Claims Removed`, flag for the user in final delivery, and proceed to Step 0.9.
 
 ## Step 0.9 — Writeback and briefing
 
@@ -318,15 +318,15 @@ For each role in the processing queue, apply this rule to:
 
 Confirm in chat: "Writeback complete: K roles updated, M properties skipped (already populated)."
 
-### 0.9b — Brief {{USER_FIRST_NAME}}
+### 0.9b — Brief the user
 
-Report to {{USER_FIRST_NAME}}:
+Report to the user:
 - Queue list: company, title, priority source (existing / generated), and coach's reason for each.
 - Batch analysis and base CV recommendation from the coach.
 - Per-role Strategy and focus recommendations from the coach.
 - Patterns and notes from the coach.
 
-This is the one moment {{USER_FIRST_NAME}} sees the coach's reasoning before per-role processing begins. Do not wait for a response — proceed immediately to Step 0.9d.
+This is the one moment the user sees the coach's reasoning before per-role processing begins. Do not wait for a response — proceed immediately to Step 0.9d.
 
 ### 0.9d — Status writeback (standalone mode only)
 

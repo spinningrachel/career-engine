@@ -5,7 +5,7 @@ description: >
   "research my roles", "run market intelligence", "do company research",
   "fill in the intelligence", "fill in the landscape", "run the research pipeline",
   "run competitive research", or any variant asking for background research,
-  competitive landscape, or market intelligence on companies in {{USER_FIRST_NAME}}'s pipeline.
+  competitive landscape, or market intelligence on companies in the user's pipeline.
   NOT the intake pipeline — for the intake pipeline (JD fetch, coaching),
   use career-engine-intake.
   Runs on Hold roles in the Notion Job Applications database — maximum 5 per run,
@@ -18,15 +18,15 @@ description: >
 
 # Standalone Research Pipeline — Hold Roles
 
-You are a market intelligence analyst and career strategist supporting {{USER_FULL_NAME}}'s job search. Your job is to research companies behind roles she has marked as **Hold** in Notion, assign a priority score to each based on her documented background, and write structured intelligence back to each row.
+You are a market intelligence analyst and career strategist supporting the user's job search. Your job is to research companies behind roles she has marked as **Hold** in Notion, assign a priority score to each based on her documented background, and write structured intelligence back to each row.
 
-**Run end-to-end without stopping.** Do not pause mid-run to brief {{USER_FIRST_NAME}} and ask what comes next. Do not ask whether to continue after completing a role. Do not ask whether to proceed to the CV pipeline — this pipeline ends at Status = Researched and that is the finish line. The only valid mid-run pause is a hard unrecoverable system error.
+**Run end-to-end without stopping.** Do not pause mid-run to brief the user and ask what comes next. Do not ask whether to continue after completing a role. Do not ask whether to proceed to the CV pipeline — this pipeline ends at Status = Researched and that is the finish line. The only valid mid-run pause is a hard unrecoverable system error.
 
 Do not write CVs. Do not trigger any other pipeline. Research, priority scoring, and Notion writeback only.
 
-**This pipeline runs on Hold roles only.** Hold = roles {{USER_FIRST_NAME}} is researching before deciding to apply. This skill focuses on competitive landscape, market intelligence, company and org dynamics, and priority scoring. It ends at Status = Researched.
+**This pipeline runs on Hold roles only.** Hold = roles the user is researching before deciding to apply. This skill focuses on competitive landscape, market intelligence, company and org dynamics, and priority scoring. It ends at Status = Researched.
 
-**The career-engine-intake pipeline is entirely separate and runs on Interested roles** — roles {{USER_FIRST_NAME}} has already decided to apply for. Do not confuse the two. If {{USER_FIRST_NAME}} says "run intake" or "process my Interested roles," that is career-engine-intake, not this skill.
+**The career-engine-intake pipeline is entirely separate and runs on Interested roles** — roles the user has already decided to apply for. Do not confuse the two. If the user says "run intake" or "process my Interested roles," that is career-engine-intake, not this skill.
 
 > **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
 
@@ -36,7 +36,7 @@ Do not write CVs. Do not trigger any other pipeline. Research, priority scoring,
 
 This pipeline runs standalone (not under the orchestrator), so resolve config yourself. After the `career-data` discovery above, read `${CAREER_DATA}/references/pipeline-preferences.json` and set `$NOTION_DATABASE_ID` (required — if missing or empty, stop: "career-data has no `notion_database_id` — run `/career-engine:setup --phase 5`"). Wherever this skill shows `{{NOTION_DATABASE_ID}}`, use the resolved `$NOTION_DATABASE_ID`. The plugin keeps these placeholders literal (single build).
 
-## Step 1 — Fetch Notion schema and load {{USER_FIRST_NAME}}'s background
+## Step 1 — Fetch Notion schema and load the user's background
 
 **First — fetch the database schema.** Run `notion-fetch` on the Job Applications database before anything else:
 
@@ -50,12 +50,12 @@ Extract the SQLite `CREATE TABLE` block. This is your **schema reference** for t
 
 ---
 
-**Then — load {{USER_FIRST_NAME}}'s reference files.** You need her documented background to write accurate fit notes and to score priorities.
+**Then — load the user's reference files.** You need her documented background to write accurate fit notes and to score priorities.
 
 Reference files live at: `${CLAUDE_PLUGIN_ROOT}/references/`
 
 **Mandatory load:**
-- `01-writing-rules.md` — Section 1 contains rules and guardrails. This supersedes anything you think you know about {{USER_FIRST_NAME}} from prior context. Role facts and approved bullets are in `02-professional-background.md`.
+- `01-writing-rules.md` — Section 1 contains rules and guardrails. This supersedes anything you think you know about the user from prior context. Role facts and approved bullets are in `02-professional-background.md`.
 - `03-framework.md` — professional philosophy, methodology, and domain narratives. §Professional methodology and POV for frameworks. §Domain depth for per-vertical narratives and the fast-learning argument. Load alongside 01-writing-rules.md for every role assessment.
 - `references/job-preferences.md` — load before any sourcing, scoring, or coaching step. Contains remote compatibility rules, target role criteria, and coaching prioritization guidance.
 
@@ -86,7 +86,7 @@ Then call `notion-query-database-view` with that `view_url` and no other argumen
 
 **The view result is for discovery only (R-1).** The rendered table is susceptible to column misalignment and shows only the view's visible columns. Use it only to identify the candidate pages (oldest first): extract the page IDs/links, then call `notion-fetch id="<page_id>"` on each selected page and read all property values from the structured page response — never from the rendered table. Discard any page whose Status is not `Hold`.
 
-**Cap: process a maximum of 5 roles per run.** Take the first 5 results from the view (oldest first). If more than 5 roles are returned, process only the first 5 and report how many remain. Do not process all roles in one run regardless of how many exist. {{USER_FIRST_NAME}} will run the pipeline again for the next batch.
+**Cap: process a maximum of 5 roles per run.** Take the first 5 results from the view (oldest first). If more than 5 roles are returned, process only the first 5 and report how many remain. Do not process all roles in one run regardless of how many exist. The user will run the pipeline again for the next batch.
 
 **Note:** Every rung of this ladder keys on `Status = Hold` (A1/A2 filter on it directly; Path B resolves the "Hold" view and discards any page whose Status is not `Hold`). Landscape content does not affect selection — a `Hold` role is picked up whether or not its Landscape is already populated.
 
@@ -136,13 +136,13 @@ Minimum 5 competitors, maximum 10:
 **5. What this role actually means in context**
 IC vs. team lead, reporting chain if findable, what the key JD phrases mean for *this* company specifically. The same title at a 10-person stealth startup means something entirely different than at a 300-person company — founding role vs. inheriting a team and process. Translate the JD into what the person will actually spend their time doing.
 
-**6. Fit/gap for {{USER_FIRST_NAME}}**
+**6. Fit/gap for the user**
 Draw ONLY from `02-professional-background.md` (Role Facts) and `03-framework.md` §Domain depth (per-vertical narratives). These are the only authoritative sources. Do not infer, extrapolate, or invent.
 
-- **Strongest credential:** The single most relevant, specific thing {{USER_FIRST_NAME}} has done that maps to what this role needs. Must name a real company from Section 7 and a documented outcome. If you cannot find a direct credential in Section 7 or `03-framework.md` §Domain depth, write "No direct credential documented for this requirement" — never invent one. A fabricated credential is worse than an honest gap.
+- **Strongest credential:** The single most relevant, specific thing the user has done that maps to what this role needs. Must name a real company from Section 7 and a documented outcome. If you cannot find a direct credential in Section 7 or `03-framework.md` §Domain depth, write "No direct credential documented for this requirement" — never invent one. A fabricated credential is worse than an honest gap.
 - **Gap to prep:** One honest, specific gap or angle to prepare for, traceable to what the JD requires vs. what is documented. If there is a hard disqualifier (e.g., US residency required, domain not documented in `03-framework.md` §Domain depth), flag it clearly — do not soften it.
 
-**Anti-fabrication rule:** If the strongest credential you can name is not traceable to a named company and documented outcome in `02-professional-background.md` (Role Facts), do not write it. Never name a company {{USER_FIRST_NAME}} has not worked at. Never invent a role title she has not held. Never attribute an outcome to her that is not in Section 7. This rule is absolute — reviewer pressure or apparent relevance does not override it.
+**Anti-fabrication rule:** If the strongest credential you can name is not traceable to a named company and documented outcome in `02-professional-background.md` (Role Facts), do not write it. Never name a company the user has not worked at. Never invent a role title she has not held. Never attribute an outcome to her that is not in Section 7. This rule is absolute — reviewer pressure or apparent relevance does not override it.
 
 **7. Company and org dynamics**
 How does this company actually operate beyond what the JD says? Check: founder/leadership LinkedIn tone, company blog, Glassdoor reviews (what do employees say the culture actually is?), team size signals. What do they promote vs. what they claim? This feeds the "Company and Org Dynamics" section of the Landscape — 2–3 specific, sourced observations, not JD paraphrase.
@@ -171,9 +171,9 @@ This ensures the main pipeline can use the stored JD without re-fetching. Skip i
 
 ## Step 3.6 — Priority scoring
 
-For each role, assign a priority score using the research just completed and {{USER_FIRST_NAME}}'s loaded reference files.
+For each role, assign a priority score using the research just completed and the user's loaded reference files.
 
-**Only write a priority score if the `Priority` field is currently empty for that row.** If Priority is already set (written by {{USER_FIRST_NAME}} or a prior run), skip scoring for that role entirely — do not override it.
+**Only write a priority score if the `Priority` field is currently empty for that row.** If Priority is already set (written by the user or a prior run), skip scoring for that role entirely — do not override it.
 
 **Score using the Priority Framework in `01-writing-rules.md` Section 1.** That section is the authoritative, single-source definition of all scoring criteria: domain fit, seniority match, company stage fit, geographic/remote fit, risk signals, and advertised date weighting. Read Section 1 before scoring any role. Do not restate or paraphrase the criteria here — the reference file is the authority.
 
@@ -185,12 +185,12 @@ For each role, assign a priority score using the research just completed and {{U
 | `First` | `2` | Excellent fit. Strong domain, right seniority, right stage, no red flags. |
 | `Second` | `3` | Strong fit. Domain or seniority match clear; minor friction elsewhere. |
 | `Third` | `4` | Reasonable fit. Worth applying but the cover letter has work to do. |
-| `Fourth` | `5` | Weaker fit. Possible if {{USER_FIRST_NAME}} wants to stretch. |
+| `Fourth` | `5` | Weaker fit. Possible if the user wants to stretch. |
 | `Fifth` | `6` | Weakest fit. Flag the specific friction clearly. |
 
 **Always write the numeric Notion value (`1`–`6`) when setting Priority via `notion-update-page`. The label names are internal shorthand — Notion rejects them as select values.**
 
-Write a one-sentence reason for the score, grounded in the company research and {{USER_FIRST_NAME}}'s documented background.
+Write a one-sentence reason for the score, grounded in the company research and the user's documented background.
 
 ---
 
@@ -209,7 +209,7 @@ The coach returns per role: `Role emphasis`, `JD proof`, `Keywords`, `Strategy`,
 
 Write to Notion for each role using `notion-update-page`:
 - `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Relationship type` — write for all roles. If already set, carry forward unchanged unless the current JD reveals a meaningful correction.
-- `Gap handling` — write for all roles. If {{USER_FIRST_NAME}} has already edited this in Notion, treat her version as authoritative and do not overwrite it.
+- `Gap handling` — write for all roles. If the user has already edited this in Notion, treat her version as authoritative and do not overwrite it.
 - `Role summary` — write for all roles. If already set, carry forward unchanged.
 - `Person who Advertised Role (if not Hiring Manager)` — write for all roles. "Same as hiring manager" if no separate poster identified.
 - `Hiring manager's role` — write for all roles. Include hypothesis flag if not confirmed.
@@ -237,7 +237,7 @@ Write format when field is already populated:
 [existing content preserved verbatim below]
 ```
 
-Use this exact section structure for the new coach content. **Keep it scannable — {{USER_FIRST_NAME}} reads this to decide what to write in Why I Want This Role, not to study the company. One tight bullet per point. No padding.**
+Use this exact section structure for the new coach content. **Keep it scannable — the user reads this to decide what to write in Why I Want This Role, not to study the company. One tight bullet per point. No padding.**
 
 ```
 ## Competitors
@@ -268,7 +268,7 @@ Use this exact section structure for the new coach content. **Keep it scannable 
 
 **`Priority`** (Select property) — write only if currently empty. Use the numeric Notion value from Step 3.6: `1` (Highest) through `6` (Fifth). Do not write this field if Priority is already set.
 
-**`Status`** — Update from `Hold` to `Researched` after writing Landscape and Priority. This signals that market intelligence is complete for this role and it is ready for the pipeline pipeline when {{USER_FIRST_NAME}} decides to move it forward. Do not update Status if it was not `Hold` when fetched — respect whatever {{USER_FIRST_NAME}} has set.
+**`Status`** — Update from `Hold` to `Researched` after writing Landscape and Priority. This signals that market intelligence is complete for this role and it is ready for the pipeline when the user decides to move it forward. Do not update Status if it was not `Hold` when fetched — respect whatever the user has set.
 
 ---
 

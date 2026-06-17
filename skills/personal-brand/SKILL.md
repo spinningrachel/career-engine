@@ -1,6 +1,6 @@
 ---
 name: personal-brand
-description: Build or refresh a personal brand for {{USER_FIRST_NAME}}. Uses the Why You, Why Them, Why Now framework to produce a positioning statement, audience and channel map, content pillars with cadence, and a library of bios for different contexts. Use when the user asks to build their personal brand, find their niche, position themselves, work on their online presence, refresh their bio, or think about thought leadership.
+description: Build or refresh a personal brand for the user. Uses the Why You, Why Them, Why Now framework to produce a positioning statement, audience and channel map, content pillars with cadence, and a library of bios for different contexts. Use when the user asks to build their personal brand, find their niche, position themselves, work on their online presence, refresh their bio, or think about thought leadership.
 ---
 
 # Personal Brand Helper

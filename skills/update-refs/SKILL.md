@@ -28,13 +28,13 @@ You are maintaining the reference files that every career-engine agent writes fr
 
 **Writing personal data (R-37).** Every reference target in the map below lives in `${CAREER_DATA}/references/...`, not in the plugin. Apply the orchestrator's **Writing personal data** rule: in Claude Code, write the `career-data` files directly; in Cowork, stage the change to the output folder and emit the Appendix-A handoff for the user to apply in Chat — never write a divergent copy. Refresh the `career-data` backup export after a direct write.
 
-**Scope:** this skill handles materials {{USER_FIRST_NAME}} brings to you — updated CVs, new testimonials, portfolio items, changed role facts, positioning documents, voice samples, new reference documents. It does not write application content, does not touch Notion, and does not run any pipeline.
+**Scope:** this skill handles materials the user brings to you — updated CVs, new testimonials, portfolio items, changed role facts, positioning documents, voice samples, new reference documents. It does not write application content, does not touch Notion, and does not run any pipeline.
 
 ---
 
 **─── THE PRIME RULE — NEVER ASSUME ───**
 
-When anything about an item is ambiguous — what it is, where it belongs, whether it updates or replaces existing content, or how a new file should be used — **stop and ask {{USER_FIRST_NAME}}. Do not guess, do not pick the "most likely" interpretation, do not proceed on a best guess.** Present what you see, offer your read of it as a *suggestion*, and let her decide. A wrong assumption written into the grounding layer is worse than a clarifying question.
+When anything about an item is ambiguous — what it is, where it belongs, whether it updates or replaces existing content, or how a new file should be used — **stop and ask the user. Do not guess, do not pick the "most likely" interpretation, do not proceed on a best guess.** Present what you see, offer your read of it as a *suggestion*, and let her decide. A wrong assumption written into the grounding layer is worse than a clarifying question.
 
 ---
 
@@ -64,11 +64,11 @@ Each approved item gets exactly one operation:
 - **Replace** — supersede an existing entry, section, or file wholesale. Use when the material is the new authoritative version (e.g., "here's my updated CV — replace the old role facts for [Company]"). Replacing an **existing** file or entry whose purpose is already established needs no usage questions — the wiring already exists. Confirm only the scope of what gets replaced.
 - **Add** — append a new entry to an existing section, or create a new file. New entries in established sections are routine. **New files are not** — see below.
 
-**Removals are out of scope unless explicitly instructed.** Never propose deleting reference content. If {{USER_FIRST_NAME}} explicitly asks for a removal, confirm exactly what gets removed, show it before deleting, and note it in the change summary.
+**Removals are out of scope unless explicitly instructed.** Never propose deleting reference content. If the user explicitly asks for a removal, confirm exactly what gets removed, show it before deleting, and note it in the change summary.
 
 ## New Files — the mandatory usage interview
 
-A reference file that no agent loads is inert — it will never influence any output. So a file that has never existed cannot be created on classification alone. Before creating any new reference file, ask {{USER_FIRST_NAME}}:
+A reference file that no agent loads is inert — it will never influence any output. So a file that has never existed cannot be created on classification alone. Before creating any new reference file, ask the user:
 
 1. **Purpose** — what is this material for? What should it change about the outputs?
 2. **Consumers** — which tasks should use it: CV writing, cover letters, coaching, sourcing, LinkedIn, all of them?
@@ -89,15 +89,15 @@ An unwired file is a failed add — do not report success until the wiring is in
 - **Approved CV bullets (§7)** survived the full review cycle and are locked by the bullet-approval flow. Never silently overwrite them. If new material contradicts an approved bullet, surface the conflict: show both versions and ask which wins.
 - **Approved summaries (§6)** carry validation tags. Replacing one removes its validation history — say so when proposing the replacement.
 - **Motivation Bank (§5)** is append-only for pipeline writes; this skill may edit §5 entries only on explicit instruction.
-- **Fabrication rule applies in full.** Everything written must be traceable to what {{USER_FIRST_NAME}} provided — her words, her documents. Never embellish, infer, or fill gaps with plausible content. If material is incomplete (a role with no dates, a metric with no number), ask or store it incomplete and flagged — never complete it yourself.
+- **Fabrication rule applies in full.** Everything written must be traceable to what the user provided — her words, her documents. Never embellish, infer, or fill gaps with plausible content. If material is incomplete (a role with no dates, a metric with no number), ask or store it incomplete and flagged — never complete it yourself.
 - **Documented writing rules and prohibitions are protected.** Voice and tone preferences refine register, vocabulary, and style — they never implicitly weaken, modify, or create exceptions to any documented writing rule or prohibition (in `01-writing-rules.md`, the cover-letter skill, the humanizer, or cv-writing). If a stated preference conflicts with a documented behavior, surface the conflict and ask whether she **explicitly rejects that specific documented behavior**. Only an explicit rejection changes a rule — and the change is then written into the rule's home file as part of the approved proposal, never inferred from a preference.
 
 ## Framework Updates — the user changes over time
 
-`03-framework.md` is the primary source of truth about who {{USER_FIRST_NAME}} is and what she is positioning toward — and people change, grow, and shift. This skill is the standing mechanism for keeping the framework current between setup runs. Rules specific to framework updates:
+`03-framework.md` is the primary source of truth about who the user is and what she is positioning toward — and people change, grow, and shift. This skill is the standing mechanism for keeping the framework current between setup runs. Rules specific to framework updates:
 
 - **Direct statements are valid input.** A framework update does not require a document. "I'm now primarily pursuing a shift," "add Chief of Staff to my off-limits list," "I've started a new role at [Company]," "my target stage changed" — said in chat — are exactly the material this section exists for. Capture her wording; the normal proposal-and-approval flow still applies.
-- **User-confirmed means no `[DRAFT]` markers.** The `[DRAFT — confirm in interview]` discipline belongs to setup Phase 3, where the agent *infers*. Updates arriving through this skill come from {{USER_FIRST_NAME}} directly and are approved before writing — write them as confirmed content. Never re-mark a confirmed section as draft.
+- **User-confirmed means no `[DRAFT]` markers.** The `[DRAFT — confirm in interview]` discipline belongs to setup Phase 3, where the agent *infers*. Updates arriving through this skill come from the user directly and are approved before writing — write them as confirmed content. Never re-mark a confirmed section as draft.
 - **Name the behavioral consequence in every proposal.** Framework changes change how agents behave — a posture change alters how every shift role is treated; an off-limits addition stops agents from ever emphasizing that direction; an ICP change shifts priority scoring. The proposal must state what will behave differently, so she approves the consequence, not just the wording.
 - **Enum fields stay enums.** §Career-shift posture's Posture field takes exactly one of: `Not open` / `Open — case-by-case` / `Primarily pursuing a shift`. If her statement doesn't map cleanly to one value, ask — do not coin a fourth state.
 - **Bigger than a patch?** When the change is a genuine life shift (new role, career change, pivot in goals) that touches several framework sections, offer the relevant Phase 4 questions from `career-engine-setup` for those sections instead of patching piecemeal — a short re-interview beats a guessed rewrite. Her call which to run.
@@ -119,6 +119,6 @@ An unwired file is a failed add — do not report success until the wiring is in
 
 7. **Repackage** every `.plugin` zip whose tree changed. Both files are always named `career-engine.plugin`.
 
-8. **Report.** Summarize per item: what was written, where, and which operation. List anything parked at the clarification gate. Remind {{USER_FIRST_NAME}} that the live installation picks up the changes only after the updated `career-engine.plugin` is re-uploaded.
+8. **Report.** Summarize per item: what was written, where, and which operation. List anything parked at the clarification gate. Remind the user that the live installation picks up the changes only after the updated `career-engine.plugin` is re-uploaded.
 
 9. **QA gate.** Per `CLAUDE.md`, the session is not complete until the QA agent has run and passed.

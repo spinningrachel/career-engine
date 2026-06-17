@@ -63,9 +63,9 @@ Spawn `gatekeeper` with `option=content`, passing the CV path `$PIPE/cv-draft.md
 
 **If PASS:** proceed to Step 2.
 
-**If FAIL:** read the violation file at the returned path. If all violations are mechanical and unambiguous (swap two words, remove one phrase, reorder paragraphs — no creative judgment required), apply them inline to `$PIPE/cv-draft.md`. If any violation requires cv-writer judgment (rewriting a bullet, resolving a fabrication flag), spawn `cv-writer` with `option=revision`, passing `CV_PATH=$PIPE/cv-draft.md` (read and overwrite), the gatekeeper violation path, and the fix-log path `$PIPE/fix-log.md` (read and append). Locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After fix, spawn `gatekeeper` again with `option=content` (new `OUTPUT_PATH` round). Repeat until PASS. Do not surface this loop to {{USER_FIRST_NAME}} — log violation rounds internally.
+**If FAIL:** read the violation file at the returned path. If all violations are mechanical and unambiguous (swap two words, remove one phrase, reorder paragraphs — no creative judgment required), apply them inline to `$PIPE/cv-draft.md`. If any violation requires cv-writer judgment (rewriting a bullet, resolving a fabrication flag), spawn `cv-writer` with `option=revision`, passing `CV_PATH=$PIPE/cv-draft.md` (read and overwrite), the gatekeeper violation path, and the fix-log path `$PIPE/fix-log.md` (read and append). Locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After fix, spawn `gatekeeper` again with `option=content` (new `OUTPUT_PATH` round). Repeat until PASS. Do not surface this loop to the user — log violation rounds internally.
 
-**Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 1.5)` section in the revision log, proceed to Step 2, and flag for {{USER_FIRST_NAME}} in the final delivery that this CV needs manual review before sending.
+**Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 1.5)` section in the revision log, proceed to Step 2, and flag for the user in the final delivery that this CV needs manual review before sending.
 
 ### Step 2 — Recruiter review (CV)
 
@@ -79,7 +79,7 @@ Spawn `hiring-manager-reviewer` with `option=cv`, passing `CAREER_DATA=${CAREER_
 
 Spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `CV_PATH=$PIPE/cv-final.md` (write), the draft path `$PIPE/cv-draft.md`, and the review paths `$PIPE/recruiter-cv.md` + `$PIPE/hm-cv.md` to read. The writer also writes the CV CHANGES section to `$PIPE/cv-changes.md` and returns the paths (R-41). Step 7d reads `$PIPE/cv-changes.md` for the feedback file.
 
-If any recruiter or HM flag identifies a skill or credential gap {{USER_FIRST_NAME}} does not have — do not address it. IT SHOULD BE COMPLETELY OMITTED. Reframing, surfacing, and reordering are permitted; fabrication and scope-hedging ARE ABSOLUTELY PROHIBITED.
+If any recruiter or HM flag identifies a skill or credential gap the user does not have — do not address it. IT SHOULD BE COMPLETELY OMITTED. Reframing, surfacing, and reordering are permitted; fabrication and scope-hedging ARE ABSOLUTELY PROHIBITED.
 
 **Immediately after Step 4 returns — stage the revised CV markdown and the revision log for export and crash recovery before spawning the gatekeeper.** Context compaction can interrupt between any two steps, and disk is the only reliable recovery path. The writer has already written `$PIPE/cv-final.md` and `$PIPE/cv-changes.md` (R-41); copy them into place:
 
@@ -102,7 +102,7 @@ Spawn `gatekeeper` with `option=content`, passing the CV path `$PIPE/cv-final.md
 
 **If FAIL:** spawn `cv-writer` with `option=revision`, passing `CV_PATH=$PIPE/cv-final.md` (read and overwrite), the gatekeeper violation path, and the fix-log path `$PIPE/fix-log.md` (read and append). Locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, re-copy `$PIPE/cv-final.md` to `/tmp/<cv_filename>.md` and the output backup path before spawning `gatekeeper` again (new `OUTPUT_PATH` round). Repeat until PASS. Log all violation rounds internally.
 
-**Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 4.5)` section in the revision log, proceed to Step 5, and flag for {{USER_FIRST_NAME}} in the final delivery that this CV needs manual review before sending.
+**Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 4.5)` section in the revision log, proceed to Step 5, and flag for the user in the final delivery that this CV needs manual review before sending.
 
 ---
 
@@ -116,9 +116,9 @@ The cover letter receives the **final revised CV** as input. letter-writer uses 
 
 Read the following from Notion for this role:
 
-**Why I Want This Role property** — {{USER_FIRST_NAME}}'s written motivation for this role, filled in manually in Notion. If populated, include the full content in the letter-writer prompt as the primary content input.
+**Why I Want This Role property** — the user's written motivation for this role, filled in manually in Notion. If populated, include the full content in the letter-writer prompt as the primary content input.
 
-**If Why I Want This Role is empty:** Do NOT proceed to Step 5 for this role. Skip the cover letter entirely. Deliver the CV only. Log this role as "Letter skipped — Why I Want This Role is empty." Do NOT generate questions. Do NOT spawn letter-writer. Surface this message to {{USER_FIRST_NAME}}:
+**If Why I Want This Role is empty:** Do NOT proceed to Step 5 for this role. Skip the cover letter entirely. Deliver the CV only. Log this role as "Letter skipped — Why I Want This Role is empty." Do NOT generate questions. Do NOT spawn letter-writer. Surface this message to the user:
 
 > **Letter skipped for [Company] — [Role Title].** The "Why I Want This Role" field in Notion is empty. Fill it in and re-run the pipeline for this role to get a cover letter.
 
@@ -128,7 +128,7 @@ Read the following from Notion for this role:
 
 ### Step 5 — Cover letter (draft)
 
-**Before spawning letter-writer:** Read `${CAREER_DATA}/references/02-professional-background.md` (Role Facts) for {{USER_FIRST_NAME}}'s role facts — key proof points from `02-professional-background.md` (Role Facts). Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
+**Before spawning letter-writer:** Read `${CAREER_DATA}/references/02-professional-background.md` (Role Facts) for the user's role facts — key proof points from `02-professional-background.md` (Role Facts). Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
 
 **Before spawning, pass the following for this role:**
 - **Why I Want This Role property** — use the value retrieved in Pre-Step 5. Do not re-read from Notion.
@@ -162,17 +162,17 @@ If the answer to any of these is "no," re-spawn `letter-writer` with `option=cov
 
 ### Step 5.2 — Gatekeeper (cover letter draft check)
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter path `$PIPE/letter-draft.md` to read, `Role summary`, {{USER_FIRST_NAME}}'s Why I Want This Role content (from the Pre-Step 5 read), the final CV path `$PIPE/cv-final.md` to read (required for the CV-repetition check; if no CV exists for this role, state that explicitly so the gatekeeper reports the skipped check by name), and `OUTPUT_PATH=$PIPE/gatekeeper-cl-<round>.md`. The Why I Want This Role content allows the gatekeeper to apply the personal-content exemption correctly — see the exemption rule at the top of Option 2 in `gatekeeper-checks/SKILL.md`.
+Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter path `$PIPE/letter-draft.md` to read, `Role summary`, the user's Why I Want This Role content (from the Pre-Step 5 read), the final CV path `$PIPE/cv-final.md` to read (required for the CV-repetition check; if no CV exists for this role, state that explicitly so the gatekeeper reports the skipped check by name), and `OUTPUT_PATH=$PIPE/gatekeeper-cl-<round>.md`. The Why I Want This Role content allows the gatekeeper to apply the personal-content exemption correctly — see the exemption rule at the top of Option 2 in `gatekeeper-checks/SKILL.md`.
 
 **If PASS:** proceed to Step 5.3.
 
 **If FAIL:** spawn `letter-writer` with `option=revision`, passing `LETTER_PATH=$PIPE/letter-draft.md` (read and overwrite), the gatekeeper violation path, and the fix-log path `$PIPE/fix-log.md` (read and append). Locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again with `option=cover-letter` (new `OUTPUT_PATH` round). Repeat until PASS. Log all violation rounds internally.
 
-**Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 5.2)` section in the revision log, proceed to Step 5.3, and flag for {{USER_FIRST_NAME}} in the final delivery that this cover letter needs manual review before sending.
+**Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 5.2)` section in the revision log, proceed to Step 5.3, and flag for the user in the final delivery that this cover letter needs manual review before sending.
 
 ### Step 5.3 — Recruiter review (cover letter)
 
-Spawn `recruiter-reviewer` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, `Role summary`, the cover letter path `$PIPE/letter-draft.md` to read, and `OUTPUT_PATH=$PIPE/recruiter-cl.md`. The recruiter reviews the cover letter for screening-risk issues: does it hold attention past the first sentence, does it establish {{USER_FIRST_NAME}}'s seniority and relevance quickly, does anything read as a red flag before a hiring manager sees her. It writes its full review to the path and returns a 2-line status (R-41).
+Spawn `recruiter-reviewer` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, `Role summary`, the cover letter path `$PIPE/letter-draft.md` to read, and `OUTPUT_PATH=$PIPE/recruiter-cl.md`. The recruiter reviews the cover letter for screening-risk issues: does it hold attention past the first sentence, does it establish the user's seniority and relevance quickly, does anything read as a red flag before a hiring manager sees her. It writes its full review to the path and returns a 2-line status (R-41).
 
 ### Step 5.5 — Hiring manager review (cover letter)
 
@@ -205,13 +205,13 @@ cp "$PIPE/letter-final.md" "<output_dir>/<company_dir>/<coverletter_filename>.md
 
 ### Step 5.8 — Gatekeeper (cover letter final check)
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter path `$PIPE/letter-final.md` to read, `Role summary`, {{USER_FIRST_NAME}}'s Why I Want This Role content, the final CV path `$PIPE/cv-final.md` to read (same as Step 5.2), and `OUTPUT_PATH=$PIPE/gatekeeper-cl-<round>.md`.
+Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter path `$PIPE/letter-final.md` to read, `Role summary`, the user's Why I Want This Role content, the final CV path `$PIPE/cv-final.md` to read (same as Step 5.2), and `OUTPUT_PATH=$PIPE/gatekeeper-cl-<round>.md`.
 
 **If PASS:** proceed to Step 5.9.
 
 **If FAIL:** spawn `letter-writer` with `option=revision`, passing `LETTER_PATH=$PIPE/letter-final.md` (read and overwrite), the gatekeeper violation path, and the fix-log path `$PIPE/fix-log.md` (read and append). Locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, re-copy `$PIPE/letter-final.md` to `/tmp/<coverletter_filename>.md` and the output backup path before spawning `gatekeeper` again (new `OUTPUT_PATH` round). Repeat until PASS. Log all violation rounds internally.
 
-**Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 5.8)` section in the revision log, proceed to Step 5.9, and flag for {{USER_FIRST_NAME}} in the final delivery that this cover letter needs manual review before sending.
+**Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 5.8)` section in the revision log, proceed to Step 5.9, and flag for the user in the final delivery that this cover letter needs manual review before sending.
 
 ---
 
@@ -252,7 +252,7 @@ Both the CV and the cover letter are now final markdown files saved to `/tmp/`. 
 
 Follow the `career-engine-export` skill's Step 6 production protocol exactly — it is the single authoritative source for pandoc commands, script paths, subtitle update, and verification. Do not substitute your own abbreviated steps. Both files must exist and be nonzero in the output folder before proceeding to Step 7.
 
-**Subtitle argument:** Pass the exact role title from the JD as the subtitle argument to `update-subtitle.py` — the job title {{USER_FIRST_NAME}} is applying for (e.g., "[Role Title from JD]"). This is the ONLY text that should appear in the subtitle slot under {{USER_FIRST_NAME}}'s name. Do not pass a generic descriptor, {{USER_FIRST_NAME}}'s background framing, or anything not directly taken from the JD role title field.
+**Subtitle argument:** Pass the exact role title from the JD as the subtitle argument to `update-subtitle.py` — the job title the user is applying for (e.g., "[Role Title from JD]"). This is the ONLY text that should appear in the subtitle slot under the user's name. Do not pass a generic descriptor, the user's background framing, or anything not directly taken from the JD role title field.
 
 ---
 
@@ -306,24 +306,24 @@ cat /tmp/he-<cv_filename>.md \
 
 pandoc /tmp/he-<cv_filename>-with-footer.md \
   --reference-doc="${HE_TEMPLATES}/cvHe.dotm" \
-  -o "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx"
+  -o "<output_dir>/<company_dir>/he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 
 # Hebrew CV subtitle
 python3 "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/update-subtitle.py" \
-  "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx" \
+  "<output_dir>/<company_dir>/he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx" \
   "<role title>"
 
 # Hebrew cover letter
 pandoc /tmp/he-<cl_filename>.md \
   --reference-doc="${HE_TEMPLATES}/he-letter.dotx" \
-  -o "<output_dir>/<company_dir>/he-coverletter-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx"
+  -o "<output_dir>/<company_dir>/he-coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 ```
 
 Verify both files exist and are nonzero:
 
 ```bash
-ls -lh "<output_dir>/<company_dir>/he-cv-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx"
-ls -lh "<output_dir>/<company_dir>/he-coverletter-{{USER_LAST_NAME}}-<roletitle>-<company>-<monYYYY>.docx"
+ls -lh "<output_dir>/<company_dir>/he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
+ls -lh "<output_dir>/<company_dir>/he-coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 ```
 
 **Hebrew re-translation rule:** If either English document (CV or cover letter) is revised after Hebrew export, the corresponding Hebrew document MUST be fully re-translated from the updated English markdown — do not patch or edit the prior Hebrew text. If the English CV changes, re-translate the Hebrew CV. If the English cover letter changes, re-translate the Hebrew cover letter. Both change together only if both English documents changed. This applies regardless of how small the English edit is.
@@ -343,7 +343,7 @@ ls -lh "<output_dir>/<company_dir>/<cv_filename>.docx"
 ls -lh "<output_dir>/<company_dir>/<cl_filename>.docx"
 ```
 
-**If either file is missing or zero bytes: STOP.** Do not write anything to Notion. Do not mark the role complete. Report to {{USER_FIRST_NAME}}: "DOCX export failed for [Company] — files not found on disk. Step 6 did not complete. Notion has not been updated." Then move to the next role in the queue.
+**If either file is missing or zero bytes: STOP.** Do not write anything to Notion. Do not mark the role complete. Report to the user: "DOCX export failed for [Company] — files not found on disk. Step 6 did not complete. Notion has not been updated." Then move to the next role in the queue.
 
 **If both files exist and are nonzero:** construct the Draft Directory URL and store it in `$DRAFT_DIR_URL` for use in Steps 7b and 7c:
 
@@ -399,7 +399,7 @@ where `$OUTPUT_DIR` is the run directory resolved by the orchestrator (e.g. `{{O
 - `company_dir` — the kebab-case company directory name (same as used for the subdirectory)
 - `hm_cv_verdict` / `hm_cl_verdict` — record both verdicts separately; omit `hm_cl_verdict` if the cover letter loop did not complete
 - `date_first_advertised` / `remote_compatibility` — from the coach's research output; write `null` if not available (e.g., content-exists roles where coach skipped fetching)
-- All paths are relative to the run folder (e.g., `company-name/cv-{{USER_LAST_NAME}}-[role-title]-company-name-may2026.docx`). Hebrew files are not listed separately — they are in the same `company_dir` and accessible via the Draft Directory URL.
+- All paths are relative to the run folder (e.g., `company-name/cv-<last-name>-[role-title]-company-name-may2026.docx`). Hebrew files are not listed separately — they are in the same `company_dir` and accessible via the Draft Directory URL.
 
 ### Step 7c — Write pipeline outputs to Notion properties
 
@@ -415,7 +415,7 @@ Write the following properties using `notion-update-page`. All values are alread
 | `Strategy` | Employment coach output — verbatim |
 | `Role Type` | Employment coach output — verbatim |
 | `Relationship type` | Employment coach output — verbatim |
-| `Gap handling` | Employment coach output — verbatim. If {{USER_FIRST_NAME}} edited this in Notion before the pipeline ran, her version is already there; do not overwrite it. |
+| `Gap handling` | Employment coach output — verbatim. If the user edited this in Notion before the pipeline ran, her version is already there; do not overwrite it. |
 | `Role summary` | Employment coach output — verbatim. |
 | `Person who Advertised Role (if not Hiring Manager)` | Employment coach output — verbatim. |
 | `Hiring manager's role` | Employment coach output — verbatim. |
@@ -434,13 +434,13 @@ Write the following properties using `notion-update-page`. All values are alread
 **Property discipline** — write only the properties listed above. Nothing else.
 
 - Do NOT write CV text, cover letter text, revision logs, or reviewer feedback to Notion. Reviewer feedback goes to the feedback markdown file (Step 7d), not to Notion.
-- Do NOT write to the `Note` field. It is {{USER_FIRST_NAME}}'s space.
+- Do NOT write to the `Note` field. It is the user's space.
 
 If any writeback fails, log it and surface it in the final chat delivery. The state.json holds all data as a fallback.
 
 ### Step 7d — Save reviewer feedback file
 
-Write a single markdown file to the output folder. This is the one file {{USER_FIRST_NAME}} reads — it contains reviewer feedback from all four review passes plus the cv-writer's change log, **all read from the role's `_pipeline/` files, not pasted from context (R-41).**
+Write a single markdown file to the output folder. This is the one file the user reads — it contains reviewer feedback from all four review passes plus the cv-writer's change log, **all read from the role's `_pipeline/` files, not pasted from context (R-41).**
 
 **Filename:** `feedback-<roletitle>-<company>-<monYYYY>.md`  
 (Use the same slug format as the CV and cover letter files for this role.)

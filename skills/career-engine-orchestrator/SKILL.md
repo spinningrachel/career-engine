@@ -1,6 +1,6 @@
 ---
 name: career-engine-orchestrator
-description: Run {{USER_FIRST_NAME}}'s career-engine pipeline against her Notion Job Applications database. Trigger whenever {{USER_FIRST_NAME}} says "run the career engine", "process the CV queue", "run the CV pipeline", or any variant referencing a batch of tailored CVs or cover letters. Fetches all queued roles from Notion, passes them to the employment coach (which fetches JDs and produces strategic properties), builds the processing queue, and routes each role to the pipeline {{USER_FIRST_NAME}} specifies in chat.
+description: Run the user's career-engine pipeline against the Notion Job Applications database. Trigger whenever the user says "run the career engine", "process the CV queue", "run the CV pipeline", or any variant referencing a batch of tailored CVs or cover letters. Fetches all queued roles from Notion, passes them to the employment coach (which fetches JDs and produces strategic properties), builds the processing queue, and routes each role to the pipeline the user specifies in chat.
 ---
 
 # New Application Orchestrator
@@ -9,7 +9,7 @@ description: Run {{USER_FIRST_NAME}}'s career-engine pipeline against her Notion
 
 ## Role
 
-The orchestrator coordinates {{USER_FIRST_NAME}}'s career engine from start to finish. It fetches roles, delegates every reasoning and writing task to sub-agents, routes outputs, and delivers a concise final summary. It does not write CVs or cover letters, does not review applications, and does not make judgment calls about fit.
+The orchestrator coordinates the user's career engine from start to finish. It fetches roles, delegates every reasoning and writing task to sub-agents, routes outputs, and delivers a concise final summary. It does not write CVs or cover letters, does not review applications, and does not make judgment calls about fit.
 
 The New Applications pipeline produces three deliverables per role: a tailored CV, a cover letter, and a reviewer feedback file. All three are required outputs.
 
@@ -23,7 +23,7 @@ These rules govern every run without exception. Read them before doing anything 
 
 **The orchestrator runs in the main session context — never as a spawned subagent.**
 
-The orchestrator uses Bash to write files (markdown, DOCX, state.json, feedback) to {{USER_FIRST_NAME}}'s output folder. Bash in a sandboxed subagent context does not have access to the real filesystem and cannot write to the output folder — it will silently write to a session scratchpad instead. Therefore: the orchestrator must always be invoked directly in the main session, not spawned via the Agent tool. Only analysis and writing agents (cv-writer, letter-writer, reviewers, gatekeeper) are spawned as subagents — they return text only, they do not write files.
+The orchestrator uses Bash to write files (markdown, DOCX, state.json, feedback) to the user's output folder. Bash in a sandboxed subagent context does not have access to the real filesystem and cannot write to the output folder — it will silently write to a session scratchpad instead. Therefore: the orchestrator must always be invoked directly in the main session, not spawned via the Agent tool. Only analysis and writing agents (cv-writer, letter-writer, reviewers, gatekeeper) are spawned as subagents — they return text only, they do not write files.
 
 **The orchestrator never authors document content.**
 
@@ -37,7 +37,7 @@ Maintain a per-document **fix log** across every revision loop: each entry recor
 
 Any text change after a gatekeeper PASS — including the humanizer's changes — invalidates that PASS. The final verification gate in the pipeline steps (post-humanizer gatekeeper pass plus the mechanical pre-export checklist) must run on the exact markdown that will be converted to DOCX. Never export a document whose final text was not the text a PASS was issued against.
 
-**Outputs go to {{USER_FIRST_NAME}}'s output folder — never to a session scratchpad.**
+**Outputs go to the user's output folder — never to a session scratchpad.**
 
 The only valid output destination is:
 `{{OUTPUT_FOLDER}}/${OUTPUT_DIR_PREFIX:-applications}-<YYYY-MM-DD>/`
@@ -54,7 +54,7 @@ mkdir -p "$OUTPUT_DIR"
 
 **Path B — host-bridge MCP** (sandboxed environments, e.g. Cowork, where sandbox Bash cannot reach the user's filesystem): if Path A fails, discover host filesystem tools via ToolSearch — search for `Desktop Commander`, `read_file`, `write_file`, `create_directory`, `start_process`, or equivalent host filesystem/process tools — and verify access by listing `$OUTPUT_FOLDER` (resolved from the career-data config) through the strongest available tool. If access is confirmed, proceed, and route ALL file operations for this run through those tools: directory creation, file reads and writes, and every pandoc command (via the host process tool, e.g. `start_process`). Sandbox `/tmp/` is not visible to host-side pandoc — on Path B, write intermediate markdown through the host tool to the output company directory (or a host temp path) instead of sandbox `/tmp/`.
 
-**Both paths fail → stop the run immediately** and report to {{USER_FIRST_NAME}}: the run needs either the output folder connected to the session or a host filesystem tool (e.g. Desktop Commander) enabled. Do not proceed.
+**Both paths fail → stop the run immediately** and report to the user: the run needs either the output folder connected to the session or a host filesystem tool (e.g. Desktop Commander) enabled. Do not proceed.
 
 **The no-scratchpad rule is unchanged and applies on both paths.** Do not use `./outputs/`, relative paths, or any path containing "local-agent-mode-sessions" or "Application Support". Path B writes to the same real output folder — through a different tool, never to a substitute location.
 
@@ -66,7 +66,7 @@ mkdir -p "$OUTPUT_DIR"
 2. Set `${CAREER_DATA}` to that directory. Personal-data files load from `${CAREER_DATA}/references/...`. The plugin's `${CLAUDE_PLUGIN_ROOT}/references/...` copies are blank templates and serve only as the new-user fallback.
 3. Three outcomes:
    - **Healthy** — marker present and every file in the marker's `expected_files` present and non-empty → proceed.
-   - **Damaged** — marker present but an expected file missing or empty → **stop the run**, name the file, tell {{USER_FIRST_NAME}} to restore `career-data` from the output-folder backup. Do NOT fall back to templates (R-28 class).
+   - **Damaged** — marker present but an expected file missing or empty → **stop the run**, name the file, tell the user to restore `career-data` from the output-folder backup. Do NOT fall back to templates (R-28 class).
    - **Absent** — no `career-data` found (marker also absent) → check the output folder for a `career-data` backup export. Backup present → configured user, offer to restore. No backup → genuine new user: run `/career-engine:setup` (blank templates are the correct starting point only here).
 
 **Personal-data files** (load from `${CAREER_DATA}/references/`): `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx`. **Doctrine files** stay on `${CLAUDE_PLUGIN_ROOT}/references/`: the self-checks, `REFERENCES.md`, `remote-compatibility-rules.md`, `he-terminology-guide.md`, and the default `.dotx` templates. Inject `CAREER_DATA=<resolved path>` into every agent spawn prompt so each subagent reads personal data from that same root.
@@ -83,21 +83,21 @@ The New Applications pipeline produces three files per role (CV DOCX, cover lett
 
 If `career-engine-export` is not loaded when you reach the DOCX export step, back up and load it.
 
-**Run end-to-end. Do not stop to ask {{USER_FIRST_NAME}} about scope mid-run.**
+**Run end-to-end. Do not stop to ask the user about scope mid-run.**
 
 The employment coach caps the run and selects which roles process this session. That cap is the decision. Do not pause after Role 1 to ask whether to continue. Do not ask whether to batch DOCX conversion. Do not ask whether the run is too long.
 
-If a single role fails, log the failure and move to the next role. The only valid mid-run pauses are a hard unrecoverable system error or {{USER_FIRST_NAME}} explicitly typing a stop command in chat.
+If a single role fails, log the failure and move to the next role. The only valid mid-run pauses are a hard unrecoverable system error or the user explicitly typing a stop command in chat.
 
 **The named pipeline command is the routing authority. Do not re-scope it before launch.**
 
-When {{USER_FIRST_NAME}} invokes a pipeline by name ("run a new application pipeline", "run the edit pipeline", "run intake"), that command decides the route. Row metadata — `Edit type`, `Last Pipeline Run`, prior outputs on disk, recent Status changes — is context, never a veto. Do not pause before launch to ask whether she meant a different pipeline, whether the roles were "already processed", or how to scope the run. The command already answered those questions. If the metadata suggests another pipeline might also be relevant, add a one-line note to the briefing and proceed with the pipeline she named.
+When the user invokes a pipeline by name ("run a new application pipeline", "run the edit pipeline", "run intake"), that command decides the route. Row metadata — `Edit type`, `Last Pipeline Run`, prior outputs on disk, recent Status changes — is context, never a veto. Do not pause before launch to ask whether she meant a different pipeline, whether the roles were "already processed", or how to scope the run. The command already answered those questions. If the metadata suggests another pipeline might also be relevant, add a one-line note to the briefing and proceed with the pipeline named.
 
 **Cover letters lead with strength and never volunteer scope or qualifications.**
 
 This rule governs every agent that touches cover letter content:
 - Different domains and verticals are never a gap, never a weakness, and never referenced as a limitation in a cover letter.
-- If there is any perceived skill gap a hiring manager might notice, the letter names the work {{USER_FIRST_NAME}} has done, names what was actually done, and lets it stand. It does not add a scope qualifier the hiring manager did not ask for. Phrases like "one product, not a portfolio," "smaller than the rest of my CV," "narrower than full-time" — all forbidden.
+- If there is any perceived skill gap a hiring manager might notice, the letter names the work the user has done, names what was actually done, and lets it stand. It does not add a scope qualifier the hiring manager did not ask for. Phrases like "one product, not a portfolio," "smaller than the rest of my CV," "narrower than full-time" — all forbidden.
 - If letter-writer or any cover letter agent produces language that qualifies, hedges, or volunteers scope, return it for revision before accepting the output.
 
 ---
@@ -145,15 +145,15 @@ Each Notion property in the Job Applications database has a single designated ow
 *Strategic properties (written for full-research roles only — Priority 1–4, pre-scored, or `--full-research`):*
 `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Gap handling`, `Role summary`, `Company Stage`, `Culture`, `Landscape`, `Person who Advertised Role (if not Hiring Manager)`, `Hiring Manager's Name`, `Hiring manager's role`, `Manager role confirmed`, `No incumbents in this function`, `First Advertised`, `Recent news`, `Funding context`.
 
-No other agent rewrites or second-guesses any of these. **`Gap handling` is the exception to the carry-forward rule — if {{USER_FIRST_NAME}} has edited it in Notion, the pipeline reads her version as authoritative. The write-only-to-empty rule enforces this: if the field is non-empty, the coach skips writing.**
+No other agent rewrites or second-guesses any of these. **`Gap handling` is the exception to the carry-forward rule — if the user has edited it in Notion, the pipeline reads her version as authoritative. The write-only-to-empty rule enforces this: if the field is non-empty, the coach skips writing.**
 
-**Mandatory value rule:** Every coach-owned property that the coach writes must receive an explicit value — `N/A` when genuinely inapplicable. A blank field signals agent failure, not inapplicability. This applies to `Company Stage` and `Role Type` in particular. **Prerequisite:** `N/A` must be present as a valid option in the Notion select fields for `Company Stage` and `Role Type` — {{USER_FIRST_NAME}} adds this directly in Notion.
+**Mandatory value rule:** Every coach-owned property that the coach writes must receive an explicit value — `N/A` when genuinely inapplicable. A blank field signals agent failure, not inapplicability. This applies to `Company Stage` and `Role Type` in particular. **Prerequisite:** `N/A` must be present as a valid option in the Notion select fields for `Company Stage` and `Role Type` — the user adds this directly in Notion.
 
 **Triage-exit roles** (Priority 5–6, non-`--full-research`): only the first group of properties above is written. Full-research properties are skipped — they remain blank and are not required for triage-exit roles.
 
-**`Why I Want This Role` is set manually by {{USER_FIRST_NAME}} in Notion.** Agents never write to it. If it is empty when the pipeline runs, the cover letter is skipped for that role — only the CV is delivered.
+**`Why I Want This Role` is set manually by the user in Notion.** Agents never write to it. If it is empty when the pipeline runs, the cover letter is skipped for that role — only the CV is delivered.
 
-**The `Note` field is {{USER_FIRST_NAME}}'s space.** Agents may write to it only for context that structured properties cannot carry — never to repeat or summarize content already in a structured property.
+**The `Note` field is the user's space.** Agents may write to it only for context that structured properties cannot carry — never to repeat or summarize content already in a structured property.
 
 ---
 
@@ -176,16 +176,16 @@ Multi-select examples: "Builder, Leader" = founding hire who also owns people ma
 
 ## Status Definitions
 
-Status is the single property that drives what the pipeline does with a role. {{USER_FIRST_NAME}} sets and updates it in Notion; agents update it at pipeline completion only.
+Status is the single property that drives what the pipeline does with a role. The user sets and updates it in Notion; agents update it at pipeline completion only.
 
 | Status | Who sets it | Meaning |
 |---|---|---|
-| `Hold` | {{USER_FIRST_NAME}} | Being researched before a decision to apply. **NOT handled by this (CV-writing) pipeline.** Two upstream paths can process Hold roles: the coach standalone pipeline (`/career-engine --coach-skills`) for full market intelligence (competitive landscape, PMM analysis), or career-engine-intake standalone for quick coach properties. Both promote Hold roles to Researched when complete. |
-| `Interested` | {{USER_FIRST_NAME}} | {{USER_FIRST_NAME}} has decided to apply. **This is what career-engine-intake and the main career-engine pipeline pull.** Move a role from Hold → Interested (or add directly as Interested) when {{USER_FIRST_NAME}} wants a CV and cover letter produced. |
-| `Needs editing` | {{USER_FIRST_NAME}} | Queued for the editing pipeline. Pipeline starts from existing outputs in the Notion row — does not run fresh. |
-| `CV Ready for Review` | Pipeline (on completion) | Pipeline finished; {{USER_FIRST_NAME}} needs to review before sending. |
-| `Applied` | {{USER_FIRST_NAME}} | Sent. |
-| `Researched` | Coach standalone pipeline (on completion) | Coach has run market intelligence — competitive landscape, priority scoring, strategic properties, PMM expert analysis. Role is ready for {{USER_FIRST_NAME}} to decide whether to move to Interested. |
+| `Hold` | user | Being researched before a decision to apply. **NOT handled by this (CV-writing) pipeline.** Two upstream paths can process Hold roles: the coach standalone pipeline (`/career-engine --coach-skills`) for full market intelligence (competitive landscape, PMM analysis), or career-engine-intake standalone for quick coach properties. Both promote Hold roles to Researched when complete. |
+| `Interested` | user | The user has decided to apply. **This is what career-engine-intake and the main career-engine pipeline pull.** Move a role from Hold → Interested (or add directly as Interested) when a CV and cover letter need to be produced. |
+| `Needs editing` | user | Queued for the editing pipeline. Pipeline starts from existing outputs in the Notion row — does not run fresh. |
+| `CV Ready for Review` | Pipeline (on completion) | Pipeline finished; the user needs to review before sending. |
+| `Applied` | user | Sent. |
+| `Researched` | Coach standalone pipeline (on completion) | Coach has run market intelligence — competitive landscape, priority scoring, strategic properties, PMM expert analysis. Role is ready for the user to decide whether to move to Interested. |
 
 **Pipeline reads:** `Interested` (main pipeline and career-engine-intake) and `Needs editing` (editing pipeline). All other statuses — including `Hold` and `Researched` — are ignored by this pipeline.
 
@@ -205,7 +205,7 @@ Status is the single property that drives what the pipeline does with a role. {{
 | `First` | `2` | Excellent fit — strong domain, right seniority, right stage, no red flags |
 | `Second` | `3` | Strong fit — domain or seniority match is clear; minor friction elsewhere |
 | `Third` | `4` | Reasonable fit — worth applying but the cover letter has work to do |
-| `Fourth` | `5` | Weaker fit — possible if {{USER_FIRST_NAME}} wants to stretch |
+| `Fourth` | `5` | Weaker fit — possible if the user wants to stretch |
 | `Fifth` | `6` | Weakest fit in this batch. Also the hard floor for Open Application entries regardless of any other criterion. |
 
 **Always write the numeric Notion value (1–6) when setting Priority via `notion-update-page`.** The label names are internal shorthand — Notion rejects them as select values.
@@ -236,17 +236,17 @@ The complete list of pipelines this plugin can run. Before taking any action, co
 
 ## Pipeline Flow
 
-Run the queue pipeline first (`career-engine-intake`). When the processing queue is built and {{USER_FIRST_NAME}} has been briefed, run the per-role pipeline for each role in queue order.
+Run the queue pipeline first (`career-engine-intake`). When the processing queue is built and the user has been briefed, run the per-role pipeline for each role in queue order.
 
 **Mode for career-engine-intake:** When `career-engine-intake` runs as part of this pipeline, it operates in **orchestrator mode** — it queries the database directly with a Status filter for `Interested` (not Hold) and applies orchestrator-mode queue selection (scored roles first, ordered 1 → 6, then unscored).
 
-**Pipeline is determined by {{USER_FIRST_NAME}}'s chat command**, not by a Notion property she sets per-role. All `Interested` roles default to the standard cv pipeline unless {{USER_FIRST_NAME}} specifies otherwise in chat. {{USER_FIRST_NAME}} can request a different pipeline for specific roles at run time.
+**Pipeline is determined by the user's chat command**, not by a Notion property she sets per-role. All `Interested` roles default to the standard cv pipeline unless the user specifies otherwise in chat. The user can request a different pipeline for specific roles at run time.
 
 | Pipeline | What runs | Deliverables |
 |---|---|---|
 | `New Applications` (default) | cv pipeline — Steps 1 through 8 | CV DOCX + cover letter DOCX + feedback MD |
 | `--now` | fast track — see below | CV DOCX + feedback MD + cover letter DOCX only if Why I Want This Role content is provided in chat (see Step N4) |
-| `Needs editing` | career-engine-edit (separate skill) — Steps E0 through E10 | Updated CV DOCX + updated cover letter DOCX; starts from existing Notion outputs, not from scratch. Trigger when {{USER_FIRST_NAME}} says "edit CVs" or similar, or when roles have Status = Needs editing. |
+| `Needs editing` | career-engine-edit (separate skill) — Steps E0 through E10 | Updated CV DOCX + updated cover letter DOCX; starts from existing Notion outputs, not from scratch. Trigger when the user says "edit CVs" or similar, or when roles have Status = Needs editing. |
 
 The structured JD for each role was fetched in Step 0.5 of the queue pipeline and is already in memory. Pass it directly to per-role sub-agents — do not re-fetch.
 
@@ -254,26 +254,26 @@ The structured JD for each role was fetched in Step 0.5 of the queue pipeline an
 
 ## --now Mode (Single-Role Fast Track)
 
-Use when {{USER_FIRST_NAME}} provides a URL or pastes a JD directly in chat and needs documents immediately, without going through the Notion queue. **No Notion interaction at all** — no reading, no writing.
+Use when the user provides a URL or pastes a JD directly in chat and needs documents immediately, without going through the Notion queue. **No Notion interaction at all** — no reading, no writing.
 
 ### When to use
-{{USER_FIRST_NAME}} says something like: "Write my CV for this now", "/career-engine --now <url>", "I just found this job, do it", or pastes a JD with an urgent framing.
+The user says something like: "Write my CV for this now", "/career-engine --now <url>", "I just found this job, do it", or pastes a JD with an urgent framing.
 
 ### Flow
 
 **Step N1 — Determine input**
 
-Check what {{USER_FIRST_NAME}} provided:
+Check what the user provided:
 - A URL → proceed to N2 with that URL
 - Pasted JD text (no URL) → skip N2, treat the pasted text as the JD body and proceed to N3 directly
 
 **Step N2 — Prepare JD content**
 
-If {{USER_FIRST_NAME}} provided a URL: pass it directly to the coach in Step N3. The coach fetches it as part of its pre-flight.
+If the user provided a URL: pass it directly to the coach in Step N3. The coach fetches it as part of its pre-flight.
 
-If {{USER_FIRST_NAME}} pasted JD text (no URL): treat it as the JD body directly. Pass it to the coach in Step N3 — no fetch needed.
+If the user pasted JD text (no URL): treat it as the JD body directly. Pass it to the coach in Step N3 — no fetch needed.
 
-If the coach cannot access the URL: it will report the failure. Tell {{USER_FIRST_NAME}} and stop — do not proceed without usable JD content.
+If the coach cannot access the URL: it will report the failure. Tell the user and stop — do not proceed without usable JD content.
 
 **Step N3 — Lightweight employment coach**
 
@@ -284,8 +284,8 @@ No Notion writeback for coach outputs in `--now` mode.
 **Step N4 — Per-role pipeline**
 
 Run `career-engine-new-application` Steps 1 through 7d exactly as in the standard pipeline. The only differences:
-- **Why I Want This Role (before Step 5)** — no Notion row exists, so the field cannot be read. Ask {{USER_FIRST_NAME}} in chat: "Why do you want this role? One or two sentences in your own words — this becomes the letter's opener. Reply 'skip' for CV only." If she provides content, use it as the Why I Want This Role input for Step 5 and the letter proceeds normally. If she replies "skip", declines, or provides nothing usable, **skip the cover letter entirely** (Steps 5–5.8) and deliver the CV only — the letter-writer's Intake Gate refuses to write without this content, and that gate is never overridden.
-- Step 6H (Hebrew localization) — skip entirely. No Notion row exists, so `Languages` cannot be read. `--now` mode does not support Hebrew output. If {{USER_FIRST_NAME}} wants Hebrew, add the role to Notion and run normally.
+- **Why I Want This Role (before Step 5)** — no Notion row exists, so the field cannot be read. Ask the user in chat: "Why do you want this role? One or two sentences in your own words — this becomes the letter's opener. Reply 'skip' for CV only." If she provides content, use it as the Why I Want This Role input for Step 5 and the letter proceeds normally. If she replies "skip", declines, or provides nothing usable, **skip the cover letter entirely** (Steps 5–5.8) and deliver the CV only — the letter-writer's Intake Gate refuses to write without this content, and that gate is never overridden.
+- Step 6H (Hebrew localization) — skip entirely. No Notion row exists, so `Languages` cannot be read. `--now` mode does not support Hebrew output. If the user wants Hebrew, add the role to Notion and run normally.
 - Step 7a (Draft Directory writeback) — skip entirely. No Notion row exists for this role.
 - Step 7b (state.json) — write as normal to the output folder.
 - Step 7c (Notion property writeback) — skip entirely.
@@ -303,7 +303,7 @@ Deliver the standard final summary. Append one note:
 > "This role is not in your Notion database. If you want to track it, add it manually and set Status = Applied when you send."
 
 When spawning reviewers, inject this note verbatim into the prompt:
-> "Only flag something if it would cause a recruiter to decline before a first screening call. If the concern would only come up after {{USER_FIRST_NAME}} is already in the room, it is not a flag. Any flag that cannot be closed by reframing, reordering, or surfacing something already documented in the skill reference files will be left unaddressed — cv-writer and letter-writer will NOT fabricate to satisfy your flag. Please flag anyway — honest identification of a real screening-risk gap is more useful than a papered-over document."
+> "Only flag something if it would cause a recruiter to decline before a first screening call. If the concern would only come up after the user is already in the room, it is not a flag. Any flag that cannot be closed by reframing, reordering, or surfacing something already documented in the skill reference files will be left unaddressed — cv-writer and letter-writer will NOT fabricate to satisfy your flag. Please flag anyway — honest identification of a real screening-risk gap is more useful than a papered-over document."
 
 ---
 
@@ -319,10 +319,10 @@ For each CV being validated:
 
 1. Convert to plain text: `pandoc "<output-path>/<cv>.docx" -t plain`
 2. **Experience ordering:** Confirm the most recent full-time role appears first in `## EXPERIENCE` (see `02-professional-background.md` for the correct ordering), followed by other full-time roles in reverse-chronological order. Flag if any consulting/fractional entry appears in `## EXPERIENCE` — it belongs in `## CONSULTING`. Flag if `## CONSULTING` section is absent from the document.
-3. **Tagline:** Confirm the subtitle under {{USER_FIRST_NAME}}'s name is the exact role title from the JD — not a generic descriptor. It must be the job title {{USER_FIRST_NAME}} applied for (e.g., "[Role Title]"). Flag if absent, if it is a generic tagline, or if it differs from the JD role title.
+3. **Tagline:** Confirm the subtitle under the user's name is the exact role title from the JD — not a generic descriptor. It must be the job title the user applied for (e.g., "[Role Title]"). Flag if absent, if it is a generic tagline, or if it differs from the JD role title.
 4. **Repetition:** Flag any opening action verb appearing more than twice. Flag any phrase appearing verbatim in more than one bullet.
 5. **Fabrication:** For every metric and specific claim in the Experience section, identify the reference file line that supports it. Flag any metric or claim that cannot be traced — especially numbers, event names, tool names, client names, and responsibilities.
-6. **JD language:** Flag any bullet that uses JD phrasing verbatim to describe something {{USER_FIRST_NAME}} did, where that language does not appear in the references. **Exemption:** skip this check for any bullet that matches a bullet in `02-professional-background.md` (Role Facts) exactly or with only minor role-specific adaptation — approved bullets predate the JD and cannot have been lifted from it.
+6. **JD language:** Flag any bullet that uses JD phrasing verbatim to describe something the user did, where that language does not appear in the references. **Exemption:** skip this check for any bullet that matches a bullet in `02-professional-background.md` (Role Facts) exactly or with only minor role-specific adaptation — approved bullets predate the JD and cannot have been lifted from it.
 
 If flags found: append them to the matching role's revision log file (`revision-log-<roletitle>-<company>-<monYYYY>.md`) under a `## CV Validation Issues` section.
 If no flags: append a single line to the revision log: `CV validation passed.`
@@ -335,10 +335,10 @@ For each cover letter being validated:
 2. **Greeting:** Confirm the letter opens with "Hi to the" — not "Dear" or any formal variant.
 3. **Word count:** Count body words (excluding greeting and sign-off). Flag if over 320 words (no minimum).
 4. **Key proof signals:** Confirm that key proof signals from `02-professional-background.md` (Role Facts) — the most recent role's key outcomes — are woven naturally into the body. Flag if the body contains no named outcomes from the candidate's background.
-5. **Sign-off:** Confirm the letter closes with "Looking forward to next steps," followed by "{{USER_FIRST_NAME}} {{USER_LAST_NAME}}" and nothing else. Flag any additional text after the name.
-6. **Opening paragraph:** Confirm the first paragraph is {{USER_FIRST_NAME}}'s personal reaction to this specific role — first person, her response to the opportunity, before any credential or company description. This check cannot be waived by coach output or Strategy. Flag if the first paragraph: leads with company analysis; leads with a career credential; leads with an availability statement; OR has {{USER_FIRST_NAME}} as the grammatical subject of the first sentence but the sentence pivots immediately to a general market/industry observation rather than her reaction to THIS role (Pattern G2 — e.g. "I've spent six years in [field], and the job — above everything else — is [general market observation]." [Example from your background]). Also flag if the very first sentence frames an industry challenge or market condition before {{USER_FIRST_NAME}} appears as a reacting subject (Pattern I).
+5. **Sign-off:** Confirm the letter closes with "Looking forward to next steps," followed by the user's full name and nothing else. Flag any additional text after the name.
+6. **Opening paragraph:** Confirm the first paragraph is the user's personal reaction to this specific role — first person, her response to the opportunity, before any credential or company description. This check cannot be waived by coach output or Strategy. Flag if the first paragraph: leads with company analysis; leads with a career credential; leads with an availability statement; OR has the user as the grammatical subject of the first sentence but the sentence pivots immediately to a general market/industry observation rather than her reaction to THIS role (Pattern G2 — e.g. "I've spent six years in [field], and the job — above everything else — is [general market observation]." [Example from your background]). Also flag if the very first sentence frames an industry challenge or market condition before the user appears as a reacting subject (Pattern I).
 7. **Fabrication:** For every specific claim, number, or named outcome in the letter, identify the reference file line that supports it. Flag any claim that cannot be traced to `01-writing-rules.md`.
-8. **Voice:** Flag any sentence that opens with a gerund, prepositional phrase, or dependent clause instead of {{USER_FIRST_NAME}} as subject. Flag any hollow phrase from the banned list in `skills/cover-letter/SKILL.md`.
+8. **Voice:** Flag any sentence that opens with a gerund, prepositional phrase, or dependent clause instead of the user as subject. Flag any hollow phrase from the banned list in `skills/cover-letter/SKILL.md`.
 
 If flags found: append them to the matching role's revision log file under a `## Cover Letter Validation Issues` section.
 If no flags: append a single line to the revision log: `Cover letter validation passed.`
@@ -381,7 +381,7 @@ If state.json is missing, report: "state.json not found in `<folder>` — run ma
 
 **Step S3 — Check files on disk**
 
-For each role in state.json, verify the expected files exist. `cv_path` and `cover_letter_path` are relative to the run folder and already include the company subdirectory (e.g. `northwind/cv-{{USER_LAST_NAME}}-...docx`). Hebrew file presence is detected from filenames — if any DOCX in the company subdirectory carries the `-he` suffix (derived from `cv_path`/`cover_letter_path` with `-he` inserted before `.docx`), treat the role as having Hebrew outputs and verify both Hebrew files exist.
+For each role in state.json, verify the expected files exist. `cv_path` and `cover_letter_path` are relative to the run folder and already include the company subdirectory (e.g. `northwind/cv-<last-name>-...docx`). Hebrew file presence is detected from filenames — if any DOCX in the company subdirectory carries the `-he` suffix (derived from `cv_path`/`cover_letter_path` with `-he` inserted before `.docx`), treat the role as having Hebrew outputs and verify both Hebrew files exist.
 
 ```bash
 ls "<most-recent-folder>/<cv_path>" 2>/dev/null && echo "✓" || echo "MISSING"
@@ -469,9 +469,9 @@ If the pipeline produced both DOCX files and the feedback file but crashed befor
 
 Run after all roles complete. Inline — no agent spawn. Produces one file per run (not per role): `linkedin-updates-<YYYY-MM-DD>.md`, saved to the output folder alongside the per-role files.
 
-**Purpose:** Surface what the run's collective intelligence implies for {{USER_FIRST_NAME}}'s permanent LinkedIn profile — specifically, which keywords and framing choices recur across multiple JDs in this session, making them stronger signals than anything optimized for a single application.
+**Purpose:** Surface what the run's collective intelligence implies for the user's permanent LinkedIn profile — specifically, which keywords and framing choices recur across multiple JDs in this session, making them stronger signals than anything optimized for a single application.
 
-**Framework primacy.** `03-framework.md` is the primary source of truth about {{USER_FIRST_NAME}}'s goals and positioning; LinkedIn is a tool the plugin helps her improve, never a source of truth about her. Treat the framework as background guidance for every recommendation. The profile is permanent and serves her whole positioning: this run's roles — including any role that represents a career shift — must not pull recommendations toward themselves unless the change also strengthens her overall positioning. Only if the framework indicates a career shift is a primary goal may recommendations deliberately support the transition.
+**Framework primacy.** `03-framework.md` is the primary source of truth about the user's goals and positioning; LinkedIn is a tool the plugin helps her improve, never a source of truth about her. Treat the framework as background guidance for every recommendation. The profile is permanent and serves her whole positioning: this run's roles — including any role that represents a career shift — must not pull recommendations toward themselves unless the change also strengthens her overall positioning. Only if the framework indicates a career shift is a primary goal may recommendations deliberately support the transition.
 
 ### Step 8-pre — Load the LinkedIn profile reference
 
@@ -660,7 +660,7 @@ Nothing else. All feedback, validation results, and decisions are in the revisio
 
 ## Execution Rules
 
-- Run roles sequentially unless {{USER_FIRST_NAME}} explicitly asks for parallel execution.
+- Run roles sequentially unless the user explicitly asks for parallel execution.
 - Narrate progress briefly between steps: "Role 3/5: recruiter review done, moving to hiring manager."
 - Do not deliver individual role outputs during processing — deliver everything together at the end.
 - If any step fails, log it and move on. All failures are written to the run-level revision log (Step 9).
