@@ -96,10 +96,15 @@ Read `location_compatibility` from `${CAREER_DATA}/references/pipeline-preferenc
 
 If either key is absent or empty: **skip all location compatibility checks and writes** — do not write any location property to Notion.
 
-**Result values** (written to the property named in `notion_property`): `Yes` (worldwide confirmed or no restrictions that affect `my_location`), `Remote-only` (geography unclear or ambiguous), `No` (on-site outside user's location or location-restricted in a way that structurally excludes `my_location`).
+**Result values** (written to the property named in `notion_property`):
+- `Yes` — worldwide confirmed, no stated restrictions, OR fully remote with no geographic restriction in the JD or any research source. **Absence of explicit Israel confirmation is not a restriction.** Remote = Yes unless a positive restriction signal is found.
+- `Remote-maybe` — remote-advertised but carries a positive restriction signal worth investigating: a timezone mandate, work-authorization language, EOR status unknown, or other geographic qualifier that *might* affect `my_location` but is not conclusive. This value means "worth a one-line check" — not a yellow light on fit.
+- `No` — on-site outside `my_location`, or remote with a hard geographic restriction (e.g., "must hold US work authorization", "US residents only") that structurally excludes `my_location` with no identified exception path.
 
-- During **Quick Triage** (Step 2c): derive the result from the JD text scan only — no active research. When in doubt, use `Remote-only`.
-- During **deep research** (Part 0 / Location deep-scan below): refine the result using full evidence. The deep-scan result supersedes the triage result and should be re-written if it differs (write-only-to-empty rule still applies — if already written in triage, check whether the deep-scan result conflicts and update accordingly).
+**Default is `Yes`, not ambiguity.** Only downgrade if a positive restriction signal exists.
+
+- During **Quick Triage** (Step 2c): derive from JD text scan only — no active research. Fully remote with no stated restriction → `Yes`. A geographic qualifier in the text → `Remote-maybe`. A structural exclusion → `No`.
+- During **deep research** (Part 0 / Location deep-scan below): refine using multi-source evidence. The deep-scan result supersedes the triage result (write-only-to-empty rule still applies — if already written in triage, check whether the deep-scan conflicts and update accordingly).
 
 ---
 
@@ -107,12 +112,19 @@ If either key is absent or empty: **skip all location compatibility checks and w
 
 Runs during full research. Not run for Priority 5–6 triage-exit roles.
 
-Location truth is rarely confined to the location field — clues hide in the full JD text, the metadata, and the company's operational footprint, and they get overlooked. For every role proceeding past triage:
+Location truth is rarely confined to the location field — and different sources contradict each other. **Check at minimum three sources** and synthesize across them:
 
-1. **Scan everything:** the full JD text, location/metadata fields, the careers-page entry (agent Step 2b), and visible hiring posts — for stated location or timezone requirements, work-authorization language, and crucially the REASON given for any restriction. "Primarily EST timezone for healthy overlap with European business hours" restricts very differently than "must hold US work authorization": the first is a rationale a candidate elsewhere may satisfy better than the stated geography does; the second is structural.
-2. **Check the exception paths** whenever a remote-advertised role carries a geographic restriction: does the company hire through an EOR (Deel, Remote.com, Oyster — often visible in the application flow or careers-page footer)? Does it already hire outside the stated country (multi-country postings, team members' visible locations)? Does the stated rationale actually hold against `my_location` (timezone-overlap reasons often do)?
-3. **Output a Location block** in the research findings: the restriction as written, its stated reason, exception-path evidence found (or "none found"), and — when a path exists — a suggested ask-first action: a 2-line note to the named recruiter or People contact asking whether a candidate at `my_location` with the overlapping hours would be considered. This block feeds Priority scoring (Part 0) and the `Strategy` property.
-4. **Update location compatibility result** if the deep-scan finding differs from the triage assessment — refine the Notion property value accordingly.
+- The JD itself (location field + full text for timezone/auth language)
+- The company's own careers page (may show other open roles with location patterns, EOR footer links)
+- LinkedIn company page (team member locations visible on the People tab — do any show `my_location` or neighboring countries?)
+- One web search: `"[company name]" remote hiring "[my_location]"` or `"[company name]" Deel OR Remote.com OR Oyster` to surface EOR signals
+
+Sources often say different things. Synthesize: a LinkedIn page showing 3 Israel-based employees and a careers page saying "Remote" outweighs a JD that says nothing about geography.
+
+1. **Scan for restriction signals across all sources:** stated location requirements, timezone mandates, work-authorization language, and crucially the REASON given for any restriction. "Primarily EST timezone for healthy overlap with European business hours" restricts very differently than "must hold US work authorization": the first is a rationale the user's location may satisfy better than the stated geography does; the second is structural.
+2. **Check exception paths** when a restriction signal exists: does the company hire through an EOR (Deel, Remote.com, Oyster)? Does it already hire in `my_location` or nearby? Does the stated rationale actually hold against `my_location`?
+3. **Output a Location block** in the research findings: sources checked, restriction signal found (or "none"), exception-path evidence (or "none found"), and — when a restriction exists with a plausible path — a suggested ask-first action: a 2-line note to the named recruiter or People contact. This block feeds Priority scoring (Part 0) and the `Strategy` property.
+4. **Update location compatibility result** if the deep-scan finding differs from the triage assessment.
 
 ---
 
