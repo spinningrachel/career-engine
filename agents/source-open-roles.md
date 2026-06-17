@@ -47,6 +47,7 @@ Load before any search begins:
 |---|---|
 | `skills/source-open-roles/SKILL.md` | Search mode definitions, full site catalog with fetch methods, scoring rubric, deduplication rules, exclusion rules |
 | `references/job-preferences.md` | Remote compatibility rules, target roles, seniority floor, industry fit, company stage, exclusion patterns, and coaching prioritization — governs which roles are surfaced and how they are ranked |
+| `${CAREER_DATA}/references/pipeline-preferences.json` | Read `preferred_job_sites` and `local_job_sites` — user-specified sites to search first on every run, before any plugin defaults |
 
 ---
 

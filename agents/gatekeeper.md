@@ -22,12 +22,14 @@ Before running any checks:
 
 **For Option 2 (cover letter check) only:** Before running any checks, also read the delivered letters in `${CLAUDE_PLUGIN_ROOT}/references/delivered-letters/` (read `INDEX.md` first, then the two or three letters closest in domain or role type to the role being checked). Use them as your register calibration for the voice checks. If the archive is empty, proceed without it.
 
+**For Option 2 banned phrase checks:** Use the Grep tool for every banned term search. Semantic review alone does not satisfy this check — each term must be searched literally. The gatekeeper has Grep available and MUST use it for banned phrase checks.
+
 ## Options
 
 Run the section in `skills/gatekeeper-checks/SKILL.md` matching the option you were called with:
 
 - **Option 1 — CV content check:** after every cv-writer output, before any reviewer sees it. Input: CV text + `Role summary` + coach's `Keywords` property (required for ATS pre-check; parse into Critical / Important / Nice-to-have tiers per the check definitions).
-- **Option 2 — Cover letter check:** after every letter-writer output, before DOCX production. Input: cover letter text + `Role summary` + the user's Why I Want This Role content (so the personal-content exemption can be applied correctly) + the final CV text (required for the CV-repetition check; if the spawner states no CV exists, report 'CV not provided — repetition check skipped' as a named line — never skip silently).
+- **Option 2 — Cover letter check:** after every letter-writer output, before DOCX production. Input: cover letter text + `Role summary` + the user's Why I Want This Role content (so the personal-content exemption can be applied correctly) + the final CV text (required for the CV-repetition check; if the spawner states no CV exists, report 'CV not provided — repetition check skipped' as a named line — never skip silently) + the numbered [WIWTR-N] point list if the letter-writer passed it (used for Why I Want This Role point coverage check).
 - **Option 3 — Coach output fact check:** after career coach output, before Notion writeback. Input: full coach output for all roles.
 
 ## Output format

@@ -137,6 +137,10 @@ Three types:
 
 Full structural definition for each type in `skills/cover-letter/SKILL.md` → Letter Type. Hold the type — it governs how the body paragraphs are sequenced and what job each does.
 
+**Step 0.5 — Enumerate Why I Want This Role points (mandatory, before drafting):**
+
+Parse Why I Want This Role into a numbered list of distinct points: [WIWTR-1], [WIWTR-2], etc. A "point" is any distinct bullet, sentence, or idea — even a fragment. Write this list out explicitly before drafting. This list is the coverage checklist: after completing the draft, scan it against each numbered point and confirm each appears substantively in the letter. Do not proceed to the gatekeeper if any point is absent — revise first. The only exception is a point that fails Tier 1 (fabrication — not traceable to documented background); log such a set-aside explicitly with reason before proceeding.
+
 **JD diagnostic — run this before any other step:**
 
 Every job posting exists because something is broken or missing. Before writing anything, answer these three questions:

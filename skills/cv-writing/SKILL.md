@@ -199,6 +199,7 @@ Do not eliminate industry-specific terminology. "SEO" or "content strategy" are 
 Results-driven, Passionate, Dynamic, Proactive, Experienced, Highly qualified, Top performer, Think outside the box, Value add, Synergy, Go-to person, Thought leadership, Industry expert, Bottom line, Big picture, Motivated, Track record, Effective, Seasoned, Action-oriented, Customer-focused, Fast-paced, Strong work ethic, Cutting-edge, Groundbreaking, Hit the ground running, Game-changer, Guru, Ninja, Rockstar, World-class, Paradigm shift, Scalable, Disruptive, Innovative, Holistic approach, Agile, Pioneer, **"translating technically complex"** (overused — name what was translated, for whom, and what changed)
 
 **Absolute prohibitions — banned in all CV copy including summaries:**
+- **"specialism"** — not a word; use "multi-disciplinary" or "[specific] disciplines" instead
 - **"that made it land"** — vague AI-assembly phrase; name what it was and what happened instead
 - **"behind the [noun]"** (e.g., "behind the coverage", "behind the strategy") — agent-coined abstraction; name the actual work
 - **"at an inflection point"** — generic AI phrase; name the specific moment or transition instead

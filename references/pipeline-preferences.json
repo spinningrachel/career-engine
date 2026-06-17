@@ -12,5 +12,7 @@
     "my_location": "",
     "notion_property": ""
   },
-  "favorite_brands": []
+  "favorite_brands": [],
+  "preferred_job_sites": [],
+  "local_job_sites": []
 }

@@ -39,6 +39,8 @@ Preferences are stored in `~/.career-engine-job-prefs.json`. The full schema:
 
 ## Search Selection Logic
 
+**Before searching any built-in boards:** read `preferred_job_sites` and `local_job_sites` from `${CAREER_DATA}/references/pipeline-preferences.json`. Search these first, in order listed. User-specified sites always take priority over plugin-suggested boards. Only proceed to plugin defaults after exhausting the user's list. If the fields are empty arrays or absent, proceed directly to the tier system below.
+
 Source selection is layered, not mode-based. Every run starts with the full Tier 1 core, then adds tiers based on preferences and career.
 
 ### Tier 1 — Always search (every run, no exceptions)

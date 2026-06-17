@@ -449,7 +449,27 @@ If you don't have this property in your database or don't need it, skip this —
 
 **Favorite brands (optional).** Ask: "Do you have any companies you'd like to always prioritize one tier higher than the coach would normally score? If yes, list them. You can update this list at any time." Write the list to `favorite_brands` as a JSON array of strings. Empty array = no boost applied.
 
-- Write the gap-handling choice, location compatibility, and favorite brands **alongside** every other key set in this phase — one career-data config file (readable everywhere, survives upgrades). The complete file (R-38):
+**Job site preferences (optional).** Ask in two parts:
+
+1. "Are there specific job sites you always want searched? List up to 5 (e.g. Wellfound, Greenhouse, a specific industry board). These will be searched on every sourcing run, in addition to standard boards."
+
+2. "Based on your location, here are common local job boards — pick up to 2 to prioritize:
+   1. LinkedIn Jobs (global, but local postings)
+   2. Glassdoor
+   3. Indeed (local version for your country)
+   4. Wellfound / AngelList Talent
+   5. Otta
+   6. Relocate.me
+   7. Remote OK
+   8. We Work Remotely
+   9. EuropeRemotely
+   10. Are there local boards specific to your location I should know about? Name them."
+
+Write the answers into `preferred_job_sites` (up to 5 entries) and `local_job_sites` (up to 2 entries) in the career-data config. Empty arrays if the user skips or has no preferences.
+
+**Rule: user-specified sites in `preferred_job_sites` and `local_job_sites` always take priority over plugin defaults. The plugin's built-in site list is a fallback, not a directive.**
+
+- Write the gap-handling choice, location compatibility, favorite brands, and job site preferences **alongside** every other key set in this phase — one career-data config file (readable everywhere, survives upgrades). The complete file (R-38):
   ```json
   {
     "gap_handling": "enabled",
@@ -465,7 +485,9 @@ If you don't have this property in your database or don't need it, skip this —
       "my_location": "<city/country/region, or empty to skip>",
       "notion_property": "<Notion property name, or empty to skip>"
     },
-    "favorite_brands": []
+    "favorite_brands": [],
+    "preferred_job_sites": [],
+    "local_job_sites": []
   }
   ```
   (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted; `location_compatibility` both keys empty = check skipped; `favorite_brands` empty array = no boost.) **Required for any run:** `output_folder`, `cv_template`; **also required for Notion trackers:** `notion_database_id`. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop if a required key is missing. Never substitute any of these into plugin files.

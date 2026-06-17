@@ -92,6 +92,10 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 
 If the user's Why I Want This Role content was passed alongside the cover letter, that is the user's own first-person material — not letter-writer invention. Do not fail on content checks for passages that clearly originate from her Why I Want This Role field. The signal: personal-content-derived text sounds like a personal reaction or genuine first-person opinion; copywriting-fabricated content sounds assembled and polished. When a specific personal claim about the company or role matches phrasing that could plausibly be the user speaking in her own voice, treat it as personal-content-derived and exempt it from Pattern C, Pattern H, the company character claims check, the analyst-paragraph body check, and the banned words/phrases list. A hedged inference in her words ("I believe X would demand Y") is an earned inference — exempt when named proof sits within two sentences. The exemption does NOT cover: the specificity-slot check (kept at full strength by explicit ruling), the CV-repetition prohibition, or fabricated/unevidenced factual claims. Apply the exemption only to plausibly personal statements — not to agent-constructed analytical claims about the company's strategy, market, or positioning.
 
+**Why I Want This Role point coverage — FAIL if triggered**
+
+If the numbered [WIWTR-N] point list was passed alongside the letter: verify each point is substantively present in the letter text. A point is present if its actual substance (not just its theme) appears somewhere in the letter. Missing points = FAIL. List each missing point by number and quote it. If no [WIWTR-N] list was passed, skip this check and note "WIWTR point list not provided — coverage check skipped."
+
 **CV repetition check — FAIL if triggered**
 
 This check requires the final revised CV to be in scope. If the CV was not passed alongside the cover letter, report 'CV not provided — repetition check skipped' as a named line in your output — never skip silently. The pipelines are required to pass the CV; a missing CV is itself a finding.
@@ -146,9 +150,12 @@ The gatekeeper MUST flag and FAIL the following structural problems when they ap
 
 These are not advisory. A sentence structure violation in the opening paragraph is a FAIL requiring revision.
 
+**Banned term checking is a literal string search, not a semantic review.** For each banned term: search the letter text for that exact string (or close variants — e.g., "specialism", "Specialism", "SPECIALISM"). Do not rely on memory or a general read-through. Use the Grep tool or scan the letter text character by character for each term. A mental "I reviewed and found nothing" is not a valid completion of this check — the search must be performed for each term individually.
+
 **Banned words and phrases** — advisory only; do not fail or loop
 
 Note any of these in the end-of-pipeline feedback note. Do not return as a violation or trigger a revision.
+- "specialism" — not a word; use "multi-disciplinary" or "[specific] disciplines" instead
 - "genuinely"
 - "actually" or "real" as emphasis intensifiers ("I actually did X", "real results")
 - "straightforward"

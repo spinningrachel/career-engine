@@ -103,7 +103,7 @@ At its core, writing this letter is a positioning, messaging, and strategy exerc
 
 These rules govern how pipeline inputs interact and which source takes precedence for each decision. Read before writing anything.
 
-**Why I Want This Role is the letter's primary personal-content source — and it is mandatory.** The pipeline does not write a letter without it: the Pre-Step 5 gate skips the letter entirely when the field is empty, and it is the sole source for the opener. What is optional is any individual piece of its content — nothing in it has to be used, and whatever IS used must comply fully with every rule and prohibition in this skill. Why I Want This Role content does not override or exempt any prohibition. If something the user wrote in Why I Want This Role would produce a bad opener, violate the analyst paragraph ban, break a framing rule, or fail the context gate, set that piece aside and write from the rest. The rules always win.
+**Why I Want This Role is the letter's primary personal-content source — and it is mandatory.** The pipeline does not write a letter without it: the Pre-Step 5 gate skips the letter entirely when the field is empty, and it is the sole source for the opener. The only content that may be set aside is content that fails Tier 1 (fabrication). Everything else must appear somewhere in the letter. Whatever IS used must comply fully with every rule and prohibition in this skill. Why I Want This Role content does not override or exempt any prohibition. If something the user wrote in Why I Want This Role would produce a bad opener, violate the analyst paragraph ban, break a framing rule, or fail the context gate, set that piece aside — but place it elsewhere in the letter where it fits. Set-asides are a last resort: if a piece of content seems unusable, try placing it in a different paragraph first. The rules always win on placement and form; they never license dropping a point.
 
 **The integration model:** Coach output (Role emphasis, Strategy, Gap handling) defines what the letter must accomplish. Why I Want This Role is the source of voice, angle, and raw material — used only where the content is genuinely usable and compliant. A letter that uses Why I Want This Role content but ignores Role emphasis has voice but no direction. A letter that follows Strategy but ignores Why I Want This Role sounds like a template — but a letter that forces unusable Why I Want This Role content into a compliant shape is worse than either.
 
@@ -118,7 +118,16 @@ Why I Want This Role is the sole source for the opener's content and angle. The 
 
 **When Why I Want This Role mirrors the CV.** Sometimes her proudest story IS a CV bullet, or her written motivation restates CV facts. Her voice and angle still govern the opener — but the CV-repetition prohibition is Tier 2 and is not waived by the personal-content exemption (that exemption covers voice and personal claims, not duplication). Resolution: keep her framing and vocabulary, and write the *enhancement* of the fact — the why, the story, the decision — rather than the fact itself. If a piece of her content cannot be used without restating the CV, use its angle, not its words, and log the set-aside.
 
-**Beyond the opener — use all of it, throughout.** Why I Want This Role is the sole source for the opener, but it is NOT confined to the opener — and the opener is not its only job. Leverage it across the entire letter: wherever a piece of her content fits the structure — a proof paragraph, a transition, the close — work it in. Strong preference: every piece of information she provides in the field appears somewhere in the letter. Even stronger preference: wherever her content is in play, default to her tone and vocabulary over polished alternatives. Integration must be logical — place each piece where it does real work for the letter, never bolt it on just to hit coverage.
+**Beyond the opener — use all of it, throughout.** Why I Want This Role is the sole source for the opener, but it is NOT confined to the opener — and the opener is not its only job. Leverage it across the entire letter: wherever a piece of her content fits the structure — a proof paragraph, a transition, the close — work it in.
+
+**MANDATORY: every distinct point the user wrote in Why I Want This Role must appear somewhere in the letter.** Not thematically covered — actually present. The integration mechanism:
+- Before drafting: parse Why I Want This Role into a numbered list of distinct points (each bullet, sentence, or idea is one point). Store as [WIWTR-1], [WIWTR-2], etc.
+- After drafting: verify each [WIWTR-N] is substantively present in the letter. "Thematically covered" does not count — the actual substance of the point must appear.
+- Syntax can be fixed, placement can vary, length can be adjusted — but the point itself cannot be dropped.
+- The ONLY exception: a point that fails Tier 1 (fabrication — it claims something not in the user's documented background) may be set aside. Log it explicitly as a set-aside with reason.
+- A point that is syntactically awkward, off-strategy, or redundant with another paragraph is NOT exempt. Fix it, place it, integrate it — but include it.
+
+Wherever her content is in play, default to her tone and vocabulary over polished alternatives. Integration must be logical — place each piece where it does real work for the letter, never bolt it on just to hit coverage.
 
 **Proof-point partitioning — run before drafting.** The CV and the letter draw from the same documented background, and the CV is written first — so list what the CV already spends (summary claims, bullet outcomes, metrics) before selecting the letter's proof. The letter's named proof comes from what the CV does NOT carry: the detail layers in `02-professional-background.md` §7 ("What you built / delivered" runs deeper than any bullet), adjacent engagements, stories and decision logic behind the bullets, §9 testimonials, §10 portfolio artifacts. If every documented proof point is CV-spent, enhance the strongest one (story behind it) instead of importing a restatement — and a named non-numeric specific (deliverable, methodology, artifact) satisfies any need for concreteness when all numbers are CV-spent.
 
@@ -666,6 +675,7 @@ Test: was the parallel structure built to sound impressive, or does it list real
 These words appear far more in AI-generated text. Remove all of them.
 
 **Additional absolute prohibitions — banned in all cover letter copy:**
+- **"specialism"** — not a word; use "multi-disciplinary" or "[specific] disciplines" instead
 - **"that made it land"** — vague AI-assembly phrase; name what it was and what the result was
 - **"behind the [noun]"** (e.g., "behind the coverage", "behind the strategy") — agent-coined abstraction; name the actual work
 - **"at an inflection point"** — generic AI phrase; name the specific moment or transition
