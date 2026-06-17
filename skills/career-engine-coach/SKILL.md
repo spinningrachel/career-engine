@@ -10,11 +10,13 @@ description: >
   use career-engine-intake.
   Runs on Hold roles in the Notion Job Applications database — maximum 5 per run,
   oldest first. Researches each company (competitive landscape, sector signals,
-  company dynamics, recruitment criteria, career path), spawns the employment coach
+  company dynamics, recruitment criteria, career path), spawns the career coach
   for strategic property generation, writes all results to Notion, and updates
   Status to Researched.
   Does NOT write CVs or trigger the CV pipeline.
 ---
+
+> **RETIRED — this pipeline has been merged into career-engine-intake. Do not invoke. See skills/career-engine-intake/SKILL.md.**
 
 # Standalone Research Pipeline — Hold Roles
 
@@ -196,7 +198,7 @@ Write a one-sentence reason for the score, grounded in the company research and 
 
 ## Step 4 — Employment coach analysis
 
-Spawn the `employment-coach` agent with the full batch of roles processed this run.
+Spawn the `career-coach` agent with the full batch of roles processed this run.
 
 Pass for each role:
 - JD text (from Step 3 research or existing Notion content)

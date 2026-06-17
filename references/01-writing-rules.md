@@ -23,7 +23,7 @@ Read this section before doing anything. These rules exist because agents make p
 
 ### Priority Framework
 
-Used by the employment coach to score roles. Define your scoring criteria here — agents apply them in order when assessing fit. Replace every `{{...}}` with your actual priorities.
+Used by the career coach to score roles. Define your scoring criteria here — agents apply them in order when assessing fit. Replace every `{{...}}` with your actual priorities.
 
 **1. Domain fit** — {{USER_FIRST_NAME}}'s strongest verticals or functional areas, in priority order:
 - {{USER_DOMAIN_1}} *(e.g., the industry, technology area, or function where your experience is deepest)*
@@ -46,7 +46,7 @@ Used by the employment coach to score roles. Define your scoring criteria here �
 - Based in: {{USER_LOCATION}}
 - Viable: {{USER_REMOTE_PREFERENCE}} *(e.g., fully remote; local hybrid; specific countries or timezones)*
 - Hard exclusions: {{USER_GEO_EXCLUSIONS}} *(e.g., "onsite-only roles outside [city]" or "US residency required")*
-- For remote-advertised roles, a geographic restriction in the text is a soft signal, not an automatic disqualifier: apply the Remote-geography weighting in `skills/employment-coach/SKILL.md` Part 0 (exception-path check first — EOR, out-of-country hires, a restriction rationale the user's location satisfies; max one-tier discount with an `ask-first` flag when a path exists). Score Fifth on geography only for structural restrictions (legal residency, citizenship, clearance, payroll-stated-no-exceptions) with no exception path found.
+- For remote-advertised roles, a geographic restriction in the text is a soft signal, not an automatic disqualifier: apply the Remote-geography weighting in `skills/career-coach/SKILL.md` Part 0 (exception-path check first — EOR, out-of-country hires, a restriction rationale the user's location satisfies; max one-tier discount with an `ask-first` flag when a path exists). Score Fifth on geography only for structural restrictions (legal residency, citizenship, clearance, payroll-stated-no-exceptions) with no exception path found.
 
 **5. Risk signals** — Lower the priority for:
 - {{USER_RISK_SIGNAL_1}} *(e.g., roles where your research reveals the title overstates the actual scope)*

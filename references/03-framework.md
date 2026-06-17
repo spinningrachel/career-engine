@@ -269,7 +269,7 @@ Reusable in cover letters, interview answers, and analyst conversations. These a
 
 # Career-shift posture
 
-How open the user is to roles outside their established function. Agents read this section to decide how to treat shift roles (see the employment coach's Framework Primacy rule). A posture stated here governs; while this section is empty or still templated, agents default to treating shifts as marginal — full normal support, no extra emphasis on the shift.
+How open the user is to roles outside their established function. Agents read this section to decide how to treat shift roles (see the career coach's Framework Primacy rule). A posture stated here governs; while this section is empty or still templated, agents default to treating shifts as marginal — full normal support, no extra emphasis on the shift.
 
 - **Posture:** {{USER_SHIFT_POSTURE}} *(one of: Not open / Open — case-by-case / Primarily pursuing a shift)*
 - **Current employment status and search mode:** {{USER_SEARCH_STATUS}} *(e.g., employed and searching selectively; unemployed, seeking full time; open to contract or freelance in the interim)*

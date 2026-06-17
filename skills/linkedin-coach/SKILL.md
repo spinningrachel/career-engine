@@ -231,4 +231,4 @@ Provide all three options as complete scripts. User picks one, then receive:
 ## Related Skills
 
 - **/career-engine:personal-brand** — builds the brand strategy layer above LinkedIn tactics. Run that first if the user needs a full positioning framework.
-- **/career-engine:employment-coach** — for role-specific LinkedIn optimisation tied to an active application.
+- **/career-engine:career-coach** — for role-specific LinkedIn optimisation tied to an active application.

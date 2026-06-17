@@ -128,7 +128,7 @@ grep -rn "option=interview-questions\|interview-questions\|interview questions\|
 
 For each agent `.md` file, scan for skill names that are loaded or referenced (look for patterns like skill name strings, `Load`, `read skill`, etc.). For each skill name found, verify the corresponding directory exists in `skills/`.
 
-Common skill names to expect: `career-engine-intake`, `career-engine-new-application`, `career-engine-export`, `career-engine-orchestrator`, `career-engine-edit`, `career-engine-setup`, `coach`, `cover-letter`, `cover-letter-humanizer`, `cv-writing`, `employment-coach`, `gatekeeper-checks`, `career-engine`, `update-refs`.
+Common skill names to expect: `career-engine-intake`, `career-engine-new-application`, `career-engine-export`, `career-engine-orchestrator`, `career-engine-edit`, `career-engine-setup`, `coach`, `cover-letter`, `cover-letter-humanizer`, `cv-writing`, `career-coach`, `gatekeeper-checks`, `career-engine`, `update-refs`.
 
 **FAIL condition:** a referenced skill name has no matching directory.
 
@@ -197,7 +197,7 @@ Read `CLAUDE.md`. Verify it contains "Single-build architecture" and "career-dat
 
 These skill directories must exist in `skills/` (18 total):
 - `career-engine`, `career-engine-orchestrator`, `career-engine-intake`, `career-engine-new-application`, `career-engine-edit`, `career-engine-export`, `career-engine-coach`, `career-engine-setup`
-- `cv-writing`, `cover-letter`, `cover-letter-humanizer`, `gatekeeper-checks`, `employment-coach`, `localization`
+- `cv-writing`, `cover-letter`, `cover-letter-humanizer`, `gatekeeper-checks`, `career-coach`, `localization`
 - `source-open-roles`, `linkedin-coach`, `personal-brand`, `update-refs`
 
 **FAIL condition:** any directory missing.
@@ -299,8 +299,8 @@ grep -c "url-fetched-via-search" <location>/skills/career-engine-intake/SKILL.md
 
 ```bash
 grep -c "Rendering-capable extraction" <location>/skills/career-engine-intake/SKILL.md
-grep -c "Rendering-capable extraction" <location>/agents/employment-coach.md
-grep -c "Fetched-alternative" <location>/agents/employment-coach.md
+grep -c "Rendering-capable extraction" <location>/agents/career-coach.md
+grep -c "Fetched-alternative" <location>/agents/career-coach.md
 ```
 
 **FAIL condition:** either of the first two counts is 0. The third grep must return exactly 1 (the parenthetical explaining the option does not exist) — more than 1 means the invalid option is being written again.
@@ -414,7 +414,7 @@ grep -c "Write updated coach-owned properties" <location>/skills/career-engine-e
 
 ```bash
 grep -c "pipeline-preferences.json" <location>/skills/career-engine-intake/SKILL.md
-grep -c "pipeline-preferences.json" <location>/skills/employment-coach/SKILL.md
+grep -c "pipeline-preferences.json" <location>/skills/career-coach/SKILL.md
 grep -c "pipeline-preferences.json" <location>/skills/career-engine-setup/SKILL.md
 test -f <location>/references/pipeline-preferences.json && echo 1 || echo 0
 ```
@@ -442,8 +442,8 @@ The framework-primacy doctrine, the LinkedIn profile reference and its consumers
 grep -c "Framework primacy" <location>/skills/career-engine-orchestrator/SKILL.md      # must be >= 1
 grep -c "Step 8-pre" <location>/skills/career-engine-orchestrator/SKILL.md             # must be >= 1
 grep -c "Profile source ladder" <location>/skills/linkedin-coach/SKILL.md              # must be >= 1
-grep -c "FRAMEWORK PRIMACY" <location>/skills/employment-coach/SKILL.md                # must be 1
-grep -c "Career-shift posture" <location>/skills/employment-coach/SKILL.md             # must be 1
+grep -c "FRAMEWORK PRIMACY" <location>/skills/career-coach/SKILL.md                # must be 1
+grep -c "Career-shift posture" <location>/skills/career-coach/SKILL.md             # must be 1
 test -f <location>/references/linkedin-profile.md && echo 1 || echo 0                  # must be 1
 ```
 
@@ -468,10 +468,10 @@ grep -c "Voice fingerprint" <location>/skills/cover-letter/SKILL.md             
 grep -c "Verification Pass" <location>/skills/source-open-roles/SKILL.md                    # must be >= 1
 grep -c "NEVER excluded for a geographic restriction" <location>/skills/source-open-roles/SKILL.md  # must be >= 1
 grep -c "Step 4.5" <location>/agents/source-open-roles.md                                   # must be >= 1
-grep -c "Careers-page cross-check" <location>/agents/employment-coach.md                    # must be >= 1
-grep -c "Location & eligibility deep-scan" <location>/skills/employment-coach/SKILL.md      # must be >= 1
-grep -c "Remote-geography weighting" <location>/skills/employment-coach/SKILL.md            # must be >= 1
-grep -c "ask-first" <location>/skills/employment-coach/SKILL.md                             # must be >= 1
+grep -c "Careers-page cross-check" <location>/agents/career-coach.md                    # must be >= 1
+grep -c "Location & eligibility deep-scan" <location>/skills/career-coach/SKILL.md      # must be >= 1
+grep -c "Remote-geography weighting" <location>/skills/career-coach/SKILL.md            # must be >= 1
+grep -c "ask-first" <location>/skills/career-coach/SKILL.md                             # must be >= 1
 ```
 
 **FAIL condition:** any count is 0.

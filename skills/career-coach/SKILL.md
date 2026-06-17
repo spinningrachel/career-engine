@@ -1,9 +1,9 @@
 ---
-name: employment-coach
-description: Analysis procedures for the employment-coach agent (Option 2 — Pipeline). Contains the research phase, post-research self-check, priority scoring, writing guidance, strategic property definitions, gap handling rules, output format template, and Notion writeback rules. Load this after pre-flight JD acquisition is complete.
+name: career-coach
+description: Analysis procedures for the career-coach agent (Option 2 — Intake Pipeline). Contains the research phase, post-research self-check, priority scoring, writing guidance, strategic property definitions, gap handling rules, output format template, and Notion writeback rules. Load this after pre-flight JD acquisition is complete.
 ---
 
-# Employment Coach — Analysis Procedures
+# Career Coach — Analysis Procedures
 
 > **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
 
@@ -85,6 +85,10 @@ Only run this step if the LinkedIn MCP is connected. If it is not, skip and note
 3. Run `get_company_employees(company_name, keywords="[relevant function keyword for the role]")`. Skim demographics — team size, seniority distribution, recent hires.
 4. Produce a 3–5 line Hiring Manager and Team snapshot. Include: HM background relevance, tenure signal (new HM = flux; long-tenure = established culture), any public statements about what they value, team composition signal.
 5. This snapshot feeds directly into the Strategy output and the `Strategy` Notion property.
+
+**11. User Voice**
+
+What do customers and users actually say about this product? Check G2, Capterra, and Reddit (use the most relevant subreddits for the domain). Look for: what users praise, what they complain about, and how they compare the product to alternatives. Goal is 2–3 specific observations — direct quotes or paraphrased findings, each sourced inline (e.g. "G2: ..."). Skip this dimension if no public reviews are found (common for newer or stealth products); do not manufacture observations.
 
 ---
 
@@ -272,7 +276,7 @@ If the JD specifies an unusual application instruction (e.g., "include a cover l
 
 ### Part 2 — Strategic properties
 
-These properties are owned exclusively by the employment-coach. Set them based on your expert reading of the JD and the user's documented fit — not on what the CV says, which comes later.
+These properties are owned exclusively by the career-coach. Set them based on your expert reading of the JD and the user's documented fit — not on what the CV says, which comes later.
 
 **Read between the lines — this is the most important analytical discipline here.** JDs are written by committee and filtered through HR templates. What the JD says explicitly is the floor, not the ceiling. For `Strategy` and `Role emphasis` in particular:
 
@@ -454,7 +458,7 @@ Surface patterns the user should think about: clusters of similar roles, missing
 Return findings in this exact structure for every role received.
 
 ```
-## Employment Coach Analysis — <date>
+## Career Coach Analysis — <date>
 
 ### Priority scores
 [Omit roles where Priority was pre-set AND confirmed unchanged]
@@ -499,16 +503,30 @@ Return findings in this exact structure for every role received.
 - **No incumbents in this function:** <value>
 - **Recent news:** <one sentence, or "None found in last 6 months">
 - **Funding context:** <round, amount, date, investors>
-- **Landscape:** (write only if currently empty in Notion)
-  - **What the company actually does today:** <1 sentence — product, not positioning>
-  - **Corporate structure:** <independent / PE-backed / acquired / public; parent company if applicable>
-  - **Company size:** <headcount or range>
-  - **Funding:** <most recent round, amount, date, lead investors — single line>
-  - **Category:** <the market category this company operates in — 1–3 words>
-  - **Current known challenges:** <1 specific, sourced challenge>
-  - **Market position:** <enterprise / mid-market / SMB; primary buyer>
-  - **Sector and market signals:** <1–2 sentences — relevant tailwinds, headwinds, or sector dynamics that affect this company's trajectory right now>
-  - **Competitive landscape:** <exactly 5 real, known competitors at the same market tier; name + one-line description + {{USER_COUNTRY}} office Yes/No each>
+- **Landscape:** (write only if currently empty in Notion; if already populated, prepend new sections above existing content separated by `---`)
+
+  Use this section structure. Keep it scannable — one tight bullet per point, each sourced:
+
+  ```
+  ## Competitors
+  [Competitor] — [one-line description] | {{USER_COUNTRY}}: [Y/N]
+  [minimum 3, maximum 5 at the same market tier]
+
+  ## Market Signals
+  - [1–2 bullets: funding, M&A, category shifts — dated and sourced]
+
+  ## User Voice (G2 / Reddit / Capterra)
+  - [1–2 bullets: what customers praise, complain about, vs. alternatives — each sourced. Skip section if no public reviews found.]
+
+  ## Company & Org
+  - [1–2 bullets: how this company actually operates — culture, team signals, leadership tone. Each sourced (Glassdoor / LinkedIn / Reddit / About Us).]
+
+  ## Recruitment Signals
+  - [1–2 bullets: what they actually screen for beyond the JD — Glassdoor interview reviews, HM content, open-role patterns.]
+
+  ## Career Path
+  [1 sentence on typical trajectory from this role/seniority level.]
+  ```
 - **Culture:** 2–3 tight sourced observations about how this company actually operates. Sources named inline — Glassdoor, LinkedIn, Reddit, Careers/About Us. Flag any burn-out or culture-warning signals explicitly. `N/A` only if all four sources returned nothing usable.
 - **Role summary:** ≤400 chars total. Short paragraph + up to 5 bullets. JD vocabulary only. No candidate references. No location/contact info. Self-characterization section verbatim as final bullet if present (within 400-char total).
 
@@ -526,6 +544,8 @@ Return findings in this exact structure for every role received.
 **Write only to empty properties.** For every coach-owned property, check the current Notion value before writing. If a value already exists — regardless of what the coach produced — skip it. Do not overwrite.
 
 This applies to all coach-owned properties without exception: `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, `Company Stage`, `Culture`, `Person who Advertised Role (if not Hiring Manager)`, `Priority`, `Priority Reason`, `Landscape`, and all research-derived properties (`Hiring Manager's Name`, `Recent news`, `Funding context`, etc.), as well as the location compatibility property (name resolved from `pipeline-preferences.json`).
+
+**`Landscape` exception:** If Landscape is already populated, do not replace it — prepend the new section-format content above the existing content, separated by a `---` divider. Existing content is less current but still valuable; preserve it verbatim below the divider.
 
 **`Priority` exception:** If the coach's analysis produces a materially different priority than what is set (e.g., role is identifiable as an open application that must be `Fifth`, or research reveals a hard disqualifier that changes the score), flag the discrepancy in Patterns and note the recommended value — but still do not overwrite. The user decides.
 

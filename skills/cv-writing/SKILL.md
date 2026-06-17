@@ -23,7 +23,7 @@ These rules exist because ATS systems parse CVs mechanically before a human sees
 
 ### Keyword coverage target
 
-The employment coach provides 8–15 Keywords in three tiers (format: `Critical: ... | Important: ... | Nice-to-have: ...`). Parse each tier separately and apply the thresholds below. Count coverage explicitly before returning any draft.
+The career coach provides 8–15 Keywords in three tiers (format: `Critical: ... | Important: ... | Nice-to-have: ...`). Parse each tier separately and apply the thresholds below. Count coverage explicitly before returning any draft.
 
 | Tier | Required | Placement priority |
 |---|---|---|

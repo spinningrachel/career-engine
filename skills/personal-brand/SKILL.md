@@ -173,4 +173,4 @@ Run a diagnostic before a rebuild:
 ## Related Skills
 
 - **/career-engine:linkedin-coach** — LinkedIn-specific tactics (headline mechanics, post review, content strategy). This skill builds the brand strategy layer; LinkedIn Coach turns it into LinkedIn-shaped output.
-- **/career-engine:employment-coach** — for role-specific positioning, use the employment coach's GTM framing to align the personal brand with a specific application.
+- **/career-engine:career-coach** — for role-specific positioning, use the career coach's GTM framing to align the personal brand with a specific application.

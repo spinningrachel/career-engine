@@ -132,7 +132,7 @@ Why I Want This Role is the sole source for the opener's content and angle. The 
 
 ## Letter Type
 
-Every letter is one of three structural types. The employment coach signals the recommended type via `[Letter type: IC | Strategic | Hybrid]` appended to `Role emphasis` — read that first. If no signal is present, determine from `Role emphasis` substance and Strategy Priority 1. All three types follow every other rule in this skill unchanged — fabrication guards, opener sourcing, CV-repetition prohibition, and word count apply equally.
+Every letter is one of three structural types. The career coach signals the recommended type via `[Letter type: IC | Strategic | Hybrid]` appended to `Role emphasis` — read that first. If no signal is present, determine from `Role emphasis` substance and Strategy Priority 1. All three types follow every other rule in this skill unchanged — fabrication guards, opener sourcing, CV-repetition prohibition, and word count apply equally.
 
 **Type 1 — IC/Specialist/Builder**
 

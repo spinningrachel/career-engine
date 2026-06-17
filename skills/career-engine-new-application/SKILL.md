@@ -132,8 +132,8 @@ Read the following from Notion for this role:
 
 **Before spawning, pass the following for this role:**
 - **Why I Want This Role property** — use the value retrieved in Pre-Step 5. Do not re-read from Notion.
-- **Strategy** property — from the employment coach
-- **Gap handling** property — from the employment coach
+- **Strategy** property — from the career coach
+- **Gap handling** property — from the career coach
 
 **Priority rule:** Why I Want This Role takes precedence over Strategy and Gap handling. If there is any conflict between them on what content to prioritise or how to organise the letter, Why I Want This Role wins.
 

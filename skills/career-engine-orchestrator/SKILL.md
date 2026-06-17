@@ -1,6 +1,6 @@
 ---
 name: career-engine-orchestrator
-description: Run the user's career-engine pipeline against the Notion Job Applications database. Trigger whenever the user says "run the career engine", "process the CV queue", "run the CV pipeline", or any variant referencing a batch of tailored CVs or cover letters. Fetches all queued roles from Notion, passes them to the employment coach (which fetches JDs and produces strategic properties), builds the processing queue, and routes each role to the pipeline the user specifies in chat.
+description: Run the user's career-engine pipeline against the Notion Job Applications database. Trigger whenever the user says "run the career engine", "process the CV queue", "run the CV pipeline", or any variant referencing a batch of tailored CVs or cover letters. Fetches all queued roles from Notion, passes them to the career coach (which fetches JDs and produces strategic properties), builds the processing queue, and routes each role to the pipeline the user specifies in chat.
 ---
 
 # New Application Orchestrator
@@ -85,7 +85,7 @@ If `career-engine-export` is not loaded when you reach the DOCX export step, bac
 
 **Run end-to-end. Do not stop to ask the user about scope mid-run.**
 
-The employment coach caps the run and selects which roles process this session. That cap is the decision. Do not pause after Role 1 to ask whether to continue. Do not ask whether to batch DOCX conversion. Do not ask whether the run is too long.
+The career coach caps the run and selects which roles process this session. That cap is the decision. Do not pause after Role 1 to ask whether to continue. Do not ask whether to batch DOCX conversion. Do not ask whether the run is too long.
 
 If a single role fails, log the failure and move to the next role. The only valid mid-run pauses are a hard unrecoverable system error or the user explicitly typing a stop command in chat.
 
@@ -124,14 +124,13 @@ Where `<date-folder>` = the run folder name (e.g. `${OUTPUT_DIR_PREFIX:-applicat
 
 ## Skills to Load
 
-Load these skills in order before doing anything else. Do not begin processing until all four are loaded.
+Load these skills in order before doing anything else. Do not begin processing until all three are loaded.
 
 **Note:** `01-writing-rules.md` is pre-loaded by the `/career-engine` command. If invoking the orchestrator directly (not via the command), load `${CAREER_DATA}/references/01-writing-rules.md` first (per the career-data discovery preflight above) — it contains the fabrication rule and all constraint definitions that every downstream agent depends on.
 
-1. `career-engine-intake` — Steps 0 through 0.9d: Notion fetch, JD fetching, coach invocation, priority writeback, queue building, Status writeback
-2. `career-engine-new-application` — Steps 1 through 7: per-role CV writing, gatekeeper checks, reviews, cover letter (letter-writer), HM cover letter review, DOCX export (including Step 6H Hebrew), Notion writeback
-3. `career-engine-edit` — Steps E0 through E10: editing pipeline for `Needs editing` roles; starts from existing Notion row content, not from scratch
-4. `career-engine-export` — DOCX template styles, pandoc commands, file naming, `/tmp → output folder` copy protocol, page count verification
+1. `career-engine-new-application` — Steps 1 through 7: per-role CV writing, gatekeeper checks, reviews, cover letter (letter-writer), HM cover letter review, DOCX export (including Step 6H Hebrew), Notion writeback
+2. `career-engine-edit` — Steps E0 through E10: editing pipeline for `Needs editing` roles; starts from existing Notion row content, not from scratch
+3. `career-engine-export` — DOCX template styles, pandoc commands, file naming, `/tmp → output folder` copy protocol, page count verification
 
 ## Notion Property Ownership
 
@@ -159,7 +158,7 @@ No other agent rewrites or second-guesses any of these. **`Gap handling` is the 
 
 ## Role Type Definitions
 
-Role Type is a multi-select property set exclusively by the employment coach. Choose all that apply — roles commonly combine types.
+Role Type is a multi-select property set exclusively by the career coach. Choose all that apply — roles commonly combine types.
 
 | Value | Definition |
 |---|---|
@@ -180,24 +179,24 @@ Status is the single property that drives what the pipeline does with a role. Th
 
 | Status | Who sets it | Meaning |
 |---|---|---|
-| `Hold` | user | Being researched before a decision to apply. **NOT handled by this (CV-writing) pipeline.** Two upstream paths can process Hold roles: the coach standalone pipeline (`/career-engine --coach-skills`) for full market intelligence (competitive landscape, PMM analysis), or career-engine-intake standalone for quick coach properties. Both promote Hold roles to Researched when complete. |
-| `Interested` | user | The user has decided to apply. **This is what career-engine-intake and the main career-engine pipeline pull.** Move a role from Hold → Interested (or add directly as Interested) when a CV and cover letter need to be produced. |
+| `Hold` | user | Being researched before a decision to apply. **NOT handled by this (CV-writing) pipeline.** Use `/career-engine --coach-skills` (which runs `career-engine-intake` in Notion-fetch mode) to research Hold roles. That pipeline runs the career coach, writes strategic properties, and promotes Hold roles to Researched. |
+| `Interested` | user | The user has decided to apply. **This is what the main career-engine pipeline (orchestrator) pulls directly.** Move a role from Hold → Interested (or add directly as Interested) when a CV and cover letter need to be produced. Intake does not process Interested roles — it only processes Hold roles. |
 | `Needs editing` | user | Queued for the editing pipeline. Pipeline starts from existing outputs in the Notion row — does not run fresh. |
 | `CV Ready for Review` | Pipeline (on completion) | Pipeline finished; the user needs to review before sending. |
 | `Applied` | user | Sent. |
 | `Researched` | Coach standalone pipeline (on completion) | Coach has run market intelligence — competitive landscape, priority scoring, strategic properties, PMM expert analysis. Role is ready for the user to decide whether to move to Interested. |
 
-**Pipeline reads:** `Interested` (main pipeline and career-engine-intake) and `Needs editing` (editing pipeline). All other statuses — including `Hold` and `Researched` — are ignored by this pipeline.
+**Pipeline reads:** `Interested` (this orchestrator, Step O1) and `Needs editing` (editing pipeline). All other statuses — including `Hold` and `Researched` — are ignored by this pipeline.
 
 **The two upstream pipelines are separate:**
-- `/career-engine --coach-skills` → researches **Hold** roles → sets Status to **Researched**
-- `career-engine-intake` (Steps 0–0.9d) → prepares **Interested** roles → feeds the CV writing pipeline
+- `career-engine-intake` → researches **Hold** roles → sets Status to **Researched**
+- This orchestrator → fetches **Interested** roles directly → feeds the CV writing pipeline
 
 ---
 
 ## Priority Definitions
 
-**`Priority`** is the sole queue ordering signal. It is set by the employment coach **during intake only** — that is the one and only place scoring happens. The New Application pipeline never scores: it reads the `Priority` intake already wrote and uses it purely for queue order (an unscored role still processes, just ordered last). Values and meanings:
+**`Priority`** is the sole queue ordering signal. It is set by the career coach **during intake** — that is where scoring happens. This pipeline never scores: it reads the `Priority` intake already wrote and uses it purely for queue order (an unscored role still processes, just ordered last). Values and meanings:
 
 | Label | Notion value | Meaning |
 |---|---|---|
@@ -224,7 +223,7 @@ The complete list of pipelines this plugin can run. Before taking any action, co
 |---|---|---|---|---|---|---|
 | 1 | Setup | `/career-engine:setup`, "set up the plugin" | `career-engine-setup` | none | none | Writes no application content |
 | 2 | Sourcing | "find open roles", "source roles" | `source-open-roles` | preferences saved | creates rows (new roles enter as `Hold`) | Never writes CVs or letters |
-| 3 | Intake | "run intake", `--coach-skills` | `career-engine-intake` | database configured | `Hold` → `Researched` (standalone mode only) | Never writes CVs or letters; never creates or modifies Notion views |
+| 3 | Intake | "run intake", `--coach-skills` | `career-engine-intake` | database configured | `Hold` → `Researched` | Hold roles only. Two modes: inline (URL in chat) or Notion-fetch (Hold queue). Always invokes career-coach. Ends at Researched. Does not process Interested roles. Never writes CVs or letters; never creates or modifies Notion views. |
 | 4 | New Application | career-engine command, no flag | `career-engine-orchestrator` + `career-engine-new-application` | Intake has run; `Why I Want This Role` filled for any role needing a letter | `Interested` → downstream statuses per orchestrator | Orchestrator never authors document content |
 | 5 | Fast track | `--now <url or JD>` | `career-engine-orchestrator` → --now Mode | Why I Want This Role collected in chat, else CV-only | none — no Notion row | Never reads or writes Notion |
 | 6 | Edit | "edit CVs", `--edit`, Status = `Needs editing` | `career-engine-edit` | `Edit type` set; `Why I Want This Role` populated for the letter track | `Needs editing` → `CV Ready for Review` | Never starts from scratch; always edits the existing Notion-documented outputs |
@@ -236,11 +235,53 @@ The complete list of pipelines this plugin can run. Before taking any action, co
 
 ## Pipeline Flow
 
-Run the queue pipeline first (`career-engine-intake`). When the processing queue is built and the user has been briefed, run the per-role pipeline for each role in queue order.
+**The orchestrator owns the Interested queue.** It fetches Interested roles directly using the A1/A2/B ladder (same ladder as intake, Status = `Interested`), runs a readiness check, builds the processing queue, and passes it to `career-engine-new-application`. It does NOT delegate queue-fetching to `career-engine-intake` — intake processes only Hold roles and is never called from here.
 
-**Mode for career-engine-intake:** When `career-engine-intake` runs as part of this pipeline, it operates in **orchestrator mode** — it queries the database directly with a Status filter for `Interested` (not Hold) and applies orchestrator-mode queue selection (scored roles first, ordered 1 → 6, then unscored).
+### Step O1 — Fetch Interested roles
 
-**Pipeline is determined by the user's chat command**, not by a Notion property she sets per-role. All `Interested` roles default to the standard cv pipeline unless the user specifies otherwise in chat. The user can request a different pipeline for specific roles at run time.
+Using the same A1 → A2 → B ladder described in `career-engine-intake` Step 0b (with Status filter `Interested` instead of `Hold`), fetch all roles with Status = `Interested`.
+
+- **Path A1:** same gate check + `--filter '{"property":"Status","status":{"equals":"Interested"}}'`
+- **Path A2:** same `API-query-data-source` with `{"property": "Status", "status": {"equals": "Interested"}}`
+- **Path B:** locate the "Interested" view by name using the two-step fetch (DB → collection → view by name `"Interested"`), query it, then per-page `notion-fetch` for properties
+
+Apply the same all-paths-fail rule: if all paths fail, stop and report — never treat it as zero results.
+
+Also apply the Step 0a schema fetch before this step: call `notion-fetch` on `$NOTION_DATABASE_ID` to get the SQLite schema block. Use it for all property writes.
+
+Report count: "Found N Interested roles."
+
+### Step O2 — Readiness check
+
+For each fetched role, verify these **writer-needed fields** are populated (non-empty):
+`Role emphasis`, `Keywords`, `Strategy`.
+
+`JD proof` is not checked — it is reference-only. `Gap handling` is not required when `gap_handling_mode = disabled`. `Landscape` is context, not a writer input.
+
+- **All three fields present** → role is ready; carry its coach values forward.
+- **Any field missing** → log: "[Company] — [Position]: excluded — missing writer-needed field(s) `<list>`. Run intake first, then re-run the New Application pipeline." Remove from queue. Leave Status unchanged.
+
+Roles that pass are the processing queue.
+
+### Step O3 — Build the processing queue
+
+**If there are 5 or fewer ready roles:** process all of them.
+
+**If there are more than 5:** select top 5:
+1. `scored` roles ordered `1` → `2` → `3` → `4` → `5` → `6`
+2. Remaining slots filled with `unscored` roles in queue order
+
+Unscored roles still process — `Priority` affects ordering only; the coach is never spawned here to score them. The career coach runs only in intake.
+
+**Open Application hard floor:** roles identifiable as open/speculative applications must sort as `6` regardless of any Priority value set.
+
+Report the queue to the user (company, title, priority or "unscored") and proceed immediately.
+
+### Step O4 — Per-role pipeline
+
+Run `career-engine-new-application` Steps 1 through 8 for each role in queue order.
+
+**Pipeline is determined by the user's chat command**, not by a Notion property she sets per-role. All `Interested` roles default to the standard cv pipeline unless the user specifies otherwise in chat.
 
 | Pipeline | What runs | Deliverables |
 |---|---|---|
@@ -248,7 +289,7 @@ Run the queue pipeline first (`career-engine-intake`). When the processing queue
 | `--now` | fast track — see below | CV DOCX + feedback MD + cover letter DOCX only if Why I Want This Role content is provided in chat (see Step N4) |
 | `Needs editing` | career-engine-edit (separate skill) — Steps E0 through E10 | Updated CV DOCX + updated cover letter DOCX; starts from existing Notion outputs, not from scratch. Trigger when the user says "edit CVs" or similar, or when roles have Status = Needs editing. |
 
-The structured JD for each role was fetched in Step 0.5 of the queue pipeline and is already in memory. Pass it directly to per-role sub-agents — do not re-fetch.
+The JD for each role was already in Notion (`JD Body`) when fetched in Step O1. Pass it directly to per-role sub-agents — do not re-fetch.
 
 ---
 
@@ -275,11 +316,18 @@ If the user pasted JD text (no URL): treat it as the JD body directly. Pass it t
 
 If the coach cannot access the URL: it will report the failure. Tell the user and stop — do not proceed without usable JD content.
 
-**Step N3 — Lightweight employment coach**
+**Step N3 — Career coach properties (required inline)**
 
-Spawn `employment-coach` in pipeline mode with a single role. Pass `CAREER_DATA=${CAREER_DATA}`, the structured JD and `01-writing-rules.md`. Instruct the coach: **produce strategic properties only — no Notion writeback, no patterns section, no batch analysis.** Return: Role emphasis, Keywords, Strategy, Role Type, Relationship type, Gap handling. This is a fast single-role pass, not a batch run.
+The career coach is not spawned in `--now` mode. The user must provide the strategic properties inline in the `--now` invocation:
 
-No Notion writeback for coach outputs in `--now` mode.
+Required: `Role emphasis`, `Keywords`, `Strategy`
+Also accepted: `Role Type`, `Relationship type`, `Gap handling`
+
+If the user has NOT provided `Role emphasis`, `Keywords`, or `Strategy` inline, stop immediately:
+
+> "Career coach properties required for `--now` mode. The career coach does not run in fast-track mode. Please provide `Role emphasis`, `Keywords`, and `Strategy` directly in your message, or run `/career-engine --coach-skills` on this URL first, add the role to Notion with Status = Interested, and run the standard pipeline."
+
+If all three required properties are present, continue with them as the coach output for Step N4. No Notion writeback for coach properties in `--now` mode.
 
 **Step N4 — Per-role pipeline**
 
@@ -439,7 +487,7 @@ All agent steps are stateless and safe to re-run. They produce the same class of
 | Step | Safe to re-run? | Notes |
 |---|---|---|
 | 0.5 — JD content prep | Yes | Idempotent; only writes if JD Body was empty |
-| 0.8 — employment coach | Yes | Fetches JDs + overwrites Notion properties ([HIGH] tags); [LOW] only fills empty |
+| 0.8 — career coach | Yes | Fetches JDs + overwrites Notion properties ([HIGH] tags); [LOW] only fills empty |
 | 1 — cv-writer draft | Yes | Overwrites previous draft |
 | 1.5 / 4.5 / 5.2 / 5.8 — gatekeeper | Yes | Pure check, no side effects |
 | 2 / 5.3 — recruiter-reviewer | Yes | Pure review, no side effects |
@@ -626,7 +674,7 @@ cat > "<output_dir>/run-metrics-$(date +%Y-%m-%d).json" << 'JSON_EOF'
     {"company": "<name>", "track": "<cv|now>", "hebrew": <true|false>}
   ],
   "agents_invoked": {
-    "employment_coach": <N>,
+    "career_coach": <N>,
     "cv_writer_draft": <N>,
     "cv_writer_revision": <N>,
     "gatekeeper_cv": <N>,

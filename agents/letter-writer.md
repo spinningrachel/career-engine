@@ -128,7 +128,7 @@ Jump directly to the relevant section. Read only the one you will execute.
 
 **Step 0 — Determine letter type (run first, before anything else):**
 
-Check `Role emphasis` for a `[Letter type: ...]` tag written by the employment coach. If present, use it directly. If absent, determine from the substance of `Role emphasis` and Strategy Priority 1.
+Check `Role emphasis` for a `[Letter type: ...]` tag written by the career coach. If present, use it directly. If absent, determine from the substance of `Role emphasis` and Strategy Priority 1.
 
 Three types:
 - **IC** — the mandate is primarily individual execution; prove capability at deliverable and domain-fluency level

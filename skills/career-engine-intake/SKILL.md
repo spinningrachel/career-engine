@@ -1,27 +1,30 @@
 ---
 name: career-engine-intake
 description: >
-  Dual-mode intake pipeline for the career engine. In **standalone mode** (triggered
-  directly via "run intake" or similar): processes Hold roles — fetches JDs, runs the
-  employment coach for strategic properties and priority scoring,
-  writes all results to Notion, updates Status to Researched.
-  In **orchestrator mode** (called by career-engine-orchestrator): processes Interested
-  roles — same steps, but Status is managed by the
-  orchestrator, not this skill.
-  Run standalone with: "run intake", "build the CV queue", "prep my Hold roles",
-  "run the intake", or any variant asking to research Hold roles.
+  Intake pipeline for Hold roles. Two modes: **Inline** (user provides a URL or JD
+  directly in chat — no Notion fetch; runs JD acquisition and career coach; output
+  conversationally) and **Notion-fetch** (queries Hold roles from Notion; runs JD
+  acquisition and career coach; writes back to Notion; updates Status to Researched).
+  The career coach always runs — there is no mode in which it is skipped.
+  Trigger with: "run intake", "build the CV queue", "prep my Hold roles", "run the
+  intake", or any variant asking to research Hold roles.
   Does NOT write CVs or cover letters.
 ---
 
-# New Application — Queue Pipeline
+# Intake Pipeline
 
 > **Registry:** this pipeline is listed in the Pipeline Registry in `skills/career-engine/SKILL.md`. Actions owned by another pipeline's registry row are out of scope here — route to that pipeline instead of improvising.
 
-This skill covers Steps 0 through 0.9 of the career-engine pipeline. All of these steps run before any per-role CV work begins. The goal of this pipeline is to give the employment coach complete information — full JD data for every role — before it makes any prioritization or writing decisions.
+This skill covers Steps 0 through 0.9 of the intake pipeline. Two modes:
+
+- **Inline mode** — the user provides a URL or JD text directly in chat. No Notion fetch. Run JD acquisition and the career coach. Deliver output conversationally. Use when the user says something like "coach me on this role" and pastes a URL or JD, outside of the batch Notion-fetch flow.
+- **Notion-fetch mode** — queries the Notion database for Hold roles, runs JD acquisition and the career coach for each, writes all results to Notion, and updates Status to Researched. This is the standard "run intake" path.
+
+The career coach **always runs** regardless of mode. There is no mode where it is skipped. The goal of this pipeline is to give the career coach complete information — full JD data for every role — before it makes any prioritization or writing decisions.
 
 > **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
 
-**Before any step:** Read `${CLAUDE_PLUGIN_ROOT}/references/01-writing-rules.md`. This file contains the fabrication rule and attribution constraints enforced at Step 0.8.5. It must be in context before the gatekeeper runs — even when this skill runs in standalone mode.
+**Before any step:** Read `${CLAUDE_PLUGIN_ROOT}/references/01-writing-rules.md`. This file contains the fabrication rule and attribution constraints enforced at Step 0.8.5. It must be in context before the gatekeeper runs.
 
 ---
 
@@ -47,7 +50,7 @@ Do not ask the user about this. The preference was set during setup (Phase 5). I
 
 ## Step 0 — Fetch Notion schema and roles
 
-**Guard — resolve the database ID from the career-data config (R-38).** The plugin keeps `{{NOTION_DATABASE_ID}}` literal by design (single build); the literal placeholder is **not** a sign of incomplete setup — do not abort on it. Resolve `$NOTION_DATABASE_ID` from `${CAREER_DATA}/references/pipeline-preferences.json` (`notion_database_id`): under the orchestrator it is already set by Config resolution; standalone, read it yourself. **Stop only if that config value is missing or empty**, and tell the user:
+**Guard — resolve the database ID from the career-data config (R-38).** The plugin keeps `{{NOTION_DATABASE_ID}}` literal by design (single build); the literal placeholder is **not** a sign of incomplete setup — do not abort on it. Resolve `$NOTION_DATABASE_ID` from `${CAREER_DATA}/references/pipeline-preferences.json` (`notion_database_id`) — read it yourself at intake start. **Stop only if that config value is missing or empty**, and tell the user:
 
 > "Your career-data config has no `notion_database_id`. Run `/career-engine:setup --phase 5` to add your Notion database ID to career-data."
 
@@ -69,15 +72,13 @@ Extract the SQLite `CREATE TABLE` block from the response. This is your **schema
 
 **Use the schema reference for every Notion write in this run.** When writing a select field, look up the valid options in the SQLite comment for that column (e.g., `-- one of ["Yes", "Remote-only", "No"]`) and write the exact string from the schema. Never hardcode select option values. If any agent returns a value that does not match a schema option, map it to the closest matching option using the schema as the authority.
 
-**Pass the SQLite block to the employment coach** in its prompt as a "Notion schema reference" section so it can write select values that exactly match the live Notion options.
+**Pass the SQLite block to the career coach** in its prompt as a "Notion schema reference" section so it can write select values that exactly match the live Notion options.
 
 ---
 
-**Step 0b — Fetch roles using a direct Status filter.**
+**Step 0b — Fetch Hold roles using a direct Status filter.**
 
-Target status by mode:
-- **Standalone mode:** Status = `Hold`
-- **Orchestrator mode:** Status = `Interested`
+Target status: `Hold`.
 
 Two query paths exist, and Path A has two rungs. Use **Path A1** (the `ntn` CLI) whenever its gate check passes; fall to **Path A2** (the `notionApi` server) when A1 is unavailable; use **Path B** when both A rungs are absent or unusable (e.g. a Cowork session with no CLI in its sandbox and no `notionApi` server — only the standard Notion connector). Falling down the ladder is sanctioned routing, never a reportable failure. Both intake modes use the same paths.
 
@@ -97,7 +98,7 @@ ntn datasources query <data-source-id> \
   --limit 100 --json
 ```
 
-(orchestrator mode: `Interested` instead of `Hold`.) Trim the JSON in the shell (`python3` or `jq`) down to each row's page `id` plus the named properties this step needs — always read by property name, never by column position. If `has_more` is true, continue with `--start-cursor` until exhausted. For a full single-row read, `ntn pages get <page_id>` returns every property plus the page body as markdown in one call.
+Trim the JSON in the shell (`python3` or `jq`) down to each row's page `id` plus the named properties this step needs — always read by property name, never by column position. If `has_more` is true, continue with `--start-cursor` until exhausted. For a full single-row read, `ntn pages get <page_id>` returns every property plus the page body as markdown in one call.
 
 Better still, project at the source so bulk payloads never arrive at all: repeat the httpie-style query param `filter_properties==<property_id>` on a direct query call —
 
@@ -122,7 +123,7 @@ If ToolSearch returns a schema, proceed with Path A2. If it returns nothing, try
 
 Call `notionApi` `API-query-data-source` (full tool name: `mcp__notionApi__API-query-data-source`) with:
 - database ID: `$NOTION_DATABASE_ID` (resolved from career-data config)
-- filter: `{"property": "Status", "status": {"equals": "Hold"}}` (standalone) or `{"property": "Status", "status": {"equals": "Interested"}}` (orchestrator)
+- filter: `{"property": "Status", "status": {"equals": "Hold"}}`
 - page_size: 100
 
 This returns a JSON array of page objects. Each object has an `id` field and a `properties` object with named fields — read property values by name, not by column position.
@@ -131,7 +132,7 @@ This returns a JSON array of page objects. Each object has an `id` field and a `
 
 1. **Resolve the view URL by name — do not hardcode it and do not pass a filter.** The database's views are not directly on the page — they live in its data-source (collection). Two fetches are needed:
    - **Fetch 1:** Call `notion-fetch id="$NOTION_DATABASE_ID"`. The response contains a `<data-sources>` block with one or more `<data-source url="{{collection://...}}">` entries. Copy that `collection://` URL.
-   - **Fetch 2:** Call `notion-fetch id="<collection_url>"` (e.g. `notion-fetch id="collection://3465ef1a-a634-80ef-8f43-000b75686c29"`). This response contains `<view url="{{view://UUID-with-dashes}}">` blocks. Find the one whose JSON content includes `"name":"Hold"` (standalone) or `"name":"Interested"` (orchestrator).
+   - **Fetch 2:** Call `notion-fetch id="<collection_url>"` (e.g. `notion-fetch id="collection://3465ef1a-a634-80ef-8f43-000b75686c29"`). This response contains `<view url="{{view://UUID-with-dashes}}">` blocks. Find the one whose JSON content includes `"name":"Hold"`.
    - **Build the URL:** Take the view's UUID (e.g. `35e5ef1a-a634-80ff-9b4e-000cbcd67aec`), **remove all dashes**, and construct: `https://www.notion.so/<DB_ID_NO_DASHES>?v=<VIEW_ID_NO_DASHES>`. Example: `https://www.notion.so/3465ef1aa63480a283cfdf847cb47404?v=35e5ef1aa63480ff9b4e000cbcd67aec`. The DB ID is already known (no-dash form); only the view UUID needs dash removal. View IDs change when views are reorganised, so the by-name lookup is always the source of truth.
 2. Call `notion-query-database-view` with `view_url` = that URL and **no other arguments**. The view already restricts to the target status; do not construct your own filter.
 3. **Use the result for discovery only.** Extract the page IDs/links from the result — these are unambiguous even in a misaligned table. Do not read any property value out of the rendered table.
@@ -163,9 +164,8 @@ For each matching entry, capture the full row payload including:
 - Position title (use inferred value if Position field is empty, per the rules above)
 - Job URL
 - Every other property set on the row (notes, tags, source, and any existing priority value) — pass these through verbatim; do not interpret them yet
-- In orchestrator mode only: the pipeline the user is running (New Applications) — from her chat command, not from a Notion property. Default is `New Applications` unless the user specifies otherwise. Not applicable in standalone intake mode.
 
-Report the count to the user: "Found N roles in Hold status. Sending to the employment coach." If the count is 0, stop and report that. If the query call returns a tool error or an unparseable response rather than a result array, stop and report the error to the user — do not treat it as zero results. Do not wait for a response — proceed immediately to the next step.
+Report the count to the user: "Found N roles in Hold status." If the count is 0, stop and report that. If the query call returns a tool error or an unparseable response rather than a result array, stop and report the error to the user — do not treat it as zero results. Do not wait for a response — proceed immediately to the next step.
 
 ## Step 0.5 — Prepare JD content for the coach
 
@@ -201,7 +201,7 @@ For each role:
 
 3. **No Job URL and no JD content anywhere** — mark `needs-fetch`. Log to the run-level revision log. Drop from this run.
 
-Pass the full row payload (including `JD Body` content and any fetched URL content) to the employment coach in Step 0.8. The coach writes `JD Body`, `JD Fetch Status`, `Priority`, `Priority Reason`, and the location compatibility property (if configured).
+Pass the full row payload (including `JD Body` content and any fetched URL content) to the career coach in Step 0.8. The coach writes `JD Body`, `JD Fetch Status`, `Priority`, `Priority Reason`, and the location compatibility property (if configured).
 
 Hold all structured JD data in memory. Proceed immediately to Step 0.6.
 
@@ -219,41 +219,20 @@ Record the counts. Proceed immediately to Step 0.7.
 
 **If there are more than 5 roles:** select the top 5 using the priority order below. All others are deferred.
 
-Queue selection order differs between standalone and orchestrator modes:
-
-**Standalone intake mode (Hold roles — default):** Unscored roles take priority. The intake pipeline's purpose is to coach and score fresh Hold roles. Already-scored roles have been through intake before and are in Hold only because their Status writeback to Researched failed — they fill any remaining slots and receive a Status cleanup in Step 0.9d.
+**Queue selection order (Hold roles):** Unscored roles take priority. The intake pipeline's purpose is to coach and score fresh Hold roles. Already-scored roles have been through intake before and are in Hold only because their Status writeback to Researched failed — they fill any remaining slots and receive a Status cleanup in Step 0.9d.
 
 1. `unscored` roles — ordered by Notion creation date, earliest first (oldest un-coached roles run before newer ones). Fill up to 5 slots.
 2. Remaining slots (if any) — filled with `scored` coach-complete roles ordered `1` → `2` → `3` → `4` → `5` → `6`.
 
-**Orchestrator mode (Interested roles):** Scored roles take priority. The full pipeline should process the highest-priority ready-to-apply roles first.
-
-1. `scored` roles ordered `1` → `2` → `3` → `4` → `5` → `6`
-2. Remaining slots filled with `unscored` roles, in queue order after the scored ones. Orchestrator mode does **not** score them (the coach runs only in standalone intake, R-42) — an unscored `Interested` role is still processed; `Priority` only affects ordering.
-
-**Open Application hard floor (both modes):** Any role identifiable as an open application, unsolicited application, or speculative application where no specific listing is posted must always slot at `6` (Fifth) in the queue, regardless of any Priority value already set. If the coach has not yet run and a pre-set priority above `6` is found on such a role, treat it as `6` for queue ordering. The coach will correct the Notion value in Step 0.8.
+**Open Application hard floor:** Any role identifiable as an open application, unsolicited application, or speculative application where no specific listing is posted must always slot at `6` (Fifth) in the queue, regardless of any Priority value already set. If the coach has not yet run and a pre-set priority above `6` is found on such a role, treat it as `6` for queue ordering. The coach will correct the Notion value in Step 0.8.
 
 All roles not selected are deferred. Proceed immediately to Step 0.8.
 
-## Step 0.8 — Employment coach
+## Step 0.8 — Career coach
 
 **Pre-coach filter — run before any coach-complete check:** Remove any role marked `needs-manual` from the coach queue. A role with no usable JD content cannot be meaningfully analysed by the coach. Log the removal in the revision log: "[Company] — [Position]: removed from coach queue, JD content unavailable (needs-manual). Resolve manually then re-run intake." Do not send a `needs-manual` role to the coach under any circumstances. A `needs-manual` role is removed from the **processing queue entirely** — it is excluded from all of Step 0.9, including the 0.9d Status writeback. Its Status stays unchanged so it reappears in the next intake run once the JD is resolved.
 
-**Mode branch (R-42).** The employment coach runs **only in standalone intake mode** (Hold roles — coaching is the entire point of intake). In **orchestrator mode** (New Application — Interested roles) the coach is **never spawned**: roles are expected to arrive intake-ready, and the only job here is to verify the values the writers actually consume. The coach is not a mid-pipeline repair tool.
-
-### Orchestrator mode (Interested roles) — readiness check, NO coach spawn
-
-For each role still in the queue, verify these **writer-needed** fields are populated (non-empty):
-`Role summary`, `Role emphasis`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`.
-
-`JD proof` is **not** checked — it is reference-only (a user-reference property only), written by the coach during intake, and consumed by no downstream agent, so it must never gate or trigger anything here. `Gap handling` is not required when `gap_handling_mode = disabled`. `Landscape` is coach-research context, not writer input — not required here. A field counts as present if it is non-empty; this is a presence check, not a quality check (a thin-but-present value passes — the writers also draw on `Why I Want This Role` and the JD).
-
-- **All writer-needed fields present** → the role is ready; carry its existing coach values forward to the per-role pipeline.
-- **Any writer-needed field missing or empty** → the role is NOT intake-ready and **cannot be handled this run**. Do NOT spawn the coach to repair it. Remove it from the processing queue, leave its Status unchanged, and flag it in the Step 0.9b briefing: "[Company] — [Position]: not processed — missing writer-needed field(s) `<list>`. Run intake first (move the role through Hold / `--coach-skills`), then re-run the New Application pipeline."
-
-Then **skip Step 0.8.5 entirely** (no coach output exists to fact-check) and proceed to Step 0.9 with the ready roles only.
-
-### Standalone intake mode (Hold roles) — employment coach
+The career coach **always runs** in intake — there is no mode or condition where it is skipped. Intake is the one pipeline where coaching happens; if roles arrive already coach-complete, the coach is still the tool that verifies completeness and may update stale fields.
 
 Before spawning, check each remaining role in the queue: a role is `coach-complete` only if all required fields are populated. The required count depends on `gap_handling_mode`:
 - **When `gap_handling_mode = enabled` (default):** all nine fields must be populated — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Culture`, and `Landscape`.
@@ -265,7 +244,7 @@ Partial population (any required field missing) is not coach-complete and the ro
 - **Any role has one or more fields missing:** spawn the coach with every role that is not fully complete. Carry existing values forward for coach-complete roles only.
 - **No roles are `coach-complete`:** spawn the coach with all 5 roles as normal.
 
-Spawn `employment-coach` with the applicable roles. Pass:
+Spawn `career-coach` with the applicable roles. Pass:
 - Full JD data and the complete Notion row properties for each role
 - `$NOTION_DATABASE_ID` (resolved from career-data config) — the coach needs this for Notion writebacks
 - `${CAREER_DATA}` (the resolved career-data root) — the coach needs this to read references
@@ -281,15 +260,13 @@ Hold the coach output in memory. Proceed immediately to Step 0.8.5.
 
 ## Step 0.8.5 — Coach output fact check
 
-**Skip this step entirely in orchestrator mode (R-42).** It only runs when the coach actually ran — i.e. standalone intake. In the New Application pipeline no coach is spawned, so there is no coach output to fact-check; go straight to Step 0.9.
-
 Spawn `gatekeeper` with `option=coach-output`, passing:
 - The full coach output for all roles (Role emphasis, Strategy, Gap handling, Role summary per role)
 - `01-writing-rules.md` is already in memory — confirm it is loaded before spawning
 
 **If PASS:** proceed to Step 0.9.
 
-**If FAIL:** the gatekeeper returns a list of specific unverifiable claims per role and per property. Return those claims to the employment coach with this instruction: "The following claims in your output cannot be traced to `01-writing-rules.md`. Revise the affected properties to remove or correct them. Do not substitute alternative fabrications — if a claim cannot be grounded in the reference file, omit it." Spawn the coach with only the affected roles and properties.
+**If FAIL:** the gatekeeper returns a list of specific unverifiable claims per role and per property. Return those claims to the career coach with this instruction: "The following claims in your output cannot be traced to `01-writing-rules.md`. Revise the affected properties to remove or correct them. Do not substitute alternative fabrications — if a claim cannot be grounded in the reference file, omit it." Spawn the coach with only the affected roles and properties.
 
 **Cap: 2 revision passes.** If still failing after pass 2, strip the unverifiable claims from the affected properties (replace with `[UNVERIFIABLE — removed]`), log all removed claims in the run-level revision log under `## Coach Fact Check — Unverifiable Claims Removed`, flag for the user in final delivery, and proceed to Step 0.9.
 
@@ -314,7 +291,7 @@ For each role in the processing queue, apply this rule to:
 - `Company Stage` — write if empty. Exact option values: `Seed`, `Series A`, `Series B`, `Series C`, `Public`, `PE-backed`, `Stealth`, or `N/A`.
 - `Role Type` — write if empty. Multi-select exact values: `Builder`, `Scaler`, `Specialist`, `Leader`, or `N/A`.
 - `Culture` — write if empty. Skip entirely if already has content.
-- `Landscape` — write if empty. Skip entirely if already has content.
+- `Landscape` — if empty, write the full section-format content. If already populated, prepend the new content above the existing content separated by a `---` divider (per the career-coach output format).
 
 Confirm in chat: "Writeback complete: K roles updated, M properties skipped (already populated)."
 
@@ -328,9 +305,7 @@ Report to the user:
 
 This is the one moment the user sees the coach's reasoning before per-role processing begins. Do not wait for a response — proceed immediately to Step 0.9d.
 
-### 0.9d — Status writeback (standalone mode only)
-
-**Skip this step entirely when running as a sub-step of the career-engine orchestrator.** The orchestrator manages Status separately. This step runs only in standalone intake mode.
+### 0.9d — Status writeback
 
 For every role in the processing queue, write `Status = Researched` using `notion-update-page`. Run all writes in parallel. **Never write Researched to a `needs-manual` role** — it was removed from the processing queue in Step 0.8 and must keep its current Status so it surfaces again after the JD is resolved.
 

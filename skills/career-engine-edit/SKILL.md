@@ -1,6 +1,6 @@
 ---
 name: career-engine-edit
-description: Editing pipeline for the career-engine plugin. Triggers when the user says "edit CVs", "run CV edits", "process the Needs editing queue", or any similar phrase. Retrieves all Job Applications rows with Status = Needs editing, runs the employment coach first to verify and update its owned properties, then routes each role through the appropriate pipeline agents to improve existing outputs — not to start from scratch. Agents in this pipeline are explicitly informed they are refining existing work, not generating from zero.
+description: Editing pipeline for the career-engine plugin. Triggers when the user says "edit CVs", "run CV edits", "process the Needs editing queue", or any similar phrase. Retrieves all Job Applications rows with Status = Needs editing, runs the career coach first to verify and update its owned properties, then routes each role through the appropriate pipeline agents to improve existing outputs — not to start from scratch. Agents in this pipeline are explicitly informed they are refining existing work, not generating from zero.
 ---
 
 # New Application — Editing Pipeline
@@ -107,7 +107,7 @@ For each role fetched in Step E0, extract the structured JD from the row payload
 
 For each role:
 1. **`JD Body` is populated** — mark `content-exists`. Use this as the structured JD for all downstream steps (coach, gatekeeper, cv-writer, letter-writer). Do not re-fetch from the Job URL.
-2. **`JD Body` is empty** — mark `needs-fetch`. The employment coach (Step E1) will attempt to fetch the JD from the Job URL as part of its pre-flight. If the coach cannot access the URL, **hard-drop this role from the editing queue immediately**: log "Dropped — JD unavailable: [Company] — [Role Title]: URL unreachable and JD Body empty. Paste the JD into Notion before re-running edit." Remove from all subsequent steps (E0.7 onward). Do not proceed with a role that has no JD.
+2. **`JD Body` is empty** — attempt to fetch from the Job URL directly (use the rendering-capable extraction ladder from `career-engine-intake` Step 0.5). If the fetch succeeds, populate `JD Body` in memory and proceed. If the URL is unreachable and `JD Body` remains empty, **hard-drop this role from the editing queue**: log "Dropped — JD unavailable: [Company] — [Role Title]: URL unreachable and JD Body empty. Paste the JD into Notion before re-running edit." Remove from all subsequent steps (E0.7 onward). Do not proceed with a role that has no JD.
 
 Hold all structured JD data in memory. All subsequent steps that reference "the structured JD from Step E0.5" draw from here.
 
@@ -115,9 +115,7 @@ Hold all structured JD data in memory. All subsequent steps that reference "the 
 
 Run the gatekeeper on all existing outputs in parallel. The goal is a complete picture of what's already broken before any editing begins. All violation lists travel forward to the coach (E1) and cv-writer (E3) as context.
 
-The employment coach fetches JDs as part of Step E1 — no separate fetch step needed here.
-
-**Needs-fetch roles — defer this step.** A role marked `needs-fetch` in E0.5 has no JD yet; the coach fetches it in Step E1. Do not run either check below for that role now — run its baseline check immediately after E1 confirms a JD. If E1 hard-drops the role (URL unreachable), no baseline check runs at all.
+**Needs-fetch roles — defer this step.** A role marked `needs-fetch` in E0.5 has no JD yet; the fetch in E0.5 attempted retrieval. If E0.5 hard-dropped the role (URL unreachable), no baseline check runs at all. For roles where the JD was successfully fetched in E0.5 (and populated in memory), run the baseline check now.
 
 **Content check:** Run only if Edit type is `CV` or `Both`. Spawn `gatekeeper` with `option=content`, passing the existing CV text, the structured JD, and the role's `Keywords` property (from the Notion row — required for the ATS pre-check). Returns either PASS or a content violation list.
 
@@ -125,29 +123,19 @@ The employment coach fetches JDs as part of Step E1 — no separate fetch step n
 
 Run both in parallel. Collect results. Do not loop or fix anything yet — this step is diagnosis only.
 
-## Step E1 — Employment coach verification
+## Step E1 — Coach properties gate
 
-Spawn `employment-coach` with `CAREER_DATA=${CAREER_DATA}`, the full row data, the structured JD data for every role in the editing queue, and the baseline violation lists from Step E0.7 as additional context.
+**The career coach is never spawned from the edit pipeline.** Coach properties are set during intake (Hold → Researched) and are expected to be present when the editing pipeline runs.
 
-The coach's job in this pipeline is verification and refinement — not a fresh start. For each role:
+For each role in the editing queue, verify these **writer-needed fields** are populated (non-empty):
+`Role emphasis`, `Keywords`, `Strategy`.
 
-1. **Review the existing coach-owned properties** (`Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`) already on the Notion row. Assess whether they are accurate, complete, and well-calibrated given the full JD data and the user's documented background.
+`JD proof` is not checked — it is reference-only. `Gap handling` is not required when `gap_handling_mode = disabled`.
 
-2. **If a property is correct:** keep it. Do not rewrite it for the sake of rewriting.
+- **All three fields present** → role is ready; carry its existing coach values forward.
+- **Any field missing** → **hard-drop this role from the queue**. Log: "Career coach properties missing for [Company] — [Role Title]: missing `<list>`. Run intake first (`/career-engine --coach-skills`), then re-run edit." Leave Status unchanged.
 
-3. **If a property needs correction or improvement:** return the updated value with a one-sentence note explaining what changed and why.
-
-4. **For `Gap handling` specifically:** if the user has edited this in Notion, treat her version as authoritative and do not overwrite it. If it was set by a prior coach run and is still accurate, carry it forward. If it needs correction given the current JD, return an updated value with a one-sentence explanation.
-
-5. **Return writing guidance** for the editing run — the same batch analysis, base CV recommendation, and per-role focus format as the main pipeline. This guidance informs how the cv-writer approaches the revision.
-
-The coach does not re-score priorities or rebuild the queue in the editing pipeline. All roles in the editing queue are processed.
-
-## Step E2 — Coach property writeback
-
-Write any updated coach-owned properties back to the matching Notion rows using `notion-update-page`. Only overwrite properties the coach flagged as needing correction. Do not overwrite properties the coach confirmed as correct.
-
-Confirm in chat: "Coach verification complete: K properties updated across N roles." Then proceed.
+After the gate, confirm in chat: "Coach properties verified: N roles proceed, M excluded (missing coach properties)."
 
 ## Per-role editing pipeline
 
@@ -172,7 +160,7 @@ Agents in this track are explicitly informed they are improving existing work. P
 - The structured JD from Step E0.5
 - The existing CV text from the Notion row or the existing DOCX (whichever is available)
 - The existing cover letter text (retrieved from the output run folder using the filename in `Letter File Name`; if the property is absent from the schema or empty, locate the file via the run-folder convention instead: state.json `cover_letter_path`/`cv_path`, or the Draft Directory company subdirectory with filename patterns `coverletter-*`/`cv-*` — extract text using `pandoc "<output_dir>/<letter-filename>.docx" -t plain` or read the `.md` sibling)
-- The verified coach properties from Step E1
+- The coach properties verified in Step E1
 - Any reviewer feedback or notes already on the row
 
 **Step E3 — CV writer (revision mode)**
@@ -205,7 +193,7 @@ Assess:
 
 **Step E3.5 — Gatekeeper (content check)**
 
-Spawn `gatekeeper` with `option=content`, passing the revised CV text, the structured JD from Step E0.5, and the role's `Keywords` property (from the coach's verified output in Step E1 — required for the ATS pre-check).
+Spawn `gatekeeper` with `option=content`, passing the revised CV text, the structured JD from Step E0.5, and the role's `Keywords` property (from the coach properties verified in Step E1 — required for the ATS pre-check).
 
 **If PASS:** proceed to Step E4.
 
@@ -242,13 +230,13 @@ Spawn `letter-writer` with `option=revision`. Pass:
 - `CAREER_DATA=${CAREER_DATA}`
 - The existing cover letter (from the output run folder using the filename in `Letter File Name`; if the property is absent from the schema or empty, locate the file via the run-folder convention instead: state.json `cover_letter_path`/`cv_path`, or the Draft Directory company subdirectory with filename patterns `coverletter-*`/`cv-*`)
 - The baseline cover letter violation list from Step E0.7
-- The verified coach properties from Step E1, including `Gap handling`
+- The coach properties verified in Step E1, including `Gap handling`
 - The final CV (for context)
 - **`Why I Want This Role` — pass the verbatim text as a quoted block, never paraphrased or distilled.** The letter-writer's Intake Gate requires this field and its instruction rules require working from the user's exact words, not thematic summaries of them. If the Edit notes reference this field as the content source, that is even more reason to pass it raw — the writer must receive the actual material, not the orchestrator's interpretation of it. (R-44)
 - **`Edit notes` content** (from the Step E0 row payload) — if populated, include verbatim with the instruction: "Address these specific edit notes first, before applying general improvements: [content]". Omit if empty.
 - `LETTER_PATH=$PIPE/letter-draft.md` — the writer writes its output to this file and returns only a 2-line status + path (R-41 protocol).
 
-The letter-writer improves the existing letter — it does not start from scratch unless the strategic positioning changed significantly in Step E1.
+The letter-writer improves the existing letter — it does not start from scratch.
 
 The cover letter is written to the DOCX file only. Do not write cover letter text to any Notion property.
 
@@ -429,7 +417,7 @@ After conversion, move the Hebrew DOCX files to `$EDIT_DIR` (same destination as
 3. Update Status from `Needs editing` to `CV Ready for Review`.
 4. Append this role to the editing run's `state.json` (see State file section below) with `status: "completed"`.
 
-Do not overwrite coach-owned properties again here — those were already updated in Step E2.
+Do not overwrite coach-owned properties here — those are set during intake and verified (read-only) in Step E1.
 
 Do not write anything to the `Note` field unless the agent has genuinely additional context that the structured properties cannot carry.
 
