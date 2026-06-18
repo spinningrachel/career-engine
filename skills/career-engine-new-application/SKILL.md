@@ -71,13 +71,9 @@ Spawn `gatekeeper` with `option=content`, passing the CV path `$PIPE/cv-draft.md
 
 Spawn `recruiter-reviewer` with `CAREER_DATA=${CAREER_DATA}`, `Role summary`, the CV path `$PIPE/cv-draft.md` to read, and `OUTPUT_PATH=$PIPE/recruiter-cv.md`. It writes its full review there and returns a 2-line status (R-41).
 
-### Step 3 — Hiring manager review (CV)
-
-Spawn `hiring-manager-reviewer` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, `Role summary`, the CV path `$PIPE/cv-draft.md` to read, and `OUTPUT_PATH=$PIPE/hm-cv.md`. It writes its full review there and returns the short verdict (Yes / Conditional / No) plus the path (R-41); keep the verdict in context — Step 5 needs it.
-
 ### Step 4 — CV writer (revision)
 
-Spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `CV_PATH=$PIPE/cv-final.md` (write), the draft path `$PIPE/cv-draft.md`, and the review paths `$PIPE/recruiter-cv.md` + `$PIPE/hm-cv.md` to read. The writer also writes the CV CHANGES section to `$PIPE/cv-changes.md` and returns the paths (R-41). Step 7d reads `$PIPE/cv-changes.md` for the feedback file.
+Spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `CV_PATH=$PIPE/cv-final.md` (write), the draft path `$PIPE/cv-draft.md`, and the recruiter review path `$PIPE/recruiter-cv.md` to read. The writer also writes the CV CHANGES section to `$PIPE/cv-changes.md` and returns the paths (R-41). Step 7d reads `$PIPE/cv-changes.md` for the feedback file.
 
 If any recruiter or HM flag identifies a skill or credential gap the user does not have — do not address it. IT SHOULD BE COMPLETELY OMITTED. Reframing, surfacing, and reordering are permitted; fabrication and scope-hedging ARE ABSOLUTELY PROHIBITED.
 
@@ -146,19 +142,28 @@ Spawn `letter-writer` with `option=cover-letter`, passing:
 - The **final revised CV** path `$PIPE/cv-final.md` to read (for CV/letter coherence)
 - `Role summary` (contains the role context, key requirements, and Company self-characterization section verbatim if present — this is the JD proxy for the letter-writer)
 - The coach's Relationship type
-- The HM CV review path `$PIPE/hm-cv.md` to read — if the Step 3 verdict was Conditional, the condition is in that file and the letter must address it
 - **Why I Want This Role** from Notion (read above) — primary content input; include if populated
 - **Strategy** and **Gap handling** from Notion (read above) — secondary context; defer to Why I Want This Role on any conflict
 
 **Orchestrator quality read — before passing to gatekeeper:**
 
-After letter-writer returns, read `$PIPE/letter-draft.md` against the worked examples in `skills/cover-letter/SKILL.md`. Ask:
-- Does it open with something specific and arresting, or with a generic frame?
-- Does it sound like a person talking, or like marketing copy assembled from blocks?
-- Does it name something concrete about this company or this role that the reader will recognize as real?
-- Does it close with a reason to respond?
+After letter-writer returns, read `$PIPE/letter-draft.md`. Check ALL of the following:
 
-If the answer to any of these is "no," re-spawn `letter-writer` with `option=cover-letter` (same `LETTER_PATH=$PIPE/letter-draft.md`) and quote the specific problem verbatim. One retry only. Then proceed to Step 5.2 regardless.
+1. **Opener quality** — Does it establish genuine fit within the first two sentences? Fails if the opener:
+   - Uses an idiom, cliché, or self-deprecating humor (e.g., "without putting my thinking cap on," "needless to say," "it goes without saying")
+   - Makes a joke or casual aside as its first move
+   - Opens with a generic enthusiasm statement ("I was excited to see," "I would love to bring my skills")
+   - Establishes fit through a NEGATION rather than a direct claim ("nothing about X feels abstract to me" instead of stating directly what DOES feel concrete)
+
+2. **Opener-strategy coherence** — Does the opener undercut the stated strategy? If `Strategy` says "lead with technical credibility" but the opener jokes about not needing to think, that is a contradiction. Quote both to confirm alignment before proceeding.
+
+3. **Why I Want This Role implementation** — Is the user's WIWTR material woven into specific narrative moments, or merely mentioned, summarized, or used as a topic heading? The letter must draw from the user's actual words and framing — not produce a thematic summary of them.
+
+4. **Concrete vs. abstract** — Does it name something specific about this company or this role the reader will recognize as real (a product detail, a market fact, a named proof point), or does it trade in abstractions and claimed qualities?
+
+5. **Closing force** — Does it end with a reason to respond, or trail off?
+
+If the answer to ANY of (1), (2), or (3) is "no," re-spawn `letter-writer` with `option=cover-letter` (same `LETTER_PATH=$PIPE/letter-draft.md`) and quote the specific problem verbatim. One retry only. Then proceed to Step 5.2 regardless.
 
 ### Step 5.2 — Gatekeeper (cover letter draft check)
 
@@ -170,54 +175,35 @@ Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter path `$P
 
 **Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 5.2)` section in the revision log, proceed to Step 5.3, and flag for the user in the final delivery that this cover letter needs manual review before sending.
 
-### Step 5.3 — Recruiter review (cover letter)
+### Step 5.3 — Coach strategic letter review
 
-Spawn `recruiter-reviewer` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, `Role summary`, the cover letter path `$PIPE/letter-draft.md` to read, and `OUTPUT_PATH=$PIPE/recruiter-cl.md`. The recruiter reviews the cover letter for screening-risk issues: does it hold attention past the first sentence, does it establish the user's seniority and relevance quickly, does anything read as a red flag before a hiring manager sees her. It writes its full review to the path and returns a 2-line status (R-41).
-
-### Step 5.5 — Hiring manager review (cover letter)
-
-Spawn `hiring-manager-reviewer` with `option=cover-letter`, passing:
+After the gatekeeper passes the draft, spawn `career-coach` with `option=letter-review`, passing:
 - `CAREER_DATA=${CAREER_DATA}`
 - The cover letter path `$PIPE/letter-draft.md` to read
-- The HM CV review path `$PIPE/hm-cv.md` to read (the Step 3 verdict and any Conditional condition)
-- `Role summary`
-- `OUTPUT_PATH=$PIPE/hm-cl.md`
+- `Role summary`, `Strategy`, `Keywords` (from the coach's Step 0.8 output)
+- Why I Want This Role content (from the Pre-Step 5 read) — pass verbatim, not summarized
+- Company name and role title
+- `OUTPUT_PATH=$PIPE/coach-letter-review.md`
 
-It writes its full review (does it address the condition, does it add something new the CV doesn't, does it increase interview likelihood) to the path and returns the short verdict — Proceed to DOCX / Return to letter-writer — plus the path (R-41).
+The coach writes its diagnostic review to that file and returns: `COACH-LETTER-REVIEW: <n> issues → $PIPE/coach-letter-review.md`
 
-### Step 5.7 — Cover letter revision
+**If issues identified:** spawn `letter-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `LETTER_PATH=$PIPE/letter-draft.md` (read and overwrite), the coach review path `$PIPE/coach-letter-review.md` as the revision brief, and `$PIPE/fix-log.md` (read and append). Locked-fixes instruction applies. After revision, spawn `gatekeeper` with `option=cover-letter` (new `OUTPUT_PATH` round, pass Why I Want This Role and CV path same as Step 5.2). **Cap: 1 coach-directed revision + 1 gatekeeper pass.** If gatekeeper fails after the revision, log the violations and flag the letter for manual review — do not loop further.
 
-Spawn `letter-writer` with `option=revision`, passing:
-- `CAREER_DATA=${CAREER_DATA}`
-- `LETTER_PATH=$PIPE/letter-final.md` (write) and the draft path `$PIPE/letter-draft.md` to read
-- The recruiter feedback path `$PIPE/recruiter-cl.md` to read (from Step 5.3)
-- The hiring manager cover-letter feedback path `$PIPE/hm-cl.md` to read (from Step 5.5)
-- The HM CV review path `$PIPE/hm-cv.md` to read — if Conditional, the condition is there; the Step 5.5 verdict says whether the draft addressed it
+**If no issues identified:** proceed directly. Do not spawn letter-writer.
 
-Returns the path to the final cover letter (R-41). Address what can be addressed through reframing or surfacing documented experience. If the HM CV Conditional condition remains unmet and genuinely cannot be addressed without fabrication, proceed anyway.
-
-**Immediately after Step 5.7 returns — stage the revised cover letter markdown for export and crash recovery.** The writer has already written `$PIPE/letter-final.md` (R-41); copy it into place:
+After this step, copy `$PIPE/letter-draft.md` to `$PIPE/letter-final.md`, `/tmp/<coverletter_filename>.md`, and the output backup path:
 
 ```bash
-cp "$PIPE/letter-final.md" /tmp/<coverletter_filename>.md
-cp "$PIPE/letter-final.md" "<output_dir>/<company_dir>/<coverletter_filename>.md"
+cp "$PIPE/letter-draft.md" "$PIPE/letter-final.md"
+cp "$PIPE/letter-draft.md" /tmp/<coverletter_filename>.md
+cp "$PIPE/letter-draft.md" "<output_dir>/<company_dir>/<coverletter_filename>.md"
 ```
-
-### Step 5.8 — Gatekeeper (cover letter final check)
-
-Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter path `$PIPE/letter-final.md` to read, `Role summary`, the user's Why I Want This Role content, the final CV path `$PIPE/cv-final.md` to read (same as Step 5.2), and `OUTPUT_PATH=$PIPE/gatekeeper-cl-<round>.md`.
-
-**If PASS:** proceed to Step 5.9.
-
-**If FAIL:** spawn `letter-writer` with `option=revision`, passing `LETTER_PATH=$PIPE/letter-final.md` (read and overwrite), the gatekeeper violation path, and the fix-log path `$PIPE/fix-log.md` (read and append). Locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, re-copy `$PIPE/letter-final.md` to `/tmp/<coverletter_filename>.md` and the output backup path before spawning `gatekeeper` again (new `OUTPUT_PATH` round). Repeat until PASS. Log all violation rounds internally.
-
-**Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 5.8)` section in the revision log, proceed to Step 5.9, and flag for the user in the final delivery that this cover letter needs manual review before sending.
 
 ---
 
 ### Step 5.9 — Humanizer (cover letter)
 
-**Before spawning, snapshot the revert target:** copy `$PIPE/letter-final.md` (the Step 5.8-passing text) to a sibling `$PIPE/letter-final.prehumanizer.md` — the revert target for Step 5.95. (The humanizer edits in place, so this snapshot must be taken first.)
+**Before spawning, snapshot the revert target:** copy `$PIPE/letter-final.md` (the Step 5.3-passing text) to a sibling `$PIPE/letter-final.prehumanizer.md` — the revert target for Step 5.95. (The humanizer edits in place, so this snapshot must be taken first.)
 
 Spawn `cover-letter-humanizer`, passing `CAREER_DATA=${CAREER_DATA}`, the final cover letter markdown path `$PIPE/letter-final.md` (it edits in place), and `Role summary`.
 
@@ -227,7 +213,7 @@ The humanizer is a writing editor and linguistics expert. It loads `skills/cover
 
 After it returns, copy `$PIPE/letter-final.md` to `/tmp/<coverletter_filename>.md` and the output backup path. The humanizer writes its change log to `$PIPE/humanizer-changes.md`; append it to the revision log under `## Humanizer changes`.
 
-If the humanizer fails or returns no changes, proceed with the pre-humanizer version (`$PIPE/letter-final.prehumanizer.md`, which already passed Step 5.8).
+If the humanizer fails or returns no changes, proceed with the pre-humanizer version (`$PIPE/letter-final.prehumanizer.md`, which already passed Step 5.3).
 
 ### Step 5.95 — Final verification on the exported bytes
 
@@ -240,7 +226,7 @@ The humanizer changed the text after the last PASS, so that PASS is no longer va
    - Zero hits for the named banned patterns: "I know this", "that's where", "that's what", "that's the kind", "that exact", "exactly that", "this same", "serves as", "stands as", "acts as"; also grep "the same" — a hit fails only when it points at an agent-coined abstraction ("the same engine"), not in benign uses ("the same week").
 2. **Final gatekeeper pass** — spawn `gatekeeper` with `option=cover-letter` on this exact text, passing the cover letter path `$PIPE/letter-final.md` to read and `OUTPUT_PATH=$PIPE/gatekeeper-cl-<round>.md`.
 
-**If both pass:** proceed to Step 6. **If either fails:** spawn `cover-letter-humanizer` again with the specific failures named (language-level issues) or `letter-writer` with `option=revision` (content-level issues), then re-run this step. Cap: 2 rounds. After the cap, revert to the `.prehumanizer.md` file saved in Step 5.9 (the last text that passed Step 5.8) and flag the letter for manual review in the final delivery. Never export text that has not passed this step.
+**If both pass:** proceed to Step 6. **If either fails:** spawn `cover-letter-humanizer` again with the specific failures named (language-level issues) or `letter-writer` with `option=revision` (content-level issues), then re-run this step. Cap: 2 rounds. After the cap, revert to the `.prehumanizer.md` file saved in Step 5.9 (the last text that passed Step 5.3) and flag the letter for manual review in the final delivery. Never export text that has not passed this step.
 
 ---
 
@@ -429,7 +415,7 @@ Write the following properties using `notion-update-page`. All values are alread
 | `Hiring Manager's Name` | Hiring manager name and title from the coach's research. Write "Not identified" if none found. |
 | `Last Pipeline Run` | Today's date in ISO format (YYYY-MM-DD). |
 | `Status` | `CV Ready for Review` — set once DOCX export and writeback are confirmed complete. |
-| `Draft Directory` | `$DRAFT_DIR_URL` (constructed in Step 7a). **Omit this property from the `notion-update-page` call entirely if `$DRAFT_DIR_URL` is empty** — do not write an empty string to the property. |
+| `Draft Directory` | `$DRAFT_DIR_URL` (constructed in Step 7a). **Omit this property from the `notion-update-page` call entirely if `$DRAFT_DIR_URL` is empty** — do not write an empty string to the property. If `$DRAFT_DIR_URL` is empty, include a named note in the final chat delivery: "Draft Directory not written for [Company] — `draft_dir_url_base` not configured or empty. Run `/career-engine:setup --phase 5` to configure it." |
 
 **Property discipline** — write only the properties listed above. Nothing else.
 
@@ -440,7 +426,7 @@ If any writeback fails, log it and surface it in the final chat delivery. The st
 
 ### Step 7d — Save reviewer feedback file
 
-Write a single markdown file to the output folder. This is the one file the user reads — it contains reviewer feedback from all four review passes plus the cv-writer's change log, **all read from the role's `_pipeline/` files, not pasted from context (R-41).**
+Write a single markdown file to the output folder. This is the one file the user reads — it contains reviewer feedback from all review passes plus the cv-writer's change log, **all read from the role's `_pipeline/` files, not pasted from context (R-41).**
 
 **Filename:** `feedback-<roletitle>-<company>-<monYYYY>.md`  
 (Use the same slug format as the CV and cover letter files for this role.)
@@ -462,27 +448,9 @@ Write a single markdown file to the output folder. This is the one file the user
 
 ---
 
-## Hiring Manager Review — CV
+## Coach Strategic Letter Review
 
-<contents of `$PIPE/hm-cv.md` — read the file; if missing, write `_(not available)_`>
-
----
-
-## Recruiter Review — Cover Letter
-
-<contents of `$PIPE/recruiter-cl.md` — read the file; if missing, write `_(not available)_`>
-
----
-
-## Hiring Manager Review — Cover Letter
-
-<contents of `$PIPE/hm-cl.md` — read the file; if missing, write `_(not available)_`>
-
----
-
-## Opening Paragraph Feedback
-
-<Read `$PIPE/recruiter-cl.md` and `$PIPE/hm-cl.md`. If either flagged the cover letter opening paragraph negatively, quote that feedback here — even if it was not acted on. If `$PIPE/humanizer-changes.md` or the revision log notes "opener feedback noted — not revised per pipeline rules", include that note too. If no opener feedback exists, write "None.">
+<contents of `$PIPE/coach-letter-review.md` — read the file; if missing, write `_(not available)_`>
 ```
 
 Build the file by reading each `$PIPE` section from disk (not from context — R-41; the reviewer text flows file→file and never re-enters the orchestrator's working set) and writing it to the company subdir using the same `/tmp → output folder` copy protocol as the DOCX files. On Path B, read the `$PIPE` files and run the copy through the host file/process tools (R-30):

@@ -557,6 +557,35 @@ grep -c "career-coach" <location>/agents/career-coach.md                        
 
 **FAIL condition:** RETIRED notice missing, active pipeline references found, or career-coach agent absent.
 
+### Check 21r — E0-pre resolves `$DRAFT_DIR_URL_BASE` and edit pipeline Draft Directory warning present
+
+The edit pipeline's E0-pre must resolve `$DRAFT_DIR_URL_BASE` from `pipeline-preferences.json`. Without it, the Draft Directory Notion property is never written on edit runs (R-49 class).
+
+```bash
+grep -c "DRAFT_DIR_URL_BASE" <build>/skills/career-engine-edit/SKILL.md      # must be >= 2 (E0-pre + E10 writeback)
+grep -c "Draft Directory not written" <build>/skills/career-engine-edit/SKILL.md   # must be >= 1
+grep -c "Draft Directory not written" <build>/skills/career-engine-new-application/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** `$DRAFT_DIR_URL_BASE` not in E0-pre, or warning message absent from either pipeline.
+
+### Check 21s — Coach letter review wired at correct pipeline positions
+
+The coach strategic letter review (Option 4) must be wired into both the new-application pipeline (after Step 5.2 gatekeeper PASS) and the edit pipeline (after Step E7.3 gatekeeper PASS). The recruiter and HM cover letter reviewers must NOT appear in either pipeline.
+
+```bash
+grep -c "option=letter-review" <build>/skills/career-engine-new-application/SKILL.md   # must be >= 1
+grep -c "option=letter-review" <build>/skills/career-engine-edit/SKILL.md              # must be >= 1
+grep -c "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter" <build>/skills/career-engine-new-application/SKILL.md   # must be 0
+grep -c "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter" <build>/skills/career-engine-edit/SKILL.md             # must be 0
+grep -c "hiring-manager-reviewer.*cover-letter\|option=cover-letter.*hiring" <build>/skills/career-engine-new-application/SKILL.md  # must be 0
+grep -c "hiring-manager-reviewer.*cover-letter\|option=cover-letter.*hiring" <build>/skills/career-engine-edit/SKILL.md            # must be 0
+grep -c "Option 4" <build>/agents/career-coach.md   # must be >= 1
+grep -c "Write" <build>/agents/career-coach.md      # must be >= 1 (coach needs Write for review file)
+```
+
+**FAIL condition:** any required count is zero, or recruiter/HM cover letter reviewer still present.
+
 ### Check 22 — Known regression checks present in CLAUDE.md
 
 In `CLAUDE.md`: verify the file contains "Known regression checks", entries "R-1" through "R-6", and the latest entry "R-37".

@@ -491,12 +491,11 @@ All agent steps are stateless and safe to re-run. They produce the same class of
 | 0.5 — JD content prep | Yes | Idempotent; only writes if JD Body was empty |
 | 0.8 — career coach | Yes | Fetches JDs + overwrites Notion properties ([HIGH] tags); [LOW] only fills empty |
 | 1 — cv-writer draft | Yes | Overwrites previous draft |
-| 1.5 / 4.5 / 5.2 / 5.8 — gatekeeper | Yes | Pure check, no side effects |
-| 2 / 5.3 — recruiter-reviewer | Yes | Pure review, no side effects |
-| 3 / 5.5 — hiring-manager-reviewer | Yes | Pure review, no side effects |
+| 1.5 / 4.5 / 5.2 / 5.95 — gatekeeper | Yes | Pure check, no side effects |
+| 2 — recruiter-reviewer | Yes | Pure review, no side effects |
+| 5.3 — coach strategic letter review | Yes | Pure review, no side effects |
 | 4 — cv-writer revision | Yes | Overwrites draft; markdown backup re-saved |
 | 5 — letter-writer draft | Yes | Overwrites previous draft |
-| 5.7 — letter-writer revision | Yes | Overwrites draft; markdown backup re-saved |
 | 6 — DOCX export | Yes | Overwrites existing DOCX files (harmless if content unchanged) |
 | 7a — Draft Directory writeback | Yes | Idempotent; same URL written |
 | 7b — state.json | **Caution** | Appends a new record; creates a duplicate if role already in state.json. Not harmful but makes --status output noisy. |
@@ -700,7 +699,13 @@ Fill all values from the run state. Set each agent count from the actual invocat
 
 ## Final Chat Delivery
 
-After Step 9c completes, deliver a single confirmation line in chat:
+**Hard gate — Step 8 must be confirmed complete before this line is delivered.** Before sending the final confirmation, verify:
+- `linkedin-updates-<YYYY-MM-DD>.md` exists in the output folder and is nonzero.
+- If it is missing or zero bytes: run Step 8 now. If Step 8 fails on retry, include the full file content inline in chat with the note "LinkedIn updates file write failed — content follows."
+
+**Step 8 runs ONLY on new-application pipeline runs.** Do not produce a LinkedIn updates file for `--edit`, `--coach-skills`, `--now`, or any other mode.
+
+After Step 9c completes and Step 8 is confirmed, deliver a single confirmation line in chat:
 
 `All N roles completed. Files are in your output folder and Notion rows are updated. LinkedIn updates file: linkedin-updates-<YYYY-MM-DD>.md`
 

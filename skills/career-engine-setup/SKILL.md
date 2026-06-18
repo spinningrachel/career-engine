@@ -214,57 +214,62 @@ If the user gave feedback, apply it to `03-framework.md` before proceeding.
 
 ### Interview — gap-filling and enrichment
 
-The interview has two purposes: fill gaps the materials left, and surface things the user didn't think to volunteer.
+**Apply the coach's Deep Probe Interview Mode for this entire section.** Load `career-coach/SKILL.md` → Deep Probe Interview Mode and apply its principles: 2–3 questions at a time, grouped by theme, scenario-based and behavioral rather than abstract, follow up every meaningful answer with a counter-probe. Do not deliver a form. Adjust based on what the materials already covered.
 
-**Run the interview as a natural conversation, not a form.** Ask 2–3 questions at a time, grouped by theme. Do not read out all questions at once. Adjust based on what the materials already covered — skip questions where you already have strong evidence.
-
-**Track what's missing from each section of `03-framework.md` and `02-professional-background.md`. Ask about the most important gaps first.**
+**Track what's missing from each section of `03-framework.md` and `02-professional-background.md`. Cover the most important gaps first. The goal is the real version of the user — not the polished self-presentation version.**
 
 Core areas to cover:
 
-**Voice, tone, and writing preferences (always ask — even if materials were provided)**
+**Voice, tone, and writing (always ask — even if materials were provided)**
 
-These questions cannot be reliably inferred from a CV. They shape how every letter sounds and how agents calibrate register. Ask all of them.
+These cannot be reliably inferred from a CV. They shape how every letter sounds and how agents calibrate register.
 
-- How do you want to come across in a cover letter — formal and structured, or warm and direct? Or somewhere specific between those?
-- Short punchy sentences, or longer flowing ones? Or does it depend on the audience?
-- Is there anything that drives you absolutely crazy in AI-generated writing — phrases, structures, tones you'd never use?
-- How do you talk about your work when you're explaining it to someone you respect, not selling yourself? (A quote or example if they have one.)
-- Are there any words or phrases you genuinely use and want preserved — not polished away?
-- How do you want to sound to a technical founder vs. a senior recruiter vs. a VP of Sales? Are those registers the same for you, or different?
+Don't ask "how do you want to come across?" — ask about actual moments and real reactions. Scenarios to adapt:
 
-Write the answers into `03-framework.md` §Voice and tone and §Voice samples. If the user provides actual quotes or phrases, capture them verbatim.
+> "Walk me through what happens in your head when you read a cover letter that sounds like it was written by someone trying to sound impressive. What specifically makes you cringe — a phrase, a structure, a register? Give me an example if you have one."
+
+> "You're explaining your work to someone you genuinely respect who isn't in your field — not selling yourself, just explaining what you actually do. How does that conversation sound? Start talking."
+
+> "You have two registers you switch between — one for technical founders, one for a senior exec who doesn't want to hear the details. Are those the same voice for you, or do you shift? What changes?"
+
+> "Is there a word or phrase you genuinely use — something you'd never want a writing agent to polish away — that captures something true about how you work or think?"
+
+Capture actual words and phrases verbatim. Voice samples should be quoted language from the conversation, not summaries.
+
+Write the answers into `03-framework.md` §Voice and tone and §Voice samples.
 
 **Voice preferences never silently modify documented rules.** These answers refine register, vocabulary, and style — they do not weaken or create exceptions to any documented writing rule or prohibition (in `01-writing-rules.md`, the cover-letter skill, the humanizer, or cv-writing). If an answer conflicts with a documented behavior (e.g., the user says they love em dashes, or wants tricolons everywhere), surface the conflict and ask whether they **explicitly reject that specific documented behavior**. Only an explicit rejection changes a rule — write the change into the rule's home file and note it; never infer a rule change from a preference.
 
-**Positioning and voice (if not clear from materials)**
-- How would you describe what you do in one sentence — to a technical founder, not a recruiter?
-- What's the problem you exist to solve that most people in your field don't solve as well?
-- What would colleagues say about you that you'd never say about yourself?
+**Positioning and professional belief system**
+
+> "If you had to name the thread that runs through every role you've taken and every decision you've made in your career — something beyond 'I wanted to grow' or 'the opportunity was good' — what would it be?"
+
+> "What's the one thing most people in your field get wrong? The mistake you see made over and over that you genuinely can't understand. What's your theory for why they keep making it?"
+
+> "What would the people who've worked closest to you say is the thing that makes your approach different — the thing they'd struggle to replace if you left?"
 
 **Career facts (for `02-professional-background.md`)**
-- For each major role: confirm title, dates, direct reports, key metrics, what you specifically built or changed
-- Attribution check: for any significant outcome, ask "was that company-level or something you drove specifically?" — this shapes attribution rules in `01-writing-rules.md`
+- For each major role: confirm title, dates, direct reports, key metrics, what was specifically built or changed.
+- Attribution check — for any significant outcome: "Was that a company result or something you drove specifically? How much of the 300% growth was you, and how much was the market?" This shapes attribution rules in `01-writing-rules.md`.
 - Consulting/fractional work: any client engagements not in the CV?
 
 **Scope and framing (for `01-writing-rules.md`)**
-- Were there any outcomes in your CV that were team-delivered or company-level that you want to make sure agents don't overclaim? (e.g., "300% YoY growth" as a company metric vs. a marketing attribution)
-- Any roles where the title understates the scope, or overstates it?
-- Any engagement that was fractional/consulting that needs specific scope framing?
-
-**Differentiators and positioning (for `03-framework.md`)**
-- What's the one thing that makes your background genuinely unusual — that you'd have a hard time finding in another candidate?
-- What have you worked on that most people in your field haven't touched?
+- Were there outcomes in the CV that were team-delivered or company-level that agents shouldn't overclaim?
+- Any roles where the title understates or overstates the scope?
+- Any fractional or consulting engagement needing specific scope framing?
 
 **Target search (for `01-writing-rules.md` Section 2)**
 - What roles are you targeting — title, seniority, function?
-- What company stage and size? Any strong preferences or hard nos?
+- Company stage and size — strong preferences, hard nos?
 - Geographic constraints or preferences?
 
-**Career-shift posture (for `03-framework.md` §Career-shift posture — always ask, like the voice questions; appetite for a shift cannot be inferred from materials)**
-- Beyond your established function, how do you feel about career-shift roles — not open, open case-by-case, or is a shift actually a primary goal of this search?
-- If open or pursuing: which directions interest you (role types, functions), and what does a shift role need to offer — seniority, scope, specific conditions — for you to want it?
-- Anything off-limits — functions or transitions you never want agents to propose or emphasize?
+**Career-shift posture (for `03-framework.md` §Career-shift posture — always ask; this cannot be inferred from materials)**
+
+Don't ask abstractly. Use a scenario:
+
+> "A role comes in — technically adjacent to your background, but you'd be the first person in this function at the company. No team, no playbook, no established credibility in that lane. When you're honest with yourself, is that energizing or exhausting?"
+
+> "Beyond your established function — how open are you to a shift? Not open, open case-by-case, or is a shift actively what you're looking for? And if open: what does a shift role need to offer — seniority, specific scope, conditions — for you to actually want it? What's off the table entirely?"
 
 Write the answers into `03-framework.md` §Career-shift posture and remove its `[DRAFT]` marker. Also capture current employment status and search mode (full-time vs. contract/freelance in the interim) in the same section if it surfaced here or anywhere in the interview.
 
@@ -275,7 +280,7 @@ Ask about these specifically if they haven't come up naturally:
 - **Testimonials:** "Do you have any LinkedIn recommendations or client feedback we should add? Third-party quotes carry different weight than self-description."
 - **Published work:** "Have you published articles, research papers, or significant public writing — even ghostwritten?"
 - **Community and teaching:** "Are you active in any professional communities, do any mentoring, or hold any formal advisory roles?"
-- **Voice samples:** "Is there anything you've said in an interview, recording, or conversation that captures how you think about your work? Even a rough quote is useful."
+- **Voice samples:** "Is there anything you've said in a conversation, presentation, or interview that captures how you think about your work? Even a rough quote is useful."
 - **Anti-positioning:** "Is there anything you've been mistakenly credited for, or a claim that would be easy to make but isn't accurate? Better to document it now."
 
 ### After the interview — update reference files

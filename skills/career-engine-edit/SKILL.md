@@ -46,7 +46,7 @@ Then confirm:
 
 ## Step E0-pre — Resolve per-install config (R-38)
 
-The edit pipeline is its own entry (no orchestrator), so resolve config yourself. After the `career-data` discovery, read `${CAREER_DATA}/references/pipeline-preferences.json` and set `$NOTION_DATABASE_ID` and `$NOTION_NEEDS_EDITING_VIEW_URL` (used by the queries below) plus `$OUTPUT_FOLDER` and `$CV_TEMPLATE` (for export). Wherever this skill shows `{{NOTION_DATABASE_ID}}` or `{{NOTION_NEEDS_EDITING_VIEW_URL}}`, use the resolved values. Stop if `notion_database_id`, `output_folder`, or `cv_template` is missing: "career-data is missing a required config key — run `/career-engine:setup --phase 5`." The plugin keeps these placeholders literal (single build).
+The edit pipeline is its own entry (no orchestrator), so resolve config yourself. After the `career-data` discovery, read `${CAREER_DATA}/references/pipeline-preferences.json` and set `$NOTION_DATABASE_ID`, `$NOTION_NEEDS_EDITING_VIEW_URL`, `$OUTPUT_FOLDER`, `$CV_TEMPLATE`, and `$DRAFT_DIR_URL_BASE` (used by the queries and exports below). Wherever this skill shows `{{NOTION_DATABASE_ID}}` or `{{NOTION_NEEDS_EDITING_VIEW_URL}}`, use the resolved values. Stop if `notion_database_id`, `output_folder`, or `cv_template` is missing: "career-data is missing a required config key — run `/career-engine:setup --phase 5`." Optional: `draft_dir_url_base` absent or `skip` → Draft Directory writeback is skipped (log it in the final delivery as "Draft Directory not written — `draft_dir_url_base` not configured"). The plugin keeps these placeholders literal (single build).
 
 ## Step E0 — Fetch roles for editing
 
@@ -203,15 +203,11 @@ Spawn `gatekeeper` with `option=content`, passing the revised CV text, the struc
 
 Spawn `recruiter-reviewer` with `CAREER_DATA=${CAREER_DATA}`, the structured JD, the revised CV, and `OUTPUT_PATH=$PIPE/recruiter-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). The reviewer is aware this is a revision, not a first draft.
 
-**Step E5 — Hiring manager review**
+**Step E5 — CV writer (final revision)**
 
-Spawn `hiring-manager-reviewer` with `CAREER_DATA=${CAREER_DATA}`, the structured JD, the revised CV, and `OUTPUT_PATH=$PIPE/hm-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). It returns structured feedback on the revision.
+Read recruiter feedback from `$PIPE/recruiter-review.md`. Spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, the revised CV from Step E3, and the recruiter feedback. Returns the final CV and revision log.
 
-**Step E6 — CV writer (final revision)**
-
-Read recruiter feedback from `$PIPE/recruiter-review.md` and hiring manager feedback from `$PIPE/hm-review.md`. Spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, the revised CV from Step E3, the recruiter feedback, and the hiring manager feedback. Returns the final CV and revision log.
-
-**Step E6.5 — Gatekeeper (content check)**
+**Step E5.5 — Gatekeeper (content check)**
 
 Spawn `gatekeeper` with `option=content`, passing the final revised CV text, the structured JD, and the role's `Keywords` property.
 
@@ -263,24 +259,21 @@ Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter (read fr
 
 **If FAIL:** spawn `letter-writer` with `option=revision`, passing the cover letter and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL; a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again with `option=cover-letter`. Repeat until PASS. Cap: 3 revision passes. After the third FAIL, stop looping, log the unresolved violations, flag the role in the final report, and continue the pipeline. Log all violation rounds internally. Then proceed to Step E7.4.
 
-**Step E7.4 — Recruiter review**
+**Step E7.4 — Coach strategic letter review**
 
-Spawn `recruiter-reviewer` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter (read from `$PIPE/letter-draft.md`), the structured JD, and `OUTPUT_PATH=$PIPE/recruiter-cl-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). The reviewer is aware this is a revision, not a first draft.
-
-**Step E7.5 — Hiring manager review**
-
-Spawn `hiring-manager-reviewer` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter (read from `$PIPE/letter-draft.md`), the structured JD, the final CV (for context), and `OUTPUT_PATH=$PIPE/hm-cl-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). If the hiring manager returns a Conditional verdict, that verdict is in the file — read it before Step E7.6.
-
-**Step E7.6 — Letter-writer (final revision)**
-
-Read recruiter feedback from `$PIPE/recruiter-cl-review.md` and hiring manager feedback from `$PIPE/hm-cl-review.md`. Spawn `letter-writer` with `option=revision`. Pass:
+Spawn `career-coach` with `option=letter-review`, passing:
 - `CAREER_DATA=${CAREER_DATA}`
-- The revised cover letter (read from `$PIPE/letter-draft.md`)
-- Recruiter feedback (from disk)
-- Hiring manager feedback (from disk, including any Conditional condition verbatim)
-- The gatekeeper violation list from Step E7.3 if any items were not fully resolved
+- The cover letter path `$PIPE/letter-draft.md` to read
+- `Role summary`, `Strategy`, `Keywords` (from the coach properties verified in Step E1)
+- Why I Want This Role content (from the Step E7 Notion payload) — verbatim, not summarized
+- Company name and role title
+- `OUTPUT_PATH=$PIPE/coach-letter-review.md`
 
-Returns the final cover letter and a brief revision log (what changed and why, one line per change).
+The coach writes its diagnostic review to that file and returns: `COACH-LETTER-REVIEW: <n> issues → $PIPE/coach-letter-review.md`
+
+**If issues identified:** spawn `letter-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `LETTER_PATH=$PIPE/letter-draft.md` (read and overwrite), the coach review path `$PIPE/coach-letter-review.md` as the revision brief, and `$PIPE/fix-log.md` (read and append). Locked-fixes instruction applies. After revision, spawn `gatekeeper` with `option=cover-letter` (new OUTPUT_PATH round, pass Why I Want This Role and final CV). **Cap: 1 coach-directed revision + 1 gatekeeper pass.** If gatekeeper fails after the revision, log the violations and flag for manual review — do not loop further.
+
+**If no issues identified:** proceed directly to Step E7.7.
 
 **Step E7.7 — Gatekeeper (cover letter check — final)**
 
@@ -413,7 +406,7 @@ After conversion, move the Hebrew DOCX files to `$EDIT_DIR` (same destination as
    ```
    Draft Directory: $DRAFT_DIR_URL_BASE<today-date-folder>%2F<company_dir>%2F
    ```
-   Use `$DRAFT_DIR_URL_BASE` — the value resolved from `pipeline-preferences.json` in the orchestrator preflight (or edit skill preflight for standalone runs). If `$DRAFT_DIR_URL_BASE` is empty or `skip`, omit this property from the writeback entirely. Do not write an empty string or the literal word "skip" to the Notion property.
+   Use `$DRAFT_DIR_URL_BASE` — the value resolved from `pipeline-preferences.json` in Step E0-pre. If `$DRAFT_DIR_URL_BASE` is empty or `skip`, omit this property from the writeback entirely. Do not write an empty string or the literal word "skip" to the Notion property. If omitted, include a named note in the final chat delivery: "Draft Directory not written for [Company] — `draft_dir_url_base` not configured or empty. Run `/career-engine:setup --phase 5` to configure it."
    This always reflects where the DOCX files actually are after Step E9.5. Hebrew files (if produced in Step E9H) move to the same `$EDIT_DIR` — no separate Hebrew property writes needed.
 3. Update Status from `Needs editing` to `CV Ready for Review`.
 4. Append this role to the editing run's `state.json` (see State file section below) with `status: "completed"`.
