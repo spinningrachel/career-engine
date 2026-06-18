@@ -163,7 +163,7 @@ Hebrew DOCX files are produced inline in Step 6H (Standard/Edit pipelines). This
 
 **Hebrew templates:** Two dedicated templates exist for Hebrew output — both located in the user's Office templates folder:
 
-- `cvHe.dotm` — Hebrew CV reference template (macro-enabled)
+- `cvHe.dotx` — Hebrew CV reference template
 - `he-letter.dotx` — Hebrew cover letter reference template
 
 Full path: `$WORD_TEMPLATES_PATH/` — resolved from the career-data config key `word_templates_path` (R-38). If empty, Hebrew export is unavailable; skip it and note it.
@@ -191,7 +191,7 @@ cat /tmp/he-<cv_filename>.md \
 
 # 2. Convert with pandoc using Hebrew CV template
 pandoc /tmp/he-<cv_filename>-with-footer.md \
-  --reference-doc="${HE_TEMPLATES}/cvHe.dotm" \
+  --reference-doc="${HE_TEMPLATES}/cvHe.dotx" \
   -o "<output_dir>/<company_dir>/he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 
 # 3. Update subtitle

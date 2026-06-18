@@ -291,7 +291,7 @@ cat /tmp/he-<cv_filename>.md \
     > /tmp/he-<cv_filename>-with-footer.md
 
 pandoc /tmp/he-<cv_filename>-with-footer.md \
-  --reference-doc="${HE_TEMPLATES}/cvHe.dotm" \
+  --reference-doc="${HE_TEMPLATES}/cvHe.dotx" \
   -o "<output_dir>/<company_dir>/he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 
 # Hebrew CV subtitle

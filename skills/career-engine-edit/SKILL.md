@@ -96,6 +96,8 @@ For each page fetched, capture the full row payload including:
 
 Report the count to the user: "Found N roles marked Needs editing (M skipped — Edit type missing)." If the count after skipping is 0, **stop immediately and report that.** Do not continue the pipeline.
 
+**Queue cap — maximum 5 roles per run.** If more than 5 roles remain after skipping, select the top 5 by Priority field: First > Second > Third > Fourth > Fifth, then oldest `Last Pipeline Run` date as tiebreaker (roles with no prior run are treated as oldest). Report which roles are deferred: "Deferring N roles — re-run edit to process them." Proceed only with the selected 5.
+
 **Routing by Edit type — hard gate, checked again before each subagent spawn:**
 - `CV` — run CV editing steps only (E0.7 content check, E3–E6.5, CV DOCX export). Skip ALL cover letter steps. Do not spawn letter-writer, do not run cover letter gatekeeper.
 - `Letter` — run cover letter editing steps only (E0.7 cover letter check, E7–E7.5, cover letter DOCX export). Skip ALL CV steps. Do not spawn cv-writer, do not run CV gatekeeper.
@@ -379,7 +381,7 @@ cat /tmp/he-<cv_filename>.md \
     > /tmp/he-<cv_filename>-with-footer.md
 
 pandoc /tmp/he-<cv_filename>-with-footer.md \
-  --reference-doc="${HE_TEMPLATES}/cvHe.dotm" \
+  --reference-doc="${HE_TEMPLATES}/cvHe.dotx" \
   -o "<output_dir>/<company_dir>/he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 
 python3 "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/update-subtitle.py" \
@@ -449,4 +451,4 @@ Same format as the main pipeline:
 - **Property discipline.** Each property is written once, by its owner. Do not duplicate content across fields. The `Note` field is the user's space.
 - **Fabrication rule is absolute.** See 01-writing-rules.md. Editing does not license invention.
 - **Status update is the final step.** Only update Status to `CV Ready for Review` after the DOCX export and Notion writeback are confirmed complete.
-- **Do not pause mid-run.** Process all roles in the editing queue without stopping to ask the user about scope.
+- **Do not pause mid-run. This is an Absolute Constraint.** Process all roles in the selected queue automatically without stopping to ask the user about scope, workload, priorities, or session length. Mid-run observations (fabrication catches, data gaps, file issues) go into the final report — never into a blocking question. The only permitted stops are a hard failure (output folder unreachable, zero roles after skipping) and the end-of-run summary.
