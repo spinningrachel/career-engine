@@ -42,16 +42,26 @@ Everything is grounded in a single source of truth about you — your positionin
 
 ## How it works
 
-You install the plugin, run setup once, and then manage your job search through slash commands. The plugin reads your career materials from an external `career-data` skill it never modifies, pulls roles from a Notion database, and runs specialized agents for each stage of the application pipeline.
+You install the plugin, run setup once, and then work through slash commands. The plugin reads your career materials from an external `career-data` skill it never modifies and runs specialized agents for each task.
 
-The core pipeline stages are:
+The plugin has two parts: standalone skills you invoke on demand, and a sequenced application pipeline that tracks roles through Notion.
+
+**Standalone skills** work independently of the pipeline and require no prior setup beyond installation:
+
+- **LinkedIn coach** — profile audit, headline optimisation, content strategy, video intro script
+- **Personal brand** — positioning statement, audience map, content pillars, bio library
+- **Career coach** — conversational fit assessment, role strategy, direct coaching
+- **Update references** — fold new career materials into your reference files
+- **Technical writer** — documentation, specs, READMEs, runbooks, prompts
+
+**The core pipeline stages** run in sequence, handing off via Notion status transitions:
 
 1. **Sourcing** — find open roles across job boards and LinkedIn, scored against your preferences, deduplicated against your Notion database.
 2. **Intake** — research a role, run the career coach, and write strategic properties (priority, emphasis, keywords, strategy) to Notion. No CVs yet.
 3. **New Application** — draft and refine a CV and cover letter through recruiter review, hiring-manager review, and gatekeeper checks, then export DOCX files to your output folder.
 4. **Edit** — refine existing CV and cover letter outputs for roles already processed.
 
-Each stage hands off to the next via Notion status transitions (`Hold` → `Researched` → `Interested` → `Needs editing`). The pipeline never skips a stage or back-fills properties it does not own.
+The pipeline never skips a stage or back-fills properties it does not own (`Hold` → `Researched` → `Interested` → `Needs editing`).
 
 ---
 
