@@ -26,14 +26,14 @@ Do not hardcode the full absolute path (e.g., `/Users/.../local-agent-mode-sessi
 
 ### LinkedIn MCP (stickerdaniel/linkedin-mcp-server) — Optional
 
-When configured, the employment-coach agent uses this MCP for company and hiring manager research. Install it separately — it is not bundled with the plugin.
+When configured, the career-coach agent uses this MCP for company and hiring manager research. Install it separately — it is not bundled with the plugin.
 
 **Install:**
 ```bash
 uvx linkedin-scraper-mcp@latest --login
 ```
 
-**Configure in Claude Code settings** with server name `linkedin-mcp`. The employment coach will then have access to:
+**Configure in Claude Code settings** with server name `linkedin-mcp`. The career coach will then have access to:
 - `mcp__linkedin-mcp__get_company_profile` — company about page, posts, jobs
 - `mcp__linkedin-mcp__get_company_employees` — employee demographics and profiles
 - `mcp__linkedin-mcp__get_person_profile` — individual profile with experience, education

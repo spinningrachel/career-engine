@@ -1,6 +1,6 @@
 ---
 name: career-engine-new-application
-description: 'Per-role pipeline for the career-engine orchestrator. Handles Step 0.10 (warm-up role selection) and Steps 1 through 7 for New Applications pipeline roles: CV draft, gatekeeper, recruiter review, HM review, CV revision, cover letter draft, cover letter gatekeeper, cover letter recruiter review, cover letter HM review, cover letter revision, cover letter gatekeeper (post-revision), DOCX export for both files, and Notion writeback. The structured JD for each role is already in memory from the queue pipeline — do not re-fetch. Load this skill as part of the career-engine pipeline, after career-engine-intake.'
+description: 'Per-role pipeline for the career-engine orchestrator. Handles Step 0.10 (warm-up role selection) and Steps 1 through 7 for New Applications pipeline roles: CV draft, gatekeeper, recruiter review, HM review, CV revision, cover letter draft, cover letter gatekeeper, cover letter coach review, cover letter revision, cover letter humanizer, final verification gate, DOCX export for both files, and Notion writeback. The structured JD for each role is already in memory from the queue pipeline — do not re-fetch. Load this skill as part of the career-engine pipeline, after career-engine-intake.'
 ---
 
 # New Application — Per-Role Pipeline
