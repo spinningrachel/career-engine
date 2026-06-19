@@ -65,6 +65,35 @@ Slash commands. Thin — they invoke skills, not implement logic directly.
 
 ---
 
+## Skill ownership map — who reads what, from where
+
+The Desktop app has three runtime environments. They do **not** share a skill store:
+
+| Environment | Where it reads skills from | Notes |
+|---|---|---|
+| **Chat** | Desktop app skill store | Skills installed via Customize → Skills |
+| **Cowork** | Desktop app skill store | Same store as Chat — same install |
+| **Code (CLI)** | `~/.claude/skills/` on local disk | Separate location; synced one-way from Desktop app |
+
+### The plugin (`career-engine`)
+
+Installed as a `.plugin` file via **Customize → Connectors → Personal plugins**. Available in all three environments after install. Contains only code — agents, skills, blank templates. No personal data.
+
+### The `career-data` skill
+
+Installed as a `.skill` file via **Customize → Skills**. The Desktop app install is canonical — it serves Chat and Cowork. When the Desktop app installs a skill, it also writes a copy to `~/.claude/skills/` so Claude Code can read it.
+
+**One-way sync: Desktop app → Code.** The Desktop app writes to `~/.claude/skills/` at install time. Writing directly to `~/.claude/skills/` from the CLI does NOT propagate back to Chat or Cowork — it creates a divergent copy that drifts silently.
+
+### Rules that follow from this
+
+1. **Never write `~/.claude/skills/` directly from a CLI or pipeline.** Use update-prompt files instead — the user pastes them into Chat (or Code) to make the edit, then repackages and reinstalls via the Desktop app.
+2. **To update `career-data`:** generate an update-prompt file → user pastes in Chat → Chat edits the skill → user repackages as `.skill` → uploads via Customize → Skills. This is the only update path that keeps all three environments in sync.
+3. **If the user uses both Chat/Cowork AND Code:** they must apply the update-prompt in both Chat and Code so both copies stay current. Update-prompt files include this reminder.
+4. **Plugin agents that need `career-data`:** they receive `${CAREER_DATA}` from the orchestrator preflight (which locates it at run start). Standalone invocations do Step −0.5 self-locate. Never hardcode the path.
+
+---
+
 ## Drift prevention
 
 With a single build there is no cross-version drift. The remaining drift risk is between **copies of `career-data`**: the canonical Desktop app install vs. a stray copy written directly to `~/.claude/skills/` by a CLI. Prevent it with the rule in *Single-build architecture* — never write `~/.claude/skills/` directly; create and update `career-data` only through the Desktop app. Sync is one-way, app → Code.
