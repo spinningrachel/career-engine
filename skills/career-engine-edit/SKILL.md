@@ -417,9 +417,13 @@ Do not overwrite coach-owned properties here — those are set during intake and
 
 Do not write anything to the `Note` field unless the agent has genuinely additional context that the structured properties cannot carry.
 
-**Step E10.5 — Why I Want This Role promotion**
+**Step E10.5 — Why I Want This Role promotion prompt**
 
-Runs for every role in the run whose `Why I Want This Role` field is populated — including roles where the letter track was skipped. This step is mechanical and must never block delivery: if it fails, log the failure and continue. Run the identical procedure defined in `skills/career-engine-new-application/SKILL.md` Step 7f: read `${CAREER_DATA}/references/02-professional-background.md` in full, identify content in the field that is new, append verbatim-quoted entries to Section 5 → "Promoted from Why I Want This Role" (append-only, never paraphrase, never infer) following the orchestrator's **Writing personal data** rule (Code direct / Cowork staged + Appendix-A; refresh backup), flag new Section 7-grade career facts for approval instead of writing them, and log "Promoted N new entries to the motivation bank" or "No new content to promote" per role in the final delivery.
+Runs for every role in the run whose `Why I Want This Role` field is populated — including roles where the letter track was skipped. This step is mechanical and must never block delivery: if it fails, log the failure and continue.
+
+For each qualifying role, write a file named `update-prompt-<company>-<monYYYY>.md` into the role's company subdirectory in the output folder using the structure defined in `skills/career-engine-new-application/SKILL.md` Step 7f. Copy the fixed context block verbatim and fill in the variable content block with this role's Why I Want This Role content, company, role title, and date.
+
+Log in the final delivery per role: "Update prompt written to `<company_dir>/update-prompt-<company>-<monYYYY>.md` — paste into Chat or Code to complete the motivation bank promotion (do both if you use both environments)" or "No Why I Want This Role content — skipped."
 
 
 ## State file (crash-recovery resilience)
@@ -452,3 +456,5 @@ Same format as the main pipeline:
 - **Fabrication rule is absolute.** See 01-writing-rules.md. Editing does not license invention.
 - **Status update is the final step.** Only update Status to `CV Ready for Review` after the DOCX export and Notion writeback are confirmed complete.
 - **Do not pause mid-run. This is an Absolute Constraint.** Process all roles in the selected queue automatically without stopping to ask the user about scope, workload, priorities, or session length. Mid-run observations (fabrication catches, data gaps, file issues) go into the final report — never into a blocking question. The only permitted stops are a hard failure (output folder unreachable, zero roles after skipping) and the end-of-run summary.
+
+- **Reviewer spawns are never skipped. This is an Absolute Constraint.** Steps E4 (recruiter review) and E7.4 (coach strategic letter review) run for every role, every time, regardless of edit scope, prior review history, or inferred task description. The only valid exception is an explicit per-session user instruction to skip them — "fabrication-only edit" or "these were already reviewed" are not grounds for skipping.

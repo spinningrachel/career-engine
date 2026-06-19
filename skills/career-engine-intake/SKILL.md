@@ -5,7 +5,7 @@ description: >
   directly in chat — no Notion fetch; runs JD acquisition and career coach; output
   conversationally) and **Notion-fetch** (queries Hold roles from Notion; runs JD
   acquisition and career coach; writes back to Notion; updates Status to Researched).
-  The career coach always runs — there is no mode in which it is skipped.
+  The career coach runs for roles not already coach-complete; all-complete queues skip the coach spawn.
   Trigger with: "run intake", "build the CV queue", "prep my Hold roles", "run the
   intake", or any variant asking to research Hold roles.
   Does NOT write CVs or cover letters.
@@ -20,9 +20,23 @@ This skill covers Steps 0 through 0.9 of the intake pipeline. Two modes:
 - **Inline mode** — the user provides a URL or JD text directly in chat. No Notion fetch. Run JD acquisition and the career coach. Deliver output conversationally. Use when the user says something like "coach me on this role" and pastes a URL or JD, outside of the batch Notion-fetch flow.
 - **Notion-fetch mode** — queries the Notion database for Hold roles, runs JD acquisition and the career coach for each, writes all results to Notion, and updates Status to Researched. This is the standard "run intake" path.
 
-The career coach **always runs** regardless of mode. There is no mode where it is skipped. The goal of this pipeline is to give the career coach complete information — full JD data for every role — before it makes any prioritization or writing decisions.
+The career coach runs for every role that is not already coach-complete. If all roles in the queue are coach-complete, the coach spawn is skipped and the pipeline proceeds directly to Step 0.9 using existing values. The goal of this pipeline is to give the career coach complete information — full JD data for every role — before it makes any prioritization or writing decisions.
 
 > **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
+
+## Step −0.5 — CAREER_DATA self-locate (standalone invocation only)
+
+**Skip this step if `${CAREER_DATA}` is already set** (set by the orchestrator's preflight before calling intake).
+
+If intake is invoked directly (standalone), locate `career-data` now:
+
+1. Search for a directory named `career-data` (or containing `career-data-marker.json`) under `~/.claude/skills/` and under the Desktop app skill paths.
+2. Confirm `career-data-marker.json` is present inside it.
+3. If found and healthy: set `${CAREER_DATA}` to that directory path. Continue to Step −1.
+4. If found but damaged (marker missing or unreadable): stop and report — "career-data skill found but appears damaged. Re-install it from your `.skill` file via Customize → Skills."
+5. If not found: stop and report — "career-data skill is required but was not found. Install it via Customize → Skills in the Desktop app."
+
+Never fall back to blank plugin templates if `career-data` is absent for a configured user.
 
 **Before any step:** Read `${CLAUDE_PLUGIN_ROOT}/references/01-writing-rules.md`. This file contains the fabrication rule and attribution constraints enforced at Step 0.8.5. It must be in context before the gatekeeper runs.
 
@@ -232,7 +246,7 @@ All roles not selected are deferred. Proceed immediately to Step 0.8.
 
 **Pre-coach filter — run before any coach-complete check:** Remove any role marked `needs-manual` from the coach queue. A role with no usable JD content cannot be meaningfully analysed by the coach. Log the removal in the revision log: "[Company] — [Position]: removed from coach queue, JD content unavailable (needs-manual). Resolve manually then re-run intake." Do not send a `needs-manual` role to the coach under any circumstances. A `needs-manual` role is removed from the **processing queue entirely** — it is excluded from all of Step 0.9, including the 0.9d Status writeback. Its Status stays unchanged so it reappears in the next intake run once the JD is resolved.
 
-The career coach **always runs** in intake — there is no mode or condition where it is skipped. Intake is the one pipeline where coaching happens; if roles arrive already coach-complete, the coach is still the tool that verifies completeness and may update stale fields.
+The career coach runs for every role that is not already coach-complete. If all roles in the queue are coach-complete, the coach spawn is skipped entirely and the pipeline proceeds directly to Step 0.9 using existing values.
 
 Before spawning, check each remaining role in the queue: a role is `coach-complete` only if all required fields are populated. The required count depends on `gap_handling_mode`:
 - **When `gap_handling_mode = enabled` (default):** all nine fields must be populated — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Culture`, and `Landscape`.

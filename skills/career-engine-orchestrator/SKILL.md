@@ -254,7 +254,7 @@ Report count: "Found N Interested roles."
 ### Step O2 — Readiness check
 
 For each fetched role, verify these **writer-needed fields** are populated (non-empty):
-`Role emphasis`, `Keywords`, `Strategy`.
+`Role summary`, `Role emphasis`, `Keywords`, `Strategy`.
 
 `JD proof` is not checked — it is reference-only. `Gap handling` is not required when `gap_handling_mode = disabled`. `Landscape` is context, not a writer input.
 
@@ -270,6 +270,8 @@ Roles that pass are the processing queue.
 **If there are more than 5:** select top 5:
 1. `scored` roles ordered `1` → `2` → `3` → `4` → `5` → `6`
 2. Remaining slots filled with `unscored` roles in queue order
+
+**Tiebreaker for same-Priority roles:** order by `Last Pipeline Run` date, oldest first. Roles with no prior run are treated as oldest and sort to the top.
 
 Unscored roles still process — `Priority` affects ordering only; the coach is never spawned here to score them. The career coach runs only in intake.
 

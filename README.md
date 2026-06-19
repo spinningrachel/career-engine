@@ -12,8 +12,12 @@ Everything is grounded in a single source of truth about you — your positionin
 
 - [How it works](#how-it-works)
 - [Unique advantages](#unique-advantages)
+- [Installation](#installation)
 - [Prerequisites](#prerequisites)
 - [Setup](#setup)
+  - [Setup phases](#setup-phases)
+  - [Resuming setup](#resuming-setup)
+- [Updating career-data](#updating-career-data)
 - [Pipelines](#pipelines)
   - [Sourcing](#sourcing)
   - [Intake](#intake)
@@ -22,9 +26,14 @@ Everything is grounded in a single source of truth about you — your positionin
   - [Fast track](#fast-track)
   - [Localization](#localization)
   - [Utility modes](#utility-modes)
+- [Cover letter prerequisites](#cover-letter-prerequisites)
+- [State file and crash recovery](#state-file-and-crash-recovery)
+- [Update prompts](#update-prompts)
+- [Output files](#output-files)
 - [Standalone capabilities](#standalone-capabilities)
   - [LinkedIn coach](#linkedin-coach)
   - [Personal brand](#personal-brand)
+  - [Career coach](#career-coach)
   - [Update references](#update-references)
   - [Plugin builder](#plugin-builder)
   - [Technical writer](#technical-writer)
@@ -34,6 +43,7 @@ Everything is grounded in a single source of truth about you — your positionin
   - [Agents and skills](#agents-and-skills)
   - [Output protocol](#output-protocol)
 - [Reference files](#reference-files)
+- [Configuration keys](#configuration-keys)
 - [Token usage tracking](#token-usage-tracking)
 - [External connectors](#external-connectors)
 - [Capability status](#capability-status)
@@ -83,22 +93,46 @@ The pipeline never skips a stage or back-fills properties it does not own (`Hold
 
 ---
 
+## Installation
+
+<a href="https://raw.githubusercontent.com/spinningrachel/career-engine/main/career-engine.plugin">
+  <img src="https://img.shields.io/badge/⬇%20Download-career--engine.plugin-2563eb?style=for-the-badge" alt="Download career-engine.plugin">
+</a>
+
+1. Click the button above to download `career-engine.plugin`.
+2. Open the Claude Desktop app and go to **Customize → Connectors → Personal plugins**.
+3. Click **+** → **Create plugin** → **Upload plugin**.
+4. Select the downloaded `career-engine.plugin` file.
+5. The plugin installs immediately across Chat and Cowork.
+
+Once installed, run `/career-engine:setup` to create your `career-data` skill and configure the plugin for your environment. Setup only needs to run once.
+
+**To update the plugin:** download the latest `.plugin` file from the button above, then go to **Customize → Connectors → Personal plugins**, find career-engine, and upload the new file. Your `career-data` skill is never affected by a plugin update.
+
+**To uninstall:** go to **Customize → Connectors → Personal plugins**, find career-engine, and remove it.
+
+**To manage your `career-data` skill** (install, update, or remove): go to **Customize → Skills**. This is where you upload the `.skill` file after setup or after applying an update prompt.
+
+---
+
 ## Prerequisites
 
 Before installing, verify you have:
 
 - Claude Code (desktop app or CLI) with MCP server support
-- [pandoc](https://pandoc.org/installing.html) installed (the export stage uses it for DOCX conversion)
+- [pandoc](https://pandoc.org/installing.html) installed and on your `PATH` (the export stage uses it for DOCX conversion)
+- `python-docx` installed: `pip install python-docx` (the subtitle update script requires it)
 - A Notion workspace with the plugin database schema (see [External connectors → Notion setup](#notion-setup))
 - A local output folder where DOCX files will be saved (iCloud or any local path)
+- Desktop Commander MCP configured (enables file operations and pandoc calls from within sandboxed Claude sessions — required for Cowork and some Code environments)
 
-The LinkedIn MCP server is optional but improves research quality. See [External connectors](#external-connectors) for install instructions.
+The LinkedIn MCP server is optional but improves research quality during intake and the LinkedIn coach. See [External connectors](#external-connectors) for install instructions.
 
 ---
 
 ## Setup
 
-Run setup once after installing the plugin. It conducts a structured onboarding interview with you — asking about your career history, target roles, positioning, and preferences — and from that conversation synthesizes the three core reference files and your runtime configuration into a `career-data` skill package that it saves to your Claude installation.
+Run setup once after installing the plugin. It conducts a structured onboarding interview with you — asking about your career history, target roles, positioning, and preferences — and from that conversation synthesizes the three core reference files and your runtime configuration into a `career-data` skill package.
 
 `career-data` does not exist before setup runs. Setup creates it.
 
@@ -106,16 +140,53 @@ Run setup once after installing the plugin. It conducts a structured onboarding 
 /career-engine:setup
 ```
 
-The interview covers:
+### Setup phases
 
-- Your career history, target roles, and positioning (synthesized into `01-writing-rules.md`, `02-professional-background.md`, and `03-framework.md`)
-- Your Notion database ID
-- Your local output folder path
-- Your CV template (`.dotx` file path)
-- Your job preferences, including remote compatibility and exclusion patterns
-- Your gap-handling preference (whether pipeline agents flag employment gaps)
+Setup runs in seven phases. Phases 5–7 can be deferred — the standalone skills work with Phases 1–4 complete. The application pipeline requires Phase 5.
 
-At the end of setup, you upload the generated `.skill` file through the Desktop app (Settings → Capabilities → Skills). Every subsequent pipeline run reads your personal data from that installed skill. Re-run setup at any time to update your materials or configuration; the same upload step applies.
+| Phase | What it does | Can defer? |
+|---|---|---|
+| 1 — Identity and contact | Collects your name, contact details, location, profession, and language configuration. Powers file naming, agent instructions, and the CV signature. | No — nothing works without this |
+| 2 — Content submission | You send existing career materials (CV, cover letters, LinkedIn export, performance reviews, portfolio). The agent reads them without storing them. | No — Phase 3 depends on it |
+| 3 — Synthesis | Builds `03-framework.md` from your materials. Sections with limited evidence are marked `[DRAFT]` or `[REVIEW]` for the interview. | No — runs automatically after Phase 2 |
+| 4 — Framework review and interview | Presents `03-framework.md` for your review. Runs a targeted interview to fill gaps, confirm positioning, and capture voice samples not in the materials. Populates `02-professional-background.md` and `01-writing-rules.md` with confirmed facts. | No — uncovered gaps produce weak outputs |
+| 5 — Job tracking and output | Configures your Notion database ID, output folder path, CV template, draft directory link base, output prefix, default language, gap handling, location compatibility, and job site preferences. All written to `${CAREER_DATA}/references/pipeline-preferences.json`. | Yes — required before running any pipeline |
+| 6 — Permissions | Generates the `~/.claude/settings.json` allow-list block so the pipeline runs without per-command approval prompts. Also verifies token-tracking hook registration. | Yes — skip if you prefer prompt-by-prompt approval |
+| 7 — Job preferences | Configures rules for recruiter-submitted applications, remote location handling, platform submissions, and multi-language applications. Skip entirely if you apply only in your home country, in one language, submitted by yourself. | Yes — skip if not applicable |
+
+At the end of setup, the agent packages `career-data` as a `.skill` file. Upload it through the Desktop app (Customize → Skills). Every subsequent pipeline run reads your personal data from that installed skill.
+
+**Verification:** setup runs a final check — placeholder scan, output folder and CV template existence check, pandoc and python-docx dependency check, and framework completeness check — before confirming you are ready to run.
+
+### Resuming setup
+
+Setup can be paused and resumed at any phase. Sections of `03-framework.md` that the interview has confirmed carry no markers; sections still needing work carry `[DRAFT]` or `[REVIEW]`. Resume a partial setup:
+
+```
+/career-engine:setup --phase 4
+```
+
+Replace `4` with the phase number you want to re-run. Re-run any phase any time to update your materials or configuration.
+
+---
+
+## Updating career-data
+
+`career-data` is the foundation the entire plugin runs on. Without it, no pipeline can start — agents will hard-stop rather than silently fall back to blank templates. This is by design: your career materials are too important to guess at.
+
+**Why it's separate.** Your personal data — background, positioning, delivered letters, CV template — never lives inside the plugin. It lives in `career-data`, a skill you install locally on your own machine. This means plugin updates never touch your data, and your materials are never exposed in the plugin's public repository.
+
+**How to get an update prompt.** There are two ways:
+
+1. **From the pipeline automatically.** After each New Application or Edit run, any `Why I Want This Role` content worth preserving is extracted and written as an `update-prompt-<company>-<monYYYY>.md` file into the role's company subdirectory in the output folder. Find these files in your output folder after a run.
+
+2. **On demand from Cowork.** Ask the career coach in Cowork: *"Generate an update prompt for [whatever you want to change]."* It will collect what you want to change, confirm the target, and output a ready-to-paste prompt. Use this for ad-hoc updates: new career facts, preference changes, promotions, testimonials, corrections.
+
+**How to apply an update.** Copy the contents of the update prompt file and paste it into Claude Chat or Claude Code. The prompt is self-contained — it includes everything the receiving agent needs to find career-data, make the change, and repackage the skill.
+
+**If you use both Chat and Code (or Cowork and Code).** Each environment maintains its own copy of career-data. You must paste the update prompt in each environment separately — once in Chat and once in Code — or the environments will diverge. The prompt tells you this too.
+
+After the update is applied, the receiving agent will repackage career-data as a `.skill` file and give it to you. Reinstall it via **Customize → Skills** in the Desktop app.
 
 ---
 
@@ -123,13 +194,25 @@ At the end of setup, you upload the generated `.skill` file through the Desktop 
 
 ### Sourcing
 
-Finds open roles across LinkedIn, remote boards, startup boards, general job boards, and Upwork. Scores results against your saved preferences, deduplicates against your Notion database, and returns a ranked list with fit rationale.
+Finds open roles across LinkedIn, remote boards, startup boards, general job boards, and accelerator portfolio boards. Scores results against your saved preferences, deduplicates against your Notion database, and returns a ranked list with fit rationale.
 
 ```
 /career-engine:source-open-roles
 ```
 
 Roles you accept are added to Notion with Status `Hold`. No CV or letter writing happens here.
+
+**Search tiers.** The agent checks your `preferred_job_sites` and `local_job_sites` (configured in setup) first, then searches:
+
+- **Tier 1 (always):** LinkedIn Jobs, Indeed, Glassdoor, BuiltIn, Crunchbase, PitchBook, Tracxn
+- **Tier 2 (when remote preference is set):** Remote.co, We Work Remotely, Remote OK
+- **Tier 3 (always — 2–3 accelerator boards chosen by fit):** a16z, First Round, Sequoia, Bessemer, NFX, Accel, Lightspeed, Index Ventures, General Catalyst
+- **Tier 4 (by function):** Product Marketing Alliance, Sharebird, Exit Five, Wellfound, Welcome to the Jungle, Y Combinator Jobs, Techstars Jobs
+
+**Mode keywords** (append to the command):
+- `quick` — LinkedIn MCP only
+- `full` — all tiers plus all career-specific boards
+- `contract` — Upwork only (contract signals, not ranked roles)
 
 **What sourcing does not do:** it does not research roles or write strategic properties. Those happen during intake.
 
@@ -149,7 +232,11 @@ Alternatively, run intake on a single role by pasting a URL or JD directly:
 /career-engine:career-coach <url or JD text>
 ```
 
-**JD acquisition:** intake fetches the JD from the role's URL using a multi-step ladder. It tries rendering-capable extraction tools first (Tavily, Exa), falls back to web search for mirrored postings, and marks a role `needs-manual` only after exhausting all fetch paths. Indeed URLs route through the Indeed job search connector rather than plain web fetch.
+**Two modes:**
+- **Notion-fetch mode** (triggered by `--coach-skills`): queries all Hold roles from Notion, acquires their JDs, runs the career coach for each, writes results back to Notion.
+- **Inline mode** (triggered by pasting a URL or JD with `/career-engine:career-coach`): no Notion interaction — runs the coach and delivers output conversationally.
+
+**JD acquisition:** intake fetches the JD from the role's URL using a multi-step ladder. It tries rendering-capable extraction tools first (Tavily, Exa), falls back to web search for mirrored postings (company careers page, ATS boards, LinkedIn, BuiltIn), and marks a role `needs-manual` only after exhausting all fetch paths. Indeed URLs route through the Indeed job search connector rather than plain web fetch.
 
 **What intake does not do:** it does not write CVs or cover letters, and it never creates or modifies Notion views.
 
@@ -159,25 +246,31 @@ Alternatively, run intake on a single role by pasting a URL or JD directly:
 
 The full per-role pipeline. Runs against all roles with Status `Interested`. For each role:
 
-1. Drafts a tailored CV against the role's strategic properties
-2. Runs a recruiter review, then a hiring-manager review
+1. Checks that required strategic properties (Role emphasis, Keywords, Strategy) are populated — roles missing any of these are excluded with a log message directing you to run intake first
+2. Drafts a tailored CV against the role's strategic properties
 3. Gates the CV through the gatekeeper (ATS checks, fabrication checks, formatting rules)
-4. Revises the CV until it passes (cap: 3 revision passes)
-5. Drafts a cover letter if `Why I Want This Role` is populated in Notion
-6. Gates the letter through the gatekeeper (cap: 3 revision passes)
-7. Runs a coach strategic review on the gatekeeper-approved letter
-8. Runs the humanizer to remove AI writing patterns
-9. Gates the humanized letter one final time
-10. Exports CV and cover letter to DOCX using pandoc and your `.dotx` template
-11. Writes file paths and results back to Notion
+4. Runs a recruiter review, then a hiring-manager review
+5. Revises the CV until it passes (cap: 3 revision passes)
+6. Drafts a cover letter if `Why I Want This Role` is populated in Notion
+7. Gates the letter through the gatekeeper (cap: 3 revision passes)
+8. Runs a coach strategic review on the gatekeeper-approved letter
+9. Runs the humanizer to remove AI writing patterns
+10. Gates the humanized letter one final time
+11. Exports CV and cover letter to DOCX using pandoc and your `.dotx` template
+12. Runs the Hebrew localization step if `Languages` includes Hebrew
+13. Writes file paths and results back to Notion; writes a LinkedIn updates file to the output folder
 
 ```
 /career-engine
 ```
 
-**Cover letter prerequisite:** the letter pipeline requires `Why I Want This Role` to be filled in the role's Notion row before the run. If it is empty, the pipeline delivers a CV only and logs the skip reason. This field is the primary source of personal content for the letter — it governs the opener, drives the evidence selection, and determines the letter's tone. Fill it before running.
+**Queue cap:** the pipeline processes up to 5 `Interested` roles per run, ordered by Priority (Highest first, then First, Second, Third, Fourth, Fifth). Unscored roles fill any remaining slots. If more than 5 roles are `Interested`, the remaining roles stay in the queue for the next run.
 
-**Gatekeeper rules:** the gatekeeper checks for fabricated claims, ATS formatting issues, CV content that directly repeats the cover letter opener, word count compliance, and voice rule violations. It never rewrites. It returns PASS or FAIL with specific violations. The pipeline retries up to 3 passes before flagging and continuing.
+**Cover letter prerequisite:** the letter pipeline requires `Why I Want This Role` to be filled in the role's Notion row before the run. If it is empty, the pipeline delivers a CV only and logs the skip reason. See [Cover letter prerequisites](#cover-letter-prerequisites).
+
+**Gatekeeper rules:** the gatekeeper checks for fabricated claims, ATS formatting issues, CV content that directly repeats the cover letter opener, word count compliance (maximum 320 words for cover letters; no minimum), and voice rule violations. It never rewrites. It returns PASS or FAIL with specific violations. The pipeline retries up to 3 passes before flagging and continuing.
+
+**LinkedIn updates file:** after all roles complete, the pipeline writes `linkedin-updates-<YYYY-MM-DD>.md` to your output folder. It aggregates keywords across all roles processed in the run, compares them against your saved LinkedIn profile (if available), and surfaces which terms are genuinely missing, already covered, or present but buried. This is one file per run, not per role.
 
 ---
 
@@ -189,21 +282,28 @@ Refines existing CV and/or cover letter outputs for roles with Status `Needs edi
 /career-engine --edit
 ```
 
-**What edit does not do:** it never starts from scratch. It works only with roles that have existing Notion rows and output files.
+**What edit does not do:** it never starts from scratch. It works only with roles that have existing Notion rows and output files. The career coach is not spawned during the edit pipeline — if strategic properties are missing, the role is excluded with a "run intake first" message.
 
-**Prerequisite:** the `Edit type` property must be set in the role's Notion row. For letter edits, `Why I Want This Role` must be populated. If the cover letter path is empty or the file cannot be located, the letter track is skipped with a logged message.
+**Prerequisites:**
+- `Edit type` property must be set in the role's Notion row (`CV`, `Letter`, or `Both`)
+- For letter edits (`Letter` or `Both`): `Why I Want This Role` must be populated
+- The role must have been processed by the New Application pipeline first
+
+**Edit notes:** when `Why I Want This Role` references specific property values as content sources, the edit pipeline passes those values verbatim to the letter-writer — never paraphrased or distilled.
 
 ---
 
 ### Fast track
 
-Runs the full per-role pipeline on a single role without a Notion row. Pass a URL or JD text directly. The pipeline collects `Why I Want This Role` from you in chat before proceeding; if you decline, it delivers a CV only.
+Runs the full per-role pipeline on a single role without a Notion row. Pass a URL or JD text directly. The pipeline requires `Role emphasis`, `Keywords`, and `Strategy` inline — the career coach does not run in fast-track mode.
 
 ```
 /career-engine --now <url or JD text>
 ```
 
-Fast track never reads from or writes to Notion. Output files go to your configured output folder.
+The pipeline collects `Why I Want This Role` from you in chat before proceeding; if you decline, it delivers a CV only. Fast track never reads from or writes to Notion. Output files go to your configured output folder.
+
+**Hebrew output is not supported in fast-track mode.** No Notion row exists, so the `Languages` property cannot be read. Add the role to Notion and run the standard pipeline if you need Hebrew files.
 
 ---
 
@@ -212,6 +312,10 @@ Fast track never reads from or writes to Notion. Output files go to your configu
 Translates an approved English CV and cover letter into your configured second language. Runs automatically when a role's `Languages` property includes the second language, after the English DOCX files are complete.
 
 The localization agent translates structure and content exactly — it does not draft, revise, or evaluate fit. The fabrication rule applies as strictly as in the source language: nothing is inferred or added during translation.
+
+**Hebrew and other RTL languages:** RTL output requires a dedicated RTL-configured `.dotx` template. Setup prompts you to configure this if your second language is RTL (Hebrew, Arabic, Persian/Farsi, Urdu, or others). The Hebrew templates (`cvHe.dotx`, `he-letter.dotx`) live in `word_templates_path` (configured in setup). If `word_templates_path` is empty, Hebrew export is skipped and noted in the run summary.
+
+**Output files:** Hebrew CV is named `he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx`; Hebrew cover letter is `he-coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx`. Both go in the same company subdirectory as the English files.
 
 ---
 
@@ -224,8 +328,111 @@ These modes run a single pass with no loops and no Notion writeback.
 | `--coach` | Conversational fit assessment or strategic framing question. The career coach responds directly in chat. |
 | `--check` | Single gatekeeper pass on a CV or cover letter you paste. Specify CV or letter. JD is optional but improves checks that require JD comparison. Returns PASS or FAIL with violations. |
 | `--review` | Single recruiter + hiring-manager review pass on a CV or cover letter you paste. Returns both reviews in sequence. |
-| `--write-letter` | Standalone cover letter draft from a URL or JD text. No CV required, no reviewers, no gatekeeper loop. Returns a draft. |
-| `--status` | Reads `state.json` from the most recent run and prints a completion table — which roles finished, which files exist on disk, and any files listed in state.json that are missing. |
+| `--write-letter` | Standalone cover letter draft from a URL or JD text. No CV required, no reviewers, no gatekeeper loop. Returns a draft. Requires `Why I Want This Role` content — provide it in the same message or the letter-writer will ask. |
+| `--status` | Reads `state.json` from the most recent run folder and prints a completion table — which roles finished, which files exist on disk (CV, cover letter, Hebrew CV, Hebrew cover letter, feedback, revision log), and any files listed in state.json that are missing. |
+
+---
+
+## Cover letter prerequisites
+
+The cover letter pipeline will not run without `Why I Want This Role` filled in the role's Notion row. This is a hard gate — the letter-writer never generates motivation on your behalf.
+
+**What "good" looks like:**
+
+Good content is specific. Your actual reaction when you read the JD. What you noticed, what excited you, what connected to something you've done or want to do. A few sentences is enough.
+
+Examples that work:
+- "The thing that grabbed me was that they're building agentic SecOps — I spent two years marketing exactly this layer and I've been watching this space evolve."
+- "I daydream about consumer campaigns. I've spent my whole career in B2B and I'm genuinely ready to apply what I know to products people actually want."
+
+Examples that are not enough:
+- "I think this role is a great fit."
+- "I'm excited about this opportunity."
+- "This company does interesting work."
+
+**What happens when it's empty:**
+- New Application pipeline: cover letter step is skipped; CV only is delivered; skip is logged.
+- Edit pipeline with `Edit type = Letter` or `Both`: the role is excluded from the edit run with a log message.
+- `--write-letter` mode: the letter-writer will ask you to provide this content before proceeding.
+- `--now` mode: the pipeline asks you in chat before Step 5; if you decline, CV only is delivered.
+
+**This field is set manually by you in Notion.** No pipeline agent ever writes to it.
+
+---
+
+## State file and crash recovery
+
+The pipeline writes `state.json` to the run folder after each role completes (post-DOCX, pre-Notion-writeback). It is a crash-recovery file, not a run history — a role that crashed before DOCX export will not appear in it.
+
+**Check run status:**
+
+```
+/career-engine --status
+```
+
+This reads `state.json` from the most recent run folder and prints a table showing:
+- Which roles completed
+- Which files are on disk (CV, cover letter, Hebrew CV, Hebrew cover letter, feedback, revision log)
+- Any file listed in state.json that is missing on disk
+
+**Crash scenarios:**
+
+| What happened | What to do |
+|---|---|
+| state.json has fewer roles than expected | One or more roles crashed before completing. Re-run the pipeline — roles not in state.json always run fresh. |
+| state.json is complete but a file is missing on disk | The state was written but the file copy failed. Re-run that role. |
+| state.json is complete and files are present but Notion shows `Interested` | Step 7c (Notion writeback) failed after state was written. Files are good. Manually set Status to `CV Ready for Review` in Notion and write the Draft Directory URL to the `Draft Directory` property. |
+
+All pipeline steps are stateless — safe to re-run. They overwrite the previous output intentionally.
+
+---
+
+## Update prompts
+
+After each New Application or Edit run, the pipeline writes an `update-prompt-<company>-<monYYYY>.md` file into the role's company subdirectory. This file is generated when `Why I Want This Role` contains durable content worth preserving in your motivation bank (`02-professional-background.md` §5).
+
+**Where to find them:** `<output_folder>/<run_folder>/<company_dir>/update-prompt-<company>-<monYYYY>.md`
+
+**What to do with them:** paste the file contents into Claude Chat or Claude Code. The prompt is self-contained — it includes instructions for updating your career-data and repackaging the skill. If you use both Chat and Code, paste in both environments to keep them in sync.
+
+**What they contain:** a fixed context block (the same every time) plus a variable content block with the company, role title, date, and the Why I Want This Role content that qualified for promotion. The receiving agent appends it to `02-professional-background.md` §5 (Motivation Bank).
+
+---
+
+## Output files
+
+All pipeline output goes to:
+`<output_folder>/<prefix>-<YYYY-MM-DD>/<company_dir>/`
+
+The prefix defaults to `applications` (e.g. `applications-2026-06-19`). Configure a different prefix via `output_dir_prefix` in setup.
+
+The company directory name is derived from the Notion Company property: lowercase, spaces to hyphens, non-alphanumeric characters stripped (e.g. `"Acme Corp"` → `acme-corp`).
+
+**Files per role:**
+
+| File | Description |
+|---|---|
+| `cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx` | Tailored CV |
+| `coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx` | Cover letter (if Why I Want This Role was provided) |
+| `he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx` | Hebrew CV (if Languages includes Hebrew) |
+| `he-coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx` | Hebrew cover letter (if Languages includes Hebrew) |
+| `feedback-<roletitle>-<company>-<monYYYY>.md` | Recruiter and hiring-manager feedback |
+| `revision-log-<roletitle>-<company>-<monYYYY>.md` | Per-role revision log and validation results |
+| `update-prompt-<company>-<monYYYY>.md` | career-data update prompt (when Why I Want This Role qualifies) |
+| `_pipeline/` | Intermediate artifacts (reviewer output, gatekeeper violations) — not deliverables |
+
+**Files per run:**
+
+| File | Description |
+|---|---|
+| `state.json` | Crash recovery — roles that completed DOCX export |
+| `linkedin-updates-<YYYY-MM-DD>.md` | LinkedIn keyword gap analysis across all roles in this run |
+| `revision-log-<YYYY-MM-DD>.md` | Run-level revision log |
+| `run-metrics-<date>.json` | Token usage and cost estimate (written by the Stop hook) |
+
+**DOCX production:** cv-writer outputs styled markdown using pandoc's custom-style syntax. The pipeline converts it to `.docx` using pandoc with your `.dotx` reference template, then runs a subtitle update script to write the exact JD role title into the CV document header. The user's name and contact details come from the template — no pipeline step hand-sets fonts, sizes, or colors.
+
+**The subtitle** under your name in the CV is always the exact job title from the JD — not a generic descriptor. The pipeline sets this automatically using `skills/career-engine-export/scripts/update-subtitle.py`.
 
 ---
 
@@ -249,7 +456,7 @@ Reviews and optimises your LinkedIn presence across five modes.
 
 **Framework primacy:** the LinkedIn coach treats `03-framework.md` as the source of truth about your positioning. A single active application or target role does not override your overall positioning — recommendations strengthen the direction your framework describes, not the nearest open role.
 
-The coach reads your profile from `references/linkedin-profile.md` (a saved LinkedIn PDF export) if present, falls back to the LinkedIn MCP if connected, and asks you to paste sections if neither is available.
+The coach reads your profile from `${CAREER_DATA}/references/linkedin-profile.md` (a saved LinkedIn PDF export) if present, falls back to the LinkedIn MCP if connected, and asks you to paste sections if neither is available. Without a profile on file, recommendations are based on raw market signals rather than analysis of your actual profile.
 
 ---
 
@@ -269,9 +476,21 @@ Builds or refreshes your personal brand using the Why You / Why Them / Why Now f
 | D — Bio Library | Bios in four lengths (tweet, LinkedIn About, speaker deck, long-form) calibrated to each platform's norms |
 | E — Brand Refresh | Gap analysis of your current presence against your framework, with a concrete refresh plan |
 
-**Capability status:** personal brand is an early-stage capability. The skill produces well-structured strategic output, but the workflow has not been run through the same volume of iteration and regression hardening as the application pipeline. Outputs are substantively useful but may require more hands-on direction than the intake or new-application pipelines. See [Capability status](#capability-status) for the full picture.
+**Capability status:** personal brand is an early-stage capability. The skill produces well-structured strategic output, but the workflow has not been run through the same volume of iteration and regression hardening as the application pipeline. Outputs are substantively useful but may require more hands-on direction than the intake or new-application pipelines.
 
 **Coming:** dedicated pipelines for LinkedIn post drafting, blog content, and broader thought leadership — grounded in your content pillars and voice fingerprint, with the same fabrication rules and delivered-archive calibration as the application pipeline.
+
+---
+
+### Career coach
+
+Direct conversational coaching on a role, a strategic framing question, or a fit assessment. No Notion writeback. No documents produced.
+
+```
+/career-engine --coach
+```
+
+The career coach also powers the intake pipeline (`--coach-skills`), where it runs in a structured mode: fetches JDs, scores priority, writes strategic properties to Notion. The `--coach` flag bypasses all of that and gives you a direct conversational response.
 
 ---
 
@@ -328,11 +547,11 @@ The QA agent validates the built `.plugin` artifact and asserts zero personal da
 
 ### career-data skill
 
-`career-data` is a `.skill` file generated by the setup agent from your onboarding interview. It contains your three core reference files, your runtime configuration, your delivered-letters archive, and your `.dotx` CV template. You install it through the Desktop app (Settings → Capabilities → Skills) and update it the same way whenever you re-run setup.
+`career-data` is a `.skill` file generated by the setup agent from your onboarding interview. It contains your three core reference files, your runtime configuration, your delivered-letters archive, and your `.dotx` CV template. You install it through the Desktop app (Customize → Skills) and update it the same way whenever you re-run setup or apply an update prompt.
 
 At runtime, agents resolve `${CAREER_DATA}` to the installed skill's path and read your personal files from there. The plugin's blank templates are the new-user fallback only — a configured installation that cannot find `career-data` is a hard stop, not a silent fallback.
 
-**Sync is one-way: Desktop app → Claude Code CLI.** Never write `~/.claude/skills/` directly from the CLI — it creates a copy that diverges from the Desktop app version and will not propagate to other Claude surfaces (including Cowork).
+**Sync is one-way: Desktop app → Claude Code CLI.** Never write `~/.claude/skills/` directly from the CLI — it creates a copy that diverges from the Desktop app version and will not propagate to other Claude surfaces (including Cowork). See [Updating career-data](#updating-career-data) for the correct update path.
 
 ### Agents and skills
 
@@ -366,20 +585,65 @@ The three core reference files live in `career-data` and govern every output the
 
 The plugin ships blank templates for each file. Setup synthesizes your materials into them. `update-refs` maintains them over time.
 
-Two additional files support the letter pipeline:
+Three additional files support the pipeline:
 
 | File | What it contains |
 |---|---|
+| `linkedin-profile.md` | Snapshot of your current LinkedIn profile (from a LinkedIn PDF export). Used by orchestrator Step 8 (LinkedIn updates file) and all LinkedIn coach modes. Optional — outputs run in fallback mode (raw signals, no profile analysis) until provided. Replace wholesale by running `update-refs` with a fresh LinkedIn export. |
 | `references/delivered-letters/` | An archive of sent letters (cap: 6) used by the letter-writer, gatekeeper, and humanizer for voice calibration. The humanizer and gatekeeper treat these letters as the authoritative register source — they override rule-based style prescriptions when the two conflict. |
-| `references/pipeline-preferences.json` | Runtime configuration: `notion_database_id`, `output_folder`, `cv_template`, `draft_dir_url_base`, `word_templates_path`, `notion_needs_editing_view_url`, `gap_handling`. Written by setup; read at run start by the orchestrator and standalone entry skills. |
+| `references/pipeline-preferences.json` | Runtime configuration. Written by setup; read at run start by the orchestrator and all standalone entry skills. See [Configuration keys](#configuration-keys) for the full schema. |
+
+Two additional reference files ship inside the plugin (not in career-data):
+
+| File | What it contains |
+|---|---|
+| `cv-self-check.md` | Mandatory pre-submission self-check for CV output. Covers ATS, summary, key achievements, experience section, header, and word count. |
+| `job-preferences.md` | Full job search preferences — remote compatibility rules, target roles, seniority floor, industry fit, company stage, exclusion patterns, and coaching prioritization guidance. Loaded before any sourcing, scoring, or coaching step. |
+
+---
+
+## Configuration keys
+
+All configuration lives in `${CAREER_DATA}/references/pipeline-preferences.json`. Written by setup Phase 5; updated by re-running that phase or applying an update prompt. The pipeline reads this file at run start and resolves every `{{CONFIG}}` placeholder from it.
+
+| Key | Required | Default | What it does |
+|---|---|---|---|
+| `notion_database_id` | Yes (Notion runs) | — | 32-character Notion database ID. Required for any pipeline that reads from or writes to Notion. |
+| `output_folder` | Yes | — | Absolute path to your local output folder. All DOCX files, feedback files, and run artifacts go here. |
+| `cv_template` | Yes | — | Path to your CV `.dotx` template, relative to `${CAREER_DATA}` (e.g. `references/my-cv.dotx`). |
+| `draft_dir_url_base` | No | `skip` | Base URL for your cloud file browser (Anchorpoint, Dropbox, etc.), ending just before the date-folder segment. Written to the `Draft Directory` Notion property after each role completes. Set to `skip` or leave empty to disable. |
+| `output_dir_prefix` | No | `applications` | Prefix for the run folder name. Run folders are named `<prefix>-YYYY-MM-DD`. |
+| `default_language` | No | `English` | Language used for output when the Notion row's `Languages` field is empty. |
+| `word_templates_path` | No | — | Absolute path to the folder containing Hebrew `.dotx` templates (`cvHe.dotx`, `he-letter.dotx`). Required for Hebrew export. |
+| `notion_needs_editing_view_url` | No | — | URL of the "Needs Editing" Notion view (including `?v=...`). Used by the edit pipeline as the fast path for querying its queue. |
+| `gap_handling` | No | `enabled` | Whether the coach identifies and documents skill gaps for each role. `"enabled"` or `"disabled"`. Suppress for a single run by adding "no gap handling" to your prompt. |
+| `location_compatibility` | No | both empty | Object with `my_location` (your city/country/region) and `notion_property` (name of the Notion property to write compatibility to). Both empty = check skipped. |
+| `favorite_brands` | No | `[]` | Array of company name strings. Roles at these companies score one tier higher than the coach would otherwise assign. |
+| `preferred_job_sites` | No | `[]` | Up to 5 job boards to search on every sourcing run, before plugin defaults. |
+| `local_job_sites` | No | `[]` | Up to 2 local or region-specific job boards to prioritize in sourcing. |
+
+**Required for any run:** `output_folder`, `cv_template`. **Also required for any Notion run:** `notion_database_id`. Missing a required key → hard stop with a message directing you to re-run setup Phase 5.
 
 ---
 
 ## Token usage tracking
 
-A Stop hook records token usage at the end of every session. It reads the session transcript and all subagent transcripts, sums token counts across all turns, calculates a cost estimate using Opus pricing, and writes a `run-metrics-<date>.json` file to your run folder.
+A Stop hook records token usage at the end of every session. It reads the session transcript and all subagent transcripts, sums `input`, `output`, `cache_read`, and `cache_creation` token counts across all turns, calculates a cost estimate, and writes a `run-metrics-<date>.json` file to the run folder in your output folder.
 
-The hook registers automatically via `hooks/hooks.json`. No manual configuration is required after the plugin is installed.
+The hook registers automatically via `hooks/hooks.json`. No manual configuration is required after the plugin is installed. Confirm it is working by checking that `run-metrics-*.json` files in your output folder show numeric `token_counts` after a run (not `"pending"` or `"unknown"`).
+
+**If your Claude Code version does not auto-load plugin hooks**, add this block to `~/.claude/settings.json`, replacing `${CLAUDE_PLUGIN_ROOT}` with your plugin install path:
+
+```json
+"hooks": {
+  "Stop": [{
+    "hooks": [{
+      "type": "command",
+      "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/log-token-usage.sh"
+    }]
+  }]
+}
+```
 
 ---
 
@@ -389,12 +653,14 @@ The plugin connects to the following external services.
 
 | Category | Service | Required | Notes |
 |---|---|---|---|
-| Job tracking | Notion | Yes | See Notion setup below |
+| Job tracking | Notion | Yes (pipeline) | See Notion setup below |
 | File storage | Local filesystem | Yes | Any local path; iCloud works |
-| File system bridge | Desktop Commander MCP | Yes | Enables file operations and pandoc calls from within Claude sessions |
+| File system bridge | Desktop Commander MCP | Yes | Enables file operations and pandoc calls from sandboxed Claude sessions (Cowork and some Code environments). Required when direct Bash filesystem access is unavailable. |
+| Document conversion | pandoc | Yes | CLI tool; install separately. Used for all DOCX production. |
+| Document post-processing | python-docx | Yes | Python package; `pip install python-docx`. Used by the subtitle update script. |
 | Job search | Indeed, Dice, ZipRecruiter | Yes | Used for JD fetching during intake |
-| Document conversion | pandoc | Yes | CLI tool; install separately |
 | LinkedIn research | stickerdaniel/linkedin-mcp-server | Optional | Improves research quality in intake and the LinkedIn coach; falls back to WebSearch |
+| Rendering-capable extraction | Tavily, Exa, or equivalent | Optional | Used in the JD acquisition ladder for JavaScript-rendered career pages and auth-walled sites. Discovered automatically via ToolSearch when available. |
 
 ### Notion setup
 
@@ -405,9 +671,11 @@ The plugin expects a specific database schema. Duplicate the Notion template to 
 After duplicating:
 
 1. Copy the database ID from the URL (`notion.so/<workspace>/<DATABASE_ID>?v=...`)
-2. Run `/career-engine:setup` — it collects the ID and writes it to the plugin config
+2. Run `/career-engine:setup` — it collects the ID and writes it to the career-data config
 
-If you do not use Notion, the setup agent can configure a CSV-based workflow instead.
+**Do not rename Notion columns.** The pipeline writes to them by exact name. Renaming any column breaks the integration silently.
+
+If you do not use Notion, the setup agent can configure a Google Sheets or CSV-based workflow instead. Note: in Google Sheets mode, the pipeline reads your roles but does not write results back to the sheet — outputs go to your output folder only.
 
 ### LinkedIn MCP (optional)
 
@@ -433,7 +701,7 @@ Not all pipelines have the same level of production hardening.
 | Edit | Production | Edit pipeline mirrors new-application coverage; own regression history |
 | Fast track | Production | Tested; fewer Notion integration points than the main pipeline |
 | Localization | Production | Translation-only; no drafting or revision |
-| Utility modes (`--check`, `--review`, `--write-letter`, `--coach`) | Production | Single-pass; no state management |
+| Utility modes (`--check`, `--review`, `--write-letter`, `--coach`, `--status`) | Production | Single-pass; no state management |
 | Update references | Production | Approval-gated; conservative by design |
 | LinkedIn coach | Early capability | Framework-grounded; profiles read from saved export or MCP; not yet run through the same regression volume as the application pipeline |
 | Personal brand | Early capability | Skill produces structured strategic output but has not been through iterative hardening. Outputs require more hands-on direction. Treat as a strong starting framework rather than a finished deliverable. |
