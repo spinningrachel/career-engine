@@ -90,6 +90,32 @@ Only run this step if the LinkedIn MCP is connected. If it is not, skip and note
 
 What do customers and users actually say about this product? Check G2, Capterra, and Reddit (use the most relevant subreddits for the domain). Look for: what users praise, what they complain about, and how they compare the product to alternatives. Goal is 2–3 specific observations — direct quotes or paraphrased findings, each sourced inline (e.g. "G2: ..."). Skip this dimension if no public reviews are found (common for newer or stealth products); do not manufacture observations.
 
+**12. Outreach contacts**
+
+Only run if the LinkedIn MCP is connected. If not, note: "LinkedIn MCP not connected — outreach map skipped."
+
+Goal: identify the 2–3 people most worth contacting at this company, decide what action to take for each, and produce a structured decision map the user can act on immediately. Do not produce a raw list of names — produce a decision.
+
+**Priority ladder (work top to bottom; stop when you have 1 confirmed HM candidate + 1 internal advocate):**
+
+1. **Hiring Manager candidate** — already identified in dimension 10. Confirm they are reachable on LinkedIn (public profile, accepts connections). Action: Connect + short note.
+2. **One internal advocate** — someone in a role adjacent to the function being hired for, based in the same country as the user, 2nd-degree connection preferred. This is the person who can forward a profile internally or validate the user to the HM. Action: Connect + note. Selection criteria in priority order: (a) 2nd degree with mutual connections; (b) same country as the user (`my_location` from `pipeline-preferences.json`); (c) active on LinkedIn (recent posts or activity visible); (d) function adjacent to the role (PMM for PM roles; BI/Analytics for data roles; etc.).
+3. **Skip everything else** — 3rd-degree contacts with no mutual path, global functional heads with no hiring relationship to this role, or anyone whose reach would require cold outreach to a connection with no clear reason to engage. One skipped row in the table is enough; do not list every excluded person.
+
+**Research steps:**
+
+1. Use `search_people` to find employees at the company in the function adjacent to the role (e.g. `search_people(keywords="[function keyword]", company="[company name]")`).
+2. For each candidate advocate: check degree of connection, mutual count, country, and recent activity via `get_person_profile`.
+3. For the HM (already profiled in dimension 10): verify LinkedIn reachability (public profile present, no InMail-only restriction signal).
+4. For each actionable contact (HM candidate + selected advocate only): identify 1–2 specific note angles — something genuine from their profile, their company's recent direction, or the user's actual background that gives them a reason to engage. Note angles must be specific enough to write a 2-sentence LinkedIn note from; skip generic observations ("we both care about marketing").
+
+**Confidence labels:**
+- `[HIGH]` — named, profile confirmed, degree and mutuals verified
+- `[MEDIUM]` — identified by title/org but profile not fully confirmed or degree unclear
+- `[LOW]` — hypothesis only (e.g. "this title likely exists at this company but wasn't found in search")
+
+**What to skip:** Do not research contacts at companies where the role is already in the "open application" or speculative category (Priority 5–6), or where Step 2c flagged the role as `ROLE MAY BE CLOSED`. In those cases, note: "Outreach map skipped — role status unconfirmed."
+
 ---
 
 ### Location Compatibility
@@ -557,8 +583,41 @@ Return findings in this exact structure for every role received.
   ```
 - **Culture:** 2–3 tight sourced observations about how this company actually operates. Sources named inline — Glassdoor, LinkedIn, Reddit, Careers/About Us. Flag any burn-out or culture-warning signals explicitly. `N/A` only if all four sources returned nothing usable.
 - **Role summary:** ≤400 chars total. Short paragraph + up to 5 bullets. JD vocabulary only. No candidate references. No location/contact info. Self-characterization section verbatim as final bullet if present (within 400-char total).
+- **Outreach map:** See format below.
 
 [repeat for each role]
+
+### Outreach map format
+
+Included for every role that completes full research (Priority 1–4) and where the LinkedIn MCP is connected. Omit if LinkedIn MCP is not connected or if the role was a triage exit.
+
+```
+## Outreach — <Company>
+
+| Person | Action | Why | Channel | Confidence |
+|---|---|---|---|---|
+| <Name, Title> | Connect + short note | <1 sentence: role relationship + one specific engagement hook> | LinkedIn | [HIGH/MEDIUM/LOW] |
+| <Name, Title> | Connect + note | <1 sentence: advocate rationale + hook> | LinkedIn | [HIGH/MEDIUM/LOW] |
+| <Name, Title> | Skip | <1 sentence: why not worth pursuing> | — | — |
+
+**Note angles**
+
+<Person 1 name>
+- <Specific angle 1 — something from their profile, their company's direction, or the user's background that gives them a genuine reason to engage>
+- <Specific angle 2 if applicable>
+
+<Person 2 name>
+- <Specific angle>
+
+**Email / WhatsApp**
+<Assessment of whether any actionable contact has an email or WhatsApp path visible (company website, personal site, conference bio, mutual contact who could introduce). If none found: "No email or WhatsApp path identified for this company.">
+```
+
+Rules:
+- Maximum 3 rows in the table (1 HM candidate, 1 advocate, 1 skip). Do not pad with additional contacts.
+- Note angles are written only for actionable rows (Connect + note). Skip rows get no note angles.
+- The Email / WhatsApp section is always present — either a finding or the "No path identified" line.
+- If a role warrants the outreach map but neither an HM candidate nor an advocate was found, write: "No reachable contacts identified for this role."
 
 ### Reference files loaded
 - <file name>

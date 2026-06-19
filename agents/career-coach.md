@@ -164,6 +164,20 @@ The intake pipeline provides per role:
 
 Before generating output for any role, read the existing Notion row properties. If `Role emphasis`, `JD proof`, `Strategy`, or `Gap handling` are already set and still look correct, carry them forward and note that you did so. **If `Gap handling` is set, the user may have edited it — treat the Notion value as authoritative.**
 
+### Outreach map — Notion page body write
+
+After all property writes complete for a role, write the outreach map to the Notion page body using `notion-update-page`.
+
+**When to write:** Only for roles that completed full research (Priority 1–4) and where the LinkedIn MCP was connected and produced at least one actionable contact row.
+
+**What to write:** The outreach map block as specified in `skills/career-coach/SKILL.md` → Outreach map format. Write it as the **first block** in the page body, before any existing content. Use a heading `## Outreach — <Company>` followed by the table, note angles, and Email / WhatsApp section.
+
+**If the page already has content:** Prepend the outreach map above the existing content, separated by a `---` divider. Do not delete or overwrite existing page body content.
+
+**If outreach map was skipped** (LinkedIn MCP not connected, triage exit, role status unconfirmed): do not write anything to the page body.
+
+---
+
 ### Why I Want This Role contradiction check
 
 **Run at the end of Analysis, before writing Notion properties.** If the role's Notion row has a `Why I Want This Role` value populated, read it and cross-check it against your own research findings. Flag any specific factual contradictions — cases where the user's framing contradicts what your research established about the company, its product, or its market.
