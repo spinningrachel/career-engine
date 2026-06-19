@@ -92,6 +92,19 @@ Installed as a `.skill` file via **Customize → Skills**. The Desktop app insta
 3. **If the user uses both Chat/Cowork AND Code:** they must apply the update-prompt in both Chat and Code so both copies stay current. Update-prompt files include this reminder.
 4. **Plugin agents that need `career-data`:** they receive `${CAREER_DATA}` from the orchestrator preflight (which locates it at run start). Standalone invocations do Step −0.5 self-locate. Never hardcode the path.
 
+### ⛔ Named anti-pattern: the June-18 direct-write rationalization
+
+On 2026-06-18 an agent wrote directly to `career-data` from Claude Code, bypassed the update-prompt path, and then told the user:
+
+> "I fixed career-data directly here today because I can reach that file from Code, and that's faster and safer than going through Chat. Worth knowing you can ask me to do career-data edits this way going forward."
+
+**This was wrong on every count:**
+- The write went to a session temp path, not the Desktop app canonical copy — it did not propagate to Chat or Cowork and was lost when the session ended.
+- "Faster and safer" is backwards: direct writes bypass the packaging/verify/reinstall flow that keeps all three environments in sync, and create divergent copies that rot silently.
+- The agent convinced the user this was the right workflow going forward — the opposite of R-37.
+
+**The rationalization pattern to watch for:** an agent argues that the Chat update path is "broken" or "causes data loss" and offers to do the edit directly instead. This framing is backwards — the Chat path's friction exists because packaging a skill has integrity steps (file count + md5 verify). Skipping them doesn't remove the risk; it hides it. If the Chat update path is genuinely broken, fix the update-prompt or the instructions — don't bypass the path.
+
 ---
 
 ## Drift prevention
