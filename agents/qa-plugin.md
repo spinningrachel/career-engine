@@ -168,6 +168,25 @@ The thing that ships is the `.plugin` zip — validate the bytes, not just the w
 
 Folded into Check 6 (the build is the only distribution; "no personal data in the build" is now the single personal-data scan).
 
+### Check 6e — No personal output files tracked in the repo
+
+Update-prompt files and any other pipeline-generated output with personal content must never be committed to the repo. Scan the working tree and the git index:
+
+```bash
+# Untracked personal output files in the working tree
+find <repo-root> -maxdepth 1 -name "update-prompt-*.md" 2>/dev/null
+
+# Tracked in git index (catches files that were committed and not yet removed)
+git -C <repo-root> ls-files "update-prompt-*.md"
+```
+
+Also confirm `.gitignore` contains the rule:
+```bash
+grep "update-prompt-\*" <repo-root>/.gitignore
+```
+
+**FAIL condition:** any `update-prompt-*.md` file found in the working tree or git index, OR `.gitignore` is missing the `update-prompt-*.md` rule.
+
 ### Check 7 — RETIRED (two-version sync)
 
 There is no second build to sync. This check no longer applies.
