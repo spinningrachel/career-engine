@@ -59,7 +59,7 @@ Spawn `cv-writer` with `option=draft`, passing:
 
 ### Step 1.5 — Gatekeeper (CV draft check)
 
-Spawn `gatekeeper` with `option=content`, passing the CV path `$PIPE/cv-draft.md` to read, `Role summary`, the coach's `Keywords` property, and `OUTPUT_PATH=$PIPE/gatekeeper-cv-<round>.md`. The gatekeeper's ATS pre-check parses Keywords into tiers (Critical / Important / Nice-to-have) to verify coverage. It returns `PASS`, or `FAIL: <n> violations → <path>` (R-41).
+Spawn `gatekeeper` with `option=content`, passing `CAREER_DATA=${CAREER_DATA}`, the CV path `$PIPE/cv-draft.md` to read, `Role summary`, the coach's `Keywords` property, and `OUTPUT_PATH=$PIPE/gatekeeper-cv-<round>.md`. The gatekeeper's ATS pre-check parses Keywords into tiers (Critical / Important / Nice-to-have) to verify coverage. It returns `PASS`, or `FAIL: <n> violations → <path>` (R-41).
 
 **If PASS:** proceed to Step 2.
 
@@ -92,7 +92,7 @@ cp "$PIPE/cv-final.md" "<output_dir>/<company_dir>/<cv_filename>.md"
 
 ### Step 4.5 — Gatekeeper (CV final check)
 
-Spawn `gatekeeper` with `option=content`, passing the CV path `$PIPE/cv-final.md` to read, `Role summary`, the coach's `Keywords` property, and `OUTPUT_PATH=$PIPE/gatekeeper-cv-<round>.md`.
+Spawn `gatekeeper` with `option=content`, passing `CAREER_DATA=${CAREER_DATA}`, the CV path `$PIPE/cv-final.md` to read, `Role summary`, the coach's `Keywords` property, and `OUTPUT_PATH=$PIPE/gatekeeper-cv-<round>.md`.
 
 **If PASS:** proceed to Step 5.
 
@@ -167,7 +167,7 @@ If the answer to ANY of (1), (2), or (3) is "no," re-spawn `letter-writer` with 
 
 ### Step 5.2 — Gatekeeper (cover letter draft check)
 
-Spawn `gatekeeper` with `option=cover-letter`, passing the cover letter path `$PIPE/letter-draft.md` to read, `Role summary`, the user's Why I Want This Role content (from the Pre-Step 5 read), the final CV path `$PIPE/cv-final.md` to read (required for the CV-repetition check; if no CV exists for this role, state that explicitly so the gatekeeper reports the skipped check by name), and `OUTPUT_PATH=$PIPE/gatekeeper-cl-<round>.md`. The Why I Want This Role content allows the gatekeeper to apply the personal-content exemption correctly — see the exemption rule at the top of Option 2 in `gatekeeper-checks/SKILL.md`.
+Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter path `$PIPE/letter-draft.md` to read, `Role summary`, the user's Why I Want This Role content (from the Pre-Step 5 read), the final CV path `$PIPE/cv-final.md` to read (required for the CV-repetition check; if no CV exists for this role, state that explicitly so the gatekeeper reports the skipped check by name), and `OUTPUT_PATH=$PIPE/gatekeeper-cl-<round>.md`. The Why I Want This Role content allows the gatekeeper to apply the personal-content exemption correctly — see the exemption rule at the top of Option 2 in `gatekeeper-checks/SKILL.md`.
 
 **If PASS:** proceed to Step 5.3.
 
@@ -224,7 +224,7 @@ The humanizer changed the text after the last PASS, so that PASS is no longer va
    - Role title appears somewhere in the body.
    - Zero em dashes (`—`) and zero colons in body text.
    - Zero hits for the named banned patterns: "I know this", "that's where", "that's what", "that's the kind", "that exact", "exactly that", "this same", "serves as", "stands as", "acts as"; also grep "the same" — a hit fails only when it points at an agent-coined abstraction ("the same engine"), not in benign uses ("the same week").
-2. **Final gatekeeper pass** — spawn `gatekeeper` with `option=cover-letter` on this exact text, passing the cover letter path `$PIPE/letter-final.md` to read and `OUTPUT_PATH=$PIPE/gatekeeper-cl-<round>.md`.
+2. **Final gatekeeper pass** — spawn `gatekeeper` with `option=cover-letter` on this exact text, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter path `$PIPE/letter-final.md` to read, `Role summary`, the user's Why I Want This Role content (same as Step 5.2), the final CV path `$PIPE/cv-final.md` to read, and `OUTPUT_PATH=$PIPE/gatekeeper-cl-<round>.md`.
 
 **If both pass:** proceed to Step 6. **If either fails:** spawn `cover-letter-humanizer` again with the specific failures named (language-level issues) or `letter-writer` with `option=revision` (content-level issues), then re-run this step. Cap: 2 rounds. After the cap, revert to the `.prehumanizer.md` file saved in Step 5.9 (the last text that passed Step 5.3) and flag the letter for manual review in the final delivery. Never export text that has not passed this step.
 
