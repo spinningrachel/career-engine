@@ -89,7 +89,8 @@ Installed as a `.skill` file via **Customize → Skills**. The Desktop app insta
 
 1. **Never write `~/.claude/skills/` directly from a CLI or pipeline.** Use update-prompt files instead — the user pastes them into Chat (or Code) to make the edit, then repackages and reinstalls via the Desktop app.
 2. **To update `career-data`:** generate an update-prompt file → user pastes in Chat → Chat edits the skill → user repackages as `.skill` → uploads via Customize → Skills. This is the only update path that keeps all three environments in sync.
-3. **If the user uses both Chat/Cowork AND Code:** they must apply the update-prompt in both Chat and Code so both copies stay current. Update-prompt files include this reminder.
+3. **Update-prompt format is mandatory:** Chat requires a specific prompt structure to reliably locate and edit the skill. Always use the canonical template in `references/career-data-update-prompt-format.md` — it includes the required context block (marker-file discovery, repackaging steps, verbatim-copy warning). A bare JSON block or informal instruction will confuse Chat. The personal prompt file is gitignored (`update-prompt-*.md`); the template itself is tracked in the repo.
+4. **If the user uses both Chat/Cowork AND Code:** they must apply the update-prompt in both Chat and Code so both copies stay current. Update-prompt files include this reminder.
 4. **Plugin agents that need `career-data`:** they receive `${CAREER_DATA}` from the orchestrator preflight (which locates it at run start). Standalone invocations do Step −0.5 self-locate. Never hardcode the path.
 
 ### ⛔ Named anti-pattern: the June-18 direct-write rationalization
