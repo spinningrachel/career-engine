@@ -122,7 +122,7 @@ There is no second build to sync. Plugin code changes go in the repo. The user's
 
 ## Packaging
 
-One `.plugin` build, from the repo. Rebuild after a batch of changes:
+One `.plugin` build, from the repo. Rebuild after a batch of changes. **Run this command from inside the repo root** — the `.plugin` file is written into the repo directory and committed alongside the code changes:
 
 ```bash
 cd <repo-root>
