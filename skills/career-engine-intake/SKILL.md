@@ -325,4 +325,24 @@ For every role in the processing queue, write `Status = Researched` using `notio
 
 After all writes complete, confirm in chat: "Status updated to Researched for N roles."
 
+### 0.9e — Outreach map (LinkedIn MCP, runs in main intake context)
+
+**Gate:** Only run if the LinkedIn MCP is connected — check by attempting `search_people` with a trivial query. If not connected, skip this step entirely and note in final delivery: "Outreach map skipped — LinkedIn MCP not available in this session."
+
+For each role in the processing queue that completed **full research** (Priority 1–4, not a triage exit), run the outreach contact research and write the result to the Notion page body.
+
+**Follow the research procedure and output format defined in `skills/career-coach/SKILL.md` → Research Phase dimension 12 and → Outreach map format exactly.** Key rules repeated for clarity:
+
+- Priority ladder: HM candidate first (already identified by the coach in dimension 10; use the value from `Hiring Manager's Name` if populated, otherwise search) → one internal advocate → skip everything else.
+- Maximum 3 rows in the table. Note angles only for actionable rows. Email / WhatsApp section always present.
+- Confidence: `[HIGH]` named and confirmed; `[MEDIUM]` inferred from org/title; `[LOW]` hypothesis only.
+- Skip roles where `ROLE MAY BE CLOSED` was flagged in Step 0.5 or 0.9b.
+
+**Write to Notion page body** using `notion-update-page` on each role's page ID:
+- Write the outreach map as the **first block** in the page body, using heading `## Outreach — <Company>` followed by the table, note angles, and Email / WhatsApp section.
+- If the page already has content, prepend above it separated by a `---` divider. Never delete existing content.
+- If no actionable contacts were found after the full search, write: `## Outreach — <Company>\n\nNo reachable contacts identified.`
+
+Run all roles in parallel. After all writes complete, confirm in chat: "Outreach maps written for N roles." (or "0 roles — LinkedIn MCP not available" if the gate failed).
+
 Intake is complete.
