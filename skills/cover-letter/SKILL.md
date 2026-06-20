@@ -186,7 +186,7 @@ Use when the role requires both organizational leadership AND specific IC execut
 
 ## Writing Mechanics
 
-**Before writing a single word — this step is MANDATORY and must NEVER BE SKIPPED:** Open 2–3 delivered letters from `references/delivered-letters/` (preferably for similar domain, seniority, or situation) AND the voice fingerprint in `03-framework.md` §Voice fingerprint. Read them for three purposes:
+**Before writing a single word — this step is MANDATORY and must NEVER BE SKIPPED:** Open 2–3 delivered letters from `${CAREER_DATA}/references/delivered-letters/` (preferably for similar domain, seniority, or situation) AND the voice fingerprint in `03-framework.md` §Voice fingerprint. Read them for three purposes:
 
 1. **Voice calibration** — sentence patterns, paragraph openers, rhythm, punctuation habits. Your draft must mirror them.
 2. **Content mining** — proof points, phrasings, or framings that worked and could apply here. Approved content from past letters is fair game.
@@ -422,7 +422,7 @@ Use these for the opening paragraph when a specific situation calls for it. Each
 **Template:**
 > [Optional: "[Name] here." as identity fragment.] [Reaction — why this specific overlap hit differently when you read it]. Because I was just doing it — as [role] at [Company], a [one-phrase descriptor] that [key outcome].
 
-**Example:** [from `references/delivered-letters/`: see any letter with an "existing relationship" or "just did it" opener]
+**Example:** [from `${CAREER_DATA}/references/delivered-letters/`: see any letter with an "existing relationship" or "just did it" opener]
 
 ---
 
@@ -639,7 +639,7 @@ After producing the draft, enter revision mode. Read the letter sentence by sent
 
 ### Step 1 — Voice calibration
 
-Before starting the revision, confirm the voice you're editing toward. Read `references/delivered-letters/INDEX.md` — if count > 0, read the 2–3 letters most similar in domain or seniority level. **If count is 0:** fall back to `references/03-framework.md` §Voice and tone — read the voice samples there instead. Note these six dimensions:
+Before starting the revision, confirm the voice you're editing toward. Read `${CAREER_DATA}/references/delivered-letters/INDEX.md` — if count > 0, read the 2–3 letters most similar in domain or seniority level. **If count is 0:** fall back to `references/03-framework.md` §Voice and tone — read the voice samples there instead. Note these six dimensions:
 
 1. **Sentence length** — short and punchy? Long and flowing? Mixed?
 2. **Word choice level** — casual? somewhere between?

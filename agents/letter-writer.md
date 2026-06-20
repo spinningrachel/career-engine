@@ -47,12 +47,12 @@ Called by the career-engine-orchestrator after the coach, CV writer, and gatekee
 
 **This runs before the Intake Gate and before any other file is loaded.**
 
-1. Read `references/delivered-letters/INDEX.md`. Check current count. If count is 0, skip to the fallback below.
+1. Read `${CAREER_DATA}/references/delivered-letters/INDEX.md`. Check current count. If count is 0, skip to the fallback below.
 2. From the index, identify the two or three letters closest in domain or role type to this role. Read those files.
 3. From those letters, note: how does the opener start — what is the register, the directness, the first move? What does a typical sentence look like in length and rhythm? How does she close?
 4. Hold this calibration. You will compare your draft against it before continuing.
 
-**This gate does not complete until you have read at least one delivered letter.** If the index shows count 0 or the folder is empty, skip this gate and calibrate voice against `references/03-framework.md` §Voice and tone instead — note this in your working context.
+**This gate does not complete until you have read at least one delivered letter.** If the index shows count 0 or the folder is empty, skip this gate and calibrate voice against `${CLAUDE_PLUGIN_ROOT}/references/03-framework.md` §Voice and tone instead — note this in your working context.
 
 ---
 
@@ -76,7 +76,7 @@ MANDATORY: Load all of these before writing a single word.
 
 | File | What it contains |
 |---|---|
-| `references/delivered-letters/INDEX.md` + letter files | **Mandatory — read before writing a single word** (when count > 0). Read INDEX.md first; use the key voice notes to identify the most domain-similar letters; then read those files. Use for: (1) **voice calibration** — the user's actual sent letters, the best style anchors available; (2) **content mining** — proof points, phrasings, argument structures that worked and could be adapted. Prioritise over all worked examples. **If count is 0:** skip and calibrate voice against `references/03-framework.md` §Voice and tone instead. |
+| `${CAREER_DATA}/references/delivered-letters/INDEX.md` + letter files | **Mandatory — read before writing a single word** (when count > 0). Read INDEX.md first; use the key voice notes to identify the most domain-similar letters; then read those files. Use for: (1) **voice calibration** — the user's actual sent letters, the best style anchors available; (2) **content mining** — proof points, phrasings, argument structures that worked and could be adapted. Prioritise over all worked examples. **If count is 0:** skip and calibrate voice against `${CLAUDE_PLUGIN_ROOT}/references/03-framework.md` §Voice and tone instead. |
 | `references/01-writing-rules.md` | Source of truth for the user's background. Section 1: fabrication rule — read first. Approved CV summaries, role facts, testimonials, portfolio: see `02-professional-background.md`. |
 | `references/03-framework.md` | **Primary letter-writing material — not background.** Professional philosophy, methodology, voice, and domain narratives. §Professional methodology and POV: each framework sufficient to anchor a letter's strategic argument. §Domain depth: per-vertical narratives. §Voice and tone: voice samples and calibration. |
 | `references/02-professional-background.md` | The user's reusable background facts and proof points indexed by topic. |
@@ -116,7 +116,7 @@ Jump directly to the relevant section. Read only the one you will execute.
 
 - **Option 1 — Standard Cover Letter:** Standard pipeline role, after final CV confirmed.
 - **Option 1b — Cover Letter Revision:** After recruiter/HM review, gatekeeper FAIL, or orchestrator quality note.
-- **Option 3 — Manage Letter Examples:** Add, replace, or delete a letter in `references/delivered-letters/`.
+- **Option 3 — Manage Letter Examples:** Add, replace, or delete a letter in `${CAREER_DATA}/references/delivered-letters/`.
 
 ---
 
@@ -151,7 +151,7 @@ Every job posting exists because something is broken or missing. Before writing 
 The letter that answers "what they asked for" is generic. The letter that answers "what they actually need" gets interviews.
 
 1. **Background facts** — draw key role facts from `references/02-professional-background.md`. Use them woven into sentences doing a specific job for this letter — never as standalone credential paragraphs.
-2. **Delivered letters archive** — read letters for similar domains or company types from `references/delivered-letters/`. These are the best voice anchors available.
+2. **Delivered letters archive** — read letters for similar domains or company types from `${CAREER_DATA}/references/delivered-letters/`. These are the best voice anchors available.
 3. **Worked examples** — read the use-case structure examples in `cover-letter/SKILL.md` before writing.
 4. **Self-characterization** — if the JD has a "you'll thrive here if" section, extract 2–3 traits with real candidate proof and weave into the letter body.
 5. **Four Differentiators selection** — read the Four Differentiators in `01-writing-rules.md` Section 2. Identify which 1–3 are genuinely relevant to this role's mandate. The letter body foregrounds those; the others are absent or reduced to a single clause.
@@ -244,7 +244,7 @@ Load `references/cover-letter-self-check.md` → Option 1 and run every item in 
 
 **Triggers:** User asks to add, replace, update, or delete a letter in the delivered-letters library.
 
-**Cap:** 6 letters maximum. Read `references/delivered-letters/INDEX.md` first to get current count.
+**Cap:** 6 letters maximum. Read `${CAREER_DATA}/references/delivered-letters/INDEX.md` first to get current count.
 
 ### Add a new letter
 
