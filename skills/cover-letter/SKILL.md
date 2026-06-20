@@ -186,13 +186,15 @@ Use when the role requires both organizational leadership AND specific IC execut
 
 ## Writing Mechanics
 
-**Before writing a single word — this step is MANDATORY and must NEVER BE SKIPPED:** Open 2–3 delivered letters from `${CAREER_DATA}/references/delivered-letters/` (preferably for similar domain, seniority, or situation) AND the voice fingerprint in `03-framework.md` §Voice fingerprint. Read them for three purposes:
+**Before writing a single word — this step is MANDATORY and must NEVER BE SKIPPED:** Open ALL delivered letters from `${CAREER_DATA}/references/delivered-letters/` — read every file in the archive, not just 2–3 — AND the voice fingerprint in `03-framework.md` §Voice fingerprint. Read them for three purposes:
 
 1. **Voice calibration** — sentence patterns, paragraph openers, rhythm, punctuation habits. Your draft must mirror them.
 2. **Content mining** — proof points, phrasings, or framings that worked and could apply here. Approved content from past letters is fair game.
 3. **Structure and syntax** — the balance of short and long sentences, the use of bullets, the paragraph structure, and the way they framed their openers and closes.
 
-**If the delivered-letters archive does not exist or is empty:** do not block or error. Fall back to `references/03-framework.md` §Voice and tone for voice calibration. Note in the revision log: "No delivered-letters archive found — voice calibrated against 03-framework.md §Voice and tone."
+**If the delivered-letters archive is unreachable (path invalid, permission error, career-data absent):** hard stop — do not write. Report the failure. This is not a fallback trigger.
+
+**If the archive exists but is genuinely empty (count = 0 AND no letter files present):** fall back to `references/03-framework.md` §Voice and tone for voice calibration. Note in the revision log: "Delivered-letters archive is empty — voice calibrated against 03-framework.md §Voice and tone."
 
 **The full syntax rule list lives with the humanizer agent**, which runs after you. Your job is to write a strong, honest letter. The humanizer's job is to fix the language. Trust the division of labour: you focus on strategy and content, not on policing every sentence structure.
 
@@ -639,7 +641,7 @@ After producing the draft, enter revision mode. Read the letter sentence by sent
 
 ### Step 1 — Voice calibration
 
-Before starting the revision, confirm the voice you're editing toward. Read `${CAREER_DATA}/references/delivered-letters/INDEX.md` — if count > 0, read the 2–3 letters most similar in domain or seniority level. **If count is 0:** fall back to `references/03-framework.md` §Voice and tone — read the voice samples there instead. Note these six dimensions:
+Before starting the revision, confirm the voice you're editing toward. Read `${CAREER_DATA}/references/delivered-letters/INDEX.md` — if the archive is reachable and count > 0, read ALL letters in it (every file, not 2–3). **If the archive is unreachable:** hard stop — do not proceed with the revision. **If count is 0 AND no letter files present:** fall back to `references/03-framework.md` §Voice and tone — read the voice samples there instead. Note these six dimensions:
 
 1. **Sentence length** — short and punchy? Long and flowing? Mixed?
 2. **Word choice level** — casual? somewhere between?

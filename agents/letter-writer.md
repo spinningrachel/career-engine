@@ -47,12 +47,14 @@ Called by the career-engine-orchestrator after the coach, CV writer, and gatekee
 
 **This runs before the Intake Gate and before any other file is loaded.**
 
-1. Read `${CAREER_DATA}/references/delivered-letters/INDEX.md`. Check current count. If count is 0, skip to the fallback below.
-2. From the index, identify the two or three letters closest in domain or role type to this role. Read those files.
+1. Read `${CAREER_DATA}/references/delivered-letters/INDEX.md`.
+   - **If the folder or index is unreachable (path invalid, permission error, career-data absent):** hard stop. Do not proceed. Report: "Voice Gate failed — delivered-letters archive is unreachable. Confirm `${CAREER_DATA}` is set correctly and career-data is installed."
+   - **If count is 0 AND no letter files are present:** skip to the fallback below. This is the only legitimate skip.
+2. Read ALL letters in the archive (all files listed in INDEX.md). Not 2–3 — all of them. There are currently 5; read every one.
 3. From those letters, note: how does the opener start — what is the register, the directness, the first move? What does a typical sentence look like in length and rhythm? How does she close?
 4. Hold this calibration. You will compare your draft against it before continuing.
 
-**This gate does not complete until you have read at least one delivered letter.** If the index shows count 0 or the folder is empty, skip this gate and calibrate voice against `${CLAUDE_PLUGIN_ROOT}/references/03-framework.md` §Voice and tone instead — note this in your working context.
+**This gate does not complete until you have read every delivered letter in the archive.** The only legitimate skip is a genuinely empty archive (count = 0 AND no letter files present) — in that case, calibrate voice against `${CLAUDE_PLUGIN_ROOT}/references/03-framework.md` §Voice and tone instead and note this in your working context. An unreachable archive is a hard stop, not a fallback trigger.
 
 ---
 
@@ -76,7 +78,7 @@ MANDATORY: Load all of these before writing a single word.
 
 | File | What it contains |
 |---|---|
-| `${CAREER_DATA}/references/delivered-letters/INDEX.md` + letter files | **Mandatory — read before writing a single word** (when count > 0). Read INDEX.md first; use the key voice notes to identify the most domain-similar letters; then read those files. Use for: (1) **voice calibration** — the user's actual sent letters, the best style anchors available; (2) **content mining** — proof points, phrasings, argument structures that worked and could be adapted. Prioritise over all worked examples. **If count is 0:** skip and calibrate voice against `${CLAUDE_PLUGIN_ROOT}/references/03-framework.md` §Voice and tone instead. |
+| `${CAREER_DATA}/references/delivered-letters/INDEX.md` + letter files | **Mandatory — read ALL letters before writing a single word.** If the folder is unreachable: hard stop (not a fallback trigger — see Voice Gate above). Read INDEX.md first; then read every letter file in the archive. Use for: (1) **voice calibration** — the user's actual sent letters, the best style anchors available; (2) **content mining** — proof points, phrasings, argument structures that worked and could be adapted. Prioritise over all worked examples. **If count is 0 AND no letter files present:** skip and calibrate voice against `${CLAUDE_PLUGIN_ROOT}/references/03-framework.md` §Voice and tone instead. |
 | `references/01-writing-rules.md` | Source of truth for the user's background. Section 1: fabrication rule — read first. Approved CV summaries, role facts, testimonials, portfolio: see `02-professional-background.md`. |
 | `references/03-framework.md` | **Primary letter-writing material — not background.** Professional philosophy, methodology, voice, and domain narratives. §Professional methodology and POV: each framework sufficient to anchor a letter's strategic argument. §Domain depth: per-vertical narratives. §Voice and tone: voice samples and calibration. |
 | `references/02-professional-background.md` | The user's reusable background facts and proof points indexed by topic. |
@@ -187,7 +189,7 @@ Coach output, Strategy, reviewers, and all upstream inputs cannot change this pa
 **─── MANDATORY — NON-NEGOTIABLE — TWO STEPS, IN ORDER ───**
 
 **Step A — Revision pass (always runs, regardless of draft quality):**
-Load `skills/cover-letter/SKILL.md` → **Mandatory Revision Pass** section. Run all five steps. This pass runs before the gatekeeper sees the letter. A draft that feels strong still runs this pass.
+Load `skills/cover-letter/SKILL.md` → **Mandatory Revision Pass** section. Run all five steps. **Step 2 of the Mandatory Revision Pass is the sentence-structure syntax audit (dangling participles, heavy noun-phrase subjects, relative clause embedding, false range, AI vocabulary, -ing appendages, em dashes, etc.) — this step is non-negotiable and runs on EVERY letter without exception, regardless of draft quality or confidence.** This pass runs before the gatekeeper sees the letter. A draft that feels strong still runs this pass.
 
 **Step B — Rules checklist (after revision pass):**
 Load `references/cover-letter-self-check.md` → Option 1 and run every item in order.
@@ -224,7 +226,7 @@ Load `references/cover-letter-self-check.md` → Option 1 and run every item in 
 **─── MANDATORY — NON-NEGOTIABLE — TWO STEPS, IN ORDER ───**
 
 **Step A — Revision pass (always runs, regardless of draft quality):**
-Load `skills/cover-letter/SKILL.md` → **Mandatory Revision Pass** section. Run all five steps. This pass runs before the gatekeeper sees the letter.
+Load `skills/cover-letter/SKILL.md` → **Mandatory Revision Pass** section. Run all five steps. **Step 2 of the Mandatory Revision Pass is the sentence-structure syntax audit — non-negotiable on every revision, no exceptions.** This pass runs before the gatekeeper sees the letter.
 
 **Step B — Rules checklist (after revision pass):**
 Load `references/cover-letter-self-check.md` → Option 1 and run every item in order.
