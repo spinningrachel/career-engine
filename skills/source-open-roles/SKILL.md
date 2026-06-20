@@ -91,7 +91,7 @@ If the user specifies a mode keyword, apply it as an override on top of the tier
 |---|---|
 | `quick` | LinkedIn MCP only — skip all other sites including the rest of Tier 1 |
 | `full` | All tiers + all career-specific sites + all accelerators |
-| `contract` | Upwork only (contract signals, not ranked roles) |
+| `contract` | Upwork + Fiverr (contract signals, not ranked roles) |
 
 ---
 
@@ -245,6 +245,7 @@ These surfaces list roles at funded/tracked companies not always indexed on gene
 | Site | Fetch method |
 |---|---|
 | Upwork | Requires `mcp__1cb44f76-c627-45b2-8050-35e78e7f15c8__upwork_search_freelancers`. **Note:** Upwork searches for freelancers, not job postings — results represent active demand for this skill type, not open positions. Surface as "Contract signals" in a separate section, not as ranked roles. |
+| Fiverr | `WebSearch("site:fiverr.com [title] OR [skill-category]")` — surfaces active buyer demand (Fiverr Pro projects, service categories). **Note:** Like Upwork, Fiverr results represent demand signals, not open positions. Surface as "Contract signals" alongside Upwork results, not as ranked roles. |
 
 ---
 
