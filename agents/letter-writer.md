@@ -143,6 +143,8 @@ Full structural definition for each type in `skills/cover-letter/SKILL.md` → L
 
 Parse Why I Want This Role into a numbered list of distinct points: [WIWTR-1], [WIWTR-2], etc. A "point" is any distinct bullet, sentence, or idea — even a fragment. Write this list out explicitly before drafting. This list is the coverage checklist: after completing the draft, scan it against each numbered point and confirm each appears substantively in the letter. Do not proceed to the gatekeeper if any point is absent — revise first. The only exception is a point that fails Tier 1 (fabrication — not traceable to documented background); log such a set-aside explicitly with reason before proceeding.
 
+**Gap-volunteering filter — apply during enumeration:** Before adding a WIWTR point to the coverage checklist, check whether it is a defensive pre-emption: a sentence that names a concern the hiring manager hasn't raised ("this isn't a stepping stone," "Full disclosure: I haven't done X," "whether that's the fit you need"). If a point is purely defensive pre-emption with no affirmative claim alongside it, mark it [SKIP-gap-volunteer] and exclude it from the coverage checklist — do not include the defensive framing in the letter. If the point contains both a defensive pre-emption AND an affirmative claim ("this isn't a stepping stone — I've been building toward exactly this"), include only the affirmative half ([WIWTR-N: affirmative only]) and discard the defensive framing. Log every skip in the set-aside list with reason "gap volunteering — defensive pre-emption filtered."
+
 **JD diagnostic — run this before any other step:**
 
 Every job posting exists because something is broken or missing. Before writing anything, answer these three questions:

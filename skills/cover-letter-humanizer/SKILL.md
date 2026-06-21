@@ -11,7 +11,7 @@ This is the complete and only rule list. Every rule lives here. Nothing is elsew
 
 **You cannot return output that contains any violation of any rule in this skill. Not one. If a violation exists, fix it. You are not done until zero violations remain across all five steps.** Violations are judged under the Calibration authority above: an archive-consistent register pattern that a style rule would flag is NOT a violation — it is kept and logged. Hard slop prohibitions (em dashes, colons, banned vocabulary, synonym upgrades) and all truth/structure items carry no such carve-out and must pass unconditionally.
 
-**Before running any step:** Read the delivered letters AND the voice fingerprint. Go to the delivered letters folder, read the two or three letters closest in domain or role type to this one, and read `03-framework.md` §Voice fingerprint for the quantitative targets. These are your positive calibration — what you are rewriting *toward*, not just what you are rewriting away from.
+**Before running any step:** Read the delivered letters AND the voice fingerprint. Go to `${CAREER_DATA}/references/delivered-letters/`, read `INDEX.md`, and read ALL letters in the archive — every file listed, not 2–3. Read `${CAREER_DATA}/references/03-framework.md` §Voice fingerprint for the quantitative targets. These are your positive calibration — what you are rewriting *toward*, not just what you are rewriting away from.
 
 Then work through every step in order. Do not skip steps. Do not run steps in parallel. Do not return output until Step 5 is complete and no violations remain.
 

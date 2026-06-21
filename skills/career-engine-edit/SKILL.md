@@ -46,7 +46,12 @@ Then confirm:
 
 ## Step E0-pre — Resolve per-install config (R-38)
 
-The edit pipeline is its own entry (no orchestrator), so resolve config yourself. After the `career-data` discovery, read `${CAREER_DATA}/references/pipeline-preferences.json` and set `$NOTION_DATABASE_ID`, `$NOTION_NEEDS_EDITING_VIEW_URL`, `$OUTPUT_FOLDER`, `$CV_TEMPLATE`, and `$DRAFT_DIR_URL_BASE` (used by the queries and exports below). Wherever this skill shows `{{NOTION_DATABASE_ID}}` or `{{NOTION_NEEDS_EDITING_VIEW_URL}}`, use the resolved values. Stop if `notion_database_id`, `output_folder`, or `cv_template` is missing: "career-data is missing a required config key — run `/career-engine:setup --phase 5`." Optional: `draft_dir_url_base` absent or `skip` → Draft Directory writeback is skipped (log it in the final delivery as "Draft Directory not written — `draft_dir_url_base` not configured"). The plugin keeps these placeholders literal (single build).
+The edit pipeline is its own entry (no orchestrator), so resolve config yourself. After the `career-data` discovery, run the **career-data health check** before proceeding:
+1. Count files in `${CAREER_DATA}/references/delivered-letters/` (excluding `INDEX.md`). If count = 0: **stop** — "career-data has no delivered letters — voice calibration will fail. Add at least one sent letter, then re-run."
+2. Verify all 13 required config keys are present and non-empty in `pipeline-preferences.json`: `notion_database_id`, `output_folder`, `cv_template`, `draft_dir_url_base`, `output_dir_prefix`, `default_language`, `word_templates_path`, `notion_needs_editing_view_url`, `gap_handling`, `location_compatibility`, `favorite_brands`, `preferred_job_sites`, `local_job_sites`. For each missing key, stop with: "career-data config is incomplete — run `/career-engine:setup --phase 5` to fill in: [missing keys]."
+3. (Code sessions) If `~/.claude/skills/career-data/` is absent or differs from `${CAREER_DATA}`, warn: "career-data may be out of sync with the Desktop app — re-install the .skill file if you recently updated it in Chat. Continuing on the resolved path."
+
+Then read `${CAREER_DATA}/references/pipeline-preferences.json` and set `$NOTION_DATABASE_ID`, `$NOTION_NEEDS_EDITING_VIEW_URL`, `$OUTPUT_FOLDER`, `$CV_TEMPLATE`, and `$DRAFT_DIR_URL_BASE` (used by the queries and exports below). Wherever this skill shows `{{NOTION_DATABASE_ID}}` or `{{NOTION_NEEDS_EDITING_VIEW_URL}}`, use the resolved values. Stop if `notion_database_id`, `output_folder`, or `cv_template` is missing: "career-data is missing a required config key — run `/career-engine:setup --phase 5`." Optional: `draft_dir_url_base` absent or `skip` → Draft Directory writeback is skipped (log it in the final delivery as "Draft Directory not written — `draft_dir_url_base` not configured"). The plugin keeps these placeholders literal (single build).
 
 ## Step E0 — Fetch roles for editing
 
@@ -234,7 +239,7 @@ Spawn `letter-writer` with `option=revision`. Pass:
 - **`Edit notes` content** (from the Step E0 row payload) — if populated, include verbatim with the instruction: "Address these specific edit notes first, before applying general improvements: [content]". Omit if empty.
 - `LETTER_PATH=$PIPE/letter-draft.md` — the writer writes its output to this file and returns only a 2-line status + path (R-41 protocol).
 
-The letter-writer improves the existing letter — it does not start from scratch.
+The letter-writer improves the existing letter — it does not start from scratch. **Exception:** if the Edit notes contain an explicit "write from scratch" instruction, spawn the letter-writer in fresh-draft mode and discard the existing letter as the starting point. **When "write from scratch" is present, this instruction applies to ALL language versions** — if the role's `Languages` property includes Hebrew or other languages, Step E9H must also regenerate those versions from scratch (do not carry the old localized text forward as a base; spawn localization with the new English letter as the source).
 
 The cover letter is written to the DOCX file only. Do not write cover letter text to any Notion property.
 
@@ -249,7 +254,7 @@ Before passing the revised cover letter to the gatekeeper, compare the old and n
 
 **The new letter must be stronger than the old on at least 2 of these 4 dimensions.**
 
-**If it is not:** Return to `letter-writer` with `option=revision`, quoting the old letter's strongest lines verbatim and instructing: "The revision is not better. The original was stronger in [specific dimension]. Here are the lines that worked best in the original: [quoted lines]. Write a new letter that preserves this strength while fixing the identified problems." Max 2 loops. If no improvement after 2 loops, flag in the final delivery: "[Role] — cover letter: no quality improvement achieved after 2 rounds; original preserved."
+**If it is not:** Return to `letter-writer` with `option=revision`, quoting the old letter's strongest lines verbatim and instructing: "The revision is not better. The original was stronger in [specific dimension]. Here are the lines that worked best in the original: [quoted lines]. Write a new letter that preserves this strength while fixing the identified problems." Max 2 loops. If no improvement after 2 loops, preserve the original letter and flag in the final delivery: "[Role] — cover letter: quality ceiling reached — the revision could not improve on 2 of 4 dimensions after 2 attempts. Original letter preserved. To get a different result, add specific Edit notes (e.g., 'rewrite paragraph 3 to strengthen the [X] angle') and re-run."
 
 **If it is stronger:** proceed to Step E7.3.
 
