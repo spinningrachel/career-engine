@@ -93,8 +93,6 @@ If `career-engine-export` is not loaded when you reach the DOCX export step, bac
 
 The career coach caps the run and selects which roles process this session. That cap is the decision. Do not pause after Role 1 to ask whether to continue. Do not ask whether to batch DOCX conversion. Do not ask whether the run is too long.
 
-**Agent call budget: 35 calls before considering a stop.** A subjective sense that context is filling is not a valid stop condition. Do not stop or pause for context pressure until at least 35 agent calls have been made in this run. Only after that threshold may a context-exhaustion stop be considered — and even then, log the state and report rather than asking the user what to do.
-
 If a single role fails, log the failure and move to the next role. The only valid mid-run pauses are a hard unrecoverable system error or the user explicitly typing a stop command in chat.
 
 **The named pipeline command is the routing authority. Do not re-scope it before launch.**
