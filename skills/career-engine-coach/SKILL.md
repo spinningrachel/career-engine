@@ -222,18 +222,9 @@ Do not overwrite `Priority` here — already handled in Step 3.6.
 
 Update the following properties on each Notion page using `notion-update-page` with `command: update_properties`.
 
-**`Landscape`** (plain text) — always write. If the field is already populated, **read the existing value first**, then write the new coach sections **above** the existing content, separated by a divider. Never remove existing content. Existing content is less current but still valuable — it goes below.
+**`Landscape`** (plain text) — write only if the field is currently empty. If the field is already populated, treat it as written by a team member: read it for context (it may inform your Strategy and Role emphasis research), but do not replace or append to it.
 
-Write format when field is already populated:
-```
-[new coach sections]
-
----
-
-[existing content preserved verbatim below]
-```
-
-Use this exact section structure for the new coach content. **Keep it scannable — the user reads this to decide what to write in Why I Want This Role, not to study the company. One tight bullet per point. No padding.**
+When writing (empty field only), use this exact section structure. **Keep it scannable — the user reads this to decide what to write in Why I Want This Role, not to study the company. One tight bullet per point. No padding.**
 
 ```
 ## Competitors

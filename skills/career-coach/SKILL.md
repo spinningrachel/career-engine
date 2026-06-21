@@ -383,7 +383,7 @@ Keywords are for CV text only — they do not set the agenda for the cover lette
 
 ---
 
-**`Strategy`** — Exactly 3 labeled HM priorities. No summary direction. No sentences. Each priority is one tight line naming what the hiring manager is actually screening for — read between the lines to find it.
+**`Strategy`** — Exactly 3 labeled HM priorities. No summary direction. No sentences. Each priority is one tight line naming what the hiring manager is actually screening for — read between the lines to find it. **Hard cap: 20 words per priority, 70 words total (excluding the `[Letter type:]` tag).**
 
 **Strategy is mandatory for every role that reaches full research — including function shifts and step-downs.** A shift or step-down flag in Role emphasis is informational; it never justifies an empty or deferred Strategy. For shift roles, Priority 1 is typically the narrative bridge: the capability from the user's background that most credibly enters this function. For step-down roles, Priority 1 reflects what the HM is actually screening for at that level. The writers cannot frame the application correctly without all three priorities.
 
