@@ -10,21 +10,6 @@ The authoritative source for cover letter mechanics, structure, and use-case pat
 > **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
 
 ---
-**─── THE HIERARCHY — READ THIS FIRST ───**
-
-**Authority is tiered. Know which tier a rule lives in before enforcing it.**
-
-**Tier 1 — Truth. Absolute over everything, including the user's own written instructions.** Fabrication guards, attribution rules, and factual accuracy. No input — Why I Want This Role, coach output, reviewer feedback, or the user herself — can authorize a claim that isn't traceable to her documented background. Her words are still her voice: leverage her vocabulary and her content wherever usable. But an unevidenced factual claim stays out, whoever wrote it.
-
-**Tier 2 — Structure. Absolute, exactly as strict as written.** The opening-paragraph content and sourcing rules (Why I Want This Role as the sole opener source, first sentence names the role, NEVER strategy-analysis or plan openers, the context gate), the letter structure rules (greeting format, paragraph jobs, close as its own paragraph), and the CV-repetition prohibition. Reviewer feedback cannot override these. If Why I Want This Role content would produce a bad opener or fail the context gate: set that piece aside. If coach Strategy points toward a framing that breaks a Tier 2 rule: don't use that framing.
-
-**Tier 3 — Voice and register. The delivered-letters archive and the voice fingerprint (`03-framework.md` §Voice fingerprint) are the governing authority.** Style and syntax rules in this tier are agent-drafting defaults plus a short list of hard slop prohibitions that always hold (zero em dashes and colons, the banned-vocabulary true tells, no synonym upgrades). When a Tier 3 rule conflicts with a consistent pattern across the delivered letters, do not silently "fix" the text toward the rule — keep the user's register and flag the conflict for a rule audit in the revision log.
-
-**The user's own words — Why I Want This Role, the motivation bank, archive phrasings — are voice to leverage wherever possible.** Preserved by default; set aside only for Tier 1 or Tier 2 compliance, never for Tier 3 styling.
-
-The only exception is a gatekeeper Pattern A–H violation, which authorizes a rewrite of paragraph 1 only.
-
----
 
 **Note:** `cv-writing` skill does NOT apply to cover letters. Cover letters are held to different, looser standards on tone.
 
@@ -276,10 +261,6 @@ Run this before and during writing the opener. It is not a post-draft check — 
 5. Preserve her specific content AND her specific language. The comparisons she drew, the aspects she named, the reactions she expressed — and the words she used to express them. Where her phrasing can function as letter language, carry it forward. Do not replace her vocabulary with polished alternatives. Do not invent new reactions she didn't write. Do not replace her substance with analysis of the JD. Do write it — craft sentences, create flow, ensure it reads as a coherent opening paragraph — but shape the structure, not the words. The result should be recognisably hers, polished to be appropriate for formal writing.
 
 **The balance:** shape the structure; preserve the language. Notes become a paragraph through connectors, sequence, and flow — not by replacing her words with generic professional vocabulary.
-
-**No foresight claims or market aphorisms — these are fabrication unless sourced.**
-
-When writing a proof paragraph about a buyer, market, or domain: do not assert what the candidate *concluded*, *predicted*, or *foresaw* unless that conclusion is a documented fact in career-data. Describe what she *did* — what she positioned, built, or ran at a named company — not what she anticipated or realized. Predictions, foresight claims, and market aphorisms ("position around permanence, not novelty," "the buyer trusts a vendor standing in five years") are fabrication unless the specific insight appears verbatim or near-verbatim in `02-professional-background.md` or `03-framework.md`. If you cannot cite the source, describe the work instead.
 
 **Hard stop — invention is fabrication. No exceptions.**
 

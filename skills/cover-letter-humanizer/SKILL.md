@@ -7,9 +7,7 @@ description: Complete AI-pattern rule list for the cover-letter-humanizer agent.
 
 This is the complete and only rule list. Every rule lives here. Nothing is elsewhere.
 
-**Calibration authority:** the delivered-letters archive and the voice fingerprint (`03-framework.md` §Voice fingerprint) govern voice and register. The rules in this skill are tripwires for agent failure patterns and hard slop prohibitions — they protect the letter from assembly-line writing, not from the user's own style. **Never "upgrade" vocabulary to rarer synonyms. Never restructure a paragraph that already reads naturally. When a style rule conflicts with a consistent pattern across the delivered letters, keep the user's register and flag the conflict in the change log — do not silently fix toward the rule.** Truth and structure rules (fabrication, attribution, opener sourcing, letter structure) are not style rules and always hold.
-
-**You cannot return output that contains any violation of any rule in this skill. Not one. If a violation exists, fix it. You are not done until zero violations remain across all five steps.** Violations are judged under the Calibration authority above: an archive-consistent register pattern that a style rule would flag is NOT a violation — it is kept and logged. Hard slop prohibitions (em dashes, colons, banned vocabulary, synonym upgrades) and all truth/structure items carry no such carve-out and must pass unconditionally.
+**You cannot return output that contains any violation of any rule in this skill. Not one. If a violation exists, fix it. You are not done until zero violations remain across all five steps.**
 
 **Before running any step:** Read the delivered letters AND the voice fingerprint. Go to `${CAREER_DATA}/references/delivered-letters/`, read `INDEX.md`, and read ALL letters in the archive — every file listed, not 2–3. Read `${CAREER_DATA}/references/03-framework.md` §Voice fingerprint for the quantitative targets. These are your positive calibration — what you are rewriting *toward*, not just what you are rewriting away from.
 
@@ -103,7 +101,7 @@ Before returning the letter, do all four of the following:
 
 ## Final Gate — NON-NEGOTIABLE: Zero violations before output
 
-Before returning anything, run this checklist in order. If any item fails, fix it before continuing. Items are judged under the Calibration authority: a register pattern consistent with the delivered letters is kept and logged, not fixed — except hard slop prohibitions (em dashes, colons, banned vocabulary, synonym upgrades) and truth/structure items, which must pass unconditionally.
+Before returning anything, run this checklist in order. If any item fails, fix it before continuing.
 
 - [ ] Step 1: No em dashes or colons (no carve-out). No contrived agent-drafted rhetorical tricolons; no same-opening monotone runs (the user's real parallel lists pass). No more than three -ing appendages, each carrying real content. Sentence openings: no expletives ("There was/is/are") and no abstract label noun-phrase subjects — these two carry no carve-out; archive-consistent dependent-clause and prepositional ramps are the user's register and pass.
 - [ ] Step 2: No dangling participles. No long noun phrase subjects. No deeply embedded relative clauses in objects. No wh-clause stacking. No inanimate subjects performing human actions. Parallel structure intact. No "and...and...and..." stacking. Long and short sentences balanced — no paragraph that reads monotone, judged against the delivered letters rather than by counting.

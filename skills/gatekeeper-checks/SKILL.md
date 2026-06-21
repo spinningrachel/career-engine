@@ -80,8 +80,6 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 
 ## Option 2 — Cover Letter Checks
 
-**Calibration authority (R-32) — read before running any check in this option.** The delivered-letters archive and the voice fingerprint (`03-framework.md` §Voice fingerprint) govern voice and register. The pattern and structure checks below target agent-drafted failure modes — they do not police the user's own register. A register pattern consistent with the delivered letters is NOT a violation: keep it and note it, exactly as the humanizer does. Hard slop prohibitions (em dashes, colons, banned vocabulary true tells) and all truth/structure checks (opener sourcing, role named, CV repetition, fabrication) carry no carve-out. You run BEFORE the humanizer — if you strip an archive-consistent ramp here, the humanizer's carve-out can never restore it, so the carve-out must be applied here first.
-
 **Format**
 - Greeting: `Hi to the [Company name] team!` or `Hi to [Name]!` — for stealth roles (no public company name), `Hi to the team!` or `Hi to the [JD descriptor] team!` is accepted
 - Role named in the first sentence of the body — it does not have to lead the sentence, but it must be explicit (Tier 2; FAIL if absent)
@@ -95,20 +93,6 @@ If the user's Why I Want This Role content was passed alongside the cover letter
 **Why I Want This Role point coverage — FAIL if triggered**
 
 If the numbered [WIWTR-N] point list was passed alongside the letter: verify each point is substantively present in the letter text. A point is present if its actual substance (not just its theme) appears somewhere in the letter. Missing points = FAIL. List each missing point by number and quote it. If no [WIWTR-N] list was passed, skip this check and note "WIWTR point list not provided — coverage check skipped."
-
-**Hard-fact scan — FAIL if triggered (run this before any other content check)**
-
-List every sentence in the letter that asserts a specific, checkable event, prediction, outcome, capability, or number attributed to the candidate's history. Examples of the type: "saw the acquisition coming," "predicted X," "increased market share 65%," "knew the buyer trusts permanence over novelty," "understood that the market would demand Y." For each listed sentence:
-
-1. **Check `02-professional-background.md` or `01-writing-rules.md` first.** If the supporting line is found there, PASS.
-2. **If not found in 01/02, check whether the claim traces to the user's Why I Want This Role field** (passed alongside the letter). If the claim — or a close paraphrase of it — appears in WIWTR, it is the user's own first-person assertion about her experience. **Do NOT fail it as fabrication.** Instead, flag it as: `[WIWTR-UNLOGGED] "[claim]" — present in WIWTR but not yet documented in career-data. Generate a career-data update prompt for this claim.` This is an advisory, not a FAIL. The letter stands.
-3. **Only if a claim is found in neither 01/02 nor WIWTR:** FAIL it as fabrication.
-
-**Why:** WIWTR is the user's authoritative first-person record of her own experience. If she wrote it there, it is true. Career-data (01/02) may simply be incomplete. The correct resolution is to add the missing fact to career-data — not to suppress the user's own claim from her letter.
-
-A claim does not pass because it "sounds plausible" or "sounds like her." Plausibility is not evidence — but WIWTR authorship IS evidence. The personal-content exemption covers genuine first-person reactions and opinions; WIWTR-sourced factual claims are a first-person record, not agent invention. Foresight claims, market aphorisms presented as her insight, and acquisition-or-event-attributed-to-her statements are in scope for this check — verified against 01/02 first, then WIWTR.
-
-**This scan is mandatory and enumerated: list the claims first, then verify each against the files, one at a time. A holistic read is not sufficient.**
 
 **CV repetition check — FAIL if triggered**
 
