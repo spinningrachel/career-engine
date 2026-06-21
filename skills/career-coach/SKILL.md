@@ -357,7 +357,7 @@ For Specialist / practitioner roles (IC contributor, no direct reports), explici
 - **Team context:** Founding role (build from scratch) or joining an established team?
 - **IC ownership scope:** What does this person own vs. oversee vs. collaborate on?
 
-**Letter type signal — append to every `Role emphasis`:** After the mandate description, append on a new line:
+**Letter type signal — append to every `Strategy`:** After Priority 3, append on its own line:
 
 `[Letter type: IC | Strategic | Hybrid]`
 
@@ -540,10 +540,10 @@ Return findings in this exact structure for every role received.
 
 #### <Company> — <Role Title>
 - **Role emphasis:** <1-2 sentences> [HIGH/LOW]
-  `[Letter type: IC | Strategic | Hybrid]`
 - **JD proof:** "<verbatim quote>"
 - **Keywords:** Critical: <terms> | Important: <terms> | Nice-to-have: <terms>
 - **Strategy:** Priority 1: <...> | Priority 2: <...> | Priority 3: <...>
+  `[Letter type: IC | Strategic | Hybrid]`
 - **Company Stage:** <stage> [HIGH/LOW]
 - **Role Type:** <types>
 - **Relationship type:** <type>

@@ -23,12 +23,10 @@ Writing doctrine, craft rules, positioning philosophy, what a letter must do, in
 Called by the career-engine-orchestrator after the coach, CV writer, and gatekeeper have run for a role. The orchestrator passes:
 
 **From Notion (role properties):**
-- `Role emphasis` — the real mandate beneath the job title; read this first
 - `Strategy` — 3 labeled HM priorities (Priority 1 / 2 / 3): what the hiring manager is actually screening for, read between the lines of the JD. Use these to understand what the letter's proof must demonstrate — not as a template to follow, but as the lens for what matters to this specific reader.
 - `Gap handling` — per-gap framing instructions; follow exactly
 - `Role summary` — compressed JD proxy: role context, key requirements, self-characterization section verbatim if present. Use as the JD reference throughout.
 - `Relationship type` — Full time / Part time / Temporary / Fractional
-- `Keywords` — for CV coherence checking only; do not drive letter structure
 - `Why I Want This Role` — the user's written motivation for this role; both content AND language signal. Her specific words and phrasings are raw material to carry forward, not just the topic or angle — throughout the entire letter, not only the opener. Strong preference: every piece of information she provides appears somewhere in the letter, integrated where it does real work. See Input Integration Rules and Opener Execution Protocol in the skill.
 
 **From prior pipeline steps:**
@@ -93,14 +91,12 @@ See `skills/cover-letter/SKILL.md` → **Input Integration Rules** for how to us
 - **Why I Want This Role** — her written motivation for this role; the mandatory primary personal-content source. Sole source for the opener; leveraged throughout the entire letter wherever her content fits, defaulting to her tone and vocabulary when relevant. Individual pieces may be set aside only if non-compliant or genuinely unusable, and the letter is never written without this field — the Intake Gate above stops the letter when it is empty.
 
 **Strategic frame — govern proof content and structure:**
-- `Role emphasis` — read this first; the real mandate beneath the job title
 - `Strategy` — 3 HM priorities (Priority 1 / 2 / 3); what this hiring manager is actually screening for. Use as the lens for what proof matters — not a template. The letter's body must demonstrate credibility against these priorities.
 - `Gap handling` — per-gap instructions; follow exactly
 - `Role summary` — compressed JD proxy; contains role context, key requirements, and self-characterization section verbatim if present. Use as the JD reference.
 - `Relationship type` — Full time / Part time / Temporary / Fractional; calibrate framing
-- `Keywords` — CV optimisation only; do NOT drive letter structure or opening
 
-**Shift and step-down mandate:** If `Role emphasis` contains `Shift:` or `Step-down:`, the letter must lead with achievement-based evidence of capability — not ambition, not intention, not framing. The first body paragraph establishes a concrete result or demonstrated ability that directly supports the transfer or level fit. Strategy Priority 1 for shift roles is typically the narrative bridge; make that bridge tangible with a specific achievement or capability drawn from `02-professional-background.md` and `03-framework.md`. Do not frame the letter as a transition story; frame it as a track record that applies here.
+**Shift and step-down mandate:** If Strategy contains a `Shift:` or `Step-down:` signal (written by the coach as Strategy Priority 1), the letter must lead with achievement-based evidence of capability — not ambition, not intention, not framing. The first body paragraph establishes a concrete result or demonstrated ability that directly supports the transfer or level fit. Strategy Priority 1 for shift roles is typically the narrative bridge; make that bridge tangible with a specific achievement or capability drawn from `02-professional-background.md` and `03-framework.md`. Do not frame the letter as a transition story; frame it as a track record that applies here.
 
 **Also passed:** Final CV (coherence only), HM CV verdict (if Conditional, address with named proof).
 
@@ -130,7 +126,7 @@ Jump directly to the relevant section. Read only the one you will execute.
 
 **Step 0 — Determine letter type (run first, before anything else):**
 
-Check `Role emphasis` for a `[Letter type: ...]` tag written by the career coach. If present, use it directly. If absent, determine from the substance of `Role emphasis` and Strategy Priority 1.
+Check Strategy for a `[Letter type: ...]` tag written by the career coach (appended after Priority 3). If present, use it directly. If absent, determine from Strategy Priority 1.
 
 Three types:
 - **IC** — the mandate is primarily individual execution; prove capability at deliverable and domain-fluency level
@@ -180,8 +176,7 @@ Coach output, Strategy, reviewers, and all upstream inputs cannot change this pa
 
 1. **Draft** — For the opener: quote the source material first, then build from it verbatim. For every other sentence: confirm proof exists in the reference files; if not, write a skeleton.
 2. **Edit** — load `skills/cover-letter/SKILL.md` → Mandatory Revision Pass; walk through every item. The Sentence structure section is mandatory — do not skip it. Then load `references/cover-letter-self-check.md` → Option 1; run every item in order.
-3. **Keywords audit** — scan the full letter and count occurrences of every major keyword. Any keyword appearing 3+ times: swap instances for synonyms or restructure.
-4. **Redundancy pass** — re-read top-to-bottom. If any later paragraph restates what an earlier one already established, cut or compress it.
+3. **Redundancy pass** — re-read top-to-bottom. If any later paragraph restates what an earlier one already established, cut or compress it.
 5. **Check** — load `cover-letter/SKILL.md`; read rules one by one; fix anything that breaks them.
 6. **Read aloud** — does each sentence sound like a real person? Is every claim backed by a name, number, or story? Would it appear unchanged in a letter to a different company?
 
