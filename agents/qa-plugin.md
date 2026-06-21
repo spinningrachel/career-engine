@@ -607,15 +607,16 @@ grep -c "Write" <build>/agents/career-coach.md      # must be >= 1 (coach needs 
 
 ### Check 22 — Single-build model documented in CLAUDE.md
 
-In `CLAUDE.md`: verify the file describes the single-build architecture (regression table was intentionally removed; architecture description must remain).
+In `CLAUDE.md`: verify the file describes the single-build architecture and the mandatory QA gate (the regression table was intentionally removed; architecture description and QA gate must remain).
 
 ```bash
 grep -c "Single-build architecture" <build>/CLAUDE.md
 grep -c "Placeholder resolution" <build>/CLAUDE.md
 grep -c "career-data" <build>/CLAUDE.md
+grep -ci "MANDATORY STOP" <build>/CLAUDE.md
 ```
 
-**FAIL condition:** any string not found.
+**FAIL condition:** any string not found (all four must be present).
 
 ### Check 22c — Letter pipeline behavioral patterns present
 

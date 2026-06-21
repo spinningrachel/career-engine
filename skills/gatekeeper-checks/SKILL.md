@@ -82,6 +82,8 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 
 ## Option 2 — Cover Letter Checks
 
+**Calibration authority:** The humanizer holds calibration authority over voice register and word-count decisions within the 320-word hard ceiling. The gatekeeper enforces the hard ceiling and mandatory structure checks only — it does not apply voice register judgments that conflict with the humanizer's calibration output.
+
 **Format**
 - Greeting: `Hi to the [Company name] team!` or `Hi to [Name]!` — for stealth roles (no public company name), `Hi to the team!` or `Hi to the [JD descriptor] team!` is accepted
 - Role named in the first sentence of the body — it does not have to lead the sentence, but it must be explicit (Tier 2; FAIL if absent)
