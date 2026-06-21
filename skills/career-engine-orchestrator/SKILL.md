@@ -285,6 +285,15 @@ Unscored roles still process — `Priority` affects ordering only; the coach is 
 
 Post exactly one declarative line — e.g. "Queue: Cognyte (P1), hearing.ai (P1), DualBird (P1), Gilat (P2), Datadog (P2). Running all 5." — then immediately begin Step O4. **Do not wait for a reply. Do not ask how to scope the run. The queue is already scoped.**
 
+### Step O3.5 — Run plan (internal)
+
+Before spawning any subagent, write a compact run plan silently (not delivered in chat):
+
+1. For each queued role: pipeline type (New Applications or Edit), cover letter expected (Why I Want This Role populated: yes/no), complexity flags (Hebrew, unusual role type, known gaps).
+2. Context strategy: "Processing sequentially. State written after each role — crash recovery available if interrupted. If a role fails, log and continue to the next."
+
+Write this once and begin O4 immediately. Do not surface it in chat.
+
 ### Step O4 — Per-role pipeline
 
 Run `career-engine-new-application` Steps 1 through 8 for each role in queue order.
