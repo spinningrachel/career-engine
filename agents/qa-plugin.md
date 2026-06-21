@@ -468,13 +468,10 @@ test -f <location>/references/linkedin-profile.md && echo 1 || echo 0           
 
 **FAIL condition:** any count is 0 (or differs from the stated requirement), or the linkedin-profile.md file is missing.
 
-### Check 21h — Voice calibration stack present (tiers, fingerprint, humanizer wiring)
+### Check 21h — Voice calibration stack present (fingerprint, humanizer wiring)
 
 ```bash
 grep -c "Voice fingerprint" <location>/references/03-framework.md                      # must be >= 1
-grep -c "Tier 1 — Truth" <location>/skills/cover-letter/SKILL.md                       # must be 1
-grep -c "Tier 3 — Voice and register" <location>/skills/cover-letter/SKILL.md          # must be 1
-grep -c "Calibration authority" <location>/skills/cover-letter-humanizer/SKILL.md      # must be >= 1
 grep -c "Voice fingerprint" <location>/agents/cover-letter-humanizer.md                # must be >= 1
 grep -c "Voice fingerprint" <location>/skills/cover-letter/SKILL.md                    # must be >= 1
 ```
