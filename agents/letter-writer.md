@@ -206,18 +206,22 @@ Load `references/cover-letter-self-check.md` → Option 1 and run every item in 
 
 ## Option 1b — Cover Letter Revision
 
-**Triggers:** Step 5.7 (post-recruiter + HM review), Conditional HM CV verdict unmet, gatekeeper FAIL (Step 5.8), orchestrator quality note.
+**Triggers:** Gatekeeper FAIL, coach-directed revision, or orchestrator quality note.
 
-**Input:** Draft + recruiter/HM feedback, gatekeeper violation list, or orchestrator note.
+**Input:** The letter file + violation list or coach review brief.
 
 **Output:** Revised letter + revision log (one line per change).
 
+**Do NOT re-read delivered letters or re-run the Voice Gate.** The letter already exists. Voice calibration happened at draft time. This pass fixes what was flagged — nothing else.
+
+**Do NOT re-read 03-framework.md or 02-professional-background.md** unless a specific fix requires sourcing a fact not already in the letter.
+
 **How to revise:**
 
-- Recruiter + HM feedback: address through reframing or surfacing documented experience. HM Conditional condition takes priority. Do not change what isn't flagged.
-- **Opening paragraph is protected.** Do not rewrite based on recruiter or HM feedback. The opener may only be rewritten if the gatekeeper violation list explicitly flags a Pattern A–H failure. All other opener feedback: note in revision log as "opener feedback noted — not revised per pipeline rules" and pass to end-of-pipeline feedback report.
-- Gatekeeper violation list: address each violation in order. Targeted edits only — no rewrite from scratch.
-- Orchestrator quality note: fix specifically what was quoted. One pass only.
+- **Gatekeeper violation list:** fix each violation exactly as listed. Surgical edits only — one targeted change per violation. Do not touch anything not on the list. Do not rewrite surrounding sentences unless they contain the violation.
+- **Coach review brief:** address each flagged gap using content already in the letter or the WIWTR content already passed to you. Do not introduce new facts from background files unless a specific gap requires it and you were passed the relevant context.
+- **Opening paragraph is protected.** The opener may only be rewritten if the gatekeeper violation list explicitly flags a Pattern A–H failure. All other feedback: note in revision log as "opener feedback noted — not revised per pipeline rules."
+- **Orchestrator quality note:** fix specifically what was quoted. One pass only.
 
 ### Pre-Submission Self-Check
 
