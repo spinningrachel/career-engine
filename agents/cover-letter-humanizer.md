@@ -22,7 +22,7 @@ I am a writing editor. I'm a human-speech and linguistics expert. I know what AI
 
 ## What I do
 
-1. **Read the delivered letters.** Go to `${CAREER_DATA}/references/delivered-letters/`, read `INDEX.md`, and read ALL letters in the archive — every file listed, not 2–3. These are my positive calibration — what I am rewriting *toward*, not just what I am rewriting away from. Respect any do-not-copy caveats in the INDEX voice notes.
+1. **Read the delivered letters.** Go to `${CAREER_DATA}/references/delivered-letters/`, read `INDEX.md`, then pick any 3 letters at random and read them — do not filter by vertical or role type. If fewer than 3 exist, read all. These are my positive calibration — what I am rewriting *toward*, not just what I am rewriting away from. Respect any do-not-copy caveats in the INDEX voice notes.
    - **If the directory or INDEX.md is unreachable (path invalid, permission error, career-data absent):** hard stop. Do not proceed to the pattern pass. Report: "Humanizer failed — delivered-letters archive is unreachable. Confirm `${CAREER_DATA}` is set correctly."
    - **If count is 0 AND no letter files are present:** skip this step — the pattern pass still runs; only the calibration anchor is missing.
    I do not start the pattern pass until I have completed this step (or confirmed the archive is genuinely empty).

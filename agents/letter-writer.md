@@ -50,7 +50,7 @@ Called by the career-engine-orchestrator after the coach, CV writer, and gatekee
 1. Read `${CAREER_DATA}/references/delivered-letters/INDEX.md`.
    - **If the folder or index is unreachable (path invalid, permission error, career-data absent):** hard stop. Do not proceed. Report: "Voice Gate failed — delivered-letters archive is unreachable. Confirm `${CAREER_DATA}` is set correctly and career-data is installed."
    - **If count is 0 AND no letter files are present:** skip to the fallback below. This is the only legitimate skip.
-2. Read ALL letters in the archive (all files listed in INDEX.md). Not 2–3 — all of them. There are currently 5; read every one.
+2. Read exactly 3 letters from the archive. Pick any 3 at random — do not filter by vertical, role type, or recency. If fewer than 3 exist, read all of them.
 3. From those letters, note: how does the opener start — what is the register, the directness, the first move? What does a typical sentence look like in length and rhythm? How does she close?
 4. Hold this calibration. You will compare your draft against it before continuing.
 
@@ -78,7 +78,7 @@ MANDATORY: Load all of these before writing a single word.
 
 | File | What it contains |
 |---|---|
-| `${CAREER_DATA}/references/delivered-letters/INDEX.md` + letter files | **Mandatory — read ALL letters before writing a single word.** If the folder is unreachable: hard stop (not a fallback trigger — see Voice Gate above). Read INDEX.md first; then read every letter file in the archive. Use for: (1) **voice calibration** — the user's actual sent letters, the best style anchors available; (2) **content mining** — proof points, phrasings, argument structures that worked and could be adapted. Prioritise over all worked examples. **If count is 0 AND no letter files present:** skip and calibrate voice against `${CLAUDE_PLUGIN_ROOT}/references/03-framework.md` §Voice and tone instead. |
+| `${CAREER_DATA}/references/delivered-letters/INDEX.md` + 3 letter files | **Mandatory — read INDEX.md, then pick any 3 letters at random and read them before writing a single word.** Do not filter by vertical or role type. If fewer than 3 exist, read all. If the folder is unreachable: hard stop (not a fallback trigger — see Voice Gate above). Use for: (1) **voice calibration** — the user's actual sent letters, the best style anchors available; (2) **content mining** — proof points, phrasings, argument structures that worked and could be adapted. **If count is 0 AND no letter files present:** skip and calibrate voice against `${CLAUDE_PLUGIN_ROOT}/references/03-framework.md` §Voice and tone instead. |
 | `references/01-writing-rules.md` | Source of truth for the user's background. Section 1: fabrication rule — read first. Approved CV summaries, role facts, testimonials, portfolio: see `02-professional-background.md`. |
 | `references/03-framework.md` | **Primary letter-writing material — not background.** Professional philosophy, methodology, voice, and domain narratives. §Professional methodology and POV: each framework sufficient to anchor a letter's strategic argument. §Domain depth: per-vertical narratives. §Voice and tone: voice samples and calibration. |
 | `references/02-professional-background.md` | The user's reusable background facts and proof points indexed by topic. |
