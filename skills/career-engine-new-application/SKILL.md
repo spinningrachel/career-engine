@@ -515,7 +515,27 @@ After updating the file, repackage the `career-data` directory as a `.skill` zip
 - If there is nothing new to add, say so explicitly: "No new content to promote from this entry."
 ```
 
-Log in the final delivery per role: "Update prompt written to `<company_dir>/update-prompt-<company>-<monYYYY>.md` — paste into Chat or Code to complete the motivation bank promotion (do both if you use both environments)" or "No Why I Want This Role content — skipped."
+**After the §5 promotion section, append a WIWTR-UNLOGGED section if applicable:** Collect every item the gatekeeper flagged as `[WIWTR-UNLOGGED]` during this run (from Steps 5.3, 5.5, and 5.95 violation reports). For each item, append to the update-prompt file:
+
+```
+## Role facts needing verification (WIWTR-UNLOGGED — from [Company] [Run Date])
+
+The following claims appeared in your Why I Want This Role and were used in the letter,
+but are not yet documented in `02-professional-background.md`. They are NOT fabrications —
+they are your own first-person record. To make them available to future pipeline runs
+without re-triggering this advisory, add them to Section 7 (Role Facts) for the relevant
+role, pending your verification that the facts are accurate.
+
+For each item below: if accurate, add it as a role fact to §7 under the relevant employer.
+If not accurate, remove it from your Why I Want This Role before the next run.
+
+[For each WIWTR-UNLOGGED item, one line:]
+- **[Employer]** — "[verbatim claim from WIWTR]" *(flagged in [step] — not in 02-professional-background.md)*
+```
+
+If no [WIWTR-UNLOGGED] items were found, omit this section entirely.
+
+Log in the final delivery per role: "Update prompt written to `<company_dir>/update-prompt-<company>-<monYYYY>.md` — paste into Chat or Code to complete the motivation bank promotion (do both if you use both environments)" or "No Why I Want This Role content and no WIWTR-UNLOGGED items — skipped."
 
 ### Step 7g — Clean up `_pipeline/` scratch directory
 
