@@ -605,17 +605,49 @@ grep -c "Write" <build>/agents/career-coach.md      # must be >= 1 (coach needs 
 
 **FAIL condition:** any required count is zero, or recruiter/HM cover letter reviewer still present.
 
-### Check 22 — Known regression checks present in CLAUDE.md
+### Check 22 — Single-build model documented in CLAUDE.md
 
-In `CLAUDE.md`: verify the file contains "Known regression checks", entries "R-1" through "R-6", and the latest entry "R-37".
+In `CLAUDE.md`: verify the file describes the single-build architecture (regression table was intentionally removed; architecture description must remain).
 
 ```bash
-grep -c "Known regression checks" <build>/CLAUDE.md
-grep -c "R-1" <build>/CLAUDE.md
-grep -c "R-48" <build>/CLAUDE.md
+grep -c "Single-build architecture" <build>/CLAUDE.md
+grep -c "Placeholder resolution" <build>/CLAUDE.md
+grep -c "career-data" <build>/CLAUDE.md
 ```
 
 **FAIL condition:** any string not found.
+
+### Check 22c — Letter pipeline behavioral patterns present
+
+Four confirmed regression patterns from live runs. Run on the build.
+
+**strategic-builder rule:** grep `skills/gatekeeper-checks/SKILL.md` and `skills/cover-letter/SKILL.md` for the string "strategic builder" — must appear in at least one of them.
+
+```bash
+grep -c "strategic builder" <build>/skills/gatekeeper-checks/SKILL.md
+grep -c "strategic builder" <build>/skills/cover-letter/SKILL.md
+```
+
+**FAIL condition:** both counts are 0 (string absent from both files). PASS if either count is >= 1.
+
+**em dash absolute ban prominent:** grep `agents/letter-writer.md` for "em dash" or "em dashes" — must appear.
+
+```bash
+grep -ci "em dash" <build>/agents/letter-writer.md
+```
+
+**FAIL condition:** count is 0.
+
+**colon ban present:** grep `agents/letter-writer.md` and `skills/cover-letter-humanizer/SKILL.md` for "colon" in the context of a writing ban — must appear in at least one.
+
+```bash
+grep -ci "colon" <build>/agents/letter-writer.md
+grep -ci "colon" <build>/skills/cover-letter-humanizer/SKILL.md
+```
+
+**FAIL condition:** both counts are 0.
+
+**sign-off archive-load gap (known open issue):** the gatekeeper Option 2 does not load the delivered-letters archive before evaluating sign-offs; sign-off checks may produce false positives on archive-consistent sign-offs. Do NOT FAIL on this — surface it as a known advisory in the QA output.
 
 ### Check 22b — career-data / single-build wiring present (R-37)
 

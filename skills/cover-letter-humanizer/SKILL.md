@@ -5,6 +5,8 @@ description: Complete AI-pattern rule list for the cover-letter-humanizer agent.
 
 # Cover Letter Humanizer — Complete Rule List
 
+> **Letter pipeline file.** Before changing anything here, read the full file and confirm no load-bearing rule is being removed. Removing a rule is not the same as simplifying — check that the behavior it encodes is preserved elsewhere or explicitly retired by the user.
+
 This is the complete and only rule list. Every rule lives here. Nothing is elsewhere.
 
 **You cannot return output that contains any violation of any rule in this skill. Not one. If a violation exists, fix it. You are not done until zero violations remain across all five steps.**

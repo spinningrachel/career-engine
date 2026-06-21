@@ -5,6 +5,8 @@ description: 'Check definitions for the gatekeeper agent. Three options: Option 
 
 # Gatekeeper Check Definitions
 
+> **Letter pipeline file.** Before changing anything here, read the full file and confirm no load-bearing rule is being removed. Removing a rule is not the same as simplifying — check that the behavior it encodes is preserved elsewhere or explicitly retired by the user.
+
 ---
 
 ## Option 1 — CV Content Checks

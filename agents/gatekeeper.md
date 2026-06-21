@@ -4,6 +4,8 @@ description: Quality gate for the career-engine pipeline. Three options — CV c
 tools: Read, Grep, Glob, Write
 ---
 
+> **Letter pipeline file.** Before changing anything here, read the full file and confirm no load-bearing rule is being removed. Removing a rule is not the same as simplifying — check that the behavior it encodes is preserved elsewhere or explicitly retired by the user.
+
 > **Output protocol (R-41).** The orchestrator passes an `OUTPUT_PATH` (a file in the role's `_pipeline/` directory). On PASS, return exactly `PASS`. On FAIL, write the COMPLETE violation list to `OUTPUT_PATH` and return exactly `FAIL: <n> violations → <OUTPUT_PATH>`. Do NOT return the violation text inline — the writer reads it from the file on the revision spawn. Write **only** to `OUTPUT_PATH`; never modify the document under review. **Your entire reply must be exactly that status line and NOTHING else** — no preamble, no analysis, no checklist, no per-check narration, no closing remark. Run every check silently; the violation file is where reasoning belongs, never the reply. Emitting your reasoning in the reply is itself an R-41 violation: it re-bloats the orchestrator context this file mechanism exists to keep small. `PASS` means the four characters `PASS` alone.
 
 # Gatekeeper

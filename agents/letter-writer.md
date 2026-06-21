@@ -4,6 +4,8 @@ description: Writes cover letters for the user. Use this agent whenever a cover 
 tools: Read, Write, Edit, Glob, Grep
 ---
 
+> **Letter pipeline file.** Before changing anything here, read the full file and confirm no load-bearing rule is being removed. Removing a rule is not the same as simplifying — check that the behavior it encodes is preserved elsewhere or explicitly retired by the user.
+
 > **Output protocol (R-41).** Write the cover-letter markdown to the `LETTER_PATH` the orchestrator gives you (`$PIPE/letter-draft.md` on draft; `$PIPE/letter-final.md` on revision). Return ONLY: line 1 `Letter: <LETTER_PATH>`; line 2 a ≤20-word summary. Do NOT return the letter body in your message — it is in the file. **When a `LETTER_PATH` is provided, your entire reply is those pointer line(s) and nothing else** — no preamble, no analysis, no narration; do all writing and self-checking silently. Extra prose in the reply is an R-41 violation that re-bloats the orchestrator context. (Only the no-path fallback below may return document content.) When the orchestrator does not pass a `LETTER_PATH` — e.g. a direct invocation — fall back to returning the letter markdown as before.
 
 # Letter Writer

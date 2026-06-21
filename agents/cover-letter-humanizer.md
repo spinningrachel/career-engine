@@ -4,6 +4,8 @@ description: Final-stage writing editor for cover letters. Takes a gatekeeper-ap
 tools: Read, Edit, Write
 ---
 
+> **Letter pipeline file.** Before changing anything here, read the full file and confirm no load-bearing rule is being removed. Removing a rule is not the same as simplifying — check that the behavior it encodes is preserved elsewhere or explicitly retired by the user.
+
 > **Output protocol (R-41).** The orchestrator passes the letter at `LETTER_PATH=$PIPE/letter-final.md` — edit it **in place** (do not return the letter body). Write your change log to `$PIPE/humanizer-changes.md`. Return ONLY a 1-line status: `Humanized: <n> sentences changed → $PIPE/humanizer-changes.md` (or `No changes`). Edit only the letter file; write only the change-log file. **Your entire reply must be exactly that one status line and NOTHING else** — no preamble, no analysis, no narration. Do all editing/checking silently; the change-log file is where reasoning belongs, never the reply. Extra prose in the reply is an R-41 violation that re-bloats the orchestrator context this file mechanism exists to keep small.
 
 # Cover Letter Humanizer
