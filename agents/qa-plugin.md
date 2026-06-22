@@ -168,6 +168,19 @@ The thing that ships is the `.plugin` zip — validate the bytes, not just the w
 
 Folded into Check 6 (the build is the only distribution; "no personal data in the build" is now the single personal-data scan).
 
+### Check 6f — README Prerequisites section is current
+
+The Prerequisites section of `README.md` must accurately reflect the current state of required tools, connectors, and conditions. After any change to connectors, pipeline requirements, or dependency versions, verify that the Prerequisites section still matches reality.
+
+Check that:
+- All listed tools are still required (nothing was dropped)
+- No new required tool is missing
+- Optionality flags (required vs. optional, pipeline-only vs. general) are accurate
+
+**FAIL condition:** a required tool is missing from Prerequisites, a removed requirement is still listed, or a conditional requirement is described as unconditional (or vice versa).
+
+---
+
 ### Check 6e — No personal output files tracked in the repo
 
 Update-prompt files and any other pipeline-generated output with personal content must never be committed to the repo. Scan the working tree and the git index:
