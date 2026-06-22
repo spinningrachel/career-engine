@@ -10,7 +10,7 @@ Working instructions for Claude when editing, extending, or maintaining this plu
 
 This means: after completing any set of changes — no matter how small — you MUST invoke the QA agent (`agents/qa-plugin.md`) before telling the user the work is complete. This is not optional and cannot be skipped because the changes "seem clean" or because you "already checked manually." Manual checking is how drift accumulates silently.
 
-**The plugin is a single build.** There is no second personalized copy to keep in sync: the user's personal data lives entirely in the external `career-data` skill (see *Single-build architecture* below), which the plugin never contains. QA validates the one shipped artifact and confirms it holds zero personal data.
+**The plugin is a single build.** There is no second personalized copy to keep in sync: the user's personal data lives entirely in the external `career-data` skill (see *Data layer* below), which the plugin never contains. QA validates the one shipped artifact and confirms it holds zero personal data.
 
 **How to invoke:** Spawn the QA agent by reading `agents/qa-plugin.md` and following its instructions. Pass it the repo path and the built `.plugin`.
 
@@ -18,52 +18,15 @@ This gate applies to: any content edit, any rename, any new file, any property n
 
 ---
 
----
+## Data layer: the `career-data` skill
 
-## Single-build architecture
-
-This plugin ships as **one build**: the public repo. It contains only code (agents, skills) and **blank reference templates** carrying `{{...}}` placeholders. It holds no personal data, so there is no second version and nothing to keep in sync.
-
-### Data layer: the `career-data` skill
+**Single-build architecture** — the plugin ships as **one build**: the public repo. It contains only code (agents, skills) and **blank reference templates** carrying `{{...}}` placeholders — no personal data, no second version, nothing to keep in sync. The user's personal data lives entirely in the external `career-data` skill described below.
 
 The user's personal data — filled `01/02/03`, delivered letters, LinkedIn snapshot, job preferences, pipeline preferences, personal `.dotx` — lives in a separate, user-installed skill named **`career-data`**, outside the plugin. Plugin upgrades never touch it. Agents resolve `career-data` at run start and read the user's real data from it; the plugin's blank templates are the new-user fallback only.
 
-- **Canonical copy:** the Desktop app installation of `career-data`, shared across Chat / Cowork / Code tabs.
-- **Sync is one-way: app → Code.** Never write `~/.claude/skills/` directly from a CLI — it creates a divergent copy (R-37).
-- **Create / update via the app:** Chat edits and repackages a `.skill`; the user uploads it via Settings → Capabilities → Skills. The non-technical update prompt is in the design's Appendix A.
+**Placeholder resolution.** The plugin's instruction files keep `{{...}}` placeholders literally — they are NOT substituted at install, because substituting them would personalize the shared build. Agents resolve them at runtime from `career-data`: identity values (`{{USER_FIRST_NAME}}`, `{{USER_FULL_NAME}}`, `{{USER_LAST_NAME}}`, `{{USER_PROFESSION}}`, `{{USER_FUNCTION_SENIORITY_HIERARCHY}}`, city/country, etc.) from `career-data` `01-writing-rules.md` §8; all per-install config from the `career-data` config (`${CAREER_DATA}/references/pipeline-preferences.json`): `notion_database_id`, `output_folder`, `cv_template` (relative to `career-data`), `draft_dir_url_base`, `word_templates_path`, `notion_needs_editing_view_url`, `gap_handling`. Setup writes them all; the orchestrator and the standalone entry skills read them at run start and resolve every `{{CONFIG}}` placeholder from them, stopping if a required key (`output_folder`, `cv_template`, or — for Notion runs — `notion_database_id`) is missing (R-38). (The literal `{{PLACEHOLDER}}` template syntax in `linkedin-coach`/`personal-brand` agent-output instructions is a different thing and is unaffected — it stays literal in both contexts.)
 
-Full design and plan: `docs/superpowers/specs/2026-06-13-data-layer-externalization-design.md` and `...-implementation-plan.md`.
-
-**Placeholder resolution (single-build rule).** The plugin's instruction files keep `{{...}}` placeholders literally — they are NOT substituted at install, because substituting them would personalize the shared build. Agents resolve them at runtime from `career-data`: identity values (`{{USER_FIRST_NAME}}`, `{{USER_FULL_NAME}}`, `{{USER_LAST_NAME}}`, `{{USER_PROFESSION}}`, `{{USER_FUNCTION_SENIORITY_HIERARCHY}}`, city/country, etc.) from `career-data` `01-writing-rules.md` §8; all per-install config from the `career-data` config (`${CAREER_DATA}/references/pipeline-preferences.json`): `notion_database_id`, `output_folder`, `cv_template` (relative to `career-data`), `draft_dir_url_base`, `word_templates_path`, `notion_needs_editing_view_url`, `gap_handling`. Setup writes them all; the orchestrator and the standalone entry skills read them at run start and resolve every `{{CONFIG}}` placeholder from them, stopping if a required key (`output_folder`, `cv_template`, or — for Notion runs — `notion_database_id`) is missing (R-38). (The literal `{{PLACEHOLDER}}` template syntax in `linkedin-coach`/`personal-brand` agent-output instructions is a different thing and is unaffected — it stays literal in both contexts.)
-
-> **Status:** until the read-path phase lands, agents still read in-plugin `references/`. The `docs/` planning specs are personalized-only and gitignored; the public repo ships no planning docs.
-
----
-
-## Content placement rules
-
-### Agents (`agents/`)
-**Orchestration only.** An agent file defines identity (what this agent is), invocation modes, what files to load, what steps to follow, and what to return. It does not contain:
-- Writing craft or doctrine (→ belongs in the relevant skill)
-- Personal examples, company names, or candidate-specific rules (→ belongs in references)
-- Fabrication rules or voice profile (→ `01-writing-rules.md`)
-
-The agent's Role section should be 3–6 lines max. Everything else is procedure.
-
-### Skills (`skills/`)
-**Doctrine and craft.** Writing rules, positioning philosophy, use-case patterns, checklists, and strategic frameworks live here. If a rule applies every time a task is performed, it belongs in the skill, not the agent.
-
-Skills are loaded by agents via `Read` — they are not auto-activated by the platform based on context for pipeline agents. Each agent explicitly instructs itself to load the skills it needs.
-
-### References (`references/`)
-**Source material.** Background facts, candidate rules, voice profile, self-check checklists, templates, and delivered letters. Agents read references; they never write to them except via explicit pipeline steps (e.g., the `02-professional-background.md` Why I Want This Role promotion in new-application Step 7f / edit Step E10.5).
-
-### Commands (`commands/`)
-Slash commands. Thin — they invoke skills, not implement logic directly.
-
----
-
-## Skill ownership map — who reads what, from where
+### Skill ownership map — who reads what, from where
 
 The Desktop app has three runtime environments. They do **not** share a skill store:
 
@@ -73,25 +36,31 @@ The Desktop app has three runtime environments. They do **not** share a skill st
 | **Cowork** | Desktop app skill store | Same store as Chat — same install |
 | **Code (CLI)** | `~/.claude/skills/` on local disk | Separate location; synced one-way from Desktop app |
 
-### The plugin (`career-engine`)
+#### The plugin (`career-engine`)
 
 Installed as a `.plugin` file via **Customize → Connectors → Personal plugins**. Available in all three environments after install. Contains only code — agents, skills, blank templates. No personal data.
 
-### The `career-data` skill
+#### The `career-data` skill
 
 Installed as a `.skill` file via **Customize → Skills**. The Desktop app install is canonical — it serves Chat and Cowork. When the Desktop app installs a skill, it also writes a copy to `~/.claude/skills/` so Claude Code can read it.
 
-**One-way sync: Desktop app → Code.** The Desktop app writes to `~/.claude/skills/` at install time. Writing directly to `~/.claude/skills/` from the CLI does NOT propagate back to Chat or Cowork — it creates a divergent copy that drifts silently.
+#### Drift prevention (Desktop app users)
 
-### Rules that follow from this
+With a single plugin build there is no cross-version drift. The remaining drift risk is between **copies of `career-data`**: the canonical Desktop app install vs. a stale copy in `~/.claude/skills/`. This only applies to users running both the Desktop app and Claude Code CLI.
+
+**One-way sync: Desktop app → Code.** The Desktop app writes to `~/.claude/skills/` at install time. Writing directly to `~/.claude/skills/` from the CLI does NOT propagate back to Chat or Cowork — it creates a divergent copy that drifts silently. Prevent it by never writing `~/.claude/skills/` directly; create and update `career-data` only through the Desktop app.
+
+> **Note for setup and installation documentation:** the Desktop-sync constraint above should be explained to users during setup — not buried in developer notes. Users who only use Code (no Desktop app) are unaffected.
+
+### Updating `career-data`
 
 1. **Never write `~/.claude/skills/` directly from a CLI or pipeline.** Use update-prompt files instead — the user pastes them into Chat (or Code) to make the edit, then repackages and reinstalls via the Desktop app.
 2. **To update `career-data`:** generate an update-prompt file → user pastes in Chat → Chat edits the skill → user repackages as `.skill` → uploads via Customize → Skills. This is the only update path that keeps all three environments in sync.
 3. **Update-prompt format is mandatory:** Chat requires a specific prompt structure to reliably locate and edit the skill. Always use the canonical template in `references/career-data-update-prompt-format.md` — it includes the required context block (marker-file discovery, repackaging steps, verbatim-copy warning). A bare JSON block or informal instruction will confuse Chat. The personal prompt file is gitignored (`update-prompt-*.md`); the template itself is tracked in the repo.
 4. **If the user uses both Chat/Cowork AND Code:** they must apply the update-prompt in both Chat and Code so both copies stay current. Update-prompt files include this reminder.
-4. **Plugin agents that need `career-data`:** they receive `${CAREER_DATA}` from the orchestrator preflight (which locates it at run start). Standalone invocations do Step −0.5 self-locate. Never hardcode the path.
+5. **Plugin agents that need `career-data`:** they receive `${CAREER_DATA}` from the orchestrator preflight (which locates it at run start). Standalone invocations do Step −0.5 self-locate. Never hardcode the path.
 
-### ⛔ Named anti-pattern: the June-18 direct-write rationalization
+#### ⛔ Named anti-pattern: the June-18 direct-write rationalization
 
 On 2026-06-18 an agent wrote directly to `career-data` from Claude Code, bypassed the update-prompt path, and then told the user:
 
@@ -106,15 +75,18 @@ On 2026-06-18 an agent wrote directly to `career-data` from Claude Code, bypasse
 
 ---
 
-## Drift prevention
+## File organization
 
-With a single build there is no cross-version drift. The remaining drift risk is between **copies of `career-data`**: the canonical Desktop app install vs. a stray copy written directly to `~/.claude/skills/` by a CLI. Prevent it with the rule in *Single-build architecture* — never write `~/.claude/skills/` directly; create and update `career-data` only through the Desktop app. Sync is one-way, app → Code.
+Where to put content in the plugin. Each directory has a single job; placing content in the wrong directory is how agents get confused and how doctrine leaks into procedures.
 
----
+| Directory | Purpose | Put here | Never put here |
+|---|---|---|---|
+| **`agents/`** | Orchestration only | Identity/expert framing (3–6 lines), invocation modes, file loading table, step procedures, options routing, output format spec, mandatory gates | Writing craft or doctrine, worked examples, templates, personal data |
+| **`skills/`** | Doctrine and craft | Writing rules, positioning philosophy, use-case patterns, checklists, strategic frameworks, templates with `{{...}}` slots, worked examples | Procedural steps, file loading instructions, output format specs |
+| **`references/`** | Source material | Background facts, candidate rules (blank `{{...}}` placeholders), voice profile template, self-check checklists, delivered-letter examples | Code, procedure, anything only an agent would read |
+| **`commands/`** | Slash commands | Thin command files that invoke a skill or agent | Logic, implementation, doctrine |
 
-## Updating personal data (no sync)
-
-There is no second build to sync. Plugin code changes go in the repo. The user's personal data is never in the repo — it lives in the external `career-data` skill and is updated through the app per the design's Appendix A: attach the current package → edit → verify the file count (files, not archive entries) + binary md5 → repackage as `.skill` → upload via Settings → Capabilities → Skills.
+Skills are loaded by agents via `Read` — they are not auto-activated by the platform based on context for pipeline agents. Each agent explicitly instructs itself to load the skills it needs. Agents read references; they never write to them except via explicit pipeline steps (e.g., the `02-professional-background.md` Why I Want This Role promotion in new-application Step 7f / edit Step E10.5).
 
 ---
 
@@ -212,4 +184,4 @@ Delivered letters show openers that vary widely in structure — emotional react
 
 ## QA Agent
 
-See the mandatory stop gate at the top of this file. The QA agent lives at `agents/qa-plugin.md`. Run it after every edit session. It validates the single shipped `.plugin` artifact (unzipped) for stale references, missing files, property-name consistency, structural integrity, and that it contains zero personal data. The full check list is in the agent file itself. *(The QA rewrite to this single-artifact model is Phase 4 of the data-layer migration; until then the agent still describes the retired two-build checks.)*
+See the mandatory stop gate at the top of this file. The QA agent lives at `agents/qa-plugin.md`. Run it after every edit session. It validates the single shipped `.plugin` artifact (unzipped) for stale references, missing files, property-name consistency, structural integrity, and that it contains zero personal data. The full check list is in the agent file itself.
