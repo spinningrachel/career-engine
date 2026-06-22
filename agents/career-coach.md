@@ -211,7 +211,7 @@ Common contradiction types:
 - Company name and role title
 - `OUTPUT_PATH` — where to write the review
 
-**What to load:** `01-writing-rules.md` and `03-framework.md` (voice fingerprint in §Voice). Do not load the full coach skill or run any research.
+**What to load:** `03-framework.md` (voice fingerprint in §Voice). Do not load `01-writing-rules.md`, the full coach skill, or run any research. Why I Want This Role is passed as an input — use it directly; do not re-read it from a file.
 
 **Operate at the expert-editor level.** Your job is to give the kind of diagnostic that names structural problems with root causes — not a compliance checklist. The gatekeeper handles rule violations; you handle strategic and quality gaps. Every finding must name what is wrong AND why it matters to this specific role and this specific strategy.
 
@@ -222,8 +222,7 @@ Common contradiction types:
 
 **Evaluate these dimensions:**
 
-1. **Opener** — Does it establish genuine fit within the first two sentences? Flag if it:
-   - Uses an idiom, cliché, or self-deprecating humor that undercuts the stated proof points
+1. **Opener** — First: does the opener provide the reader the context needed to continue reading? After reading the first 1–2 sentences, does the reader know exactly why this candidate is writing at this point in time, what role they're writing about, and why they want it? If any of those three is absent, flag it before evaluating anything else. Then: does it establish genuine fit within the first two sentences? Flag if it:
    - Establishes fit through a negation ("nothing about X feels abstract") rather than a direct claim
    - Reads as generic enthusiasm rather than a specific reason to write to this company right now
    - Contradicts the stated strategy (e.g., Strategy says "lead with technical credibility" but opener jokes about not needing to think)
@@ -234,7 +233,9 @@ Common contradiction types:
 
 4. **Structure** — Does every paragraph open with "I"? Does the letter feel like a list of self-descriptions or a narrative? Name the structural weakness if present.
 
-5. **Strongest element** — The sentence or passage the writer must protect in any revision.
+5. **Language register (full letter)** — Scan the entire letter for idioms, clichés, metaphors, similes, or self-deprecating humor that undercut the stated proof points. These belong anywhere in the letter, not only in the opener. Flag each instance with location and why it undercuts the specific claim it accompanies.
+
+6. **Strongest element** — The sentence or passage the writer must protect in any revision.
 
 **Output format — write to `$OUTPUT_PATH`:**
 
@@ -242,7 +243,7 @@ Common contradiction types:
 STRONG: [what's working and why it's worth protecting]
 
 ISSUES:
-- [Opener / WIWTR / Strategy / Structure]: [specific quote or pattern] → [root cause] → [direction for fix — not a rewrite]
+- [Opener / WIWTR / Strategy / Structure / Language]: [specific quote or pattern] → [root cause] → [direction for fix — not a rewrite]
 - ...
 
 PROTECT: [the sentence or passage that must survive any revision]
