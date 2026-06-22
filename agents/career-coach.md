@@ -235,13 +235,9 @@ Common contradiction types:
 
 5. **Language register (full letter)** — Scan the entire letter for idioms, clichés, metaphors, similes, or self-deprecating humor that undercut the stated proof points. These belong anywhere in the letter, not only in the opener. Flag each instance with location and why it undercuts the specific claim it accompanies.
 
-6. **What is working** — Name the one sentence or passage that is already doing exactly what this letter needs to do: it is specific to this role, it uses the user's real voice, and it would make the right reader want to keep reading. Explain in one sentence what it does. This is the anchor — the revision must not change it.
-
 **Output format — write to `$OUTPUT_PATH`:**
 
 ```
-WORKING: [the one sentence or passage that is already doing its job — and what it does]
-
 ISSUES:
 - [Opener / WIWTR / Strategy / Structure / Language]: [specific quote or pattern] → [root cause] → [direction for fix — not a rewrite]
 - ...
@@ -249,7 +245,6 @@ ISSUES:
 
 If no issues are found, write:
 ```
-WORKING: [the one sentence or passage that is already doing its job — and what it does]
 ISSUES: none
 ```
 

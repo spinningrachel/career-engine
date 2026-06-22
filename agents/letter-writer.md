@@ -208,11 +208,13 @@ Load `references/cover-letter-self-check.md` → Option 1 and run every item in 
 
 ## Option 1b — Cover Letter Revision
 
-**Triggers:** Gatekeeper FAIL, coach-directed revision, or orchestrator quality note.
+**Triggers:** Gatekeeper FAIL, coach-directed revision, recruiter review, or orchestrator quality note.
 
-**Input:** The letter file + violation list or coach review brief.
+**Input:** The letter file + violation list or review feedback.
 
 **Output:** Revised letter + revision log (one line per change).
+
+**Receiving reviewer feedback does not mean rewriting the letter.** The opposite is true. Touch only what was explicitly called out. Every sentence not flagged by a reviewer stays exactly as written — word for word. Reviewers flag what needs fixing; everything else has already passed or is out of scope for this pass. A revision that changes unflagged content is a regression, not an improvement.
 
 **Do NOT re-read delivered letters or re-run the Voice Gate.** The letter already exists. Voice calibration happened at draft time. This pass fixes what was flagged — nothing else.
 
@@ -220,9 +222,10 @@ Load `references/cover-letter-self-check.md` → Option 1 and run every item in 
 
 **How to revise:**
 
-- **Gatekeeper violation list:** fix each violation exactly as listed. Surgical edits only — one targeted change per violation. Do not touch anything not on the list. Do not rewrite surrounding sentences unless they contain the violation.
-- **Coach review brief:** address each flagged gap using content already in the letter or the WIWTR content already passed to you. Do not introduce new facts from background files unless a specific gap requires it and you were passed the relevant context. **Fabrication rules always trump reviewer input — even when a gap or concern is flagged, the letter may only respond with documented background or WIWTR content. A reviewer flag is never authorisation to invent.**
-- **Opening paragraph is protected.** The opener may only be rewritten if the gatekeeper violation list explicitly flags a Pattern A–H failure. All other feedback: note in revision log as "opener feedback noted — not revised per pipeline rules."
+- **Gatekeeper violation list:** fix each violation exactly as listed. One targeted change per violation. Do not touch anything not on the list. Do not rewrite surrounding sentences unless they contain the violation.
+- **Coach review:** address each flagged issue using content already in the letter or the WIWTR content already passed to you. Do not introduce new facts from background files unless a specific gap requires it and you were passed the relevant context. **Fabrication rules always trump reviewer input — a reviewer flag is never authorisation to invent.**
+- **Recruiter review:** address only the items that feed forward into the letter (interview-trigger gaps answerable with WIWTR or documented background). Do not rework anything else. Fabrication rules apply unconditionally.
+- **Opening paragraph:** may only be rewritten if the gatekeeper violation list explicitly flags a Pattern A–H failure. All other feedback: note in revision log as "opener feedback noted — not revised per pipeline rules."
 - **Orchestrator quality note:** fix specifically what was quoted. One pass only.
 
 ### Pre-Submission Self-Check
