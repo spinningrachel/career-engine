@@ -465,9 +465,9 @@ ls "<most-recent-folder>/<revision_log_path>" 2>/dev/null && echo "✓" || echo 
 
 Completed: N roles  ·  Files missing: M
 
-| Company | Role | Track | CV | Cover letter | Hebrew CV | Hebrew CL | Feedback | Revision log | HM CV | HM CL |
-|---|---|---|---|---|---|---|---|---|---|---|
-| <company> | <title> | <track> | ✓/MISSING | ✓/MISSING | ✓/—/MISSING | ✓/—/MISSING | ✓/MISSING | ✓/MISSING | <hm_cv_verdict> | <hm_cl_verdict> |
+| Company | Role | Track | CV | Cover letter | Hebrew CV | Hebrew CL | Feedback | Revision log | HM top question |
+|---|---|---|---|---|---|---|---|---|---|
+| <company> | <title> | <track> | ✓/MISSING | ✓/MISSING | ✓/—/MISSING | ✓/—/MISSING | ✓/MISSING | ✓/MISSING | <hm_top_question> |
 ...
 Note: — means no Hebrew was produced for that role (Languages did not include Hebrew).
 

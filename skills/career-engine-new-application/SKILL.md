@@ -1,6 +1,6 @@
 ---
 name: career-engine-new-application
-description: 'Per-role pipeline for the career-engine orchestrator. Handles Step 0.10 (warm-up role selection) and Steps 1 through 7 for New Applications pipeline roles: CV draft, gatekeeper, recruiter review, HM review, CV revision, cover letter draft, cover letter gatekeeper, cover letter coach review, cover letter revision, cover letter humanizer, final verification gate, DOCX export for both files, and Notion writeback. The structured JD for each role is already in memory from the queue pipeline — do not re-fetch. Load this skill as part of the career-engine pipeline, after career-engine-intake.'
+description: 'Per-role pipeline for the career-engine orchestrator. Handles Step 0.10 (warm-up role selection) and Steps 1 through 7 for New Applications pipeline roles: CV draft, gatekeeper, recruiter review, HM review (CV only — outputs interview questions passed to letter-writer), CV revision, cover letter draft, cover letter gatekeeper, cover letter coach review, cover letter revision, cover letter humanizer, final verification gate, DOCX export for both files, and Notion writeback. The structured JD for each role is already in memory from the queue pipeline — do not re-fetch. Load this skill as part of the career-engine pipeline, after career-engine-intake.'
 ---
 
 # New Application — Per-Role Pipeline
@@ -9,7 +9,7 @@ description: 'Per-role pipeline for the career-engine orchestrator. Handles Step
 
 This skill covers Step 0.10 and Steps 1 through 7 of the New Applications pipeline. Step 0.10 runs once before the per-role loop begins. Steps 1 through 7 repeat for each role in the processing queue. The structured JD was fetched in Step 0.5 and is in memory — pass it directly without re-fetching.
 
-The pipeline produces two deliverables per role: a CV DOCX and a cover letter DOCX. Both go through the same review sequence — draft, gatekeeper, recruiter review, HM review, revision, gatekeeper (post-revision) — before DOCX export.
+The pipeline produces two deliverables per role: a CV DOCX and a cover letter DOCX. The CV goes through: draft, gatekeeper, recruiter review, HM review (CV only), revision, gatekeeper (post-revision). The cover letter receives the HM's interview questions as additional context so the letter can proactively address gaps.
 
 > **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
 
@@ -71,9 +71,13 @@ Spawn `gatekeeper` with `option=content`, passing `CAREER_DATA=${CAREER_DATA}`, 
 
 Spawn `recruiter-reviewer` with `CAREER_DATA=${CAREER_DATA}`, `Role summary`, the CV path `$PIPE/cv-draft.md` to read, and `OUTPUT_PATH=$PIPE/recruiter-cv.md`. It writes its full review there and returns a 2-line status (R-41).
 
+### Step 3 — HM review (CV)
+
+Spawn `hiring-manager-reviewer` with `CAREER_DATA=${CAREER_DATA}`, `Role summary`, the CV path `$PIPE/cv-draft.md` to read, and `OUTPUT_PATH=$PIPE/hm-cv.md`. It writes its interview questions there and returns a 2-line status (R-41). This output feeds both Step 4 (CV revision) and Step 5 (letter draft).
+
 ### Step 4 — CV writer (revision)
 
-Spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `CV_PATH=$PIPE/cv-final.md` (write), the draft path `$PIPE/cv-draft.md`, and the recruiter review path `$PIPE/recruiter-cv.md` to read. The writer also writes the CV CHANGES section to `$PIPE/cv-changes.md` and returns the paths (R-41). Step 7d reads `$PIPE/cv-changes.md` for the feedback file.
+Spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `CV_PATH=$PIPE/cv-final.md` (write), the draft path `$PIPE/cv-draft.md`, the recruiter review path `$PIPE/recruiter-cv.md` to read, and the HM review path `$PIPE/hm-cv.md` to read. The writer also writes the CV CHANGES section to `$PIPE/cv-changes.md` and returns the paths (R-41). Step 7d reads `$PIPE/cv-changes.md` for the feedback file.
 
 If any recruiter or HM flag identifies a skill or credential gap the user does not have — do not address it. IT SHOULD BE COMPLETELY OMITTED. Reframing, surfacing, and reordering are permitted; fabrication and scope-hedging ARE ABSOLUTELY PROHIBITED.
 
@@ -144,6 +148,7 @@ Spawn `letter-writer` with `option=cover-letter`, passing:
 - The coach's Relationship type
 - **Why I Want This Role** from Notion (read above) — primary content input; include if populated
 - **Strategy** and **Gap handling** from Notion (read above) — secondary context; defer to Why I Want This Role on any conflict
+- **HM interview questions** path `$PIPE/hm-cv.md` to read — the hiring manager's list of things unclear in the CV; the letter-writer uses these to proactively address gaps where Why I Want This Role or documented background provides an answer
 
 **Orchestrator quality read — before passing to gatekeeper:**
 
@@ -364,7 +369,7 @@ where `$OUTPUT_DIR` is the run directory resolved by the orchestrator (e.g. `{{O
       "cv_path": "<company_dir>/<cv_filename>.docx",
       "cover_letter_path": "<company_dir>/<coverletter_filename>.docx",
       "feedback_path": "<company_dir>/feedback-<roletitle>-<company>-<monYYYY>.md",
-      "hm_cv_verdict": "<Yes|Conditional|No>",
+      "hm_top_question": "<the HM's single most important interview question, or null>",
       "revision_log_path": "<company_dir>/revision-log-<roletitle>-<company>-<monYYYY>.md",
       "draft_dir_url": "$DRAFT_DIR_URL (the value constructed in Step 7a — empty string if $DRAFT_DIR_URL_BASE was skip/unset)",
       "role_emphasis": "<1-2 sentence real mandate interpretation>",
@@ -382,7 +387,7 @@ where `$OUTPUT_DIR` is the run directory resolved by the orchestrator (e.g. `{{O
 - `track` — `cv` for New Applications pipeline, `now` for --now mode
 - `notion_page_id` — `null` for --now mode roles that were never in Notion
 - `company_dir` — the kebab-case company directory name (same as used for the subdirectory)
-- `hm_cv_verdict` / `hm_cl_verdict` — record both verdicts separately; omit `hm_cl_verdict` if the cover letter loop did not complete
+- `hm_top_question` — the single most important interview question from the HM review (R-41 status line 1 content); `null` if HM review was skipped
 - `date_first_advertised` / `remote_compatibility` — from the coach's research output; write `null` if not available (e.g., content-exists roles where coach skipped fetching)
 - All paths are relative to the run folder (e.g., `company-name/cv-<last-name>-[role-title]-company-name-may2026.docx`). Hebrew files are not listed separately — they are in the same `company_dir` and accessible via the Draft Directory URL.
 

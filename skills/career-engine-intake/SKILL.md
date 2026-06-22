@@ -259,7 +259,7 @@ Partial population (any required field missing) is not coach-complete and the ro
 - **No roles are `coach-complete`:** spawn the coach with all 5 roles as normal.
 
 Spawn `career-coach` with the applicable roles. Pass:
-- Full JD data and the complete Notion row properties for each role
+- Full JD data and the complete Notion row properties for each role — **exclude the `JD proof` property value entirely**, even if populated. The coach must derive a fresh verbatim quote from the JD text. Passing the existing `JD proof` value would undermine the anti-fabrication guardrail.
 - `$NOTION_DATABASE_ID` (resolved from career-data config) — the coach needs this for Notion writebacks
 - `${CAREER_DATA}` (the resolved career-data root) — the coach needs this to read references
 - The SQLite schema reference from Step 0a (as a "Notion schema reference" section) — the coach uses it to write select values that exactly match live Notion options
@@ -298,11 +298,13 @@ For each role in the processing queue, apply this rule to:
 - `Priority` — write the coach's value (`1`–`6`) only if currently empty. If the role was coach-skipped (already coach-complete per Step 0.8), do not write at all — leave unchanged. In a mixed batch, apply per role individually.
 - `Priority Reason` — write the coach's one-sentence reason if currently empty. Written for every role the coach touches (both triage-exit roles and full-research roles).
 - Location compatibility property (name resolved from `location_compatibility.notion_property` in `pipeline-preferences.json`) — write if empty and if the property name is configured. Skip entirely if not configured.
-- `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Relationship type`, `Role summary`, `Person who Advertised Role (if not Hiring Manager)` — write if empty. (Triage-exit roles skip these — only full-research roles write them.)
+- `Role emphasis`, `Keywords`, `Strategy`, `Relationship type`, `Role summary`, `Person who Advertised Role (if not Hiring Manager)` — write if empty. (Triage-exit roles skip these — only full-research roles write them.)
+- `JD proof` — **always overwrite**, even if already populated. The coach's fresh verbatim quote from the current JD text supersedes any prior value (anti-fabrication guardrail). (Full-research roles only.)
 - `Hiring manager's role`, `Manager role confirmed`, `No incumbents in this function` — write if empty. (Full-research roles only.)
 - `First Advertised` — write if empty. Look for the original posting date on the job board page (often shown as "Posted X days ago", "Date posted:", or a visible timestamp). If the URL fetch returned a page with a posting date, parse and write it (format: YYYY-MM-DD). If no date is findable, leave empty — do not guess or approximate.
 - `JD Body` — write if empty AND the role was marked `url-fetched` in Step 0.5 (i.e., a live fetch succeeded and returned usable JD content). Copy the fetched JD text verbatim into this property. Do NOT overwrite an existing `JD Body` value. Do NOT write if the role was marked `content-exists` (already has JD Body) or `needs-manual` (no usable JD available). Purpose: persisting the fetched JD avoids re-fetching on every subsequent edit run; if the job listing expires, the edit pipeline has the content it needs without re-fetching.
 - `Gap handling` — write if empty. If gap_handling_mode = disabled, skip entirely.
+- `Why I Want This Role` — Letter Type prefix (written by the coach per its Notion Writeback Rules; intake confirms it was written and does not re-write). The coach prepends `**Letter type: [IC | Strategic | Hybrid]**` followed by a blank line. If the field was already populated, the Letter Type appears as a prefix above the existing content. If the field was empty, only the bold Letter Type line is written. Do not overwrite if the coach already completed this write.
 - `Company Stage` — write if empty. Exact option values: `Seed`, `Series A`, `Series B`, `Series C`, `Public`, `PE-backed`, `Stealth`, or `N/A`.
 - `Role Type` — write if empty. Multi-select exact values: `Builder`, `Scaler`, `Specialist`, `Leader`, or `N/A`.
 - `Culture` — write if empty. Skip entirely if already has content.

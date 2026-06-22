@@ -21,12 +21,12 @@ Run every item in order before returning output.
 
 ---
 
-### Role emphasis — run this first
+### Strategy — run this first
 
-- [ ] Re-read Role emphasis. What does the hiring manager actually need proven by this letter that the CV alone can't fully establish?
+- [ ] Re-read Strategy. What does the hiring manager actually need proven by this letter that the CV alone can't fully establish?
 - [ ] Do the proof paragraphs answer that question with named evidence?
-- [ ] If Role emphasis identifies a specific mandate (e.g., developer-facing, brand ownership, customer research, team-building) — is that mandate addressed in the letter body with a specific story or outcome, not just mentioned in passing?
-- [ ] Is the candidate's Why I Want This Role content being used to serve the strategic proof Role emphasis identified — or has it replaced it?
+- [ ] If Strategy identifies a specific mandate (e.g., developer-facing, brand ownership, customer research, team-building) — is that mandate addressed in the letter body with a specific story or outcome, not just mentioned in passing?
+- [ ] Is the candidate's Why I Want This Role content being used to serve the strategic proof Strategy identified — or has it replaced it?
 
 ### Structure
 - [ ] Greeting is exactly "Hi to the [company name] team!" or "Hi to [Name]!" — never "Dear Hiring Manager"

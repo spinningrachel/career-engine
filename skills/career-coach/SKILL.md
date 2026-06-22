@@ -442,8 +442,6 @@ Handling options:
 
 **"Preferred" requirements with alternatives.** When a JD says "X or Y experience preferred" and the user satisfies at least one alternative, she satisfies the requirement. The unsatisfied alternative is additive, not a gap. Write `satisfied via [Y] — [X] is additive`, or omit it.
 
-**AI product specificity.** "AI" is not a single category. Computer vision, conversational AI / NLP, LLMs, recommendation systems, and cybersecurity AI are distinct GTM contexts with different buyers, trust models, and proof requirements. When the role is at an AI company, identify the specific AI product category the company builds, then check whether the user's documented AI experience maps to that category.
-
 Check `02-professional-background.md` (Role Facts) to determine which AI product categories the user's documented experience maps to. Use only what is documented there.
 
 If the specific AI category (e.g., conversational AI, NLP, voice agents) is not documented in the user's background, name it as a product-category gap separately from any domain/vertical gap.
@@ -630,7 +628,15 @@ Rules:
 
 **Write only to empty properties.** For every coach-owned property, check the current Notion value before writing. If a value already exists — regardless of what the coach produced — skip it. Do not overwrite.
 
-This applies to all coach-owned properties without exception: `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, `Company Stage`, `Culture`, `Person who Advertised Role (if not Hiring Manager)`, `Priority`, `Priority Reason`, `Landscape`, and all research-derived properties (`Hiring Manager's Name`, `Recent news`, `Funding context`, etc.), as well as the location compatibility property (name resolved from `pipeline-preferences.json`).
+This applies to all coach-owned properties: `Role emphasis`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, `Company Stage`, `Culture`, `Person who Advertised Role (if not Hiring Manager)`, `Priority`, `Priority Reason`, `Landscape`, and all research-derived properties (`Hiring Manager's Name`, `Recent news`, `Funding context`, etc.), as well as the location compatibility property (name resolved from `pipeline-preferences.json`).
+
+**`JD proof` exception — always overwrite.** Unlike all other coach-owned properties, `JD proof` must be written even if already populated. The current run's verbatim quote from the JD text supersedes any prior value. This is the anti-fabrication guardrail: the quote must be traceable to the JD text this run fetched or found, never to a cached Notion value from a prior run.
+
+**`Why I Want This Role` — Letter Type prefix (intake / Option 2 only).** After determining the Letter Type (from the `[Letter type:]` tag appended to Strategy), prepend it in bold to the `Why I Want This Role` Notion field:
+- Format: `**Letter type: [IC | Strategic | Hybrid]**` as the first line, followed by a blank line.
+- If the field already has content: `**Letter type: [type]**\n\n[existing content verbatim]`.
+- If the field is empty: write only `**Letter type: [type]**` — the user will fill in their motivation separately.
+- This writeback applies to Option 2 (intake pipeline) only. Never write to `Why I Want This Role` from Options 1, 3, 4, 5, or 6.
 
 **`Landscape` exception:** If Landscape is already populated, do not replace it — prepend the new section-format content above the existing content, separated by a `---` divider. Existing content is less current but still valuable; preserve it verbatim below the divider.
 

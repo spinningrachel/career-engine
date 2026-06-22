@@ -204,7 +204,8 @@ Pass for each role:
 The coach returns per role: `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Company Stage`, `Role Type`, `Relationship type`, `Gap handling`.
 
 Write to Notion for each role using `notion-update-page`:
-- `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Relationship type` — write for all roles. If already set, carry forward unchanged unless the current JD reveals a meaningful correction.
+- `Role emphasis`, `Keywords`, `Strategy`, `Relationship type` — write for all roles. If already set, carry forward unchanged unless the current JD reveals a meaningful correction.
+- `JD proof` — **always overwrite**, even if already set. Generate a fresh verbatim quote from the JD text in front of you. Never carry the existing Notion value forward — this is an anti-fabrication guardrail. Never pass the existing Notion `JD proof` value to any agent.
 - `Gap handling` — write for all roles. If the user has already edited this in Notion, treat her version as authoritative and do not overwrite it.
 - `Role summary` — write for all roles. If already set, carry forward unchanged.
 - `Person who Advertised Role (if not Hiring Manager)` — write for all roles. "Same as hiring manager" if no separate poster identified.

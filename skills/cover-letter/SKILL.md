@@ -82,7 +82,6 @@ At its core, writing this letter is a positioning, messaging, and strategy exerc
 - A prose version of the CV. Every paragraph must add something the CV cannot carry.
 - A keyword list with transitions added.
 - A declaration of enthusiasm without proof behind it.
-- A generic "I am excited about this opportunity" form that could belong to any applicant.
 
 ---
 
@@ -90,11 +89,11 @@ At its core, writing this letter is a positioning, messaging, and strategy exerc
 
 These rules govern how pipeline inputs interact and which source takes precedence for each decision. Read before writing anything.
 
-**Why I Want This Role is the letter's primary personal-content source — and it is mandatory.** The pipeline does not write a letter without it: the Pre-Step 5 gate skips the letter entirely when the field is empty, and it is the sole source for the opener. The only content that may be set aside is content that fails the fabrication rule. Everything else must appear somewhere in the letter. Whatever IS used must comply fully with every rule and prohibition in this skill. Why I Want This Role content does not override or exempt any prohibition. If something the user wrote in Why I Want This Role would produce a bad opener, violate the analyst paragraph ban, break a framing rule, or fail the context gate, set that piece aside — but place it elsewhere in the letter where it fits. Set-asides are a last resort: if a piece of content seems unusable, try placing it in a different paragraph first. The rules always win on placement and form; they never license dropping a point.
+**Why I Want This Role is the letter's primary personal-content source — and it is mandatory.** The pipeline does not write a letter without it: the Pre-Step 5 gate skips the letter entirely when the field is empty, and it is the sole source for the opener. Everything *must* appear somewhere in the letter. Whatever IS used must comply fully with every rule and prohibition in this skill. However, the order of the information provided must be according to all rules, prohibitions, and mandatory components and structures. Do NOT blindly copy/paste the user's input - not in the same order nor necessarily with the same exact wording. If something the user wrote in Why I Want This Role would produce a bad opener, violate the analyst paragraph ban, break a framing rule, or fail the context gate, set that piece aside — but place it elsewhere in the letter where it fits. The rules always win on placement and form; they never license dropping a point.
 
-**The integration model:** Coach output (Role emphasis, Strategy, Gap handling) defines what the letter must accomplish. Why I Want This Role is the source of voice, angle, and raw material — used only where the content is genuinely usable and compliant. A letter that uses Why I Want This Role content but ignores Role emphasis has voice but no direction. A letter that follows Strategy but ignores Why I Want This Role sounds like a template — but a letter that forces unusable Why I Want This Role content into a compliant shape is worse than either.
+**The integration model:** Coach output (Strategy, Gap handling) defines what the letter must accomplish. Why I Want This Role is the source of voice, angle, and raw material — used only where the content is genuinely usable and compliant. A letter that follows Strategy but ignores Why I Want This Role sounds like a template — but a letter that forces unusable Why I Want This Role content into a compliant shape is worse than either.
 
-**The integration rule:** Read Role emphasis and Strategy first — understand what this letter needs to accomplish. Then read Why I Want This Role to find the user's voice, her specific angles, and her raw content. Write the letter so her own words are doing the strategic work the coach identified.
+**The integration rule:** Read Strategy first — understand what this letter needs to accomplish. Then read Why I Want This Role to find the user's voice, her specific angles, and her raw content. Write the letter so her own words are doing the strategic work the coach identified.
 
 **Opener source — non-negotiable.**
 Why I Want This Role is the sole source for the opener's content and angle. The user's genuine reaction to the role, her specific angle on this company, and the raw material she wrote goes first, in her voice — polished to be appropriate for formal writing, but not replaced with generic professional language. The Use-Case Structures tell you how to frame it — not what to say, not in what order, not in which paragraph. Take the user's input and place each part where it best serves the Use-Case Structure you choose.
@@ -118,7 +117,7 @@ Wherever her content is in play, default to her tone and vocabulary over polishe
 
 **Proof-point partitioning — run before drafting.** The CV and the letter draw from the same documented background, and the CV is written first — so list what the CV already spends (summary claims, bullet outcomes, metrics) before selecting the letter's proof. The letter's named proof comes from what the CV does NOT carry: the detail layers in `02-professional-background.md` §7 ("What you built / delivered" runs deeper than any bullet), adjacent engagements, stories and decision logic behind the bullets, §9 testimonials, §10 portfolio artifacts. If every documented proof point is CV-spent, enhance the strongest one (story behind it) instead of importing a restatement — and a named non-numeric specific (deliverable, methodology, artifact) satisfies any need for concreteness when all numbers are CV-spent.
 
-**Role emphasis governs proof selection.** Which companies to surface, which outcomes to lead with, what the proof paragraphs need to demonstrate — this is the coach's call, not the user's Why I Want This Role. If her Why I Want This Role gives you a great story, ask: does it address what Role emphasis says the letter needs to prove? If yes, use it prominently. If the story is interesting but off-strategy, include it briefly where it fits — setting a piece of her content aside entirely is a last resort, reserved for content that is non-compliant or genuinely unusable.
+**Strategy governs proof selection.** Which outcomes to lead with, what the proof paragraphs need to demonstrate — this is the coach's call, not the user's Why I Want This Role. If her Why I Want This Role gives you a great story, ask: does it address what Strategy says the letter needs to prove? If yes, use it prominently. If the story is interesting but off-strategy, include it briefly where it fits — setting a piece of her content aside entirely is a last resort, reserved for content that is non-compliant or genuinely unusable.
 
 **Discarded and unreadable input is always surfaced — never silent.** When the fabrication rule sets aside a piece of the user's own input (a claim not traceable to her documented background), or any input is uninterpretable (garbled tokens like a stray "cfx", instructions referencing text that no longer exists, degenerate properties): exclude it from the letter, log it in the revision log, and surface it in the final chat delivery as a named ask-back — "Set-aside personal input for [Company]: '[fragment]' — confirm it, correct it, or add it to 02-professional-background.md and re-run." She can only fix what she can see.
 
@@ -128,26 +127,26 @@ Wherever her content is in play, default to her tone and vocabulary over polishe
 
 ## Letter Type
 
-Every letter is one of three structural types. The career coach signals the recommended type via `[Letter type: IC | Strategic | Hybrid]` appended to `Role emphasis` — read that first. If no signal is present, determine from `Role emphasis` substance and Strategy Priority 1. All three types follow every other rule in this skill unchanged — fabrication guards, opener sourcing, CV-repetition prohibition, and word count apply equally.
+Every letter is one of three structural types. The career coach signals the recommended type via `[Letter type: IC | Strategic | Hybrid]` appended to `Strategy` (after Priority 3) — read that first. If no signal is present, determine from Strategy Priority 1. All three types follow every other rule in this skill unchanged — fabrication guards, opener sourcing, CV-repetition prohibition, and word count apply equally.
 
-**Type 1 — IC/Specialist/Builder**
+**Type 1 — Team member/Specialist/Builder**
 
 Use when the role's mandate is primarily individual execution: build this function, do this specific work, demonstrate technical or domain depth. The hiring manager is evaluating whether the candidate can perform the work — not whether they can lead an organization.
 
 **Central argument:** I have exactly the skills and experience this role requires.
 
-- **Opener:** Genuine reaction + immediate capability claim or domain match. Energy and specificity land the claim fast. ("I'm one person who does both." / "I nearly screamed when I saw this role. Because I was just doing it.")
+- **Opener:** Genuine reaction + immediate capability claim or domain match. Energy and specificity. ("I do both!")
 - **Body:** Proves the claim at deliverable and domain-fluency level — named companies, specific things built, technical fluency demonstrated, concrete outputs. Every paragraph adds something the CV can't carry about specific execution.
 - **Close:** Forward-looking about the specific work she'd do here.
 - **Credential scope:** Deliverable and domain level. "I built the founding PMM function at X" / "I speak Kubernetes fluently."
 
-**Type 2 — Senior/Executive/Strategic**
+**Type 2 — Senior/Executive/Strategic/Strategic IC/IC in an enterprise environment**
 
 Use when the role's mandate is organizational leadership, function ownership, cross-functional influence, or strategic direction — and the hiring manager is evaluating whether the candidate thinks and leads at the right altitude, not primarily whether they can execute specific deliverables.
 
-**Central argument:** I am the right kind of leader for this organization.
+**Central argument:** I believe I’m the right person to lead this organization. My professional ethos will support the organization.
 
-- **Opener:** Same rules as Type 1 — personal reaction, Why I Want This Role as sole source. What differs is that her reaction may center on *why she believes in the organization* or her long-held conviction about the domain, in addition to capability match.
+- **Opener:** Same rules as Type 1 — personal reaction, Why I Want This Role as sole source. If provided in WIWTR, the user's reaction may center on *why she believes in the organization* or her long-held conviction about the domain, in addition to capability match.
 - **Paragraph 2 — Strategic POV + identity claim:** Stakes a conviction about what the role or function genuinely requires — from her point of view as someone who has owned it — AND claims that identity. "I know that X and Y go hand in hand — and I'm [identity]." This is earned conviction, not analyst commentary about the company.
 - **Paragraph 3 — Function-level credentials:** Proves the conviction at organizational scope. Disciplines owned ("led positioning, messaging, technical documentation, thought leadership"), cross-functional influence, commercial impact at scale. Not individual deliverables — the function as a whole.
 - **Paragraph 4 — Organizational differentiator:** Evidence that she thinks at organizational altitude. A product she built, a decision she made, an approach she took — framed through the buyer's or organization's challenge, not through her skill set.
@@ -158,7 +157,7 @@ Use when the role's mandate is organizational leadership, function ownership, cr
 
 Use when the role requires both organizational leadership AND specific IC execution — a Director who also does the work, a founding senior hire who will set direction and build, a Head role at a company where the mandate is both strategic and craft-level. The hiring manager is evaluating leadership judgment AND demonstrated execution capability.
 
-**Central argument:** I am the right kind of leader AND I can do this specific work.
+**Central argument:** I believe I’m the right person to lead this organization AND I am an expert at this kind of work.
 
 - **Opener:** Same rules as Types 1 and 2. The reaction may blend both — responding to the company/mission (Type 2 register) and to the specific craft challenge (Type 1 energy).
 - **Paragraph 2 — Strategic POV + specific deliverable:** Stakes a conviction about the domain, then grounds it immediately with a specific named deliverable or technical proof point — not just function ownership. The move: "I know that [X] — here's the specific thing I built that proves it."
@@ -581,12 +580,12 @@ Deliberate causal fragment. "I" as subject. "Was just doing it" — short finite
 
 ## The Analyst Paragraph — Hard Ban (applies to the ENTIRE letter, not just the opener)
 
-This pattern appears in the body as often as the opener. It is banned everywhere.
+This pattern is absolutely banned everywhere.
 
 **What it looks like:**
 - Describing the company's product, positioning, or market back to them: "What I see in [Company] is a technically rigorous product that deserves equally rigorous positioning."
 - Making a market observation from outside the room: "Runtime-first detection is a genuinely differentiated story in a crowded CNAPP market."
-- Announcing a capability instead of naming proof: "That translation is where I live." / "That's the work I do." / "That's where I operate best." / "That's where I want my marketing to land." Demonstrative declarations ("that's where...", "that's what...", "that's the kind of...") point at an abstraction rather than naming a result. Replace with a company name and an outcome.
+- Announcing a capability instead of naming proof: "That translation is where I live." / "That's the work I do." / "That's where I operate best." / "That's where I want my marketing to land." Demonstrative pointing at abstraction ("that's where...", "that's what...", "that's the kind of...") points at an abstraction rather than naming a result. Replace with a company name and an outcome.
 - Telling the hiring team what their buyers need or how their market works.
 - Any sentence where the user is the analyst commenting on the company rather than the practitioner speaking from her own experience.
 

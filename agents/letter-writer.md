@@ -83,7 +83,7 @@ MANDATORY: Load all of these before writing a single word.
 | `references/03-framework.md` | **Primary letter-writing material — not background.** Professional philosophy, methodology, voice, and domain narratives. §Professional methodology and POV: each framework sufficient to anchor a letter's strategic argument. §Domain depth: per-vertical narratives. §Voice and tone: voice samples and calibration. |
 | `references/02-professional-background.md` | The user's reusable background facts and proof points indexed by topic. |
 | `skills/cover-letter/SKILL.md` | All writing doctrine: positioning philosophy, what a letter must do, input integration rules, opener execution protocol, writing mechanics, structure, claims rules, use-case structures, exemplar, pre-flight checks, revision pass. Working reference — not a one-time read. |
-| `references/cover-letter-self-check.md` | **Mandatory pre-submission checklist.** Load at Step 2 during editing and at Step B of the Pre-Submission Self-Check. Contains: fabrication traps, Role emphasis check, structural checks, opening source check, forbidden structures, voice vocabulary bans, and gut check. Run every item in order. |
+| `references/cover-letter-self-check.md` | **Mandatory pre-submission checklist.** Load at Step 2 during editing and at Step B of the Pre-Submission Self-Check. Contains: fabrication traps, Strategy check, structural checks, opening source check, forbidden structures, voice vocabulary bans, and gut check. Run every item in order. |
 
 ### Inputs from the orchestrator
 
@@ -100,11 +100,11 @@ See `skills/cover-letter/SKILL.md` → **Input Integration Rules** for how to us
 
 **Shift and step-down mandate:** If Strategy contains a `Shift:` or `Step-down:` signal (written by the coach as Strategy Priority 1), the letter must lead with achievement-based evidence of capability — not ambition, not intention, not framing. The first body paragraph establishes a concrete result or demonstrated ability that directly supports the transfer or level fit. Strategy Priority 1 for shift roles is typically the narrative bridge; make that bridge tangible with a specific achievement or capability drawn from `02-professional-background.md` and `03-framework.md`. Do not frame the letter as a transition story; frame it as a track record that applies here.
 
-**Also passed:** Final CV (coherence only), HM CV verdict (if Conditional, address with named proof).
+**Also passed:** Final CV (coherence only), HM interview questions (from hiring-manager-reviewer, if available).
 
-### HM Conditions
+### HM Interview Questions
 
-If the verdict was Conditional, address the condition explicitly with named proof. If genuinely impossible without fabrication, proceed anyway.
+If the HM interview questions file was passed: read it before drafting. These are the specific gaps or ambiguities in the CV that the hiring manager would open an interview with. The letter has a unique opportunity to answer some of them proactively — not as a Q&A response, but woven naturally into the letter body as narrative that happens to resolve the question. For each question: does Why I Want This Role or the documented background give a real answer? If yes, build it in where it fits the letter's structure. Do not force answers to questions the letter cannot address honestly — skip those. Addressing one or two well is better than mentioning all of them superficially.
 
 ### Gatekeeper Loop Awareness
 
@@ -122,7 +122,7 @@ Jump directly to the relevant section. Read only the one you will execute.
 
 ## Option 1 — Standard Cover Letter
 
-**Input:** Final CV, `Role summary` (JD proxy — contains role context, requirements, self-characterization section), Why I Want This Role, Strategy, Gap handling, Relationship type, HM CV verdict.
+**Input:** Final CV, `Role summary` (JD proxy — contains role context, requirements, self-characterization section), Why I Want This Role, Strategy, Gap handling, Relationship type, HM interview questions (if available).
 
 ### Before writing
 
