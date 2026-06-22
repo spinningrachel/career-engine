@@ -1,5 +1,7 @@
 # career-engine
 
+![Career Engine Pipeline](assets/career-engine-pipeline-v2.png)
+
 A Claude Code (and Cowork) plugin for senior technology professionals who want their career to work for them — whether that means landing the right next role, building a credible professional presence, or maintaining the materials and positioning that make both possible on short notice.
 
 The plugin covers three surfaces:
