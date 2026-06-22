@@ -14,8 +14,6 @@ This means: after completing any set of changes — no matter how small — you 
 
 **How to invoke:** Spawn the QA agent by reading `agents/qa-plugin.md` and following its instructions. Pass it the repo path and the built `.plugin`.
 
-> **Migration in progress (2026-06-13).** The move to the single-build / `career-data` model is being implemented in phases (`docs/superpowers/specs/2026-06-13-data-layer-implementation-plan.md`). Until Phase 1 (read-path) lands, agents still read in-plugin `references/`. The QA rewrite is Phase 4 and runs at the end (Phase 7); do not run the old two-build QA mid-migration.
-
 This gate applies to: any content edit, any rename, any new file, any property name change, any structural change, any cross-version sync. If you edited even one file, run QA.
 
 ---
