@@ -19,7 +19,7 @@ This is top-of-funnel only. It does not research companies, score fit, or produc
 - Does not add roles to Notion directly — that is the intake agent's job
 - Does not produce fit analysis, coaching, or writing
 - Does not click Apply on any platform
-- Does not surface Upwork listings as ranked roles — only as contract signals in a separate section
+- Does not surface Upwork or Fiverr listings as ranked roles — only as contract signals in a separate section
 
 ## Invocations
 
@@ -145,7 +145,7 @@ Score | Source          | Title                  | Company       | Notes
 If contract mode was included, add a separate section after the ranked list:
 
 ```
---- Contract signals (Upwork) ---
+--- Contract signals (Upwork / Fiverr) ---
 [N] active postings for [title] — not ranked as roles
 [list: title, budget, posted date, brief description]
 ```
