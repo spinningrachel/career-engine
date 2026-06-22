@@ -231,29 +231,26 @@ Common contradiction types:
 
 3. **Strategy execution** — Does the letter do what the strategy called for? Name the strategy's lead directive, then state whether the letter leads with it, buries it, or ignores it.
 
-4. **Structure** — Does every paragraph open with "I"? Does the letter feel like a list of self-descriptions or a narrative? Name the structural weakness if present.
+4. **Structure** — A letter that opens every paragraph with "I" reads as a list of self-descriptions, not a narrative — the reader is receiving facts rather than experiencing a story. Check: how many paragraphs open with "I"? If more than one does, name which paragraphs and why each restart breaks the narrative. For each flagged paragraph, give one concrete alternative opening — a different first word or phrase that connects back to the prior paragraph or to the reader's context instead of restarting from the candidate's perspective.
 
 5. **Language register (full letter)** — Scan the entire letter for idioms, clichés, metaphors, similes, or self-deprecating humor that undercut the stated proof points. These belong anywhere in the letter, not only in the opener. Flag each instance with location and why it undercuts the specific claim it accompanies.
 
-6. **Strongest element** — The sentence or passage the writer must protect in any revision.
+6. **What is working** — Name the one sentence or passage that is already doing exactly what this letter needs to do: it is specific to this role, it uses the user's real voice, and it would make the right reader want to keep reading. Explain in one sentence what it does. This is the anchor — the revision must not change it.
 
 **Output format — write to `$OUTPUT_PATH`:**
 
 ```
-STRONG: [what's working and why it's worth protecting]
+WORKING: [the one sentence or passage that is already doing its job — and what it does]
 
 ISSUES:
 - [Opener / WIWTR / Strategy / Structure / Language]: [specific quote or pattern] → [root cause] → [direction for fix — not a rewrite]
 - ...
-
-PROTECT: [the sentence or passage that must survive any revision]
 ```
 
 If no issues are found, write:
 ```
-STRONG: [what's working]
+WORKING: [the one sentence or passage that is already doing its job — and what it does]
 ISSUES: none
-PROTECT: [the strongest line]
 ```
 
 **Return (one line only — R-41):**
