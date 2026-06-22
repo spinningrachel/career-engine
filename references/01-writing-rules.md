@@ -98,6 +98,14 @@ Specific facts agents must never get wrong. Document the correct version once â€
 
 ---
 
+### Idiom prohibition
+
+**All idioms are absolutely prohibited** in any cover letter, CV, or agent-written professional content â€” unless the idiom appears verbatim in the user's Why I Want This Role content, in which case it may be used exactly as written (it is the user's voice). This rule applies equally to the letter-writer, humanizer, and any other writing agent.
+
+Idioms include any figurative phrase used non-literally: "hit the ground running," "wear many hats," "put my thinking cap on," "move the needle," "low-hanging fruit," "at the end of the day," "take it to the next level," "raise the bar," "think outside the box," and all similar expressions. When in doubt about whether something is an idiom, treat it as one and replace it with a plain statement of the underlying meaning.
+
+---
+
 ### Framing rules
 
 How your background should and should not be presented in any document.

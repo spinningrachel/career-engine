@@ -662,6 +662,9 @@ Test: was the parallel structure built to sound impressive, or does it list real
 *crucial, pivotal, vibrant, showcase/showcasing, tapestry (figurative), underscore (verb), landscape (abstract noun), testament, enduring, foster/fostering, garner, interplay, intricate/intricacies, foundational, transformative, robust, seamless, comprehensive.*
 These words appear far more in AI-generated text. Remove all of them.
 
+**Idioms — absolute prohibition.**
+All idioms are banned unless they appear verbatim in the user's Why I Want This Role content. This includes common figurative phrases ("hit the ground running," "wear many hats," "put my thinking cap on," "move the needle," "low-hanging fruit," "at the end of the day," "take it to the next level," and any similar figure of speech used non-literally). If an idiom appears verbatim in the user's WIWTR, it may be included exactly as written — it is the user's voice. Otherwise, cut it and replace with a direct statement of the underlying meaning.
+
 **Additional absolute prohibitions — banned in all cover letter copy:**
 - **"specialism"** — not a word; use "multi-disciplinary" or "[specific] disciplines" instead
 - **"that made it land"** — vague AI-assembly phrase; name what it was and what the result was

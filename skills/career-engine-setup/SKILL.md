@@ -333,10 +333,34 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
    - "Paste your database ID." (the 32-character string from the Notion URL — `notion.so/[workspace]/DATABASE_ID?v=...`)
    - "Do you have a filtered view you want to use? If so, paste the view ID too." (the `v=...` part of the URL)
 
-3. Write the database ID as `notion_database_id` in the career-data config (`${CAREER_DATA}/references/pipeline-preferences.json`). If the user gave a Needs-Editing view URL, write it as `notion_needs_editing_view_url`. Do NOT substitute `{{NOTION_DATABASE_ID}}` into plugin files — every skill resolves it from the config at runtime (R-38).
-4. Write the view ID to every `{{NOTION_VIEW_ID}}` placeholder (or leave placeholder if not provided).
+3. **Check and install the Notion MCP.** The pipeline reads and writes your Notion database using the `notionApi` MCP server. Check whether it is already connected:
 
-5. Say: "**Important:** Do not rename the columns in your Notion database. The pipeline writes to them by exact name — renaming breaks the integration silently."
+   Run: `ToolSearch query="select:notionApi__API-get-self"` — if a schema is returned, the server is connected. Ask the user to confirm they can see a Notion MCP listed in their Claude settings. If connected, skip to step 4.
+
+   If NOT connected, tell the user which environment they are in and give them the right instruction:
+
+   **Claude Code (terminal):**
+   > "Run this in your terminal:
+   > ```
+   > claude mcp add --transport http notion https://mcp.notion.com/mcp
+   > ```
+   > Then type `/mcp` in Claude Code and complete the OAuth flow to connect your Notion workspace."
+
+   **Claude Desktop:**
+   > "Go to **Settings → Connectors → Add Connector** and enter:
+   > ```
+   > https://mcp.notion.com/mcp
+   > ```
+   > Complete the OAuth flow to connect your Notion workspace."
+
+   After they confirm it's done, verify: run `ToolSearch query="select:notionApi__API-get-self"` again. If it still returns nothing, tell the user: "The notionApi server isn't showing as connected yet — try restarting Claude and then re-run setup from here. The pipeline will not be able to read or write your Notion database until this is connected."
+
+   Say: "**One Notion responsibility:** The MCP connection uses your personal OAuth token — it expires or can be revoked. If the pipeline ever fails to read Notion mid-run, reconnect by repeating the step above."
+
+4. Write the database ID as `notion_database_id` in the career-data config (`${CAREER_DATA}/references/pipeline-preferences.json`). If the user gave a Needs-Editing view URL, write it as `notion_needs_editing_view_url`. Do NOT substitute `{{NOTION_DATABASE_ID}}` into plugin files — every skill resolves it from the config at runtime (R-38).
+5. Write the view ID to every `{{NOTION_VIEW_ID}}` placeholder (or leave placeholder if not provided).
+
+6. Say: "**Important:** Do not rename the columns in your Notion database. The pipeline writes to them by exact name — renaming breaks the integration silently."
 
 ---
 
@@ -514,21 +538,50 @@ Read the current MCP tool IDs from `.claude/settings.json`. Generate the exact a
 ```json
 "permissions": {
   "allow": [
-    "Bash(pandoc:*)",
-    "Bash(python3:*)",
-    "Bash(cp:*)",
-    "Bash(ls:*)",
-    "Bash(mkdir:*)",
-    "Bash(cat:*)",
-    "[NOTION_MCP_TOOL_ID]__*",
-    "[DESKTOP_COMMANDER_MCP_TOOL_ID]__*",
+    "Bash(pandoc *)",
+    "Bash(python3 *)",
+    "Bash(cp *)",
+    "Bash(ls *)",
+    "Bash(mkdir *)",
+    "Bash(cat *)",
+    "Bash(ntn pages get *)",
+    "Bash(ntn datasources query *)",
+    "Bash(ntn datasources list *)",
+    "Bash(ntn whoami)",
+    "mcp__notionApi__API-query-data-source",
+    "mcp__notionApi__API-retrieve-a-database",
+    "mcp__notionApi__API-retrieve-a-page",
+    "mcp__notionApi__API-retrieve-page-markdown",
+    "mcp__notionApi__API-retrieve-a-page-property",
+    "mcp__notionApi__API-retrieve-a-block",
+    "mcp__notionApi__API-get-block-children",
+    "mcp__notionApi__API-post-search",
+    "mcp__notionApi__API-patch-page",
+    "mcp__notionApi__API-get-self",
+    "mcp__notionApi__API-get-user",
+    "mcp__notionApi__API-get-users",
+    "mcp__notionApi__API-list-data-source-templates",
+    "mcp__notionApi__API-retrieve-a-comment",
+    "mcp__linkedin-mcp__search_people",
+    "mcp__linkedin-mcp__get_person_profile",
+    "mcp__linkedin-mcp__get_company_profile",
+    "mcp__linkedin-mcp__get_company_employees",
+    "mcp__linkedin-mcp__get_company_posts",
+    "mcp__linkedin-mcp__get_job_details",
+    "mcp__linkedin-mcp__search_jobs",
+    "mcp__linkedin-mcp__search_companies",
+    "mcp__linkedin-mcp__get_my_profile",
+    "mcp__linkedin-mcp__get_feed",
+    "mcp__linkedin-mcp__get_inbox",
+    "mcp__linkedin-mcp__get_conversation",
+    "mcp__linkedin-mcp__get_sidebar_profiles",
     "WebFetch(*)",
     "WebSearch(*)"
   ]
 }
 ```
 
-Fill in the actual MCP tool IDs from the plugin's `.mcp.json` or settings. Present the block and say:
+Present the block and say:
 
 "Add this to your `~/.claude/settings.json` under the `permissions` key. If a permissions block already exists, merge the allow arrays."
 

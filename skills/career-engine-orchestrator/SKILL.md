@@ -277,7 +277,7 @@ Roles that pass are the processing queue.
 1. `scored` roles ordered `1` → `2` → `3` → `4` → `5` → `6`
 2. Remaining slots filled with `unscored` roles in queue order
 
-**Tiebreaker for same-Priority roles:** order by `Last Pipeline Run` date, oldest first. Roles with no prior run are treated as oldest and sort to the top.
+**Tiebreaker for same-Priority roles:** choose randomly among tied roles. Do not use queue order, creation date, or any other deterministic signal — just pick.
 
 Unscored roles still process — `Priority` affects ordering only; the coach is never spawned here to score them. The career coach runs only in intake.
 

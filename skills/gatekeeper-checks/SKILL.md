@@ -245,6 +245,7 @@ The third form ("delete unless from WIWTR") applies to any sentence that express
 | "Media relations runs on the same muscle" | Rewrite as: "I need the same skill in order to properly manage media relations." |
 | "I write it as a buyer's first trust signal, not a legal afterthought" | Rewrite as: "Content is the very first opportunity to build real trust with prospects. My goal is to create clarity, ensuring that the first signal a buyer receives is one of transparency and reliability." |
 | "I've reviewed WalkMe several times over the years, and most of the Learning Arc competitive set already lives in my 1000+ tool research catalog." | Rewrite as: "I have reviewed WalkMe several times over the years, and I already have most of its competitors in my research catalog of more than 1,000 tools." |
+| "Getting users to discover what Waze can actually do for them is the work I want to do." | Rewrite as: "I can't wait to get started investigating how we can increase user adoption together." |
 | "The work here is ..." | Delete it |
 | Adoption is where most of these efforts die.  | Unfortunately, adoption is often a failpoint in any case. |
 | "The work I love most is ..." | Rewrite as: "I love to" |
