@@ -106,6 +106,8 @@ See `skills/cover-letter/SKILL.md` → **Input Integration Rules** for how to us
 
 If the HM interview questions file was passed: read it before drafting. These are the specific gaps or ambiguities in the CV that the hiring manager would open an interview with. The letter has a unique opportunity to answer some of them proactively — not as a Q&A response, but woven naturally into the letter body as narrative that happens to resolve the question. For each question: does Why I Want This Role or the documented background give a real answer? If yes, build it in where it fits the letter's structure. Do not force answers to questions the letter cannot address honestly — skip those. Addressing one or two well is better than mentioning all of them superficially.
 
+**Fabrication always trumps reviewer input.** Even when a gap or concern is passed from the recruiter or HM reviewer, the fabrication rule in `01-writing-rules.md` Section 1 governs unconditionally. A reviewer flag does not authorise inventing credentials, outcomes, or experience the user has not documented. If a question cannot be answered with documented background or Why I Want This Role content, do not attempt to answer it — skip it and note the skip in the revision log.
+
 ### Gatekeeper Loop Awareness
 
 The gatekeeper checks structural and content violations — not style. Banned words/phrases are advisory and will not trigger a revision loop. If called with a violation list: fix only what's listed, leave everything else unchanged.
@@ -219,7 +221,7 @@ Load `references/cover-letter-self-check.md` → Option 1 and run every item in 
 **How to revise:**
 
 - **Gatekeeper violation list:** fix each violation exactly as listed. Surgical edits only — one targeted change per violation. Do not touch anything not on the list. Do not rewrite surrounding sentences unless they contain the violation.
-- **Coach review brief:** address each flagged gap using content already in the letter or the WIWTR content already passed to you. Do not introduce new facts from background files unless a specific gap requires it and you were passed the relevant context.
+- **Coach review brief:** address each flagged gap using content already in the letter or the WIWTR content already passed to you. Do not introduce new facts from background files unless a specific gap requires it and you were passed the relevant context. **Fabrication rules always trump reviewer input — even when a gap or concern is flagged, the letter may only respond with documented background or WIWTR content. A reviewer flag is never authorisation to invent.**
 - **Opening paragraph is protected.** The opener may only be rewritten if the gatekeeper violation list explicitly flags a Pattern A–H failure. All other feedback: note in revision log as "opener feedback noted — not revised per pipeline rules."
 - **Orchestrator quality note:** fix specifically what was quoted. One pass only.
 

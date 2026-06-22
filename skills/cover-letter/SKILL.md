@@ -41,7 +41,7 @@ At its core, writing this letter is a positioning, messaging, and strategy exerc
 
 **Context the CV cannot carry.** A bullet point states an outcome. The letter explains what it required — what the user learned, what she built when nothing existed, why the outcome changed because of a specific decision she made.
 
-**Gaps are not the letter's job.** The letter does not address gaps, work around gaps, or frame against gaps. If the user wanted a gap addressed, she wrote about it in her Why I Want This Role. If she didn't write it, don't touch it.
+**Gaps are not the letter's job.** The letter does not address gaps, work around gaps, or frame against gaps. If the user wanted a gap addressed, she wrote about it in her Why I Want This Role. If she didn't write it, don't touch it. **Fabrication rules always trump reviewer input** — even when a gap or concern is passed from a recruiter or HM reviewer, the letter may only address it with documented background or Why I Want This Role content. A reviewer flag is never authorisation to invent credentials, outcomes, or experience.
 
 **Emotional resonance alongside credentials.** A letter that lands a real emotion — recognition, excitement, a sense of "she gets it" — changes the calculus. The way to create that resonance is not to repeat what the CV already says — it is to expand on it. Add the story behind the outcome, the decision that made it happen, the context the bullet cannot carry. Enhancement creates resonance. Repetition does not.
 

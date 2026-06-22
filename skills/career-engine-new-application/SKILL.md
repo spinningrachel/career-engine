@@ -148,7 +148,7 @@ Spawn `letter-writer` with `option=cover-letter`, passing:
 - The coach's Relationship type
 - **Why I Want This Role** from Notion (read above) — primary content input; include if populated
 - **Strategy** and **Gap handling** from Notion (read above) — secondary context; defer to Why I Want This Role on any conflict
-- **HM interview questions** path `$PIPE/hm-cv.md` to read — the hiring manager's list of things unclear in the CV; the letter-writer uses these to proactively address gaps where Why I Want This Role or documented background provides an answer
+- **HM interview questions** path `$PIPE/hm-cv.md` to read — the hiring manager's list of things unclear in the CV; the letter-writer uses these to proactively address gaps where Why I Want This Role or documented background provides an answer. **Fabrication rules always trump reviewer input — even when a gap is passed, the letter-writer may only answer it with documented background or Why I Want This Role content. A reviewer flag does not authorise invention.**
 
 **Orchestrator quality read — before passing to gatekeeper:**
 
