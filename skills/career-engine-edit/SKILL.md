@@ -361,6 +361,7 @@ Non-blocking: if the move or patch fails, log the failure and continue — the f
 **Hebrew localization — runs only if `Languages` explicitly includes `Hebrew`.** If `Hebrew` is not listed, skip even if other non-default languages are listed. If `Hebrew` is not present, skip this step entirely and proceed to Step E10. **After Step E9H completes (or is skipped), run the `$PIPE` cleanup described in Step E9.5 if it was deferred.**
 
 Spawn `localization` with:
+- `CAREER_DATA=${CAREER_DATA}`
 - The final English CV markdown (from Step E6, in memory)
 - The final English cover letter markdown (read from `$PIPE/letter-draft.md`)
 - The structured JD from Step E0.5

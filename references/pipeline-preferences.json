@@ -14,5 +14,10 @@
   },
   "favorite_brands": [],
   "preferred_job_sites": [],
-  "local_job_sites": []
+  "local_job_sites": [],
+  "idea_bank": {
+    "notion_database_id": "",
+    "notion_page_url": "",
+    "description": "Notion database for idea capture (mind-dump pipeline). Set notion_database_id to your Ideas database ID."
+  }
 }

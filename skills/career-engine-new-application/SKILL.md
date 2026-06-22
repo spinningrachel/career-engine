@@ -256,6 +256,7 @@ Follow the `career-engine-export` skill's Step 6 production protocol exactly —
 ### 6H.1 — Spawn Hebrew localization agent
 
 Spawn `localization` with:
+- `CAREER_DATA=${CAREER_DATA}`
 - The final English CV markdown (read from `$PIPE/cv-final.md`)
 - The final English cover letter markdown (read from `$PIPE/letter-final.md`)
 - The structured JD
