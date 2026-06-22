@@ -100,13 +100,13 @@ See `skills/cover-letter/SKILL.md` → **Input Integration Rules** for how to us
 
 **Shift and step-down mandate:** If Strategy contains a `Shift:` or `Step-down:` signal (written by the coach as Strategy Priority 1), the letter must lead with achievement-based evidence of capability — not ambition, not intention, not framing. The first body paragraph establishes a concrete result or demonstrated ability that directly supports the transfer or level fit. Strategy Priority 1 for shift roles is typically the narrative bridge; make that bridge tangible with a specific achievement or capability drawn from `02-professional-background.md` and `03-framework.md`. Do not frame the letter as a transition story; frame it as a track record that applies here.
 
-**Also passed:** Final CV (coherence only), HM interview questions (from hiring-manager-reviewer, if available).
+**Also passed:** Final CV (coherence only), recruiter review (which includes interview-trigger gaps).
 
-### HM Interview Questions
+### Interview-trigger gaps (from recruiter review)
 
-If the HM interview questions file was passed: read it before drafting. These are the specific gaps or ambiguities in the CV that the hiring manager would open an interview with. The letter has a unique opportunity to answer some of them proactively — not as a Q&A response, but woven naturally into the letter body as narrative that happens to resolve the question. For each question: does Why I Want This Role or the documented background give a real answer? If yes, build it in where it fits the letter's structure. Do not force answers to questions the letter cannot address honestly — skip those. Addressing one or two well is better than mentioning all of them superficially.
+If the recruiter review was passed: read the "Interview-trigger gaps" section before drafting. These are things clear enough to pass the recruiter screen but that would prompt a question from the hiring manager — scope ambiguity, thin capability evidence, claims needing context. The letter has a unique opportunity to answer some of them proactively — not as a Q&A response, but woven naturally into the letter body as narrative that happens to resolve the question. For each item: does Why I Want This Role or the documented background give a real answer? If yes, build it in where it fits the letter's structure. Do not force answers to questions the letter cannot address honestly — skip those. Addressing one or two well is better than mentioning all of them superficially.
 
-**Fabrication always trumps reviewer input.** Even when a gap or concern is passed from the recruiter or HM reviewer, the fabrication rule in `01-writing-rules.md` Section 1 governs unconditionally. A reviewer flag does not authorise inventing credentials, outcomes, or experience the user has not documented. If a question cannot be answered with documented background or Why I Want This Role content, do not attempt to answer it — skip it and note the skip in the revision log.
+**Fabrication always trumps reviewer input.** Even when a gap or concern is passed from the recruiter, the fabrication rule in `01-writing-rules.md` Section 1 governs unconditionally. A reviewer flag does not authorise inventing credentials, outcomes, or experience the user has not documented. If a gap cannot be answered with documented background or Why I Want This Role content, do not attempt to answer it — skip it and note the skip in the revision log.
 
 ### Gatekeeper Loop Awareness
 
@@ -117,14 +117,14 @@ The gatekeeper checks structural and content violations — not style. Banned wo
 Jump directly to the relevant section. Read only the one you will execute.
 
 - **Option 1 — Standard Cover Letter:** Standard pipeline role, after final CV confirmed.
-- **Option 1b — Cover Letter Revision:** After recruiter/HM review, gatekeeper FAIL, or orchestrator quality note.
+- **Option 1b — Cover Letter Revision:** After recruiter review, gatekeeper FAIL, or orchestrator quality note.
 - **Option 3 — Manage Letter Examples:** Add, replace, or delete a letter in `${CAREER_DATA}/references/delivered-letters/`.
 
 ---
 
 ## Option 1 — Standard Cover Letter
 
-**Input:** Final CV, `Role summary` (JD proxy — contains role context, requirements, self-characterization section), Why I Want This Role, Strategy, Gap handling, Relationship type, HM interview questions (if available).
+**Input:** Final CV, `Role summary` (JD proxy — contains role context, requirements, self-characterization section), Why I Want This Role, Strategy, Gap handling, Relationship type, recruiter review (if available — includes interview-trigger gaps).
 
 ### Before writing
 

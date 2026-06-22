@@ -419,12 +419,12 @@ Per-role subagents write output to disk and return pointers; new-application thr
 
 ```bash
 # Each per-role subagent carries the R-41 output protocol
-for a in cv-writer letter-writer recruiter-reviewer hiring-manager-reviewer gatekeeper cover-letter-humanizer; do grep -c "Output protocol (R-41)" <location>/agents/$a.md; done
+for a in cv-writer letter-writer recruiter-reviewer gatekeeper cover-letter-humanizer; do grep -c "Output protocol (R-41)" <location>/agents/$a.md; done
 # Reviewers/gatekeeper/humanizer can write (were read-only / no-write before)
-for a in recruiter-reviewer hiring-manager-reviewer gatekeeper cover-letter-humanizer; do grep -c "^tools:.*Write" <location>/agents/$a.md; done
+for a in recruiter-reviewer gatekeeper cover-letter-humanizer; do grep -c "^tools:.*Write" <location>/agents/$a.md; done
 # new-application threads _pipeline files and reads the feedback file from disk
 grep -c "_pipeline" <location>/skills/career-engine-new-application/SKILL.md
-grep -c 'PIPE/cv-final.md\|PIPE/recruiter-cv.md\|PIPE/hm-cv.md' <location>/skills/career-engine-new-application/SKILL.md
+grep -c 'PIPE/cv-final.md\|PIPE/recruiter-cv.md' <location>/skills/career-engine-new-application/SKILL.md
 grep -c 'contents of `\$PIPE' <location>/skills/career-engine-new-application/SKILL.md
 # Step 7a Mave disk-existence gate MUST still be present
 grep -c "files not found on disk" <location>/skills/career-engine-new-application/SKILL.md
@@ -607,13 +607,14 @@ grep -c "option=letter-review" <build>/skills/career-engine-new-application/SKIL
 grep -c "option=letter-review" <build>/skills/career-engine-edit/SKILL.md              # must be >= 1
 grep -c "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter" <build>/skills/career-engine-new-application/SKILL.md   # must be 0
 grep -c "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter" <build>/skills/career-engine-edit/SKILL.md             # must be 0
-grep -c "hiring-manager-reviewer.*cover-letter\|option=cover-letter.*hiring" <build>/skills/career-engine-new-application/SKILL.md  # must be 0
-grep -c "hiring-manager-reviewer.*cover-letter\|option=cover-letter.*hiring" <build>/skills/career-engine-edit/SKILL.md            # must be 0
 grep -c "Option 4" <build>/agents/career-coach.md   # must be >= 1
 grep -c "Write" <build>/agents/career-coach.md      # must be >= 1 (coach needs Write for review file)
+# hiring-manager-reviewer must not appear anywhere in the pipeline skills
+grep -c "hiring-manager-reviewer" <build>/skills/career-engine-new-application/SKILL.md  # must be 0
+grep -c "hiring-manager-reviewer" <build>/skills/career-engine-edit/SKILL.md            # must be 0
 ```
 
-**FAIL condition:** any required count is zero, or recruiter/HM cover letter reviewer still present.
+**FAIL condition:** any required count is zero, or hiring-manager-reviewer still referenced in pipeline skills.
 
 ### Check 22 — Single-build model documented in CLAUDE.md
 

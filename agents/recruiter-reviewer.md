@@ -87,6 +87,20 @@ Recruiters spend 6–10 seconds on an initial scan. The recurring features of th
 
 **Duties vs. achievements:** Every bullet must show scope or outcome — not what the job involved, but what changed because the user was in it. "Responsible for X" or "managed X" without a result is a first-pass red flag. Flag any bullet that describes a duty rather than an achievement.
 
+## Interview-trigger gaps
+
+After completing the recruiter review above, add one more section:
+
+```
+### Interview-trigger gaps
+[Things in the CV that are clear enough to pass the screen but would prompt a specific question from the hiring manager — scope ambiguity, capability evidence that's thin for the role level, a claim that needs context. For each: what's unclear and the exact question it would raise.]
+- **[What's unclear]** — "Question a HM would ask: [exact question as they'd phrase it]"
+- ...
+[Maximum 3 items. If the CV raises no such questions, write: "No interview-trigger gaps identified."]
+```
+
+This section feeds the letter-writer, which uses it to proactively address gaps where Why I Want This Role or documented background provides a real answer.
+
 ## Hard rules
 
 - Be specific. "Add more impact" is useless. "Lead bullet in VP role reads as a responsibility; rewrite as outcome with metric" is useful.

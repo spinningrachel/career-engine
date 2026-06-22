@@ -210,13 +210,9 @@ Spawn `gatekeeper` with `option=content`, passing `CAREER_DATA=${CAREER_DATA}`, 
 
 Spawn `recruiter-reviewer` with `CAREER_DATA=${CAREER_DATA}`, the structured JD, the revised CV, and `OUTPUT_PATH=$PIPE/recruiter-review.md`. The reviewer writes its full review to that file and returns only a 2-line status (R-41 protocol). The reviewer is aware this is a revision, not a first draft.
 
-**Step E4.5 — HM review (CV)**
-
-Spawn `hiring-manager-reviewer` with `CAREER_DATA=${CAREER_DATA}`, the structured JD, the revised CV, and `OUTPUT_PATH=$PIPE/hm-cv.md`. It writes the interview questions to that file and returns a 2-line status (R-41). This output feeds both Step E5 (CV final revision) and Step E7 (letter revision).
-
 **Step E5 — CV writer (final revision)**
 
-Read recruiter feedback from `$PIPE/recruiter-review.md` and HM interview questions from `$PIPE/hm-cv.md`. Spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, the revised CV from Step E3, the recruiter feedback, and the HM feedback. Returns the final CV and revision log.
+Read recruiter feedback from `$PIPE/recruiter-review.md`. Spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, the revised CV from Step E3, and the recruiter feedback. Returns the final CV and revision log.
 
 **Step E5.5 — Gatekeeper (content check)**
 
@@ -241,7 +237,7 @@ Spawn `letter-writer` with `option=revision`. Pass:
 - The final CV (for context)
 - **`Why I Want This Role` — pass the verbatim text as a quoted block, never paraphrased or distilled.** The letter-writer's Intake Gate requires this field and its instruction rules require working from the user's exact words, not thematic summaries of them. If the Edit notes reference this field as the content source, that is even more reason to pass it raw — the writer must receive the actual material, not the orchestrator's interpretation of it. (R-44)
 - **`Edit notes` content** (from the Step E0 row payload) — if populated, include verbatim with the instruction: "Address these specific edit notes first, before applying general improvements: [content]". Omit if empty.
-- **HM interview questions** path `$PIPE/hm-cv.md` to read — the hiring manager's list of things unclear in the CV; the letter-writer uses these to proactively address gaps where Why I Want This Role or documented background provides an answer. Omit if the file does not exist. **Fabrication rules always trump reviewer input — even when a gap is passed, the letter-writer may only answer it with documented background or Why I Want This Role content. A reviewer flag does not authorise invention.**
+- **Recruiter review** path `$PIPE/recruiter-review.md` to read — includes the "Interview-trigger gaps" section; the letter-writer uses these to proactively address gaps where Why I Want This Role or documented background provides a real answer. **Fabrication rules always trump reviewer input — even when a gap is passed, the letter-writer may only answer it with documented background or Why I Want This Role content. A reviewer flag does not authorise invention.**
 - `LETTER_PATH=$PIPE/letter-draft.md` — the writer writes its output to this file and returns only a 2-line status + path (R-41 protocol).
 
 The letter-writer improves the existing letter — it does not start from scratch. **Exception:** if the Edit notes contain an explicit "write from scratch" instruction, spawn the letter-writer in fresh-draft mode and discard the existing letter as the starting point. **When "write from scratch" is present, this instruction applies to ALL language versions** — if the role's `Languages` property includes Hebrew or other languages, Step E9H must also regenerate those versions from scratch (do not carry the old localized text forward as a base; spawn localization with the new English letter as the source).

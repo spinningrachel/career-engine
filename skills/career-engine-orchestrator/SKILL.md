@@ -465,9 +465,9 @@ ls "<most-recent-folder>/<revision_log_path>" 2>/dev/null && echo "✓" || echo 
 
 Completed: N roles  ·  Files missing: M
 
-| Company | Role | Track | CV | Cover letter | Hebrew CV | Hebrew CL | Feedback | Revision log | HM top question |
-|---|---|---|---|---|---|---|---|---|---|
-| <company> | <title> | <track> | ✓/MISSING | ✓/MISSING | ✓/—/MISSING | ✓/—/MISSING | ✓/MISSING | ✓/MISSING | <hm_top_question> |
+| Company | Role | Track | CV | Cover letter | Hebrew CV | Hebrew CL | Feedback | Revision log |
+|---|---|---|---|---|---|---|---|---|
+| <company> | <title> | <track> | ✓/MISSING | ✓/MISSING | ✓/—/MISSING | ✓/—/MISSING | ✓/MISSING | ✓/MISSING |
 ...
 Note: — means no Hebrew was produced for that role (Languages did not include Hebrew).
 
@@ -697,12 +697,10 @@ cat > "<output_dir>/run-metrics-$(date +%Y-%m-%d).json" << 'JSON_EOF'
     "cv_writer_revision": <N>,
     "gatekeeper_cv": <N>,
     "recruiter_reviewer_cv": <N>,
-    "hm_reviewer_cv": <N>,
     "letter_writer_draft": <N>,
     "letter_writer_revision": <N>,
     "gatekeeper_cl": <N>,
     "recruiter_reviewer_cl": <N>,
-    "hm_reviewer_cl": <N>,
     "localization": <N>
   },
   "token_counts": "pending — written by Stop hook at session end"
@@ -733,7 +731,7 @@ Nothing else. All feedback, validation results, and decisions are in the revisio
 ## Execution Rules
 
 - Run roles sequentially unless the user explicitly asks for parallel execution.
-- Narrate progress briefly between steps: "Role 3/5: recruiter review done, moving to hiring manager."
+- Narrate progress briefly between steps: "Role 3/5: recruiter review done, moving to CV revision."
 - Do not deliver individual role outputs during processing — deliver everything together at the end.
 - If any step fails, log it and move on. All failures are written to the run-level revision log (Step 9).
 - The fabrication rule is absolute. Every claim must trace to `01-writing-rules.md`. If it is not documented there, it does not exist.

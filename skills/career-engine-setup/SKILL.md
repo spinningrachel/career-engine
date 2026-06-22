@@ -619,9 +619,9 @@ The main pipeline. Picks up all roles in your tracking database with Status = `I
 1. Coach analysis — reads the JD, writes Role emphasis, Strategy, Keywords, Gap handling
 2. CV writer — drafts a tailored CV
 3. Gatekeeper — checks the CV for rule violations
-4. Recruiter + hiring manager review — evaluates the CV
+4. Recruiter review — evaluates the CV
 5. Cover letter writer — writes the letter (if Why I Want This Role is filled in)
-6. Cover letter gatekeeper + recruiter/HM review
+6. Cover letter gatekeeper + recruiter review
 7. Humanizer — removes AI writing patterns from the letter
 8. Export — produces DOCX files
 

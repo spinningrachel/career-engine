@@ -81,7 +81,7 @@ Load the following skills in order before doing anything. Do not spawn any sub-a
 **Main run (no flag):**
 1. `01-writing-rules.md` — core constraints governing every agent; load first
 2. `career-engine-orchestrator` — Interested queue fetch (Steps O1–O4), Role Type and Priority Definitions, Notion property ownership, Steps 8–9 (LinkedIn updates file, run-level revision log), Post-Run Validation, State File and crash recovery
-3. `career-engine-new-application` — Step 0.10 and Steps 1 through 7d: CV draft, gatekeeper, recruiter review, HM review, CV revision, cover letter draft through final gatekeeper, DOCX export, Notion writeback, reviewer feedback file
+3. `career-engine-new-application` — Step 0.10 and Steps 1 through 7d: CV draft, gatekeeper, recruiter review, CV revision, cover letter draft through final gatekeeper, DOCX export, Notion writeback, reviewer feedback file
 4. `career-engine-export` — DOCX production protocol, pandoc commands, template styles, page count verification
 
 **`--edit` flag:**
@@ -108,8 +108,7 @@ Return the gatekeeper's PASS or FAIL result directly. No loop.
 **`--review` flag:**
 Load `01-writing-rules.md` first. Ask the user to paste the document (CV or cover letter) and the JD if she hasn't already. Then:
 1. Spawn `recruiter-reviewer` with the document and JD. Return results.
-2. Spawn `hiring-manager-reviewer` with the document and JD. For cover letter review, treat prior HM CV verdict as N/A. Return results.
-Deliver both reviews together. No revision loop.
+Deliver the review. No revision loop.
 
 **`--write-letter` flag:**
 Load `01-writing-rules.md` and `cover-letter` skill. Ask the user for the URL or JD text if not provided. Then spawn `letter-writer` using the Standalone Invocation path — no final CV required, no reviewer loop, no gatekeeper spawn. Return the cover letter draft directly for the user to use or refine.
