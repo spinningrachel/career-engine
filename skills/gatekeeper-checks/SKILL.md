@@ -1,6 +1,6 @@
 ---
 name: gatekeeper-checks
-description: 'Check definitions for the gatekeeper agent. Three options: Option 1 CV content checks, Option 2 cover letter checks, Option 3 coach output fact check. Load this skill before running any gatekeeper option.'
+description: 'Check definitions for the gatekeeper agent. Three checks: CV Check, Cover Letter Check, Coach Output Check. Load this skill before running any gatekeeper check.'
 ---
 
 # Gatekeeper Check Definitions
@@ -9,7 +9,7 @@ description: 'Check definitions for the gatekeeper agent. Three options: Option 
 
 ---
 
-## Option 1 — CV Content Checks
+## CV Check
 
 Run the ATS pre-check first, then the content checks in order.
 
@@ -40,12 +40,6 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 **Macro-injected sections — FAIL if present, never fail on their absence:** `EDUCATION`, `LANGUAGES`, and `ADDITIONAL` are injected automatically by the user's Word template. They must NOT appear in cv-writer's markdown output — they are already formatted in the template and will be duplicated if written here. FAIL immediately if any of `## EDUCATION`, `## LANGUAGES`, or `## ADDITIONAL` appear anywhere in the CV text, with the message: "[SECTION] section must not be written — it is part of the Word template and will duplicate." Never fail on their absence.
 
 **`TOOLS` is optional.** Do not fail if absent. If present, confirm it uses the correct `## TOOLS` heading — no other form is acceptable. FAIL if present but not using `## TOOLS` — flag as: "TOOLS section uses non-standard heading [heading] — rename to `## TOOLS`."
-
-**ATS-hostile formatting:** FAIL if any of these appear in the body:
-- Tables in the Experience section
-- Columns or side-by-side layouts
-- Special character bullet markers (✓, →, ◆, ★, ••)
-- Text boxes or sidebars
 
 **BlueFont annotation check — FAIL if triggered:** Scan the full CV markdown for any occurrence of the pattern `[^]]{custom-style="BlueFont"}` — i.e., `{custom-style="BlueFont"}` not immediately preceded by `]`. This indicates an unbracketed span. Pandoc will render the literal annotation string `{custom-style="BlueFont"}` as body text in the DOCX. Flag every unbracketed occurrence as: "Unbracketed BlueFont span: `[text here]` — wrap text in square brackets: `[text here]{custom-style=\"BlueFont\"}`." FAIL if any are found.
 
@@ -80,7 +74,7 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 
 ---
 
-## Option 2 — Cover Letter Checks
+## Cover Letter Check
 
 **Calibration authority:** The humanizer holds calibration authority over voice register and word-count decisions within the 320-word hard ceiling. The gatekeeper enforces the hard ceiling and mandatory structure checks only — it does not apply voice register judgments that conflict with the humanizer's calibration output.
 
@@ -89,6 +83,7 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 - Role named in the first sentence of the body — it does not have to lead the sentence, but it must be explicit (Tier 2; FAIL if absent)
 - Sign-off: "Looking forward to next steps," (default) or an archive-consistent variation, then "{{USER_FULL_NAME}}" on its own line. A P.S. after the name is permitted when archive-consistent (logistics, warmth) — flag only company-positioning commentary in a P.S.
 - Body: maximum 320 words (excluding greeting and sign-off; no minimum — canonical rule per the cover-letter skill; the 270–320 band is the typical delivered-letter register)
+- **Language skills — FAIL if present:** Language proficiency statements ("Fluent in Hebrew and English," "native speaker of [language]," any language-as-credential statement) belong in the CV only — never in the cover letter body. FAIL with: "Language skills must not appear in the cover letter — this belongs in the CV."
 
 **Personal-content exemption — read before running any content check**
 
@@ -153,10 +148,12 @@ These are not advisory. A sentence structure violation in the opening paragraph 
 
 **Banned term checking is a literal string search, not a semantic review.** For each banned term: search the letter text for that exact string (or close variants — e.g., "specialism", "Specialism", "SPECIALISM"). Do not rely on memory or a general read-through. Use the Grep tool or scan the letter text character by character for each term. A mental "I reviewed and found nothing" is not a valid completion of this check — the search must be performed for each term individually.
 
-**Banned words and phrases** — advisory only; do not fail or loop
+**Banned words and phrases** — advisory; scored against the grade threshold
 
-Note any of these in the end-of-pipeline feedback note. Do not return as a violation or trigger a revision.
-- "specialism" — not a word; use "multi-disciplinary" or "[specific] disciplines" instead
+Each violation counts toward the advisory total. Include a `→ resolution` per the resolution format above.
+
+*Cliché and vague filler:*
+- "specialism" — not a word → use "multi-disciplinary" or "[specific] disciplines"
 - "genuinely"
 - "actually" or "real" as emphasis intensifiers ("I actually did X", "real results")
 - "straightforward"
@@ -167,15 +164,29 @@ Note any of these in the end-of-pipeline feedback note. Do not return as a viola
 - "results-driven"
 - "at the intersection" or "at an intersection"
 - "I have" followed by "on exactly that" in the same sentence
-- Any sentence matching "X is [something], not [something]" as a positioning claim
-- Any phrase matching "What puts me closest to what [Company/you] is/are doing:" or "What puts me closest to what you need:"
 - "I would welcome the chance to"
 - "significant part of my career"
+- "up close" — filler; cut it
+- "at an inflection point" — generic AI phrase; name the specific moment
+- "rare" as a self-descriptor — never self-apply; demonstrate through specifics
+- "that made it land" — vague AI-assembly phrase; name what it was and what the result was
+- "behind the [noun]" (e.g., "behind the coverage", "behind the strategy") — name the actual work
+- "quietly [verb]ing" (e.g., "quietly building", "quietly scaling") — performative modesty; name the action directly
 - Self-declaration of capability without evidence: "I know how to speak to buyers who [X]", "For a role in [space], that matters:", "where [thing] isn't a nice-to-have, it's [dramatic claim]"
+- Any phrase matching "What puts me closest to what [Company/you] is/are doing:" or "What puts me closest to what you need:"
+- Any sentence matching "X is [something], not [something]" as a positioning claim
 
-**Banned structures** — advisory only; do not fail or loop
+*AI vocabulary — ban every instance:*
+- `crucial`, `pivotal`, `vibrant`, `showcase` / `showcasing`, `tapestry` (figurative), `underscore` (verb), `landscape` (abstract noun), `testament`, `enduring`, `foster` / `fostering`, `garner`, `interplay`, `intricate` / `intricacies`, `foundational`, `transformative`, `robust`, `seamless`, `comprehensive`, 'playbook' (as an abstract concept), `leverage` (verb), `synergy`, `spearhead`, `paradigm`
 
-Note any of these in the end-of-pipeline feedback note. Do not return as a violation or trigger a revision.
+*Idioms, clichés, metaphors, similes, self-deprecating humor — flag any instance:*
+Any idiom ("put my thinking cap on", "hit the ground running", "wear many hats"), cliché, metaphor, simile, or self-deprecating joke anywhere in the letter. These undercut the stated proof points. → Delete or rewrite as a direct statement.
+
+**Banned structures** — advisory; scored against the grade threshold
+
+Each violation counts toward the advisory total. Include a `→ resolution` per the resolution format above.
+
+- Em dashes anywhere in the letter body — zero permitted. → Replace with a period, comma, or restructure the sentence.
 - "Here's the thing" / "Here's the hard truth"
 - "And honestly?" / "Let's be honest"
 - "Unlock" / "Unleash" / "Harness"
@@ -189,12 +200,59 @@ Note any of these in the end-of-pipeline feedback note. Do not return as a viola
 - Negation-then-assertion: "Don't just X. [Subject] Y."
 - Staccato fragments substituting for full sentences
 - "X isn't always about Y" / "X should be Y, not Z"
-- Antithesis/pivot formula: "[Subject] does/has X, but [subject] is Y" where X is unnecessary context that adds nothing. Also: "It's not about X, it's about Y." / "This isn't just A, it's B." / "Not X — Y." Test: if removing the negated half makes the sentence clearer, it should be cut.
-- Temporal motivation hedges: "the seat I want most right now" / "at this stage of my career" / "what I'm looking for right now" / any phrase implying the motivation is provisional or time-qualified. A genuine reaction to a specific role needs no time qualifier.
+- Antithesis/pivot formula: "[Subject] does/has X, but [subject] is Y" where X is unnecessary context. Also: "It's not about X, it's about Y." / "This isn't just A, it's B." / "Not X — Y." Test: if removing the negated half makes the sentence clearer, it should be cut.
+- Temporal motivation hedges: "the seat I want most right now" / "at this stage of my career" / "what I'm looking for right now" / any phrase implying the motivation is provisional or time-qualified.
 
 ---
 
-## Option 3 — Coach Output Fact Check
+### Cover Letter Check — Grading and Pass Threshold
+
+**Run this after completing all checks on every Cover Letter Check pass.**
+
+Count the total number of advisory violations found (banned words, banned structures, and banned syntax). Hard fails are counted separately and always block regardless of grade.
+
+| Grade | Advisory violations | Decision |
+|---|---|---|
+| **A** | 0 | PASS → humanizer |
+| **B** | 1–2 | PASS → humanizer (include advisory in output) |
+| **C** | 3–4 | FAIL → letter-writer with suggestions |
+| **D** | 5+ | FAIL → letter-writer with suggestions |
+
+Hard fails override the grade: any hard fail = FAIL regardless of grade.
+
+**Resolution format — required for every advisory violation:**
+
+Every advisory violation must include a suggested resolution. Do not just quote the offending text — tell the letter-writer what to do. Use one of these forms:
+
+- `→ Delete.`
+- `→ Rewrite as: "[suggested replacement text]"`
+- `→ Delete unless this comes from Why I Want This Role. If it does, replace with the user's exact words from that field.`
+
+The third form ("delete unless from WIWTR") applies to any sentence that expresses the user's motivation, reaction to the company, personal connection to the role, or opinion about the opportunity — when that sentence sounds agent-constructed rather than drawn from the user's own Why I Want This Role content. The test: could the user have written this sentence herself? If not, it is agent-fabricated motivation and must be flagged this way.
+
+**Resolution examples (apply the same logic to new violations):**
+
+| Offending text | Resolution |
+|---|---|
+| "the Head of Marketing role at DualBird is one I understood the moment I read it" | Delete unless from WIWTR — if so, use the user's exact words. |
+| "a story I didn't have to put my thinking cap on to picture telling" | Delete — idiom ("put my thinking cap on") plus agent-constructed framing. |
+| "that shaped how I work" | Delete unless from WIWTR — if so, use the user's exact words. |
+| "Wolt counting Israel as a priority market with real stakes is a big part of why this matters to me." | Delete unless from WIWTR — if so, use the user's exact words. |
+| "WalkMe's position inside SAP excites me most." | Delete unless from WIWTR — if so, use the user's exact words. |
+| "Feature adoption is won on rhythm, not launch day." | Delete unless from WIWTR — if so, use the user's exact words. Antithesis formula. |
+| "The consumer and UGC stretch is the one worth making." | Delete unless from WIWTR — if so, use the user's exact words. If the substance is present in WIWTR, rewrite as a direct first-person statement: e.g., "I have been looking for an opportunity to focus more on consumer-facing products and user-generated content." |
+| "Knowing when a motion won't scale matters just as much." | Rewrite as: "I also know when a tactic or strategy will most likely not scale." |
+| "Media relations runs on the same muscle" | Rewrite as: "I need the same skill in order to properly manage media relations." |
+| "I write it as a buyer's first trust signal, not a legal afterthought" | Rewrite as: "Content is the very first opportunity to build real trust with prospects. My goal is to create clarity, ensuring that the first signal a buyer receives is one of transparency and reliability." |
+| "I've reviewed WalkMe several times over the years, and most of the Learning Arc competitive set already lives in my 1000+ tool research catalog." | Rewrite as: "I have reviewed WalkMe several times over the years, and I already have most of its competitors in my research catalog of more than 1,000 tools." |
+| "The work here is ..." | Delete it |
+| Adoption is where most of these efforts die.  | Unfortunately, adoption is often a failpoint in any case. |
+| "The work I love most is ..." | Rewrite as: "I love to" |
+| Adoption is where most of these efforts die.  | Unfortunately, adoption is often a failpoint in any case. |
+
+---
+
+## Coach Output Check
 
 For each role in the coach's output, identify every specific factual claim about the user's background, experience, skills, or accomplishments. Find the supporting line in `01-writing-rules.md`.
 

@@ -166,7 +166,7 @@ How your background should and should not be presented in any document.
 
 **{{DIFFERENTIATOR_3_NAME}}:** {{DIFFERENTIATOR_3_DESCRIPTION}} Proof: {{DIFFERENTIATOR_3_PROOF}}
 
-*Examples by profession — replace with your own earned differentiators:*
+*Examples by profession — replace with your own differentiators:*
 - *Engineering:* "Systems thinker — I trace features to architecture before writing a line. Proof: redesigned the auth service at [Company] to support 10× load without breaking backward compatibility."
 - *Finance:* "Speed under pressure — three closed deals in 90-day sprints without a miss. Proof: [Company] Q4 2023, [Company] Series B close, [Company] bridge round."
 - *Design:* "Research before pixels — I run user interviews before opening the design tool. Proof: the onboarding redesign at [Company] was preceded by 14 user sessions that entirely changed the initial direction."

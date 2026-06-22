@@ -106,7 +106,7 @@ grep -rni "campaign" <location>/skills <location>/agents <location>/README.md <l
 
 ### Check 4d — No retired iCloud delivered-letters location
 
-The output-folder `final-pdfs-delivered/` location is retired (R-31). The only delivered-letters location is the in-plugin `references/delivered-letters/` archive (cap 6, letter-writer Option 3). All consumers — letter-writer, cover-letter skill, gatekeeper Option 2, humanizer agent, setup — must point there.
+The output-folder `final-pdfs-delivered/` location is retired (R-31). The only delivered-letters location is the in-plugin `references/delivered-letters/` archive (cap 6, letter-writer Option 3). All consumers — letter-writer, cover-letter skill, gatekeeper Cover Letter Check, humanizer agent, setup — must point there.
 
 ```bash
 grep -rn "final-pdfs-delivered" <location> --include="*.md" | grep -v "agents/qa-plugin.md" | grep -v "/docs/"
@@ -569,7 +569,7 @@ Gatekeeper-checks skill must require literal Grep tool use for banned phrase che
 
 ```bash
 grep -c "Grep tool" <location>/skills/gatekeeper-checks/SKILL.md                  # must be >= 1
-grep -c "mental.*review\|mental.*check" <location>/skills/gatekeeper-checks/SKILL.md  # must be 0
+grep -c "mental review is sufficient\|by mental review\|mental review only" <location>/skills/gatekeeper-checks/SKILL.md  # must be 0
 ```
 
 **FAIL condition:** first count is 0 or second count is nonzero.
@@ -609,12 +609,13 @@ grep -c "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter" <buil
 grep -c "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter" <build>/skills/career-engine-edit/SKILL.md             # must be 0
 grep -c "Option 4" <build>/agents/career-coach.md   # must be >= 1
 grep -c "Write" <build>/agents/career-coach.md      # must be >= 1 (coach needs Write for review file)
-# hiring-manager-reviewer must not appear anywhere in the pipeline skills
+# hiring-manager-reviewer must not appear anywhere in the pipeline skills (agent was intentionally removed)
 grep -c "hiring-manager-reviewer" <build>/skills/career-engine-new-application/SKILL.md  # must be 0
 grep -c "hiring-manager-reviewer" <build>/skills/career-engine-edit/SKILL.md            # must be 0
+grep -c "hiring-manager-reviewer" <build>/agents  # must be 0 — agent file was intentionally deleted
 ```
 
-**FAIL condition:** any required count is zero, or hiring-manager-reviewer still referenced in pipeline skills.
+**FAIL condition:** any required count is nonzero for hiring-manager-reviewer checks, or any other required count is zero.
 
 ### Check 22 — Single-build model documented in CLAUDE.md
 
@@ -659,7 +660,7 @@ grep -ci "colon" <build>/skills/cover-letter-humanizer/SKILL.md
 
 **FAIL condition:** both counts are 0.
 
-**sign-off archive-load gap (known open issue):** the gatekeeper Option 2 does not load the delivered-letters archive before evaluating sign-offs; sign-off checks may produce false positives on archive-consistent sign-offs. Do NOT FAIL on this — surface it as a known advisory in the QA output.
+**sign-off archive-load gap (known open issue):** the gatekeeper Cover Letter Check does not load the delivered-letters archive before evaluating sign-offs; sign-off checks may produce false positives on archive-consistent sign-offs. Do NOT FAIL on this — surface it as a known advisory in the QA output.
 
 ### Check 22b — career-data / single-build wiring present (R-37)
 

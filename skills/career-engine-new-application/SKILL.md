@@ -59,11 +59,11 @@ Spawn `cv-writer` with `option=draft`, passing:
 
 ### Step 1.5 — Gatekeeper (CV draft check)
 
-Spawn `gatekeeper` with `option=content`, passing `CAREER_DATA=${CAREER_DATA}`, the CV path `$PIPE/cv-draft.md` to read, `Role summary`, the coach's `Keywords` property, and `OUTPUT_PATH=$PIPE/gatekeeper-cv-<round>.md`. The gatekeeper's ATS pre-check parses Keywords into tiers (Critical / Important / Nice-to-have) to verify coverage. It returns `PASS`, or `FAIL: <n> violations → <path>` (R-41).
+Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, the CV path `$PIPE/cv-draft.md` to read, `Role summary`, the coach's `Keywords` property, and `OUTPUT_PATH=$PIPE/gatekeeper-cv-<round>.md`. The gatekeeper's ATS pre-check parses Keywords into tiers (Critical / Important / Nice-to-have) to verify coverage. It returns `PASS`, or `FAIL: <n> violations → <path>` (R-41).
 
 **If PASS:** proceed to Step 2.
 
-**If FAIL:** read the violation file at the returned path. If all violations are mechanical and unambiguous (swap two words, remove one phrase, reorder paragraphs — no creative judgment required), apply them inline to `$PIPE/cv-draft.md`. If any violation requires cv-writer judgment (rewriting a bullet, resolving a fabrication flag), spawn `cv-writer` with `option=revision`, passing `CV_PATH=$PIPE/cv-draft.md` (read and overwrite), the gatekeeper violation path, and the fix-log path `$PIPE/fix-log.md` (read and append). Locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After fix, spawn `gatekeeper` again with `option=content` (new `OUTPUT_PATH` round). Repeat until PASS. Do not surface this loop to the user — log violation rounds internally.
+**If FAIL:** read the violation file at the returned path. If all violations are mechanical and unambiguous (swap two words, remove one phrase, reorder paragraphs — no creative judgment required), apply them inline to `$PIPE/cv-draft.md`. If any violation requires cv-writer judgment (rewriting a bullet, resolving a fabrication flag), spawn `cv-writer` with `option=revision`, passing `CV_PATH=$PIPE/cv-draft.md` (read and overwrite), the gatekeeper violation path, and the fix-log path `$PIPE/fix-log.md` (read and append). Locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After fix, spawn `gatekeeper` again with `option=cv` (new `OUTPUT_PATH` round). Repeat until PASS. Do not surface this loop to the user — log violation rounds internally.
 
 **Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 1.5)` section in the revision log, proceed to Step 2, and flag for the user in the final delivery that this CV needs manual review before sending.
 
@@ -92,7 +92,7 @@ cp "$PIPE/cv-final.md" "<output_dir>/<company_dir>/<cv_filename>.md"
 
 ### Step 4.5 — Gatekeeper (CV final check)
 
-Spawn `gatekeeper` with `option=content`, passing `CAREER_DATA=${CAREER_DATA}`, the CV path `$PIPE/cv-final.md` to read, `Role summary`, the coach's `Keywords` property, and `OUTPUT_PATH=$PIPE/gatekeeper-cv-<round>.md`.
+Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, the CV path `$PIPE/cv-final.md` to read, `Role summary`, the coach's `Keywords` property, and `OUTPUT_PATH=$PIPE/gatekeeper-cv-<round>.md`.
 
 **If PASS:** proceed to Step 5.
 
@@ -168,7 +168,7 @@ If the answer to ANY of (1), (2), or (3) is "no," re-spawn `letter-writer` with 
 
 ### Step 5.2 — Gatekeeper (cover letter draft check)
 
-Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter path `$PIPE/letter-draft.md` to read, `Role summary`, the user's Why I Want This Role content (from the Pre-Step 5 read), the final CV path `$PIPE/cv-final.md` to read (required for the CV-repetition check; if no CV exists for this role, state that explicitly so the gatekeeper reports the skipped check by name), and `OUTPUT_PATH=$PIPE/gatekeeper-cl-<round>.md`. The Why I Want This Role content allows the gatekeeper to apply the personal-content exemption correctly — see the exemption rule at the top of Option 2 in `gatekeeper-checks/SKILL.md`.
+Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter path `$PIPE/letter-draft.md` to read, `Role summary`, the user's Why I Want This Role content (from the Pre-Step 5 read), the final CV path `$PIPE/cv-final.md` to read (required for the CV-repetition check; if no CV exists for this role, state that explicitly so the gatekeeper reports the skipped check by name), and `OUTPUT_PATH=$PIPE/gatekeeper-cl-<round>.md`. The Why I Want This Role content allows the gatekeeper to apply the personal-content exemption correctly — see the exemption rule at the top of Cover Letter Check in `gatekeeper-checks/SKILL.md`.
 
 **If PASS:** proceed to Step 5.3.
 

@@ -124,7 +124,7 @@ Run the gatekeeper on all existing outputs in parallel. The goal is a complete p
 
 **Needs-fetch roles — defer this step.** A role marked `needs-fetch` in E0.5 has no JD yet; the fetch in E0.5 attempted retrieval. If E0.5 hard-dropped the role (URL unreachable), no baseline check runs at all. For roles where the JD was successfully fetched in E0.5 (and populated in memory), run the baseline check now.
 
-**Content check:** Run only if Edit type is `CV` or `Both`. Spawn `gatekeeper` with `option=content`, passing `CAREER_DATA=${CAREER_DATA}`, the existing CV text, the structured JD, and the role's `Keywords` property (from the Notion row — required for the ATS pre-check). Returns either PASS or a content violation list.
+**Content check:** Run only if Edit type is `CV` or `Both`. Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, the existing CV text, the structured JD, and the role's `Keywords` property (from the Notion row — required for the ATS pre-check). Returns either PASS or a content violation list.
 
 **Cover letter check:** Run only if Edit type is `Letter` or `Both`. Locate the existing cover letter in this order: `Letter File Name` from the Notion row → state.json `cover_letter_path` → run-folder pattern search (`coverletter-*` / `cv-*` in the company subdirectory) → Draft Directory company subdirectory. If the file cannot be located by any of these methods, skip the cover letter baseline check entirely and log: "Cover letter baseline check skipped for [Company] — file not locatable (no prior pipeline run or file moved)." Otherwise spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the existing cover letter text and the structured JD. Returns either PASS or a cover letter violation list.
 
@@ -200,7 +200,7 @@ Assess:
 
 **Step E3.5 — Gatekeeper (content check)**
 
-Spawn `gatekeeper` with `option=content`, passing `CAREER_DATA=${CAREER_DATA}`, the revised CV text, the structured JD from Step E0.5, and the role's `Keywords` property (from the coach properties verified in Step E1 — required for the ATS pre-check).
+Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, the revised CV text, the structured JD from Step E0.5, and the role's `Keywords` property (from the coach properties verified in Step E1 — required for the ATS pre-check).
 
 **If PASS:** proceed to Step E4.
 
@@ -216,7 +216,7 @@ Read recruiter feedback from `$PIPE/recruiter-review.md`. Spawn `cv-writer` with
 
 **Step E5.5 — Gatekeeper (content check)**
 
-Spawn `gatekeeper` with `option=content`, passing `CAREER_DATA=${CAREER_DATA}`, the final revised CV text, the structured JD, and the role's `Keywords` property.
+Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, the final revised CV text, the structured JD, and the role's `Keywords` property.
 
 **If PASS:** proceed to Step E7.
 

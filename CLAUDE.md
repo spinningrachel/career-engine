@@ -182,6 +182,29 @@ Delivered letters show openers that vary widely in structure — emotional react
 
 ---
 
+## Glossary
+
+Shared terminology used throughout the plugin. When a term appears in an agent, skill, or this file, it means the thing defined here — not a colloquial sense.
+
+| Term | Definition |
+|---|---|
+| **Pipeline** | A complete end-to-end workflow with a named trigger, entry skill, and owned Status transitions. Defined in the Pipeline Registry in `skills/career-engine/SKILL.md`. Examples: New Application, Edit, Intake. |
+| **Agent** | A spawnable subagent that performs one discrete task (write a CV, run a gatekeeper check, review as a recruiter). Lives in `agents/`. Spawned by the orchestrator or entry skill — never auto-activated. |
+| **Skill** | A doctrine or craft file loaded explicitly by an agent via `Read`. Not a pipeline step — it holds the rules, templates, and philosophy the agent applies. Lives in `skills/`. |
+| **Check** (gatekeeper) | One of the three document-type check sets the gatekeeper can run: **CV Check** (`option=cv`), **Cover Letter Check** (`option=cover-letter`), **Coach Output Check** (`option=coach-output`). Not optional — which check runs depends on what the pipeline is validating at that step. |
+| **Option** (agent invocation) | A named invocation mode for an agent that has more than one way to run. Example: `letter-writer option=draft` vs `option=revision` vs `option=standalone`. Options are agent-specific; they are not the same concept as gatekeeper checks. |
+| **Hard fail** | A gatekeeper violation that always blocks the pipeline and returns the document to the writer, regardless of grade. |
+| **Advisory violation** | A gatekeeper finding that counts toward the cover letter grade but does not independently block the pipeline. 0–2 advisory violations = PASS to humanizer (Grade A/B); 3+ = FAIL back to letter-writer (Grade C/D). |
+| **Grade** | The A/B/C/D score the gatekeeper assigns to a cover letter based on advisory violation count. A = 0 violations, B = 1–2, C = 3–4, D = 5+. Hard fails override the grade. |
+| **Tier** (keywords) | Classification of JD keywords into Critical / Important / Nice-to-have for the gatekeeper's ATS pre-check. Thresholds: Critical ≥80%, Important ≥60%, Nice-to-have = advisory only. |
+| **R-41** | Output protocol requiring pipeline subagents to write their full output to a `$PIPE/` file and return only a 1-line status. Keeps orchestrator context small. Violations bloat the run. |
+| **R-37** | Data root rule: personal-data files load from `${CAREER_DATA}/references/`. Plugin files load from `${CLAUDE_PLUGIN_ROOT}/`. Never hardcode paths. |
+| **WIWTR** | Why I Want This Role — the user's first-person notes about a specific role, stored in the Notion job row. Sole source for the cover letter opener. All distinct points must appear somewhere in the letter. |
+| **Surgical-only revision** | Letter-writer rule: reviewer feedback authorises touching only what was flagged. Every sentence not explicitly called out stays word-for-word. |
+| **Fabrication** | Inventing credentials, outcomes, or experience not present in the user's documented background or WIWTR. Always prohibited. Reviewer flags never authorise fabrication. |
+
+---
+
 ## QA Agent
 
 See the mandatory stop gate at the top of this file. The QA agent lives at `agents/qa-plugin.md`. Run it after every edit session. It validates the single shipped `.plugin` artifact (unzipped) for stale references, missing files, property-name consistency, structural integrity, and that it contains zero personal data. The full check list is in the agent file itself.

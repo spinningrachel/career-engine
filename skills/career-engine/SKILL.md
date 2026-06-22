@@ -101,7 +101,7 @@ Load `career-engine-orchestrator` (read the `--status` section). No other skills
 
 **`--check` flag:**
 Load `01-writing-rules.md` first. Then spawn `gatekeeper` directly:
-- If the user says "check my CV" or pastes CV text → spawn with `option=content`. Pass the CV text and JD if provided. If no JD, note that checks requiring JD comparison (keyword coverage and JD phrase checks) will be skipped.
+- If the user says "check my CV" or pastes CV text → spawn with `option=cv`. Pass the CV text and JD if provided. If no JD, note that checks requiring JD comparison (keyword coverage and JD phrase checks) will be skipped.
 - If the user says "check my cover letter" or pastes letter text → spawn with `option=cover-letter`. Pass the letter text and JD if provided. If no JD, note that Check 7 (company self-characterization) will be skipped.
 Return the gatekeeper's PASS or FAIL result directly. No loop.
 
