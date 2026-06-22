@@ -557,29 +557,35 @@ Return findings in this exact structure for every role received.
 - **Funding context:** <round, amount, date, investors>
 - **Landscape:** (write only if currently empty in Notion; if already populated, prepend new sections above existing content separated by `---`)
 
+  **Calibrate length to company familiarity.** A household-name company (Fortune 500, major tech, globally recognized brand) needs less context — the user already knows the category, the product, and the basic competitive set. For well-known companies, write the minimum that adds real information the user is unlikely to already have. For startups and unknown companies, more context is warranted. The format says "1–2 bullets" — treat 1 as the target for well-known companies and 2 as the ceiling for any company. Never pad a section to fill the maximum.
+
+  **Competitor grouping.** Competitors at the same market tier that serve the same function can be grouped on one line: `[A] / [B] / [C] — [shared one-line description] | {{USER_COUNTRY}}: [Y/N]`. Do not give a separate line to every competitor when a grouped entry is equally informative.
+
+  **Culture does not belong here.** The `## Company & Org` section covers org structure, leadership composition, team footprint, and operational signals (e.g., reporting lines, known reorgs, team size). Culture observations belong exclusively in the `Culture` property — not in `## Company & Org`. Writing culture content in both places is duplication.
+
   Use this section structure. Keep it scannable — one tight bullet per point, each sourced:
 
   ```
   ## Competitors
   [Competitor] — [one-line description] | {{USER_COUNTRY}}: [Y/N]
-  [minimum 3, maximum 5 at the same market tier]
+  [minimum 3, maximum 5 at the same market tier; group peers on one line where appropriate]
 
   ## Market Signals
-  - [1–2 bullets: funding, M&A, category shifts — dated and sourced]
+  - [1 bullet target, 2 max: funding, M&A, category shifts, consolidation pressure — dated and sourced]
 
-  ## User Voice (G2 / Reddit / Capterra)
-  - [1–2 bullets: what customers praise, complain about, vs. alternatives — each sourced. Skip section if no public reviews found.]
+  ## User Voice (G2 / Reddit / app stores)
+  - [1 bullet target, 2 max: what users praise and complain about vs. alternatives — each sourced. Skip section if no public reviews found.]
 
   ## Company & Org
-  - [1–2 bullets: how this company actually operates — culture, team signals, leadership tone. Each sourced (Glassdoor / LinkedIn / Reddit / About Us).]
+  - [1 bullet target, 2 max: org structure, leadership, team composition, reporting lines, known reorgs — each sourced. No culture content here.]
 
   ## Recruitment Signals
-  - [1–2 bullets: what they actually screen for beyond the JD — Glassdoor interview reviews, HM content, open-role patterns.]
+  - [1 bullet target, 2 max: what they actually screen for beyond the JD — Glassdoor interview reviews, HM content, open-role patterns.]
 
   ## Career Path
   [1 sentence on typical trajectory from this role/seniority level.]
   ```
-- **Culture:** 2–3 tight sourced observations about how this company actually operates. Sources named inline — Glassdoor, LinkedIn, Reddit, Careers/About Us. Flag any burn-out or culture-warning signals explicitly. `N/A` only if all four sources returned nothing usable.
+- **Culture:** 2–3 tight sourced observations about how this company actually operates. Sources named inline — Glassdoor, LinkedIn, Reddit, Careers/About Us. Flag any burn-out or culture-warning signals explicitly. `N/A` only if all four sources returned nothing usable. **Do not repeat culture content from this property inside the Landscape `## Company & Org` section.**
 - **Role summary:** ≤400 chars total. Short paragraph + up to 5 bullets. JD vocabulary only. No candidate references. No location/contact info. Self-characterization section verbatim as final bullet if present (within 400-char total).
 - **Outreach map:** See format below.
 
