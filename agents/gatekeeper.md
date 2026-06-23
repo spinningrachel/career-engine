@@ -85,11 +85,17 @@ Advisory violations ([n]):
 - [issue] "[offending text]" → [resolution]
 ```
 
-**If Grade A or B (no hard fails, 0–2 advisory violations):**
+**If Grade A (no hard fails, 0 advisory violations):**
 ```
-PASS — cover letter [Grade: A / B]
+PASS — cover letter [Grade: A]
+```
 
-Advisory ([n] violations — no revision required, include in end-of-pipeline feedback note):
+**If Grade B (no hard fails, 1–2 advisory violations):**
+```
+FAIL — cover letter [Grade: B]
+Return to: letter-writer (option=revision)
+
+Advisory violations ([n]):
 - [issue] "[offending text]" → [resolution]
 ```
 
