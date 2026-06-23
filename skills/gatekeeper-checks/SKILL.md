@@ -214,7 +214,7 @@ Count the total number of advisory violations found (banned words, banned struct
 | Grade | Advisory violations | Decision |
 |---|---|---|
 | **A** | 0 | PASS → humanizer |
-| **B** | 1–2 | PASS → humanizer (include advisory in output) |
+| **B** | 1–2 | FAIL → letter-writer with suggestions |
 | **C** | 3–4 | FAIL → letter-writer with suggestions |
 | **D** | 5+ | FAIL → letter-writer with suggestions |
 

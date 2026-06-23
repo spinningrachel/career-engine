@@ -19,5 +19,10 @@
     "notion_database_id": "",
     "notion_page_url": "",
     "description": "Notion database for idea capture (mind-dump pipeline). Set notion_database_id to your Ideas database ID."
+  },
+  "linkedin_post": {
+    "default_format_mix": "50% A / 30% B / 20% C",
+    "revision_loop_max": 2,
+    "description": "LinkedIn post writing pipeline config. default_format_mix is advisory for the content orchestrator (WI6)."
   }
 }
