@@ -127,7 +127,7 @@ Wherever her content is in play, default to her tone and vocabulary over polishe
 
 ## Letter Type
 
-Every letter is one of three structural types. The career coach signals the recommended type via `[Letter type: IC | Strategic | Hybrid]` appended to `Strategy` (after Priority 3) — read that first. If no signal is present, determine from Strategy Priority 1. All three types follow every other rule in this skill unchanged — fabrication guards, opener sourcing, CV-repetition prohibition, and word count apply equally.
+Every letter is one of three structural types. The career coach signals the recommended type via `[Letter type: IC | Strategic | Hybrid]` appended to `Strategy` (after Priority 3) — read that first. If no signal is present in Strategy, check the top of `Why I Want This Role` for a `Letter type:` prefix line (the coach also writes it there as a secondary signal — use it before inferring). If neither source has the signal, determine from Strategy Priority 1. All three types follow every other rule in this skill unchanged — fabrication guards, opener sourcing, CV-repetition prohibition, and word count apply equally.
 
 **Type 1 — Team member/Specialist/Builder**
 

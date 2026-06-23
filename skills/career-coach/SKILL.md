@@ -638,6 +638,8 @@ This applies to all coach-owned properties: `Role emphasis`, `Keywords`, `Strate
 
 **`JD proof` exception — always overwrite.** Unlike all other coach-owned properties, `JD proof` must be written even if already populated. The current run's verbatim quote from the JD text supersedes any prior value. This is the anti-fabrication guardrail: the quote must be traceable to the JD text this run fetched or found, never to a cached Notion value from a prior run.
 
+**`Strategy` Letter type append — exception to write-only-to-empty.** The `[Letter type:]` tag must be appended to `Strategy` even when Strategy already has content. This is an append, not an overwrite: read the current Strategy value, check whether it already ends with `[Letter type: ...]`, and if not, append `\n[Letter type: IC | Strategic | Hybrid]` on its own line. If the tag is already present, skip (no duplicate). This exception exists because Strategy is almost always populated from a prior run — without it, the letter type signal never lands.
+
 **`Why I Want This Role` — Letter Type prefix (intake / Option 2 only).** After determining the Letter Type (from the `[Letter type:]` tag appended to Strategy), prepend it in bold to the `Why I Want This Role` Notion field:
 - Format: `**Letter type: [IC | Strategic | Hybrid]**` as the first line, followed by a blank line.
 - If the field already has content: `**Letter type: [type]**\n\n[existing content verbatim]`.
