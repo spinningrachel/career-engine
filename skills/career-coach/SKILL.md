@@ -68,7 +68,7 @@ How does this company actually operate beyond what the JD says? Research in this
 3. **Glassdoor** — WebSearch `site:glassdoor.com "<company name>" reviews`. Read actual review excerpts: management style, work-life balance signals, burn-out flags, what employees say they value vs. what leadership says.
 4. **Reddit** — WebSearch `site:reddit.com "<company name>" culture OR "working at" OR "interview"`. Candid employee and candidate observations not filtered through corporate comms.
 
-Synthesise into 2–3 specific, sourced observations. Name the source inline (e.g. "Glassdoor: ..."). This feeds `Culture` (a dedicated Notion property — see Output Format) and `Strategy`.
+Synthesise into 2–3 specific, sourced observations. Name the source inline (e.g. "Glassdoor: ..."). This feeds `Culture` (a dedicated Notion property — see Output Format) and `Role emphasis`.
 
 **8. Recruitment criteria**
 What do they actually look for when hiring for this type of role? Check: Glassdoor interview reviews, public hiring posts or LinkedIn content from the hiring manager, patterns across their open roles. Aim for 2–3 specific criteria beyond what the JD states explicitly.
@@ -84,7 +84,7 @@ Only run this step if the LinkedIn MCP is connected. If it is not, skip and note
 2. If a hiring manager is found, run `get_person_profile(linkedin_username, sections="experience,education,posts")`. Extract: current title, tenure at this company, background before this company, any recent posts about hiring priorities or team direction.
 3. Run `get_company_employees(company_name, keywords="[relevant function keyword for the role]")`. Skim demographics — team size, seniority distribution, recent hires.
 4. Produce a 3–5 line Hiring Manager and Team snapshot. Include: HM background relevance, tenure signal (new HM = flux; long-tenure = established culture), any public statements about what they value, team composition signal.
-5. This snapshot feeds directly into the Strategy output and the `Strategy` Notion property.
+5. This snapshot feeds directly into `Role emphasis` and the coach context block framing, and informs the `Strategy` letter-type selection.
 
 **11. User Voice**
 
@@ -153,7 +153,7 @@ Sources often say different things. Synthesize: a LinkedIn page showing 3 Israel
 
 1. **Scan for restriction signals across all sources:** stated location requirements, timezone mandates, work-authorization language, and crucially the REASON given for any restriction. "Primarily EST timezone for healthy overlap with European business hours" restricts very differently than "must hold US work authorization": the first is a rationale the user's location may satisfy better than the stated geography does; the second is structural.
 2. **Check exception paths** when a restriction signal exists: does the company hire through an EOR (Deel, Remote.com, Oyster)? Does it already hire in `my_location` or nearby? Does the stated rationale actually hold against `my_location`?
-3. **Output a Location block** in the research findings: sources checked, restriction signal found (or "none"), exception-path evidence (or "none found"), and — when a restriction exists with a plausible path — a suggested ask-first action: a 2-line note to the named recruiter or People contact. This block feeds Priority scoring (Part 0) and the `Strategy` property.
+3. **Output a Location block** in the research findings: sources checked, restriction signal found (or "none"), exception-path evidence (or "none found"), and — when a restriction exists with a plausible path — a suggested ask-first action: a 2-line note to the named recruiter or People contact. This block feeds Priority scoring (Part 0) and `Role emphasis`.
 4. **Update location compatibility result** if the deep-scan finding differs from the triage assessment.
 
 ---
@@ -187,7 +187,7 @@ After completing all research dimensions, analyse the JD text itself for non-obv
 - Net: [Proceed with caution | Neutral | Positive signals]
 ```
 
-This feeds into Priority scoring and the Strategy Notion property.
+This feeds into Priority scoring and `Role emphasis`.
 
 ---
 
@@ -314,7 +314,7 @@ Titles are unreliable. Read seniority from: required years of experience, whethe
 **Step-down identification — critical:** If the role's actual level is materially below the user's documented seniority (e.g., an IC execution role when she has been a VP, or a manager role when she has led functions), flag it explicitly in Role emphasis as: `Step-down: [reason — e.g., execution IC role vs. her VP-level background]`. This signals to the cv-writer to lead with execution and suppress strategy/leadership framing. Do not obscure or soften this — naming it is how the CV gets written correctly.
 
 **Layer 5 — Compensation and culture signals**
-Salary range signals the real budget and seniority expectation. Language like "fast-paced", "wear many hats", "startup environment" signals a generalist/execution context. "Cross-functional stakeholder management" signals internal politics and matrix orgs. These inform Strategy and framing.
+Salary range signals the real budget and seniority expectation. Language like "fast-paced", "wear many hats", "startup environment" signals a generalist/execution context. "Cross-functional stakeholder management" signals internal politics and matrix orgs. These inform `Role emphasis` and the `Strategy` letter-type selection.
 
 **Force-cite any non-generic, unusual, or behaviorally-revealing language verbatim.** Never paraphrase it. Never discard it. A phrase like "we're looking for someone with a sense of humor" or "you'll be comfortable with ambiguity" or "we move fast and don't always have clean answers" is not throwaway HR copy — it is a behavioral signal about culture expectations, team dynamics, or what past hires got wrong. Quote it exactly in `Culture` and surface it in Patterns. Decode what it signals: what kind of person thrives here, what kind fails, and what this phrasing reveals about the team's current pain. If you read it and thought "interesting" but did not quote it, you have failed this step.
 
@@ -330,14 +330,14 @@ If the JD specifies an unusual application instruction (e.g., "include a cover l
 
 These properties are owned exclusively by the career-coach. Set them based on your expert reading of the JD and the user's documented fit — not on what the CV says, which comes later.
 
-**Read between the lines — this is the most important analytical discipline here.** JDs are written by committee and filtered through HR templates. What the JD says explicitly is the floor, not the ceiling. For `Strategy` and `Role emphasis` in particular:
+**Read between the lines — this is the most important analytical discipline here.** JDs are written by committee and filtered through HR templates. What the JD says explicitly is the floor, not the ceiling. For `Role emphasis` and the `Strategy` letter-type selection in particular:
 
 - What problem is the company actually trying to solve by hiring for this role? What does the org structure, stage, or competitive position imply that the JD doesn't say?
 - What kind of person succeeds here vs. fails? What does the "preferred" list reveal about who they've tried before?
 - What is the subtext of the must-haves? "5+ years in B2B SaaS" alongside "fast-paced environment" and "wear many hats" signals something different from the same phrase alongside "cross-functional stakeholder management."
-- If the Landscape property is already populated for this role — **read it carefully before writing Strategy and Role emphasis.** The company's market position, competitive pressures, and known challenges should shape the strategy. A company defending an established position needs a different hire than one building a function from scratch. Let the intelligence inform the framing.
+- If the Landscape property is already populated for this role — **read it carefully before writing `Role emphasis` and selecting `Strategy`.** The company's market position, competitive pressures, and known challenges should shape the framing. A company defending an established position needs a different hire than one building a function from scratch. Let the intelligence inform the framing.
 
-Surface this reading in Strategy and Role emphasis. Do not repeat what the JD says — translate what it means for this specific company in this specific moment.
+Surface this reading in `Role emphasis`, and let it guide the `Strategy` letter-type selection. Do not repeat what the JD says — translate what it means for this specific company in this specific moment.
 
 **Required — must be populated for every role that passes the pre-flight check:**
 `Role emphasis` · `JD proof` · `Keywords` · `Strategy` · `Role Type` · `Relationship type` · `Gap handling` · `Landscape`
@@ -357,16 +357,6 @@ For Specialist / practitioner roles (IC contributor, no direct reports), explici
 - **Team context:** Founding role (build from scratch) or joining an established team?
 - **IC ownership scope:** What does this person own vs. oversee vs. collaborate on?
 
-**Letter type signal — append to every `Strategy`:** After Priority 3, append on its own line:
-
-`[Letter type: IC | Strategic | Hybrid]`
-
-- **IC** — the role's mandate is primarily individual execution, deliverable ownership, or technical/domain depth. The hiring manager evaluates whether the candidate can do the work.
-- **Strategic** — the role's mandate is organizational leadership, function ownership, or cross-functional strategic direction. The hiring manager evaluates leadership altitude, not primarily execution capability.
-- **Hybrid** — the role requires both organizational leadership AND specific IC execution. A Director who also does the work, a senior founding hire with both strategic and craft mandates, or any role where the hiring manager evaluates both judgment and hands-on capability.
-
----
-
 **`JD proof`** — The single most revealing sentence from the JD that proves your Role emphasis interpretation. Direct quote, verbatim. For the user's reference only — no writing agent reads this field.
 
 ---
@@ -383,11 +373,11 @@ Keywords are for CV text only — they do not set the agenda for the cover lette
 
 ---
 
-**`Strategy`** — Select field. Write one value: `IC`, `Strategic`, or `Hybrid`. This is the letter type signal for the letter-writer.
+**`Strategy`** — Select field. Write exactly one of three values: `IC`, `Strategic`, or `Hybrid`. This is the letter-type signal for the letter-writer — it sets the cover letter's structural type, nothing more. The strategic framing (lead proof, what the letter must establish) lives in `Role emphasis` and the coach context block, not here.
 
-- **IC** — role mandate is primarily individual execution, deliverable ownership, or technical/domain depth
-- **Strategic** — role mandate is organizational leadership, function ownership, or cross-functional strategic direction
-- **Hybrid** — role requires both organizational leadership AND specific IC execution
+- **IC** — the role's mandate is primarily individual execution, deliverable ownership, or technical/domain depth. The hiring manager evaluates whether the candidate can do the work.
+- **Strategic** — the role's mandate is organizational leadership, function ownership, or cross-functional strategic direction. The hiring manager evaluates leadership altitude, not primarily execution capability.
+- **Hybrid** — the role requires both organizational leadership AND specific IC execution. A Director who also does the work, a senior founding hire with both strategic and craft mandates, or any role where the hiring manager evaluates both judgment and hands-on capability.
 
 Strategy is always written. It is not subject to the write-only-to-empty rule — always set it, even if a value already exists, because a new JD analysis may change the correct type.
 
@@ -449,7 +439,7 @@ If the specific AI category (e.g., conversational AI, NLP, voice agents) is not 
 4. **Search LinkedIn for the company** and scan **all** people with {{USER_PROFESSION}} titles — not just the most senior one. Map the org layer by layer using {{USER_FUNCTION_SENIORITY_HIERARCHY}} as the reference for title tiers. The most senior {{USER_PROFESSION}} leader is often NOT the hiring manager.
 5. **Check B2B intelligence platforms.** Search theorg.com, Crunchbase, and ZoomInfo for the company — these often list org structure, named leaders, and reporting chains without requiring sign-in. A Google search for `[company name] theorg` or `[company name] site:theorg.com` is a fast entry point.
 6. **Apply org-layer logic.** If both a top-tier and a mid-tier {{USER_PROFESSION}} leader are visible (per {{USER_FUNCTION_SENIORITY_HIERARCHY}}), the mid-tier leader is the likely hiring manager for any role below the top tier. Do not default to the most senior title.
-7. **If a name is found, check their digital footprint.** Review their LinkedIn posts, company blog articles, X/Twitter if public, and any published interviews — this surfaces culture signals, priorities, and framing that feeds `Strategy`.
+7. **If a name is found, check their digital footprint.** Review their LinkedIn posts, company blog articles, X/Twitter if public, and any published interviews — this surfaces culture signals, priorities, and framing that feeds `Role emphasis`.
 8. Flag explicitly in `Patterns` if there is a layer between the most senior {{USER_PROFESSION}} leader and this role — this affects the user's go/no-go decision and cannot be left unresolved.
 
 **`Person who Advertised Role (if not Hiring Manager)`** — Name + title | Same as hiring manager | Not identifiable. [HIGH/LOW]

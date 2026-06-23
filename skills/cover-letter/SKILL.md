@@ -91,9 +91,9 @@ These rules govern how pipeline inputs interact and which source takes precedenc
 
 **Why I Want This Role is the letter's primary personal-content source — and it is mandatory.** The pipeline does not write a letter without it: the Pre-Step 5 gate skips the letter entirely when the field is empty, and it is the sole source for the opener. Everything *must* appear somewhere in the letter. Whatever IS used must comply fully with every rule and prohibition in this skill. However, the order of the information provided must be according to all rules, prohibitions, and mandatory components and structures. Do NOT blindly copy/paste the user's input - not in the same order nor necessarily with the same exact wording. If something the user wrote in Why I Want This Role would produce a bad opener, violate the analyst paragraph ban, break a framing rule, or fail the context gate, set that piece aside — but place it elsewhere in the letter where it fits. The rules always win on placement and form; they never license dropping a point.
 
-**The integration model:** Coach output (Strategy, Gap handling) defines what the letter must accomplish. Why I Want This Role is the source of voice, angle, and raw material — used only where the content is genuinely usable and compliant. A letter that follows Strategy but ignores Why I Want This Role sounds like a template — but a letter that forces unusable Why I Want This Role content into a compliant shape is worse than either.
+**The integration model:** Coach output sets the frame — `Strategy` fixes the letter's structural type (`IC` / `Strategic` / `Hybrid`; see Letter Type below), and the coach context block (the Priority lines prepended to Why I Want This Role) plus Gap handling define what the letter must accomplish. Why I Want This Role is the source of voice, angle, and raw material — used only where the content is genuinely usable and compliant. A letter that follows the frame but ignores Why I Want This Role sounds like a template — but a letter that forces unusable Why I Want This Role content into a compliant shape is worse than either.
 
-**The integration rule:** Read Strategy first — understand what this letter needs to accomplish. Then read Why I Want This Role to find the user's voice, her specific angles, and her raw content. Write the letter so her own words are doing the strategic work the coach identified.
+**The integration rule:** Read `Strategy` first to fix the letter type, then read the coach context block to understand what this letter needs to accomplish. Then read Why I Want This Role to find the user's voice, her specific angles, and her raw content. Write the letter so her own words are doing the strategic work the coach identified.
 
 **Opener source — non-negotiable.**
 Why I Want This Role is the sole source for the opener's content and angle. The user's genuine reaction to the role, her specific angle on this company, and the raw material she wrote goes first, in her voice — polished to be appropriate for formal writing, but not replaced with generic professional language. The Use-Case Structures tell you how to frame it — not what to say, not in what order, not in which paragraph. Take the user's input and place each part where it best serves the Use-Case Structure you choose.
@@ -127,9 +127,17 @@ Wherever her content is in play, default to her tone and vocabulary over polishe
 
 ## Letter Type
 
-Every letter is one of three structural types. The career coach sets the `Strategy` field as a Select: `IC`, `Strategic`, or `Hybrid` — read that value to determine type. If the field is empty, determine from the coaching context block in `Why I Want This Role` (the block above the `---` separator, if present) or infer from Role emphasis. All three types follow every other rule in this skill unchanged — fabrication guards, opener sourcing, CV-repetition prohibition, and word count apply equally.
+Every letter is one of three structural types, set by the `Strategy` Select value the career coach writes. The mapping is exact:
 
-**Type 1 — Team member/Specialist/Builder**
+| `Strategy` value | Letter type | Central question the HM is asking |
+|---|---|---|
+| `IC` | Type 1 — Team member / Specialist / Builder | Can this candidate do the work? |
+| `Strategic` | Type 2 — Senior / Executive / Strategic | Is this the right person to lead this organization? |
+| `Hybrid` | Hybrid — Strategic + Builder | Both — can they lead *and* do the work? |
+
+Read the `Strategy` value to determine type. If the field is empty, determine from the coaching context block in `Why I Want This Role` (the block above the `---` separator, if present) or infer from Role emphasis. All three types follow every other rule in this skill unchanged — fabrication guards, opener sourcing, CV-repetition prohibition, and word count apply equally. What changes between types is the central argument, the credential scope (deliverable level vs. function-ownership level), and the body-paragraph sequence below.
+
+**Type 1 (`Strategy` = `IC`) — Team member/Specialist/Builder**
 
 Use when the role's mandate is primarily individual execution: build this function, do this specific work, demonstrate technical or domain depth. The hiring manager is evaluating whether the candidate can perform the work — not whether they can lead an organization.
 
@@ -140,7 +148,7 @@ Use when the role's mandate is primarily individual execution: build this functi
 - **Close:** Forward-looking about the specific work she'd do here.
 - **Credential scope:** Deliverable and domain level. "I built the founding PMM function at X" / "I speak Kubernetes fluently."
 
-**Type 2 — Senior/Executive/Strategic/Strategic IC/IC in an enterprise environment**
+**Type 2 (`Strategy` = `Strategic`) — Senior/Executive/Strategic/Strategic IC/IC in an enterprise environment**
 
 Use when the role's mandate is organizational leadership, function ownership, cross-functional influence, or strategic direction — and the hiring manager is evaluating whether the candidate thinks and leads at the right altitude, not primarily whether they can execute specific deliverables.
 
@@ -153,7 +161,7 @@ Use when the role's mandate is organizational leadership, function ownership, cr
 - **Close — leadership identity:** Who she is as a leader and steward of the function. Team development, future contribution, organizational identity — not just task enthusiasm.
 - **Credential scope:** Function ownership level. "I've led [disciplines]" / "influenced millions in pipeline."
 
-**Hybrid — Strategic + Builder**
+**Hybrid (`Strategy` = `Hybrid`) — Strategic + Builder**
 
 Use when the role requires both organizational leadership AND specific IC execution — a Director who also does the work, a founding senior hire who will set direction and build, a Head role at a company where the mandate is both strategic and craft-level. The hiring manager is evaluating leadership judgment AND demonstrated execution capability.
 

@@ -269,5 +269,5 @@ For each role in the coach's output, identify every specific factual claim about
 **Do not flag:**
 - Claims about the role or company (from the JD, not the user's background)
 - Role emphasis sentences describing what the role requires
-- Strategy sentences that are framing instructions, not factual claims about the user's past
+- Coach context-block framing instructions (the Priority lines prepended to Why I Want This Role) — directional guidance, not factual claims about the user's past
 - Gap handling entries identifying what the user does NOT have (gaps are expected absences, not fabrications)
