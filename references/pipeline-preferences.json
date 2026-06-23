@@ -23,6 +23,11 @@
   "linkedin_post": {
     "default_format_mix": "50% A / 30% B / 20% C",
     "revision_loop_max": 2,
-    "description": "LinkedIn post writing pipeline config. default_format_mix is advisory for the content orchestrator (WI6)."
+    "description": "LinkedIn post writing pipeline config. default_format_mix is advisory for the content orchestrator."
+  },
+  "content_calendar": {
+    "default_batch_size": 3,
+    "dedup_lookback_days": 30,
+    "description": "Content calendar orchestrator config. default_batch_size is the number of posts per orchestrator run."
   }
 }
