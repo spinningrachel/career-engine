@@ -264,7 +264,7 @@ For each fetched role, verify these **writer-needed fields** are populated (non-
 
 `JD proof` is not checked — it is reference-only. `Gap handling` is not required when `gap_handling_mode = disabled`. `Landscape` is context, not a writer input.
 
-- **All three fields present** → role is ready; carry its coach values forward.
+- **All four fields present** → role is ready; carry its coach values forward.
 - **Any field missing** → log: "[Company] — [Position]: excluded — missing writer-needed field(s) `<list>`. Run intake first, then re-run the New Application pipeline." Remove from queue. Leave Status unchanged.
 
 Roles that pass are the processing queue.

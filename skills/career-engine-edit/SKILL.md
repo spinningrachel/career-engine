@@ -370,7 +370,7 @@ Non-blocking: if the move or patch fails, log the failure and continue — the f
 
 Spawn `localization` with:
 - `CAREER_DATA=${CAREER_DATA}`
-- The final English CV markdown (from Step E6, in memory)
+- The final English CV markdown — for Edit type `Both`, the final revised CV from Step E5 (in memory); for Edit type `Letter`, extract from the existing CV DOCX (`CV File Name` → state.json `cv_path` → `cv-*` glob) via `pandoc "<cv-file>.docx" -t plain`
 - The final English cover letter markdown (read from `$PIPE/letter-draft.md`)
 - The structured JD from Step E0.5
 - The exact role title from the JD

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "cheyfitz",
+  "owner": {
+    "name": "Rachel Cheyfitz",
+    "email": "rachel@cheyfitz.me"
+  },
+  "description": "Rachel Cheyfitz's Claude Code plugins.",
+  "plugins": [
+    {
+      "name": "career-engine",
+      "source": "./",
+      "description": "Career management and personal branding engine. Positioning framework, employment coaching, multi-agent CV and cover letter pipeline, DOCX export. Requires setup — run /career-engine:setup after installing.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Rachel Cheyfitz",
+        "email": "rachel@cheyfitz.me"
+      },
+      "homepage": "https://github.com/spinningrachel/career-engine",
+      "repository": "https://github.com/spinningrachel/career-engine",
+      "license": "MIT",
+      "category": "productivity",
+      "keywords": [
+        "career",
+        "cv",
+        "resume",
+        "source-open-roles",
+        "multi-agent",
+        "personal-branding",
+        "positioning",
+        "career-coach",
+        "cover-letter",
+        "notion",
+        "prioritization"
+      ]
+    }
+  ]
+}
