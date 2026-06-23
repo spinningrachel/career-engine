@@ -6,7 +6,7 @@ A Claude Code (and Cowork) plugin for senior technology professionals who want t
 
 The plugin covers three surfaces:
 
-- **Application pipeline** — connects your career materials to a Notion job-tracking database and runs a multi-agent workflow that researches roles, writes tailored CVs and cover letters, routes them through recruiter and hiring-manager review, gatekeeps them against fabrication rules, exports them to DOCX, and writes results back to Notion.
+- **Application pipeline** — connects your career materials to a Notion job-tracking database and runs a multi-agent workflow that researches roles, writes tailored CVs and cover letters, routes them through recruiter review, gatekeeps them against fabrication rules, exports them to DOCX, and writes results back to Notion.
 - **Presence and brand** — covers LinkedIn optimisation and personal brand development, with richer pipelines for LinkedIn content, blog posts, and broader thought leadership coming.
 - **Maintenance layer** — keeps your reference files, positioning framework, and delivered-letter archive current so every pipeline run starts from accurate material.
 
@@ -71,7 +71,7 @@ The core pipeline stages run in sequence, handing off via Notion status transiti
 
 1. **Sourcing** — finds open roles across job boards and LinkedIn, scored against your preferences, deduplicated against your Notion database.
 2. **Intake** — researches a role, runs the career coach, and writes strategic properties (priority, emphasis, keywords, strategy) to Notion. No CVs yet.
-3. **New Application** — drafts and refines a CV and cover letter through recruiter review, hiring-manager review, and gatekeeper checks, then exports DOCX files to your output folder.
+3. **New Application** — drafts and refines a CV and cover letter through recruiter review and gatekeeper checks, then exports DOCX files to your output folder.
 4. **Edit** — refines existing CV and cover letter outputs for roles already processed.
 
 The pipeline never skips a stage or back-fills properties it does not own (`Hold` → `Researched` → `Interested` → `Needs editing`).
@@ -86,7 +86,7 @@ For standalone capabilities that run independently of the pipeline, see [Standal
 |---|---|
 | **Your voice, not a generic voice** | Every agent calibrates against your delivered-letters archive — actual sent letters, not a rule list. The humanizer and gatekeeper treat those letters as the authoritative register source. When a style rule and a sent letter conflict, the sent letter wins. |
 | **Fabrication-proof by architecture** | The fabrication rule is enforced structurally, not by prompt instruction. The gatekeeper checks every CV claim against your career content bank (`02-professional-background.md`) and refuses to pass a document that asserts something not traceable to an approved source. Every claim is verifiable, so your materials can be bold and specific rather than hedged. |
-| **Specialized agents for every stage** | A distinct agent handles each role: career coach, CV writer, letter writer, recruiter reviewer, hiring-manager reviewer, gatekeeper, humanizer, localization agent. Each loads only the doctrine it needs. The orchestrator handles routing and never authors content. |
+| **Specialized agents for every stage** | A distinct agent handles each role: career coach, CV writer, letter writer, recruiter reviewer, gatekeeper, humanizer, localization agent. Each loads only the doctrine it needs. The orchestrator handles routing and never authors content. |
 | **Framework primacy** | Your positioning framework (`03-framework.md`) governs every output. The LinkedIn coach, the career coach, and the personal brand skill all treat it as the source of truth about who you are and where you are heading. A single application or run's signals do not pull your positioning off course. |
 | **State-backed crash recovery** | The orchestrator writes `state.json` per run. If a session ends mid-pipeline, `--status` reports exactly which roles completed, which files exist on disk, and what is missing. |
 | **No personal data in the plugin** | Your career materials, filled reference files, and delivered letters live in `career-data`, a separate skill the plugin never touches. Plugin updates carry no risk to your data. There is no second copy to keep in sync. |
@@ -289,7 +289,7 @@ The full per-role pipeline. Runs against all roles with Status `Interested`. For
 1. Checks that required strategic properties (Role emphasis, Keywords, Strategy) are populated — roles missing any of these are excluded with a log message directing you to run intake first
 2. Drafts a tailored CV against the role's strategic properties
 3. Gates the CV through the gatekeeper (ATS checks, fabrication checks, formatting rules)
-4. Runs a recruiter review, then a hiring-manager review
+4. Runs a recruiter review
 5. Revises the CV until it passes (cap: 3 revision passes)
 6. Drafts a cover letter if `Why I Want This Role` is populated in Notion
 7. Gates the letter through the gatekeeper (cap: 3 revision passes)
@@ -367,7 +367,7 @@ These modes run a single pass with no loops and no Notion writeback.
 |---|---|
 | `--coach` | Conversational fit assessment or strategic framing question. The career coach responds directly in chat. |
 | `--check` | Single gatekeeper pass on a CV or cover letter you paste. Specify CV or letter. JD is optional but improves checks that require JD comparison. Returns PASS or FAIL with violations. |
-| `--review` | Single recruiter and hiring-manager review pass on a CV or cover letter you paste. Returns both reviews in sequence. |
+| `--review` | Single recruiter review pass on a CV or cover letter you paste. Returns the review. |
 | `--write-letter` | Standalone cover letter draft from a URL or JD text. No CV required, no reviewers, no gatekeeper loop. Returns a draft. Requires `Why I Want This Role` content — provide it in the same message or the letter-writer will ask. |
 | `--status` | Reads `state.json` from the most recent run folder and prints a completion table showing which roles finished, which files exist on disk, and any files listed in state.json that are missing. |
 
@@ -456,7 +456,7 @@ The company directory name is derived from the Notion Company property: lowercas
 | `coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx` | Cover letter (if Why I Want This Role was provided) |
 | `he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx` | Hebrew CV (if Languages includes Hebrew) |
 | `he-coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx` | Hebrew cover letter (if Languages includes Hebrew) |
-| `feedback-<roletitle>-<company>-<monYYYY>.md` | Recruiter and hiring-manager feedback |
+| `feedback-<roletitle>-<company>-<monYYYY>.md` | Recruiter feedback |
 | `revision-log-<roletitle>-<company>-<monYYYY>.md` | Per-role revision log and validation results |
 | `update-prompt-<company>-<monYYYY>.md` | career-data update prompt (when Why I Want This Role qualifies) |
 | `_pipeline/` | Intermediate artifacts (reviewer output, gatekeeper violations) — not deliverables |
