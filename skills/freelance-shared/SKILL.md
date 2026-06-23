@@ -7,7 +7,7 @@ description: "Cross-platform positioning and brand voice rules for Fiverr and Up
 
 ## Positioning Frame
 
-Rachel's freelance offer is not generic marketing help. It sits at a specific intersection: **technical depth + strategic marketing + documentation expertise**, applied to deep tech companies (cybersecurity, AI, computer vision, developer tools). This combination is rare and commands a premium — the positioning must reflect that rarity, not flatten it into generic "PMM consulting."
+{{USER_FIRST_NAME}}'s freelance offer is not generic marketing help. It sits at a specific intersection: **technical depth + strategic marketing + documentation expertise**, applied to deep tech companies (cybersecurity, AI, computer vision, developer tools). This combination is rare and commands a premium — the positioning must reflect that rarity, not flatten it into generic "PMM consulting."
 
 **The single positioning sentence:** Senior PMM and technical writing strategist who helps deep tech companies communicate complex products clearly — to buyers, to internal teams, and to the market.
 
@@ -15,7 +15,7 @@ This is the north star for all platform copy. Every gig title, proposal opener, 
 
 ## What Differentiates This Offer
 
-These are the specific proof points that make Rachel's offer distinct. Use them; do not invent substitutes.
+These are the specific proof points that make {{USER_FIRST_NAME}}'s offer distinct. Use them; do not invent substitutes.
 
 1. **Technical depth without translation overhead** — she can read a technical spec, ask the right questions, and produce buyer-ready content without requiring an engineer to translate everything first.
 2. **PMM + TW hybrid** — she has operated as both a product marketer and a technical writer, which means documentation she produces is also positioned correctly, not just accurate.
@@ -30,7 +30,7 @@ These rules apply on both Fiverr and Upwork, in addition to `shared-voice-rules.
 
 **Do:**
 - Name the sector or product type when claiming expertise ("cybersecurity product marketing" not "B2B marketing")
-- Lead every surface with the buyer's problem or outcome, not Rachel's background
+- Lead every surface with the buyer's problem or outcome, not the user's background
 - Use real, specific proof: company names, product types, team structures where relevant and documented
 - Write for the senior buyer who will read this in 30 seconds and decide if it's worth a conversation
 
@@ -42,7 +42,7 @@ These rules apply on both Fiverr and Upwork, in addition to `shared-voice-rules.
 
 ## Pricing Philosophy
 
-Pricing signals positioning. A $50 gig says something different from a $500 gig, regardless of what the description says. Rachel's floors exist because pricing below them attracts clients who want production volume, not strategic expertise — and those clients will consistently undervalue the work.
+Pricing signals positioning. A $50 gig says something different from a $500 gig, regardless of what the description says. {{USER_FIRST_NAME}}'s floors exist because pricing below them attracts clients who want production volume, not strategic expertise — and those clients will consistently undervalue the work.
 
 **The floor is not negotiable in the copy.** If a client asks for a discount, that is a runtime decision the user makes themselves — the agent never proposes pricing below the floors in `pipeline-preferences.json` `freelance.pricing_floors`.
 
@@ -68,4 +68,4 @@ When reviewing an inquiry, flag these to the user before drafting a response:
 - Timeline is unrealistic for the scope described
 - The inquiry is clearly templated and sent to many freelancers (low intent signal)
 
-Flag these as observations, not blockers. Rachel decides whether to respond; the agent surfaces the signals.
+Flag these as observations, not blockers. The user decides whether to respond; the agent surfaces the signals.

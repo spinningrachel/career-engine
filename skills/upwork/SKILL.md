@@ -9,13 +9,13 @@ description: "Upwork proposal writing, profile copy, and service catalog rules f
 
 Upwork is a contract marketplace where clients post jobs and freelancers submit proposals. Discovery happens two ways: clients find freelancers via profile search, or freelancers find and apply to job posts. Upwork uses a "Connects" credit system for proposals — each application costs 6–16 Connects depending on job budget.
 
-**Rachel's use case:** positioning as a senior PMM / technical writing consultant. Her buyers are typically Series B+ startups or enterprise teams with real budget and a specific, time-boxed need.
+**{{USER_FIRST_NAME}}'s use case:** positioning as a senior PMM / technical writing consultant. Her buyers are typically Series B+ startups or enterprise teams with real budget and a specific, time-boxed need.
 
 **Key Upwork distinction from Fiverr:** Upwork buyers are more likely to read proposals carefully and compare. Quality of the proposal outweighs volume of applications. Fiverr is browse-and-click; Upwork is read-and-decide.
 
 ## MCP Tool Coverage
 
-The Upwork MCP (`upwork_search_freelancers`) is available for **competitive research only** — checking market rates, positioning language, and how other senior PMM/TW freelancers present themselves. It does not manage Rachel's own account. All account actions (proposals, profile edits, contract management) require browser automation via `claude-in-chrome`.
+The Upwork MCP (`upwork_search_freelancers`) is available for **competitive research only** — checking market rates, positioning language, and how other senior PMM/TW freelancers present themselves. It does not manage the user's own account. All account actions (proposals, profile edits, contract management) require browser automation via `claude-in-chrome`.
 
 ## Profile Copy
 
@@ -82,7 +82,7 @@ Before submitting any proposal:
 
 **Hourly:** use when scope is exploratory or ongoing (e.g., "help us think through our PMM function"). Requires active time-tracking via the Upwork desktop app.
 
-**Connects cost:** check the job post's stated budget before spending Connects. Jobs with "$15–$35/hr" budgets listed are not worth 12+ Connects at Rachel's rate floor.
+**Connects cost:** check the job post's stated budget before spending Connects. Jobs with "$15–$35/hr" budgets listed are not worth 12+ Connects at the user's rate floor.
 
 ## Service Catalog (Project Catalog)
 
@@ -97,7 +97,7 @@ Structure follows the same logic as Fiverr gig descriptions:
 ## Competitive Research
 
 Use `upwork_search_freelancers` to:
-- Benchmark Rachel's rate against comparable senior PMM / technical writing freelancers
+- Benchmark the user's rate against comparable senior PMM / technical writing freelancers
 - Identify positioning language that's saturated (everyone says "results-driven" — avoid it)
 - See what proof points top-performing profiles lead with
 

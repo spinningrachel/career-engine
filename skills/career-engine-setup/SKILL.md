@@ -41,6 +41,34 @@ This skill sets up the plugin for a new user. It builds the three reference file
 
 ---
 
+## career-data — what it is and how to keep it in sync
+
+**Single-build architecture.** The career-engine plugin ships as one build with no personal version. It contains only code (agents, skills, blank `{{...}}` templates). All of the user's personal data — writing rules, background, framework, delivered letters, CV template — lives exclusively in the `career-data` skill created during setup. Plugin upgrades never touch it.
+
+**Path resolution.** career-engine agents find `career-data` at run start by locating `career-data-marker.json`. They never hardcode the path. Standalone agents (outside the orchestrator) do a self-locate step before reading.
+
+**Three runtime environments — they do NOT share a skill store:**
+
+| Environment | Reads career-data from |
+|---|---|
+| Chat | Desktop app skill store (installed via Customize → Skills) |
+| Cowork | Desktop app skill store (same install as Chat) |
+| Claude Code (CLI) | `~/.claude/skills/career-data/` on local disk |
+
+The Desktop app writes to `~/.claude/skills/` when a skill is installed — one-way, Desktop → Code. Writing directly to `~/.claude/skills/` from Code does **not** propagate back to Chat or Cowork.
+
+**The only safe update path.** To update `career-data` after setup:
+1. Generate an update-prompt file (using `career-engine/references/career-data-update-prompt-format.md`)
+2. Paste it into Chat
+3. Chat edits the skill, repackages as `.skill`, and reinstalls via Customize → Skills
+4. If the user runs both Chat/Cowork and Claude Code, apply the update in Code too
+
+**Never write `~/.claude/skills/career-data/` directly from Claude Code** to make a "quick" edit. It looks faster but only updates the Code copy — Chat and Cowork never see the change. The rationalization to watch for: "I can reach this file from Code, so I'll edit it here — it's faster and safer than going through Chat." This is backwards. The Chat path's friction exists because packaging a skill has integrity steps. Skipping them hides risk, it doesn't remove it.
+
+**Exception — pipeline-owned writes:** career-engine agents writing to `career-data/references/` as part of a pipeline run (motivation-bank promotion, locked bullets, update-refs) are legitimate Code-side writes. The prohibition above applies to ad-hoc manual edits only.
+
+---
+
 ## Pre-flight — check current state
 
 Before doing anything, assess what has been completed:

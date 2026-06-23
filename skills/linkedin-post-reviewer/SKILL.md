@@ -62,7 +62,7 @@ Check for:
 
 ### Check 7 — Idiom prohibition (§6)
 
-Scan for any idiom not present in Rachel's documented voice or the user's own phrasing. Common violations: "move the needle", "in the weeds", "at the table", "hit the ground running", "low-hanging fruit".
+Scan for any idiom not present in {{USER_FIRST_NAME}}'s documented voice or the user's own phrasing. Common violations: "move the needle", "in the weeds", "at the table", "hit the ground running", "low-hanging fruit".
 
 ### Check 8 — Hook quality
 

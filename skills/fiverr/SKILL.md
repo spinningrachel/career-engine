@@ -9,7 +9,7 @@ description: "Fiverr gig anatomy, copy rules, and structure for the freelance-ma
 
 Fiverr is a fixed-price gig marketplace. Buyers browse categories, filter by price and seller level, and contact sellers directly. Discovery is primarily algorithmic — gig title and tags drive impressions; the description and pricing tiers drive conversion.
 
-**Rachel's use case:** offering B2B content, documentation, and PMM consulting services to technical companies. Her buyers are typically startup founders, PMMs, or heads of marketing who need expert-level output, not cheap production.
+**{{USER_FIRST_NAME}}'s use case:** offering B2B content, documentation, and PMM consulting services to technical companies. Her buyers are typically startup founders, PMMs, or heads of marketing who need expert-level output, not cheap production.
 
 ## Gig Anatomy (5 Tabs)
 
