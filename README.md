@@ -759,7 +759,3 @@ Not all pipelines have the same level of production hardening.
 ### 26-06-23 updates
 
 - **Marketplace install support.** The plugin is now installable as a Claude Code marketplace. Add it with `/plugin marketplace add spinningrachel/career-engine`, then `/plugin install career-engine@cheyfitz`. Direct `.plugin` download still works for manual installs.
-- **Cover-letter Strategy is now a single letter-type signal.** The `Strategy` Notion field changes from a free-text priorities block to a Select with three values — `IC`, `Strategic`, `Hybrid` — that picks the letter's structural template. The coach's strategic priorities and framing now ride at the top of `Why I Want This Role` as a labeled coach-context block, so the letter-writer works primarily from your own words. (If you maintain the Notion database by hand, convert the `Strategy` column to a Select with those three options.)
-- **Advisory violations no longer over-loop.** Cover-letter advisory violations block only on the first gatekeeper round; on later rounds the humanizer handles remaining issues instead of bouncing the letter back to the writer indefinitely.
-- **Humanizer input lockdown.** The humanizer now receives only the letter and your career-data — no role context, strategy, or JD — so it calibrates voice against your delivered letters rather than re-strategizing.
-- **Pipeline fixes.** Corrected the orchestrator readiness check (now validates all four writer-needed fields) and a dangling step reference in the edit pipeline's localization handoff.
