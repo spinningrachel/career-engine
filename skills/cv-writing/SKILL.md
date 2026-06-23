@@ -1,6 +1,6 @@
 ---
 name: cv-writing
-description: CV writing reference for the user's job search pipeline. Contains the full list of words and phrases to avoid in CV bullets and summaries, and the approved action verb library organized by category. Load whenever writing or reviewing CV bullets. Does NOT apply to cover letters — those are governed by the cover-letter skill.
+description: CV writing reference for the user's job search pipeline. Contains ATS formatting rules, the approved action verb library, the bullet-writing formula, and CV-specific voice deltas (tagged [CV]). The full cross-surface prohibition list — banned vocabulary, named phrase bans, structural anti-patterns — lives in references/shared-voice-rules.md, which the cv-writer agent loads alongside this skill. Load whenever writing or reviewing CV bullets. Does NOT apply to cover letters — those are governed by the cover-letter skill.
 ---
 
 # CV Writing Reference
