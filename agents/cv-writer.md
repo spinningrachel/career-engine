@@ -202,6 +202,8 @@ Draft the CV applying all Universal Rules. Run the CV self-check before returnin
 
 ## Option 2 — Revision
 
+**Load before revising — the Start Here loading table is NOT optional in revision mode.** Before touching the CV, confirm you have loaded `${CLAUDE_PLUGIN_ROOT}/references/shared-voice-rules.md` and `${CLAUDE_PLUGIN_ROOT}/skills/cv-writing/SKILL.md` this turn. The prohibition layer governs revised copy exactly as it governs the draft: a revision that reintroduces a banned pattern (em dash, antithesis, AI vocabulary, etc.) is a regression and a FAIL. A focused revision brief does not narrow what you must load. If you did not load them this turn, load them now.
+
 **Input:** The draft CV, recruiter flags (Tiers 1–3), hiring manager flags (Parts 1–3).
 
 **Output:** Final CV and revision log.

@@ -219,6 +219,8 @@ Load `references/cover-letter-self-check.md` → Option 1 and run every item in 
 
 **Do NOT re-read 03-framework.md or 02-professional-background.md** unless a specific fix requires sourcing a fact not already in the letter.
 
+**Exception — always load the prohibition layer (do not skip on revision).** The "do not re-read" rule above covers *calibration* sources (delivered letters, framework, background). It does NOT cover the *rule* layer. Before editing, you MUST have loaded `${CLAUDE_PLUGIN_ROOT}/references/shared-voice-rules.md` and the `${CLAUDE_PLUGIN_ROOT}/skills/cover-letter/SKILL.md` Mandatory Revision Pass this turn — they govern the revised text exactly as they govern the draft. A revision that reintroduces a banned pattern (em dash, antithesis "X, not Y", AI vocabulary, idiom, intensifier) is a regression and a FAIL. A focused revision brief does not narrow what you must load. If they are not loaded this turn, load them now.
+
 **How to revise:**
 
 - **Gatekeeper violation list:** fix each violation exactly as listed. One targeted change per violation. Do not touch anything not on the list. Do not rewrite surrounding sentences unless they contain the violation.
