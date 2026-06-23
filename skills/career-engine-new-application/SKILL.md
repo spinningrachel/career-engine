@@ -210,7 +210,7 @@ cp "$PIPE/letter-draft.md" "<output_dir>/<company_dir>/<coverletter_filename>.md
 
 **Before spawning, snapshot the revert target:** copy `$PIPE/letter-final.md` (the Step 5.3-passing text) to a sibling `$PIPE/letter-final.prehumanizer.md` — the revert target for Step 5.95. (The humanizer edits in place, so this snapshot must be taken first.)
 
-Spawn `cover-letter-humanizer`, passing `CAREER_DATA=${CAREER_DATA}`, the final cover letter markdown path `$PIPE/letter-final.md` (it edits in place), and `Role summary`.
+Spawn `cover-letter-humanizer`, passing `CAREER_DATA=${CAREER_DATA}` and the final cover letter markdown path `$PIPE/letter-final.md` (it edits in place). Do not pass Role summary, strategy, JD, or any role-specific context — the humanizer reads only the letter and calibrates against the delivered-letters archive and voice fingerprint in career-data.
 
 The humanizer is a writing editor and linguistics expert. It loads `skills/cover-letter-humanizer/SKILL.md` and removes AI writing patterns sentence by sentence. It does not change structure, strategy, or content — only language.
 

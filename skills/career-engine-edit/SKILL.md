@@ -303,7 +303,7 @@ Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DAT
 
 **Step E8 — Humanizer (cover letter)**
 
-Spawn `cover-letter-humanizer`, passing `CAREER_DATA=${CAREER_DATA}`, the final cover letter markdown, and the structured JD.
+Spawn `cover-letter-humanizer`, passing `CAREER_DATA=${CAREER_DATA}` and the final cover letter markdown path (it edits in place). Do not pass the structured JD, Role summary, strategy, or any role-specific context — the humanizer reads only the letter and calibrates against the delivered-letters archive and voice fingerprint in career-data.
 
 The humanizer removes AI writing patterns sentence by sentence. It does not change structure, strategy, or content — only language. Wait for it to return the corrected letter and its change log.
 
