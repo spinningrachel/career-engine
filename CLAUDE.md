@@ -114,6 +114,24 @@ The plugin contains code + blank templates only — no personal data. QA validat
 
 ---
 
+## Cross-file contracts
+
+These are the load-bearing relationships between files that are not obvious from reading either file alone. Breaking one without updating the other causes silent drift. The pre-commit hook (`scripts/check-invariants.sh`) catches the mechanical ones automatically; this table covers the rest.
+
+**Pre-commit hook setup** (one-time, per clone): `ln -sf ../../scripts/check-invariants.sh .git/hooks/pre-commit`
+
+| Contract | Source of truth | Dependent file(s) | What breaks if they drift |
+|---|---|---|---|
+| Grade table (A/B/C/D, advisory thresholds, round-aware decisions) | `skills/gatekeeper-checks/SKILL.md` | `agents/gatekeeper.md` (output templates) | Gatekeeper returns wrong PASS/FAIL; agent output contradicts skill routing |
+| CAREER_DATA pass-through pattern (`CAREER_DATA=${CAREER_DATA}`) | `skills/career-engine-new-application/SKILL.md`, `skills/career-engine-edit/SKILL.md` | `agents/cover-letter-humanizer.md`, `agents/cv-writer.md`, `agents/gatekeeper.md` | Subagents can't locate personal data at runtime |
+| Humanizer input boundary (letter + CAREER_DATA only) | `agents/cover-letter-humanizer.md` §What I receive | `skills/career-engine-new-application/SKILL.md` Step 5.9, `skills/career-engine-edit/SKILL.md` Step E8 | Orchestrator passes forbidden role context; humanizer scope creep |
+| R-41 output protocol (write to `$PIPE/`, return 1-line status) | Glossary entry R-41 in this file | All pipeline subagents: `gatekeeper`, `cv-writer`, `letter-writer`, `recruiter-reviewer`, `cover-letter-humanizer` | Subagent returns full content inline; bloats orchestrator context |
+| Gatekeeper option values (`cv`, `cover-letter`, `coach-output`) | `agents/gatekeeper.md` | Both pipeline skills (new-application, edit) at every gatekeeper spawn call | Wrong option passed; gatekeeper runs wrong check set |
+| Pipeline file names (OUTPUT_PATH values) | `skills/career-engine-new-application/SKILL.md` | `agents/gatekeeper.md`, `agents/cv-writer.md`, `agents/letter-writer.md` | File written to wrong path; next step can't find it |
+| Notion read ladder (A1 → A2 → B, no improvised search) | `skills/career-engine-intake/SKILL.md` Step 0b | `agents/career-coach.md` (intake mode), `skills/career-engine-edit/SKILL.md` Step E0 | Agent falls through to semantic search; picks up wrong rows |
+
+---
+
 ## Agent file content types
 
 Use this as a checklist when writing or reviewing any agent file.
