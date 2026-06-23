@@ -383,30 +383,13 @@ Keywords are for CV text only — they do not set the agenda for the cover lette
 
 ---
 
-**`Strategy`** — Exactly 3 labeled HM priorities. No summary direction. No sentences. Each priority is one tight line naming what the hiring manager is actually screening for — read between the lines to find it. **Hard cap: 20 words per priority, 70 words total (excluding the `[Letter type:]` tag).**
+**`Strategy`** — Select field. Write one value: `IC`, `Strategic`, or `Hybrid`. This is the letter type signal for the letter-writer.
 
-**Strategy is mandatory for every role that reaches full research — including function shifts and step-downs.** A shift or step-down flag in Role emphasis is informational; it never justifies an empty or deferred Strategy. For shift roles, Priority 1 is typically the narrative bridge: the capability from the user's background that most credibly enters this function. For step-down roles, Priority 1 reflects what the HM is actually screening for at that level. The writers cannot frame the application correctly without all three priorities.
+- **IC** — role mandate is primarily individual execution, deliverable ownership, or technical/domain depth
+- **Strategic** — role mandate is organizational leadership, function ownership, or cross-functional strategic direction
+- **Hybrid** — role requires both organizational leadership AND specific IC execution
 
-Format:
-```
-Priority 1: [what the HM is actually hiring for — direct, specific, no AI slop]
-Priority 2: [second screening criterion]
-Priority 3: [third screening criterion]
-```
-
-Each priority is a noun phrase, not a sentence. Name the capability or signal precisely. "PLG execution credibility — activation frameworks, PQL design, in-product lifecycle" is correct. "Someone who can drive growth through product-led strategies" is not.
-
-No candidate references, no credential names, no company names from her background. The cv-writer and letter-writer read her background separately — Strategy tells them what the HM is screening for, not what to write. These three priorities ARE the summary direction: the cv-writer leads with the strongest match to Priority 1, anchors the middle on Priority 2, and closes on Priority 3.
-
-**Strategic framing — GTM lens:**
-
-The best strategies treat the application as a go-to-market problem: the candidate is the product, the hiring manager is the buyer, the JD is the RFP. Frame the strategy around three questions:
-
-1. **Why you** — what unique proof makes the candidate the credible choice? Not a list of skills — a specific, traceable result.
-2. **Why them** — what specifically about this company, this stage, this team makes this the right move? Business logic, not flattery.
-3. **Why now** — what makes this the right moment for both parties?
-
-These questions anchor the opening of the cover letter and the interview narrative. The cv-writer and letter-writer should receive the answers as strategic inputs, not generic positioning.
+Strategy is always written. It is not subject to the write-only-to-empty rule — always set it, even if a value already exists, because a new JD analysis may change the correct type.
 
 **Weighted prioritization model:**
 
@@ -540,8 +523,7 @@ Return findings in this exact structure for every role received.
 - **Role emphasis:** <1-2 sentences> [HIGH/LOW]
 - **JD proof:** "<verbatim quote>"
 - **Keywords:** Critical: <terms> | Important: <terms> | Nice-to-have: <terms>
-- **Strategy:** Priority 1: <...> | Priority 2: <...> | Priority 3: <...>
-  `[Letter type: IC | Strategic | Hybrid]`
+- **Strategy:** `IC` | `Strategic` | `Hybrid`
 - **Company Stage:** <stage> [HIGH/LOW]
 - **Role Type:** <types>
 - **Relationship type:** <type>
@@ -638,12 +620,26 @@ This applies to all coach-owned properties: `Role emphasis`, `Keywords`, `Strate
 
 **`JD proof` exception — always overwrite.** Unlike all other coach-owned properties, `JD proof` must be written even if already populated. The current run's verbatim quote from the JD text supersedes any prior value. This is the anti-fabrication guardrail: the quote must be traceable to the JD text this run fetched or found, never to a cached Notion value from a prior run.
 
-**`Strategy` Letter type append — exception to write-only-to-empty.** The `[Letter type:]` tag must be appended to `Strategy` even when Strategy already has content. This is an append, not an overwrite: read the current Strategy value, check whether it already ends with `[Letter type: ...]`, and if not, append `\n[Letter type: IC | Strategic | Hybrid]` on its own line. If the tag is already present, skip (no duplicate). This exception exists because Strategy is almost always populated from a prior run — without it, the letter type signal never lands.
+**`Why I Want This Role` — coach context block (intake / Option 2 only).** Prepend a coaching context block to the `Why I Want This Role` Notion field. This block carries the strategic priorities and framing the letter-writer needs; the user may edit or remove it before submitting to the pipeline.
 
-**`Why I Want This Role` — Letter Type prefix (intake / Option 2 only).** After determining the Letter Type (from the `[Letter type:]` tag appended to Strategy), prepend it in bold to the `Why I Want This Role` Notion field:
-- Format: `**Letter type: [IC | Strategic | Hybrid]**` as the first line, followed by a blank line.
-- If the field already has content: `**Letter type: [type]**\n\n[existing content verbatim]`.
-- If the field is empty: write only `**Letter type: [type]**` — the user will fill in their motivation separately.
+Format of the block:
+```
+**Coach context**
+Priority 1: [what the HM is actually hiring for — direct, specific noun phrase, 20 words max]
+Priority 2: [second screening criterion]
+Priority 3: [third screening criterion]
+[If function shift or step-down: one line naming the credibility-of-transfer argument and any confirm-first note]
+[GTM lens answers if material: why you / why them / why now — one tight line each, only if they add something not in the priorities]
+
+---
+```
+
+Rules:
+- Each priority is a noun phrase, not a sentence. Name the capability or signal precisely. "PLG execution credibility — activation frameworks, PQL design, in-product lifecycle" is correct. "Someone who can drive growth through product-led strategies" is not. Hard cap: 20 words per priority.
+- No candidate credential names, no company names from her background in the priorities — writers read her background separately.
+- The GTM lens lines (why you / why them / why now) are optional; include only when they add material framing beyond the priorities themselves.
+- If the field already has content: prepend the block above the existing content, keeping `---` as the separator. The existing content follows verbatim below the separator.
+- If the field is empty: write only the block (no separator needed — there is no user content below it yet).
 - This writeback applies to Option 2 (intake pipeline) only. Never write to `Why I Want This Role` from Options 1, 3, 4, 5, or 6.
 
 **`Landscape` exception:** If Landscape is already populated, do not replace it — prepend the new section-format content above the existing content, separated by a `---` divider. Existing content is less current but still valuable; preserve it verbatim below the divider.

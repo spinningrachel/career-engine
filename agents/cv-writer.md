@@ -148,7 +148,7 @@ See `skills/cv-writing/SKILL.md` for bullet rules (outcomes first, proof, third 
 
 **The coach sets framing. Read it; don't re-derive it.** The coach output provides the following inputs that govern how this CV is framed:
 
-- `Strategy` — 3 labeled HM priorities (Priority 1 / 2 / 3). These are what the hiring manager is actually screening for, read between the lines of the JD. They ARE the summary direction: lead the summary with the strongest match to Priority 1, anchor the middle on Priority 2, close on Priority 3.
+- `Strategy` — letter type Select (`IC` / `Strategic` / `Hybrid`). Not used for CV framing — the CV summary direction comes from Role emphasis.
 - `Role emphasis` — the real mandate beneath the job title; frame summary and bullet selection around this.
 - `Keywords` — tiered keyword list (Critical / Important / Nice-to-have). See keyword coverage target in `skills/cv-writing/SKILL.md` for thresholds and placement priority per tier.
 - `Relationship type` — Full time / Part time / Temporary / Fractional/Consulting/Freelance. Use this for framing tone only — it does not change CV structure.
@@ -182,15 +182,13 @@ Before writing, read the coach output and record — **in this order**:
 
 1. **Role emphasis** — **Read this first and treat it as the brief.** The real mandate beneath the job title. This tells you what the hiring manager actually needs from whoever fills this role. Before selecting a single bullet, ask: "What does the hiring manager need to see proven in this CV?" Role emphasis is the answer. Every section of the CV — summary, bullet selection, skills framing — should be answerable to what Role emphasis identified. If a bullet doesn't address the mandate Role emphasis describes, it is a weak choice regardless of how impressive it looks in isolation.
 
-2. **Strategy** — 3 HM priorities (Priority 1 / 2 / 3). These are the screening criteria the hiring manager is actually applying. Build the summary to hit them in order: Priority 1 leads, Priority 2 anchors the middle, Priority 3 closes. Do not write the summary from scratch without consulting these.
+2. **Role Type** — the coach's multi-select classification (Builder / Scaler / Specialist / Leader). Governs CV structure and skills section format — see `skills/cv-writing/SKILL.md`.
 
-3. **Role Type** — the coach's multi-select classification (Builder / Scaler / Specialist / Leader). Governs CV structure and skills section format — see `skills/cv-writing/SKILL.md`.
+3. **Relationship type** — Full time / Part time / Temporary / Fractional/Consulting/Freelance. Framing context only; does not change structure.
 
-4. **Relationship type** — Full time / Part time / Temporary / Fractional/Consulting/Freelance. Framing context only; does not change structure.
+4. **Keywords** — tiered keyword list (Critical / Important / Nice-to-have); apply placement priority per tier as defined in `skills/cv-writing/SKILL.md`.
 
-5. **Keywords** — tiered keyword list (Critical / Important / Nice-to-have); apply placement priority per tier as defined in `skills/cv-writing/SKILL.md`.
-
-6. **Gap handling** — explicit instructions per gap. Follow exactly. If "surface [X] instead", surface X. If "letter addresses via [angle]", do not address it in the CV. If "ignore — not a screening risk", leave it alone.
+5. **Gap handling** — explicit instructions per gap. Follow exactly. If "surface [X] instead", surface X. If "letter addresses via [angle]", do not address it in the CV. If "ignore — not a screening risk", leave it alone.
 
 Then parse the JD and record:
 - Top 5 hard requirements (cross-check against coach's Role emphasis)

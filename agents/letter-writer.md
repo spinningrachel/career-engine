@@ -25,7 +25,7 @@ Writing doctrine, craft rules, positioning philosophy, what a letter must do, in
 Called by the career-engine-orchestrator after the coach, CV writer, and gatekeeper have run for a role. The orchestrator passes:
 
 **From Notion (role properties):**
-- `Strategy` — 3 labeled HM priorities (Priority 1 / 2 / 3): what the hiring manager is actually screening for, read between the lines of the JD. Use these to understand what the letter's proof must demonstrate — not as a template to follow, but as the lens for what matters to this specific reader.
+- `Strategy` — letter type Select: `IC`, `Strategic`, or `Hybrid`. Determines the structural template for the letter.
 - `Gap handling` — per-gap framing instructions; follow exactly
 - `Role summary` — compressed JD proxy: role context, key requirements, self-characterization section verbatim if present. Use as the JD reference throughout.
 - `Relationship type` — Full time / Part time / Temporary / Fractional
@@ -92,13 +92,11 @@ See `skills/cover-letter/SKILL.md` → **Input Integration Rules** for how to us
 **Primary — opener, voice, and content throughout:**
 - **Why I Want This Role** — her written motivation for this role; the mandatory primary personal-content source. Sole source for the opener; leveraged throughout the entire letter wherever her content fits, defaulting to her tone and vocabulary when relevant. Individual pieces may be set aside only if non-compliant or genuinely unusable, and the letter is never written without this field — the Intake Gate above stops the letter when it is empty.
 
-**Strategic frame — govern proof content and structure:**
-- `Strategy` — 3 HM priorities (Priority 1 / 2 / 3); what this hiring manager is actually screening for. Use as the lens for what proof matters — not a template. The letter's body must demonstrate credibility against these priorities.
+**Structural and contextual inputs:**
+- `Strategy` — letter type (`IC` / `Strategic` / `Hybrid`); governs paragraph structure and credential scope
 - `Gap handling` — per-gap instructions; follow exactly
 - `Role summary` — compressed JD proxy; contains role context, key requirements, and self-characterization section verbatim if present. Use as the JD reference.
 - `Relationship type` — Full time / Part time / Temporary / Fractional; calibrate framing
-
-**Shift and step-down mandate:** If Strategy contains a `Shift:` or `Step-down:` signal (written by the coach as Strategy Priority 1), the letter must lead with achievement-based evidence of capability — not ambition, not intention, not framing. The first body paragraph establishes a concrete result or demonstrated ability that directly supports the transfer or level fit. Strategy Priority 1 for shift roles is typically the narrative bridge; make that bridge tangible with a specific achievement or capability drawn from `02-professional-background.md` and `03-framework.md`. Do not frame the letter as a transition story; frame it as a track record that applies here.
 
 **Also passed:** Final CV (coherence only), recruiter review (which includes interview-trigger gaps).
 
@@ -124,13 +122,13 @@ Jump directly to the relevant section. Read only the one you will execute.
 
 ## Option 1 — Standard Cover Letter
 
-**Input:** Final CV, `Role summary` (JD proxy — contains role context, requirements, self-characterization section), Why I Want This Role, Strategy, Gap handling, Relationship type, recruiter review (if available — includes interview-trigger gaps).
+**Input:** Final CV, `Role summary` (JD proxy — contains role context, requirements, self-characterization section), Why I Want This Role, Strategy (letter type), Gap handling, Relationship type, recruiter review (if available — includes interview-trigger gaps).
 
 ### Before writing
 
 **Step 0 — Determine letter type (run first, before anything else):**
 
-Check Strategy for a `[Letter type: ...]` tag written by the career coach (appended after Priority 3). If present, use it directly. If absent, determine from Strategy Priority 1.
+Read the `Strategy` Select value: `IC`, `Strategic`, or `Hybrid`. If empty, check for a coaching context block at the top of `Why I Want This Role` and infer from it; otherwise infer from Role emphasis.
 
 Three types:
 - **IC** — the mandate is primarily individual execution; prove capability at deliverable and domain-fluency level

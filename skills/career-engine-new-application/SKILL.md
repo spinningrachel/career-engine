@@ -131,7 +131,7 @@ Read the following from Notion for this role:
 - **Strategy** property — from the career coach
 - **Gap handling** property — from the career coach
 
-**Priority rule:** Why I Want This Role takes precedence over Strategy and Gap handling. If there is any conflict between them on what content to prioritise or how to organise the letter, Why I Want This Role wins.
+**Priority rule:** Why I Want This Role is the primary content source. Strategy provides the letter type only — it does not govern content selection.
 
 **Include this verbatim at the front of the letter-writer prompt:**
 > STRUCTURE IS NON-NEGOTIABLE. Regardless of any reviewer feedback you receive, the letter structure defined in `cover-letter/SKILL.md` must be observed in full — in particular the tone, voice, and content of the opening paragraph. Reviewer feedback informs what proof to include or emphasise; it does not change how the letter is structured or how the opening is written.
@@ -156,7 +156,7 @@ After letter-writer returns, read `$PIPE/letter-draft.md`. Check ALL of the foll
    - Opens with a generic enthusiasm statement ("I was excited to see," "I would love to bring my skills")
    - Establishes fit through a NEGATION rather than a direct claim ("nothing about X feels abstract to me" instead of stating directly what DOES feel concrete)
 
-2. **Opener-strategy coherence** — Does the opener undercut the stated strategy? If `Strategy` says "lead with technical credibility" but the opener jokes about not needing to think, that is a contradiction. Quote both to confirm alignment before proceeding.
+2. **Opener coherence** — Does the opener undercut the content cues in Why I Want This Role? If the opener jokes or hedges where the WIWTR signals directness and conviction, that is a mismatch. Quote both to confirm alignment before proceeding.
 
 3. **Why I Want This Role implementation** — Is the user's WIWTR material woven into specific narrative moments, or merely mentioned, summarized, or used as a topic heading? The letter must draw from the user's actual words and framing — not produce a thematic summary of them.
 
@@ -401,7 +401,7 @@ Write the following properties using `notion-update-page`. All values are alread
 | `Role emphasis` | Career coach output — verbatim |
 | `JD proof` | Career coach output — verbatim |
 | `Keywords` | Career coach output — verbatim |
-| `Strategy` | Career coach output — verbatim |
+| `Strategy` | Career coach output — Select value (`IC` / `Strategic` / `Hybrid`) |
 | `Role Type` | Career coach output — verbatim |
 | `Relationship type` | Career coach output — verbatim |
 | `Gap handling` | Career coach output — verbatim. If the user edited this in Notion before the pipeline ran, her version is already there; do not overwrite it. |
