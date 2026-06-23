@@ -29,13 +29,13 @@ This skill sets up the plugin for a new user. It builds the three reference file
 - `02-professional-background.md` — role facts, approved content, portfolio
 - `03-framework.md` — positioning, voice, methodology, domain narratives
 
-**Output target — the `career-data` skill, not in-plugin references (R-37).** Setup builds these files into the user's external `career-data` skill, not into the plugin's `references/`. Author the data files (`01/02/03`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx`) into a `career-data/` skill directory, then install it through the app: package it as a `.skill` and have the user upload it via **Settings → Capabilities → Skills** (see the design's Appendix A). Write the first backup export of `career-data` to the output folder. The plugin's in-plugin `references/` stay as blank `{{...}}` templates — never personalized.
+**Output target — the `career-data` skill, not in-plugin references (R-37).** Setup builds these files into the user's external `career-data` skill, not into the plugin's `references/`. Author the data files (`01/02/03`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx`) into a working `career-data/` skill directory as you go. **Installing that directory as a real skill is environment-specific and is the single step that most often goes wrong** — follow [`references/career-data-skill-handoff.md`](../../references/career-data-skill-handoff.md) (a.k.a. "Appendix A"): in **Cowork**, you cannot save a skill directly, so you emit a `/skill-creator` handoff prompt the user pastes into **Chat** (skills are shared between Chat and Cowork, so it lands in both); in **Claude Code**, you write `~/.claude/skills/career-data/` directly. The dedicated **Build & install** step at the end of this skill runs that handoff. Write the first backup export of `career-data` to the output folder. The plugin's in-plugin `references/` stay as blank `{{...}}` templates — never personalized.
 
 **Placeholder resolution (single-build).** Identity and config values are NOT substituted into the plugin's agent/skill/reference files — that would personalize the shared build. They live in `career-data` and agents resolve them at runtime: identity from `career-data` `01-writing-rules.md` §8, output folder and CV template from the `career-data` config (see CLAUDE.md → *Placeholder resolution*). Every step below writes these values into `career-data`, never into plugin files.
 
 **How onboarding works:** You send your existing career materials. The agent reads them and synthesizes `03-framework.md`. You review it and respond — with feedback or approval. That response triggers a targeted interview that fills gaps and captures what the materials didn't fully show. Integration (Notion, output path) comes after.
 
-**Run order matters.** Phase 1 (identity) → Phase 2 (content submission) → Phase 3 (synthesis) → Phase 4 (review and interview) → Phase 5 (integration) → Phase 6 (permissions) → Phase 7 (job-preferences). Phases 5–7 can be deferred — the pipeline can run with Phases 1–4 complete.
+**Run order matters.** Phase 0 (environment check) → Phase 1 (identity) → Phase 2 (content submission) → Phase 3 (synthesis) → Phase 4 (review and interview) → Phase 5 (integration) → Phase 6 (permissions) → Phase 7 (job-preferences) → **Build & install career-data** (the closing handoff step). Phases 5–7 can be deferred — the pipeline can run with Phases 1–4 complete. Whenever a setup session ends (all phases done, or the user stops), run the **Build & install** step so the work authored this session actually becomes an installed skill.
 
 **Onboarding can be paused and resumed.** The Phase 4 interview in particular can take time. If the user needs to stop, they can resume later by running `/career-engine:setup --phase 4`. The state of `03-framework.md` is preserved between sessions — sections already confirmed have no `[DRAFT]` or `[REVIEW]` markers; sections still needing work do. The pre-flight check uses this to report progress accurately.
 
@@ -47,15 +47,15 @@ This skill sets up the plugin for a new user. It builds the three reference file
 
 **Path resolution.** career-engine agents find `career-data` at run start by locating `career-data-marker.json`. They never hardcode the path. Standalone agents (outside the orchestrator) do a self-locate step before reading.
 
-**Three runtime environments — they do NOT share a skill store:**
+**Three runtime environments — Chat + Cowork share one skill store; Code has its own:**
 
-| Environment | Reads career-data from |
-|---|---|
-| Chat | Desktop app skill store (installed via Customize → Skills) |
-| Cowork | Desktop app skill store (same install as Chat) |
-| Claude Code (CLI) | `~/.claude/skills/career-data/` on local disk |
+| Environment | Plugin runs here? | Reads career-data from |
+|---|---|---|
+| Chat | **No** (plugins don't run in Chat) | Desktop app skill store. This is where `career-data` is *created* — via `/skill-creator`. |
+| Cowork | Yes | Desktop app skill store (same install as Chat) — cannot save a skill itself |
+| Claude Code (CLI) | Yes | `~/.claude/skills/career-data/` on local disk |
 
-The Desktop app writes to `~/.claude/skills/` when a skill is installed — one-way, Desktop → Code. Writing directly to `~/.claude/skills/` from Code does **not** propagate back to Chat or Cowork.
+Because the plugin runs in Cowork/Code but skills are born in Chat, **the Cowork user authors `career-data` here and installs it via a Chat `/skill-creator` handoff** — see [`references/career-data-skill-handoff.md`](../../references/career-data-skill-handoff.md) ("Appendix A"). The Desktop app writes to `~/.claude/skills/` when a skill is installed — one-way, Desktop → Code. Writing directly to `~/.claude/skills/` from Code does **not** propagate back to Chat or Cowork.
 
 **The only safe update path.** To update `career-data` after setup:
 1. Generate an update-prompt file (using `career-engine/references/career-data-update-prompt-format.md`)
@@ -66,6 +66,33 @@ The Desktop app writes to `~/.claude/skills/` when a skill is installed — one-
 **Never write `~/.claude/skills/career-data/` directly from Claude Code** to make a "quick" edit. It looks faster but only updates the Code copy — Chat and Cowork never see the change. The rationalization to watch for: "I can reach this file from Code, so I'll edit it here — it's faster and safer than going through Chat." This is backwards. The Chat path's friction exists because packaging a skill has integrity steps. Skipping them hides risk, it doesn't remove it.
 
 **Exception — pipeline-owned writes:** career-engine agents writing to `career-data/references/` as part of a pipeline run (motivation-bank promotion, locked bullets, update-refs) are legitimate Code-side writes. The prohibition above applies to ad-hoc manual edits only.
+
+---
+
+## Phase 0 — Environment check (do this first, before the pre-flight)
+
+**Detect which environment you are in and tell the user up front how the skill-build step will work.** This prevents the dead-end where a Cowork user authors everything, hits "Save Skill," and gets *"SKILL.md must be in the top-level folder."* The full reasoning is in [`references/career-data-skill-handoff.md`](../../references/career-data-skill-handoff.md).
+
+Determine the environment:
+- **Claude Code (CLI):** you have direct shell/filesystem access to `~/.claude/skills/`. Setup will write `career-data` there directly — no Chat handoff.
+- **Cowork:** the common case for non-technical users. You cannot save a skill yourself. Setup does all the interview and authoring work here, but the **final install happens in Chat** via `/skill-creator`. If unsure whether you are in Cowork vs Code, assume Cowork and ask the user to confirm.
+
+If in Cowork, show this once, early, with **minimal text** (render it as a visual/artifact if supported, otherwise as the text strip):
+
+```
+  Setup runs HERE in Cowork. One step happens in Chat:
+
+  ┌──────────────┐   ┌──────────────┐   ┌────────────────────┐   ┌──────────────┐
+  │  ① COPY      │ → │  ② OPEN      │ → │  ③ TYPE            │ → │  ④ PASTE     │
+  │  the prompt  │   │  Chat        │   │  /skill-creator    │   │  + press     │
+  │  I give you  │   │  (not Cowork)│   │  (install it first)│   │  Enter ⏎     │
+  └──────────────┘   └──────────────┘   └────────────────────┘   └──────────────┘
+
+  Why: the plugin runs in Cowork, but skills are created in Chat.
+  Chat and Cowork share skills — so it'll be ready back here automatically.
+```
+
+Tell the user plainly: *"Most of setup happens right here. At the end I'll hand you one prompt to paste into Chat — that's the only step that has to leave Cowork. Make sure `/skill-creator` is installed in Chat (it's Anthropic's, nothing to worry about)."* Then continue to the pre-flight.
 
 ---
 
@@ -549,7 +576,7 @@ Write the answers into `preferred_job_sites` (up to 5 entries) and `local_job_si
   ```
   (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted; `location_compatibility` both keys empty = check skipped; `favorite_brands` empty array = no boost.) **Required for any run:** `output_folder`, `cv_template`; **also required for Notion trackers:** `notion_database_id`. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop if a required key is missing. Never substitute any of these into plugin files.
   (or `"disabled"`, matching the user's choice). Preserve any other keys already present in the file.
-- Apply the **Writing personal data** rule: in Claude Code write `career-data` directly; in Cowork stage the change and emit the Appendix-A handoff. Refresh the `career-data` backup export after a direct write.
+- Apply the **Writing personal data** rule: in Claude Code write `career-data` directly; in Cowork stage the change and emit the Appendix-A handoff (`references/career-data-skill-handoff.md`). Refresh the `career-data` backup export after a direct write.
 - Do NOT write this preference to `~/.claude/settings.json` — that location is reachable only from the user's own machine and silently falls back to the default everywhere else. The pipeline still reads it as a legacy fallback, but `career-data` is the authority.
 - Verify by reading the file back and confirming the value matches the user's choice.
 
@@ -738,6 +765,42 @@ This field is the only source the letter-writer uses for the opener. The opener 
 ---
 
 Present this to the user and ask: "Any questions before we do a final verification check?"
+
+---
+
+## Build & install career-data
+
+**If any career-data files were authored or changed this session, run this step before the session ends** (whether all phases are done or the user is stopping). It turns the working `career-data/` files into an installed skill. If nothing was authored yet (e.g. the user stopped during Phase 1 before any file was written), skip it — there is nothing to install. Follow [`references/career-data-skill-handoff.md`](../../references/career-data-skill-handoff.md) ("Appendix A") — branch on the environment detected in Phase 0:
+
+**If in Claude Code (CLI):**
+1. Write the complete `career-data/` directory to `~/.claude/skills/career-data/` (structure per the handoff reference: `SKILL.md`, `career-data-marker.json`, `references/...`).
+2. Confirm `career-data-marker.json` lists every authored file in `expected_files` and each exists and is non-empty.
+3. Write the first backup export of `career-data` to the output folder.
+4. Tell the user it's installed **in Claude Code specifically**, and that this copy is local to Code. Chat and Cowork use a separate, shared skill store — a Code-only skill is invisible to them. So if they also use Chat and/or Cowork, `career-data` must *also* be created in Chat (via `/skill-creator`), or it won't exist in those environments.
+5. **Then ask — with a visual, minimal text — whether they also use Chat/Cowork (and want the Chat handoff prompt) or are all set with Code only. This is a question: present it and wait for the reply.** Show this two-option visual (render as an artifact if supported, else the text version):
+
+   ```
+     career-data is installed in Claude Code ✅
+
+     Do you also use Chat or Cowork?
+
+     ┌──────────────────────────────┐   ┌──────────────────────────────┐
+     │  YES — Chat/Cowork too        │   │  NO — Code only               │
+     │  → I'll hand you a prompt to  │   │  → You're all set ✅          │
+     │    create it in Chat          │   │                               │
+     └──────────────────────────────┘   └──────────────────────────────┘
+   ```
+
+   - **If they also use Chat/Cowork:** generate the `/skill-creator` create prompt from the handoff reference's template (full file contents inline, untruncated; instruct them to attach the `.dotx` and any delivered-letter files), and present it as one copyable block led by the four-step visual from Phase 0 — exactly as the Cowork branch does below.
+   - **If Code-only / all set:** confirm setup is done; no handoff needed.
+
+**If in Cowork:**
+1. **Lead with the four-step visual** from Phase 0 (render as an artifact if supported, else the text strip) — minimal words.
+2. Assemble the `/skill-creator` create prompt from the handoff reference's template, filling every file's full contents inline (untruncated). For the `.dotx` and any delivered-letter files, instruct the user to attach them in Chat.
+3. Present the prompt as **one copyable block** with a single instruction above it: *"Copy everything in the box, open Chat, type `/skill-creator`, paste, and press Enter."* If it exceeds one Chat message, split at a file boundary and label `Part 1 of N`.
+4. Confirm `/skill-creator` is installed in Chat before they start (it's Anthropic's). If not, tell them to install it from Chat's skill list first.
+5. Write the working `career-data/` directory and a backup export to the output folder so nothing is lost.
+6. Tell the user: once Chat says the skill is installed, it's available back here in Cowork automatically (shared skill store) — return to Cowork and we continue. Do **not** claim the skill is installed from Cowork; only Chat installs it.
 
 ---
 

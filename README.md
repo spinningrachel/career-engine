@@ -133,6 +133,7 @@ Before installing, verify the following are in place:
 - `python-docx` installed: `pip install python-docx` (required by the subtitle update script)
 - A local output folder where DOCX files will be saved (iCloud or any local path)
 - Desktop Commander MCP configured (enables file operations and pandoc calls from within sandboxed Claude sessions; required for Cowork and some Code environments; available on macOS, Windows, and Linux)
+- **`/skill-creator` installed in Chat** — this is the Anthropic-provided skill that builds your `career-data` skill during setup. It's official and safe. If you run setup in Cowork (the usual case), setup hands you a prompt to paste into Chat after `/skill-creator`; without it installed, that step can't complete. Install it from Chat's skill list before running setup.
 
 The following prerequisites are required for specific features only:
 
@@ -167,7 +168,25 @@ Setup runs in seven phases. Phases 5–7 can be deferred — the standalone skil
 | 6 — Permissions | Generates the `~/.claude/settings.json` allow-list block so the pipeline runs without per-command approval prompts. Also verifies token-tracking hook registration. | Yes — skip if you prefer prompt-by-prompt approval |
 | 7 — Job preferences | Configures rules for recruiter-submitted applications, remote location handling, platform submissions, and multi-language applications. Skip entirely if you apply only in your home country, in one language, submitted by yourself. | Yes — skip if not applicable |
 
-At the end of setup, the agent packages `career-data` as a `.skill` file. Upload it through the Desktop app (**Customize → Skills**). Every subsequent pipeline run reads your personal data from that installed skill.
+### Installing career-data (the step to get right)
+
+Here's the one piece of platform reality that trips people up: **the plugin runs in Cowork and Claude Code, but not in Chat — and skills are created in Chat.** Chat and Cowork share the same skill store, so a skill built in Chat is instantly available in Cowork. That's why setup, which you run in Cowork, finishes by handing the skill-creation step to Chat.
+
+So at the end of setup the agent does **not** install `career-data` from Cowork (Cowork can't save a skill — you'll see a *"SKILL.md must be in the top-level folder"* error if it tries). Instead it gives you a ready-to-paste prompt:
+
+```
+  ┌──────────────┐   ┌──────────────┐   ┌────────────────────┐   ┌──────────────┐
+  │  ① COPY      │ → │  ② OPEN      │ → │  ③ TYPE            │ → │  ④ PASTE     │
+  │  the prompt  │   │  Chat        │   │  /skill-creator    │   │  + press     │
+  │  from setup  │   │  (not Cowork)│   │  (install it first)│   │  Enter ⏎     │
+  └──────────────┘   └──────────────┘   └────────────────────┘   └──────────────┘
+```
+
+Once Chat confirms the skill is installed, return to Cowork — `career-data` is already available there (shared skill store). Every subsequent pipeline run reads your personal data from it.
+
+**If you run setup in Claude Code instead,** the agent writes `career-data` directly to `~/.claude/skills/career-data/` — no Chat handoff. (A Code-only skill is invisible to Chat and Cowork, so if you use both, build it in Chat too.)
+
+Full detail: [`references/career-data-skill-handoff.md`](references/career-data-skill-handoff.md).
 
 ### Resuming setup
 
