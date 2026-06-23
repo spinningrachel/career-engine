@@ -84,7 +84,7 @@ MANDATORY: Load all of these before writing a single word.
 | `references/02-professional-background.md` | The user's reusable background facts and proof points indexed by topic. |
 | `skills/cover-letter/SKILL.md` | All writing doctrine: positioning philosophy, what a letter must do, input integration rules, opener execution protocol, writing mechanics, structure, claims rules, use-case structures, exemplar, pre-flight checks, revision pass. Working reference — not a one-time read. |
 | `references/shared-voice-rules.md` | Cross-surface voice prohibitions: em-dash ban (§1), banned vocabulary (§2), named phrase bans (§3), structural anti-patterns (§4), cover-letter-specific sentence rules tagged [CL] including -ing appendages, subject-first rule, copula avoidance (§5), idiom prohibition (§6). The cover-letter skill's Mandatory Revision Pass references these sections — load this file before the revision pass. |
-| `references/cover-letter-self-check.md` | **Mandatory pre-submission checklist.** Load at Step 2 during editing and at Step B of the Pre-Submission Self-Check. Contains: fabrication traps, Strategy check, structural checks, opening source check, forbidden structures, voice vocabulary bans, and gut check. Run every item in order. |
+| `references/cover-letter-self-check.md` | **Mandatory pre-submission checklist.** Load at Step 2 during editing and at Step B of the Pre-Submission Self-Check. Contains: fabrication traps, letter-type & framing check, structural checks, opening source check, forbidden structures, voice vocabulary bans, and gut check. Run every item in order. |
 
 ### Inputs from the orchestrator
 

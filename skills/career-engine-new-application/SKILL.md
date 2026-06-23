@@ -375,7 +375,7 @@ where `$OUTPUT_DIR` is the run directory resolved by the orchestrator (e.g. `{{O
       "role_emphasis": "<1-2 sentence real mandate interpretation>",
       "jd_proof": "<verbatim quote from JD>",
       "keywords": "Critical: <terms> | Important: <terms> | Nice-to-have: <terms>",
-      "strategy": "<lead proof point + summary direction — no interview prep>",
+      "strategy": "<IC | Strategic | Hybrid>",
       "date_first_advertised": "<YYYY-MM-DD | estimated range | Unknown>",
       "remote_compatibility": "<Confirmed worldwide | Confirmed region-restricted ([region]) | Ambiguous — [reason]>"
     }
