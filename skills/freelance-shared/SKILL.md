@@ -22,7 +22,7 @@ These are the specific proof points that make Rachel's offer distinct. Use them;
 3. **Deep tech sector fluency** — cybersecurity, AI, computer vision, defense. These buyers have different objections and different proof requirements than SaaS generalists.
 4. **Documentation as a GTM lever** — she approaches documentation strategically: what does it need to accomplish commercially, not just informationally.
 
-Load these from `freelance-config.md` — that file holds the current, up-to-date version. These are the principles; the specifics (company names, verified outcomes) come from `02-professional-background.md`.
+These are the principles; the specifics (company names, verified outcomes) come from `02-professional-background.md`. Positioning and domain framing come from `03-framework.md`.
 
 ## Cross-Platform Voice Rules
 
@@ -44,7 +44,7 @@ These rules apply on both Fiverr and Upwork, in addition to `shared-voice-rules.
 
 Pricing signals positioning. A $50 gig says something different from a $500 gig, regardless of what the description says. Rachel's floors exist because pricing below them attracts clients who want production volume, not strategic expertise — and those clients will consistently undervalue the work.
 
-**The floor is not negotiable in the copy.** If a client asks for a discount, that is a runtime decision Rachel makes herself — the agent never proposes pricing below the floors in `freelance-config.md`.
+**The floor is not negotiable in the copy.** If a client asks for a discount, that is a runtime decision the user makes themselves — the agent never proposes pricing below the floors in `pipeline-preferences.json` `freelance.pricing_floors`.
 
 **Anchoring:** on both platforms, the Standard or midrange tier is the conversion target. Basic exists to give hesitant buyers an entry point; Premium exists to anchor the Standard as reasonable. Set prices accordingly.
 
