@@ -74,7 +74,7 @@ The core pipeline stages run in sequence, handing off via Notion status transiti
 3. **New Application** — drafts and refines a CV and cover letter through recruiter review and gatekeeper checks, then exports DOCX files to your output folder.
 4. **Edit** — refines existing CV and cover letter outputs for roles already processed.
 
-The pipeline never skips a stage or back-fills properties it does not own (`Hold` → `Researched` → `Interested` → `Needs editing`).
+The pipeline never skips a stage or back-fills properties it does not own. Status moves `Hold` → `Researched` (intake) → `Interested` (you decide to apply) → `CV Ready for Review` (New Application or Edit completes); `Needs editing` routes a role back through the Edit pipeline.
 
 For standalone capabilities that run independently of the pipeline, see [Standalone capabilities](#standalone-capabilities).
 
