@@ -265,7 +265,13 @@ Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DAT
 
 **If PASS:** proceed to Step E7.4.
 
-**If FAIL:** spawn `letter-writer` with `option=revision`, passing the cover letter and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL; a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again with `option=cover-letter`. Repeat until PASS. Cap: 3 revision passes. After the third FAIL, stop looping, log the unresolved violations, flag the role in the final report, and continue the pipeline. Log all violation rounds internally. Then proceed to Step E7.4.
+**If FAIL — round 1:** spawn `letter-writer` with `option=revision`, passing the cover letter and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL; a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again with `option=cover-letter`. Log all violation rounds internally.
+
+**If FAIL — round 2+ (advisory violations only, no hard fails):** treat as PASS. Log the advisory violations under `## Gatekeeper — Advisory Violations Deferred to Humanizer (Step E7.3)` in the revision log, and proceed to Step E7.4. The humanizer handles residual advisory issues.
+
+**If FAIL — round 2+ (hard fails present):** loop as above. Hard fails block every round.
+
+**Cap: 3 revision passes on hard fails.** After the third hard-fail FAIL, stop looping, log the unresolved violations, flag the role in the final report, and continue the pipeline. Then proceed to Step E7.4.
 
 **Step E7.4 — Coach strategic letter review**
 
@@ -279,7 +285,7 @@ Spawn `career-coach` with `option=letter-review`, passing:
 
 The coach writes its diagnostic review to that file and returns: `COACH-LETTER-REVIEW: <n> issues → $PIPE/coach-letter-review.md`
 
-**If issues identified:** spawn `letter-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `LETTER_PATH=$PIPE/letter-draft.md` (read and overwrite), the coach review path `$PIPE/coach-letter-review.md` as the revision brief, and `$PIPE/fix-log.md` (read and append). Locked-fixes instruction applies. After revision, spawn `gatekeeper` with `option=cover-letter` (new OUTPUT_PATH round, pass Why I Want This Role and final CV). **Cap: 1 coach-directed revision + 1 gatekeeper pass.** If gatekeeper fails after the revision, log the violations and flag for manual review — do not loop further.
+**If issues identified:** spawn `letter-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `LETTER_PATH=$PIPE/letter-draft.md` (read and overwrite), the coach review path `$PIPE/coach-letter-review.md` as the revision brief, and `$PIPE/fix-log.md` (read and append). Locked-fixes instruction applies. After revision, spawn `gatekeeper` with `option=cover-letter` (new OUTPUT_PATH round, pass Why I Want This Role and final CV). **Cap: 1 coach-directed revision + 1 gatekeeper pass.** If gatekeeper returns hard fails after the revision, log the violations and flag for manual review — do not loop further. If gatekeeper returns advisory violations only (no hard fails), treat as PASS and proceed — the humanizer handles residual advisory issues.
 
 **If no issues identified:** proceed directly to Step E7.7.
 
@@ -289,7 +295,9 @@ Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DAT
 
 **If PASS:** proceed to Step E8 (humanizer).
 
-**If FAIL:** spawn `letter-writer` with `option=revision`, passing the final cover letter and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL; a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again with `option=cover-letter`. Repeat until PASS. Cap: 3 revision passes. After the third FAIL, stop looping, log the unresolved violations, flag the role in the final report, and continue the pipeline. Log all violation rounds internally.
+**If FAIL — advisory violations only (no hard fails):** treat as PASS. Log the advisory violations under `## Gatekeeper — Advisory Violations Deferred to Humanizer (Step E7.7)` in the revision log, and proceed to Step E8. The humanizer handles residual advisory issues.
+
+**If FAIL — hard fails present:** spawn `letter-writer` with `option=revision`, passing the final cover letter and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL; a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again with `option=cover-letter`. Cap: 3 revision passes on hard fails. After the third FAIL, stop looping, log the unresolved violations, flag the role in the final report, and continue the pipeline. Log all violation rounds internally.
 
 ---
 

@@ -211,14 +211,16 @@ Each violation counts toward the advisory total. Include a `→ resolution` per 
 
 Count the total number of advisory violations found (banned words, banned structures, and banned syntax). Hard fails are counted separately and always block regardless of grade.
 
-| Grade | Advisory violations | Decision |
-|---|---|---|
-| **A** | 0 | PASS → humanizer |
-| **B** | 1–2 | FAIL → letter-writer with suggestions |
-| **C** | 3–4 | FAIL → letter-writer with suggestions |
-| **D** | 5+ | FAIL → letter-writer with suggestions |
+| Grade | Advisory violations | Round 1 decision | Round 2+ decision |
+|---|---|---|---|
+| **A** | 0 | PASS → humanizer | PASS → humanizer |
+| **B** | 1–2 | FAIL → letter-writer with suggestions | PASS → humanizer (log violations) |
+| **C** | 3–4 | FAIL → letter-writer with suggestions | PASS → humanizer (log violations) |
+| **D** | 5+ | FAIL → letter-writer with suggestions | PASS → humanizer (log violations) |
 
-Hard fails override the grade: any hard fail = FAIL regardless of grade.
+**Round 1** = the first gatekeeper pass on a given draft. **Round 2+** = any subsequent pass on the same draft after a letter-writer revision. Advisory violations are the letter-writer's signal on round 1; the humanizer handles any that survive.
+
+Hard fails override the grade and block **every round** regardless. An advisory-only result on round 2+ is always PASS — the pipeline must not loop further on advisory violations alone.
 
 **Resolution format — required for every advisory violation:**
 
