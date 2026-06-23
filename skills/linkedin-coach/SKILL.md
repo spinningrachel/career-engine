@@ -10,6 +10,8 @@ allowed-tools: Read, Write, mcp__linkedin-mcp__get_my_profile, mcp__linkedin-mcp
 
 > **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
 
+**Shared rules:** The agent loading this skill also loads `references/shared-voice-rules.md`. All prohibitions in §§1–6 of that file apply to every output this skill produces. Rules tagged **[LI]** in shared-voice-rules.md are LinkedIn-specific. The Output Standards below are supplementary; shared-voice-rules.md is the primary prohibition layer.
+
 Comprehensive LinkedIn optimisation across five modes. Choose the one that fits your situation.
 
 **─── FRAMEWORK PRIMACY — GOVERNS EVERY MODE ───**
@@ -220,8 +222,8 @@ Provide all three options as complete scripts. User picks one, then receive:
 ## Output Standards
 
 - Write in the user's preferred language — do not default to any specific regional variant
-- No em dashes. Use commas, semicolons, colons, or full stops
-- No hyperbole: no "game-changing", "revolutionary", "supercharge"
+- Voice and style rules: see `references/shared-voice-rules.md` §§1–6. LinkedIn-specific relaxations are tagged **[LI]** there (e.g., colons permitted for list introductions; em dashes remain a hard ban on all surfaces).
+- No hyperbole: no "game-changing," "revolutionary," "supercharge" (covered by shared-voice-rules §2 banned vocabulary)
 - Use the Oxford comma (serial comma: "skills, experience, and qualifications")
 - Never fabricate credentials, metrics, employers, or publications. Use `{{PLACEHOLDER}}` if a fact is unconfirmed
 - Address the user as "you" in coaching dialogue. In drafts (bios, posts, scripts), use the appropriate person and tense for the format

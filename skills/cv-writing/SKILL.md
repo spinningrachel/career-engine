@@ -174,38 +174,11 @@ GTM Strategy · Revenue Marketing · Brand & Positioning · Product Marketing ·
 
 ---
 
-## Writing Structure Rules
+## Shared Voice Rules
 
-These apply to all CV copy — bullets, summaries, and skills sections.
-
-- **No hollow buzzwords** — "unlock," "harness," "navigate the landscape," "drive synergies," "holistic" add no information. Name the actual thing.
-- **No antithesis/pivot formulas** — never write "It's not about X, it's about Y" or "This isn't just A, it's B." This kind of writing is neither clever nor persuasive and is far from the user's voice.
-- **No triadic phrasing** — three parallel items as a rhetorical device ("the positioning, the messaging, the strategy") reads as AI-generated. Use a colon list or a single specific claim instead.
-- **No em dashes as catch-all punctuation** — use commas, periods, or transition words. Em dashes are for genuine parenthetical asides, not as a substitute for thinking about sentence structure.
-- **Mix sentence lengths deliberately** — very long for complex relationships, long for connected ideas, short for emphasis. Uniform length reads as template output.
-
----
-
-## Words and Phrases to Avoid
-
-These apply to CV bullets and summaries. For every generic claim removed, replace it with what the user actually did — a specific role, outcome, or named result from `01-writing-rules.md`. Never invent replacement metrics.
-
-Do not eliminate industry-specific terminology. "SEO" or "content strategy" are legitimate descriptors in the right context. The test: does the phrase describe something specific the user did, or does it describe a generic ideal candidate?
-
-**Never mention "works independently" or equivalent soft-skill filler.** Any experienced professional can work independently — stating it wastes a line and signals that the candidate has nothing more specific to say. The same applies to: "self-starter", "takes initiative", "manages own workload", "strong communicator" (unless communication is the literal product of the role), "team player" used as a standalone claim. If the JD requires independent work, the CV demonstrates it through the substance of the bullets — it never states it.
-
-### Terms to avoid outright in CV copy
-
-Results-driven, Passionate, Dynamic, Proactive, Experienced, Highly qualified, Top performer, Think outside the box, Value add, Synergy, Go-to person, Thought leadership, Industry expert, Bottom line, Big picture, Motivated, Track record, Effective, Seasoned, Action-oriented, Customer-focused, Fast-paced, Strong work ethic, Cutting-edge, Groundbreaking, Hit the ground running, Game-changer, Guru, Ninja, Rockstar, World-class, Paradigm shift, Scalable, Disruptive, Innovative, Holistic approach, Agile, Pioneer, **"translating technically complex"** (overused — name what was translated, for whom, and what changed)
-
-**Absolute prohibitions — banned in all CV copy including summaries:**
-- **"specialism"** — not a word; use "multi-disciplinary" or "[specific] disciplines" instead
-- **"that made it land"** — vague AI-assembly phrase; name what it was and what happened instead
-- **"behind the [noun]"** (e.g., "behind the coverage", "behind the strategy") — agent-coined abstraction; name the actual work
-- **"at an inflection point"** — generic AI phrase; name the specific moment or transition instead
-- **"quietly [verb]ing"** (e.g., "quietly building", "quietly scaling") — performative modesty; just name the action
-- **"rare"** as a self-descriptor or claim — never self-apply; if it's true, a specific outcome demonstrates it
-- **"up close"** — filler phrase; cut it
+> **Shared rules** — the agent loading this skill also loads `references/shared-voice-rules.md`, which is the canonical source for: em-dash ban (§1), banned vocabulary (§2), named phrase prohibitions (§3), structural anti-patterns including antithesis/pivot formulas, tricolons, and passive voice (§4–5), and idiom prohibition (§6). The sections below are CV-specific rules only — they are deltas on top of that layer.
+>
+> CV-specific vocabulary bans are tagged **[CV]** in shared-voice-rules.md §2. This covers: hollow buzzwords ("unlock," "harness," "navigate the landscape," etc.), hollow self-description ("results-driven," "passionate," "dynamic," etc.), soft-skill filler ("works independently," "self-starter," etc.), and the extended CV-specific term list. Do not eliminate industry-specific terminology — "SEO" or "content strategy" are legitimate in context. The test: does the phrase describe something specific the user did, or a generic ideal candidate?
 
 ---
 

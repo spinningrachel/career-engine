@@ -7,8 +7,6 @@ description: Canonical cross-surface voice rules for all professional content �
 
 Canonical cross-surface voice layer. Rules unmarked apply to all writing surfaces. Rules marked **[CV]**, **[CL]**, or **[LI]** are specific to that surface.
 
-> **WI1 status — read-only aggregate.** This file consolidates shared rules from the cv-writing, cover-letter, cover-letter-humanizer, and linkedin-coach skills, plus generalizable editorial standards from standalone LinkedIn post writing. Agents are not yet pointed here — each skill still carries its own copy. In WI2, agents will be updated to load this file and prune their local copies. For now, this file and the originals are in sync by design.
-
 ---
 
 ## §1 Punctuation

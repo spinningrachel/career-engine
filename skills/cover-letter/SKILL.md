@@ -619,6 +619,8 @@ Run before writing the first sentence.
 
 ## Mandatory Revision Pass
 
+> **Shared rules** — the agent loading this skill also loads `references/shared-voice-rules.md`. All prohibitions in §§1–6 of that file apply to cover letters. Rules tagged **[CL]** in shared-voice-rules.md are cover-letter-specific. The steps below enforce those rules plus cover-letter-only process requirements.
+
 After producing the draft, enter revision mode. Read the letter sentence by sentence and run each sentence against the DON'T table in Writing Mechanics. Fix every violation before moving to the next sentence. This is not optional and does not depend on whether you believe the draft is already strong.
 
 ### Step 1 — Voice calibration
@@ -640,65 +642,15 @@ When no domain-similar delivered letters are available, match the voice describe
 
 ### Step 2 — Audit: scan for AI writing patterns
 
-Read the draft and mark every instance of the following. A letter that feels clean can still fail this audit.
+**See `references/shared-voice-rules.md` §§1–6 for the complete prohibition list.** Every rule in that file applies to cover letters. Cover-letter-specific rules are tagged **[CL]** in that file. Scan the draft against all of them.
 
-**Em dashes — zero. Hard ban, no exceptions.**
-The final rewrite contains no em dashes (—). This is not "use sparingly." It is zero. Replace each one with a period (start a new sentence), a comma (tight aside), or restructure the sentence. Before returning any output, search for `—`. Any hit means the draft is not done.
-
-**Rule of three — no contrived agent tricolons; the user's real parallel lists pass.**
-Test: was the parallel structure built to sound impressive, or does it list real things? Parallel lists of real things (including four- and five-part parallels, as in the delivered letters) are the user's style — keep them. Banned: the contrived rhetorical tricolon assembled for effect in agent-drafted text, and the same sentence opening used three or more times in a row.
-- Fail: "The hook that makes someone stop scrolling, the offer architecture that converts, the brand story that turns a first purchase into a second" — three abstract noun phrases pretending to be depth.
-- Fail: Three consecutive sentences opening identically.
-
-**-ing phrases appended after a main clause — max three per letter, every one content-bearing.**
-"contributing to," "highlighting," "showcasing," "ensuring," "reflecting" tacked onto the end of a sentence. Maximum three per letter, and each must carry real content — a real result or a real list of things built — never interpretive commentary. A decorative tail is banned at any count.
-- Fail: "I ran the pipeline, showcasing domain expertise."
-- OK: "I ran the pipeline, cutting partner onboarding time by 35%." (Real outcome.)
-
-**False range ("from X to Y") — ban.**
-"From cybersecurity to consumer brands." "Everything from messaging to competitive analysis." X and Y are not endpoints on a meaningful scale. Replace with specific named things.
-
-**AI vocabulary — ban every instance.**
-*crucial, pivotal, vibrant, showcase/showcasing, tapestry (figurative), underscore (verb), landscape (abstract noun), testament, enduring, foster/fostering, garner, interplay, intricate/intricacies, foundational, transformative, robust, seamless, comprehensive.*
-These words appear far more in AI-generated text. Remove all of them.
-
-**Idioms — absolute prohibition.**
-All idioms are banned unless they appear verbatim in the user's Why I Want This Role content. This includes common figurative phrases ("hit the ground running," "wear many hats," "put my thinking cap on," "move the needle," "low-hanging fruit," "at the end of the day," "take it to the next level," and any similar figure of speech used non-literally). If an idiom appears verbatim in the user's WIWTR, it may be included exactly as written — it is the user's voice. Otherwise, cut it and replace with a direct statement of the underlying meaning.
-
-**Additional absolute prohibitions — banned in all cover letter copy:**
-- **"specialism"** — not a word; use "multi-disciplinary" or "[specific] disciplines" instead
-- **"that made it land"** — vague AI-assembly phrase; name what it was and what the result was
-- **"behind the [noun]"** (e.g., "behind the coverage", "behind the strategy") — agent-coined abstraction; name the actual work
-- **"at an inflection point"** — generic AI phrase; name the specific moment or transition
-- **"quietly [verb]ing"** (e.g., "quietly building", "quietly scaling") — performative modesty; name the action directly
-- **"rare"** as a self-descriptor — never self-apply; demonstrate through specifics
-- **"up close"** — filler; cut it
-
-**Copula avoidance — ban.**
-"Serves as," "stands as," "marks," "represents" where "is" works fine. Use "is." Also ban substituting elaborate constructions for simple copulas: "functions as a testament to the enduring nature of" → "is."
-
-**Heavy noun phrase as subject — ban.**
-A complex or abstract noun phrase as the grammatical subject, especially one that makes the sentence feel composed rather than spoken.
-- Fail: "The mechanics are transferable."
-- Fail: "The desire to apply them to consumer brands has been there the whole time."
-- Fix: "These mechanics transfer." / "I have always wanted to apply them to consumer brands."
-
-**Elegant variation (synonym cycling) — ban.**
-AI cycles synonyms to avoid repetition. Pick the right word and repeat it. Do not rotate synonyms — it signals the AI's repetition-avoidance code.
-- Fail: "The protagonist faces many challenges. The main character must overcome obstacles. The central figure eventually triumphs."
-- Fix: "The protagonist faces many challenges but eventually triumphs and returns home."
-
-**Filler phrases — cut without replacement.**
-- "in order to" → "to"
-- "at this point in time" → "now"
-- "it is important to note that" → cut; start with the claim
-- "due to the fact that" → "because"
-- "has the ability to" → "can"
-
-**Passive voice — rewrite in active almost always.**
-Find the passive construction. Ask: who did the action? Put them as the subject.
-- Fail: "The company was acquired by Contoso."
-- Fix: "Contoso acquired the company."
+Quick reference — what to scan for:
+- **§1** — Zero em dashes (`—`); zero colons in body copy **[CL]**. Search for `—` before returning. Any hit = not done.
+- **§2** — No AI vocabulary (crucial, pivotal, vibrant, showcase, tapestry, underscore, landscape, testament, enduring, foster, garner, interplay, foundational, transformative, robust, seamless, comprehensive, leverage, synergy, spearhead, paradigm). No hollow self-description.
+- **§3** — No absolute phrase prohibitions ("specialism," "that made it land," "behind the [noun]," "at an inflection point," "quietly [verb]ing," "rare" as self-descriptor, "up close"). No idioms unless verbatim from WIWTR **[CL]**.
+- **§4 [CL]** — No contrived tricolons (real parallel lists pass); ≤3 -ing appendages each carrying real content; no false range ("from X to Y"); no antithesis/pivot formula.
+- **§5 [CL]** — Active voice throughout; no "serves as / stands as / acts as"; no heavy noun-phrase subjects; no synonym cycling; no filler phrases ("in order to" → "to," etc.).
+- **§6** — No idioms unless verbatim from the user's Why I Want This Role content.
 
 ### Step 3 — Audit question (mandatory)
 
@@ -714,9 +666,10 @@ Produce the revised draft. It must:
 
 ### Step 5 — Final scan before handing to gatekeeper
 
-- Zero em dashes. Search for `—`. Any hit = not done.
-- No contrived agent-drafted tricolons; no same-opening monotone runs (the user's real parallel lists pass).
-- No more than three -ing appendages, each carrying real content.
-- No AI vocabulary words (scan the list above).
-- At least one short sentence used deliberately for conviction or rhythm.
+Run the `references/shared-voice-rules.md` §§1–6 checklist. Then verify:
+- Search for `—`. Any hit = not done (§1).
+- No contrived agent-drafted tricolons; no same-opening monotone runs (§4).
+- No more than three -ing appendages, each carrying real content (§4 [CL]).
+- No AI vocabulary words (§2).
+- At least one short sentence used deliberately for conviction or rhythm (§5).
 
