@@ -90,7 +90,7 @@ For standalone capabilities that run independently of the pipeline, see [Standal
 | **Framework primacy** | Your positioning framework (`03-framework.md`) governs every output. The LinkedIn coach, the career coach, and the personal brand skill all treat it as the source of truth about who you are and where you are heading. A single application or run's signals do not pull your positioning off course. |
 | **State-backed crash recovery** | The orchestrator writes `state.json` per run. If a session ends mid-pipeline, `--status` reports exactly which roles completed, which files exist on disk, and what is missing. |
 | **No personal data in the plugin** | Your career materials, filled reference files, and delivered letters live in `career-data`, a separate skill the plugin never touches. Plugin updates carry no risk to your data. There is no second copy to keep in sync. |
-| **Regression-guarded** | Over 40 documented failure modes are logged in `CLAUDE.md` with root cause, fix, and affected files. Every session that touches an affected file verifies the regression has not returned. The QA agent runs as a mandatory gate after every plugin change and asserts structural integrity before a new build ships. |
+| **Regression-guarded** | Failure modes discovered in live runs are turned into explicit guards written into the relevant agents and skills. The QA agent runs as a mandatory gate after every plugin change — it checks each guard is still present and asserts structural integrity before a new build ships. |
 
 ---
 
@@ -106,7 +106,7 @@ To install the plugin, download the `.plugin` file and upload it through the Cla
 2. Open the Claude Desktop app and go to **Customize → Connectors → Personal plugins**.
 3. Click **+** → **Create plugin** → **Upload plugin**.
 4. Select the downloaded `career-engine.plugin` file.
-5. The plugin installs immediately across Chat and Cowork.
+5. The plugin installs immediately and becomes available in Cowork and Claude Code. (The plugin does not run in Chat — Chat is only used to create and update your `career-data` skill. See [Installing career-data](#installing-career-data-the-step-to-get-right).)
 
 After installation, run `/career-engine:setup` to create your `career-data` skill and configure the plugin for your environment. Setup runs once.
 
@@ -156,10 +156,11 @@ Setup conducts a structured onboarding interview — asking about your career hi
 
 ### Setup phases
 
-Setup runs in seven phases. Phases 5–7 can be deferred — the standalone skills work with Phases 1–4 complete. The application pipeline requires Phase 5.
+Setup runs an environment check (Phase 0) followed by seven phases (1–7), then a closing **Build & install career-data** step that turns the files authored during setup into an installed skill. Phases 5–7 can be deferred — the standalone skills work with Phases 1–4 complete. The application pipeline requires Phase 5.
 
 | Phase | What it does | Can defer? |
 |---|---|---|
+| 0 — Environment check | Detects whether you are running setup in Cowork or Claude Code and tells you up front how the final skill-build step will work (Chat `/skill-creator` handoff in Cowork, direct write in Code). | No — runs first, before the pre-flight |
 | 1 — Identity and contact | Collects your name, contact details, location, profession, and language configuration. Powers file naming, agent instructions, and the CV signature. | No — nothing works without this |
 | 2 — Content submission | You send existing career materials (CV, cover letters, LinkedIn export, performance reviews, portfolio). The agent reads them without storing them. | No — Phase 3 depends on it |
 | 3 — Synthesis | Builds `03-framework.md` from your materials. Sections with limited evidence are marked `[DRAFT]` or `[REVIEW]` for the interview. | No — runs automatically after Phase 2 |
@@ -167,6 +168,7 @@ Setup runs in seven phases. Phases 5–7 can be deferred — the standalone skil
 | 5 — Job tracking and output | Configures your Notion database ID, output folder path, CV template, draft directory link base, output prefix, default language, gap handling, location compatibility, and job site preferences. All written to `${CAREER_DATA}/references/pipeline-preferences.json`. | Yes — required before running any pipeline |
 | 6 — Permissions | Generates the `~/.claude/settings.json` allow-list block so the pipeline runs without per-command approval prompts. Also verifies token-tracking hook registration. | Yes — skip if you prefer prompt-by-prompt approval |
 | 7 — Job preferences | Configures rules for recruiter-submitted applications, remote location handling, platform submissions, and multi-language applications. Skip entirely if you apply only in your home country, in one language, submitted by yourself. | Yes — skip if not applicable |
+| Build & install career-data | Closing step. Turns the `career-data` files authored during setup into an installed skill — via a Chat `/skill-creator` handoff in Cowork, or a direct write to `~/.claude/skills/career-data/` in Claude Code. Runs whenever a setup session ends. | No — if any files were authored, run this before the session ends |
 
 ### Installing career-data (the step to get right)
 
@@ -268,7 +270,7 @@ Append the following options to the command to change search scope:
 |---|---|
 | `quick` | LinkedIn MCP only |
 | `full` | All tiers plus all career-specific boards |
-| `contract` | Upwork only (contract signals, not ranked roles) |
+| `contract` | Upwork + Fiverr (contract signals, not ranked roles) |
 
 > **Note:** The Sourcing pipeline does not research roles or write strategic properties. For research and strategic input, run [Intake](#intake).
 
@@ -584,7 +586,7 @@ Development partner for extending or maintaining this plugin. Reads `CLAUDE.md` 
 Principal systems architect for technical documentation. Covers API docs, PRDs, specs, READMEs, runbooks, SOPs, tutorials, how-to guides, conceptual explanations, and prompt writing.
 
 ```
-/career-engine:technical-writer
+/career-engine:technical-writing
 ```
 
 Three modes: Write (create from scratch), Edit (improve existing documentation), Review (evaluate against quality standards with verbatim findings).
@@ -758,7 +760,7 @@ Not all pipelines have the same level of production hardening.
 |---|---|---|
 | Sourcing | Production | Runs against live job boards; scoring and deduplication tested across many runs |
 | Intake | Production | Multi-step JD acquisition ladder; rendering-capable fallbacks; coach writeback tested |
-| New Application | Production | 40+ regression checks documented in CLAUDE.md; every known failure mode has a guard |
+| New Application | Production | Every known failure mode from live runs has an explicit guard, verified by the QA agent on every build |
 | Edit | Production | Edit pipeline mirrors new-application coverage; own regression history |
 | Fast track | Production | Tested; fewer Notion integration points than the main pipeline |
 | Localization | Production | Translation-only; no drafting or revision |
