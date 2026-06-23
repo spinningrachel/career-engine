@@ -62,7 +62,7 @@ Advisory (do not revise — include in end-of-pipeline feedback note):
 
 ### Cover Letter Check
 
-Run all checks, then assign a grade per the grading table in `skills/gatekeeper-checks/SKILL.md`. Always output the grade.
+Run all checks, then assign a grade per the grading table in `skills/gatekeeper-checks/SKILL.md`. The grade table is the single source of truth for which grades PASS and which FAIL — do not restate the routing logic here.
 
 **If hard fails present (grade overridden):**
 ```
@@ -76,32 +76,23 @@ Advisory ([n] violations — Grade [X] if hard fails resolved):
 - [issue] "[offending text]" → [resolution]
 ```
 
-**If Grade C or D (no hard fails, 3+ advisory violations):**
-```
-FAIL — cover letter [Grade: C / D]
-Return to: letter-writer (option=revision)
-
-Advisory violations ([n]):
-- [issue] "[offending text]" → [resolution]
-```
-
-**If Grade A (no hard fails, 0 advisory violations):**
+**If PASS grade (no hard fails, advisory count below FAIL threshold per grade table):**
 ```
 PASS — cover letter [Grade: A]
 ```
 
-**If Grade B (no hard fails, 1–2 advisory violations):**
+**If FAIL grade (no hard fails, advisory count at or above FAIL threshold per grade table):**
 ```
-FAIL — cover letter [Grade: B]
+FAIL — cover letter [Grade: C]
 Return to: letter-writer (option=revision)
 
 Advisory violations ([n]):
 - [issue] "[offending text]" → [resolution]
 ```
 
-Every advisory violation must include a `→ [resolution]` per the resolution format in `skills/gatekeeper-checks/SKILL.md`. Never list a violation without a suggested resolution.
+Replace `[Grade: C]` with the actual grade. The grade table in `skills/gatekeeper-checks/SKILL.md` determines which grades are PASS and which are FAIL.
 
-List all violations (hard and advisory) in a single pass.
+Every advisory violation must include a `→ [resolution]` per the resolution format in `skills/gatekeeper-checks/SKILL.md`. List all violations in a single pass.
 
 ### Coach Output Check
 
