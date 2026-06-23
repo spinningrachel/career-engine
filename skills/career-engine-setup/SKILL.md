@@ -381,7 +381,7 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 ### Option A — Notion
 
 1. Say: "Use this template — it has all the required columns and select values pre-configured:
-   **[Duplicate the Notion template →](https://certain-espadrille-82d.notion.site/d8606ae1fb9282f4872381cd819c1abd?v=d2006ae1fb928355a14388715d96a782)**
+   **[Duplicate the Notion template →](https://abounding-trouser-bce.notion.site/13a6d072845047c0a99cfeb6b201091b?v=843875fd750c4a9d884b298748a4d331&pvs=143)**
    Click Duplicate, add it to your workspace, then come back."
 
 2. Once they confirm it's set up, ask:
