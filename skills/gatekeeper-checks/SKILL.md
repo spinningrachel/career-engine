@@ -76,13 +76,13 @@ FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 
 ## Cover Letter Check
 
-**Calibration authority:** The humanizer holds calibration authority over voice register and word-count decisions within the 320-word hard ceiling. The gatekeeper enforces the hard ceiling and mandatory structure checks only — it does not apply voice register judgments that conflict with the humanizer's calibration output.
+**Calibration authority:** The humanizer holds calibration authority over voice register and word-count decisions around the 320-word target. The 320-word body limit is a round-aware advisory, not a hard fail (see Format and Grading). The gatekeeper enforces the mandatory structure checks and flags word overage as an advisory only — it does not apply voice register judgments that conflict with the humanizer's calibration output.
 
 **Format**
 - Greeting: `Hi to the [Company name] team!` or `Hi to [Name]!` — for stealth roles (no public company name), `Hi to the team!` or `Hi to the [JD descriptor] team!` is accepted
 - Role named in the first sentence of the body — it does not have to lead the sentence, but it must be explicit (Tier 2; FAIL if absent)
 - Sign-off: "Looking forward to next steps," (default) or an archive-consistent variation, then "{{USER_FULL_NAME}}" on its own line. A P.S. after the name is permitted when archive-consistent (logistics, warmth) — flag only company-positioning commentary in a P.S.
-- Body: maximum 320 words (excluding greeting and sign-off; no minimum — canonical rule per the cover-letter skill; the 270–320 band is the typical delivered-letter register)
+- Body: maximum 320 words (excluding greeting and sign-off; no minimum — canonical rule per the cover-letter skill; the 270–320 band is the typical delivered-letter register). **Word overage is an advisory violation, not a hard fail:** it counts as one advisory and follows the same round logic as banned items (see Grading) — block-and-trim on round 1, deferred to the humanizer on round 2+. Never block past round 1 on word count alone.
 - **Language skills — FAIL if present:** Language proficiency statements ("Fluent in Hebrew and English," "native speaker of [language]," any language-as-credential statement) belong in the CV only — never in the cover letter body. FAIL with: "Language skills must not appear in the cover letter — this belongs in the CV."
 
 **Personal-content exemption — read before running any content check**
@@ -209,7 +209,7 @@ Each violation counts toward the advisory total. Include a `→ resolution` per 
 
 **Run this after completing all checks on every Cover Letter Check pass.**
 
-Count the total number of advisory violations found (banned words, banned structures, and banned syntax). Hard fails are counted separately and always block regardless of grade.
+Count the total number of advisory violations found (banned words, banned structures, banned syntax, and body word overage). Hard fails are counted separately and always block regardless of grade. **Body word overage counts as one advisory violation — it is never a hard fail.**
 
 | Grade | Advisory violations | Round 1 decision | Round 2+ decision |
 |---|---|---|---|
@@ -220,7 +220,7 @@ Count the total number of advisory violations found (banned words, banned struct
 
 **Round 1** = the first gatekeeper pass on a given draft. **Round 2+** = any subsequent pass on the same draft after a letter-writer revision. Advisory violations are the letter-writer's signal on round 1; the humanizer handles any that survive.
 
-Hard fails override the grade and block **every round** regardless. An advisory-only result on round 2+ is always PASS — the pipeline must not loop further on advisory violations alone.
+Hard fails override the grade and block **every round** regardless. An advisory-only result on round 2+ is always PASS — the pipeline must not loop further on advisory violations alone. **Body word overage is advisory, not a hard fail: it blocks on round 1 (trim) and is deferred to the humanizer on round 2+, exactly like any other advisory.**
 
 **Resolution format — required for every advisory violation:**
 

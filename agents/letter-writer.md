@@ -161,7 +161,7 @@ The letter that answers "what they asked for" is generic. The letter that answer
 
 ### Write
 
-**Word count — hard constraint:** maximum 320 words for the body (not counting greeting or sign-off; no minimum — canonical rule, see the cover-letter skill). Aim for the 270–320 band typical of the delivered letters when the content supports it; never pad. Count explicitly before returning output.
+**Word count — drafting target:** maximum 320 words for the body (not counting greeting or sign-off; no minimum — canonical rule, see the cover-letter skill). Hit it: aim for the 270–320 band typical of the delivered letters when the content supports it; never pad; count explicitly before returning output. (At the gatekeeper, overage is a round-aware advisory, not a hard fail — but you should still land ≤320 so the pipeline does not have to loop or defer to the humanizer to trim.)
 
 ---
 **─── OPENER — NON-NEGOTIABLE ───**

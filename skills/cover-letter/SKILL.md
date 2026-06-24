@@ -347,7 +347,7 @@ A bullet list is appropriate in exactly two situations:
 
 5. **Sign-off.** Default: "Looking forward to next steps," on its own line, "{{USER_FULL_NAME}}" on the next. Variation is allowed when it fits the letter's register — the delivered letters vary ("Excited for what's ahead!", "Can't wait to hear back from you!", or a direct closing line with no sign-off phrase). Keep it short and warm; the name always follows on its own line.
 
-**Word count:** maximum 320 words total, excluding greeting and sign-off — no minimum. The ceiling (320) is a hard ceiling; the 270–320 band is the typical register of the delivered letters — aim there when the content supports it, but a shorter letter that says everything needed beats a padded one. Length below the ceiling is a calibration choice. This is the single canonical rule — every other file defers to it.
+**Word count:** maximum 320 words total, excluding greeting and sign-off — no minimum. The 320 ceiling is a **round-aware advisory, not a hard fail**: on the gatekeeper's first pass a body over 320 returns to the letter-writer to trim; on any later pass it is logged and deferred to the humanizer (which holds word-count calibration authority and trims to register) — the pipeline never blocks past the first loop on word count alone. The 270–320 band is the typical register of the delivered letters — aim there when the content supports it, but a shorter letter that says everything needed beats a padded one. Length below the ceiling is a calibration choice. This is the single canonical rule — every other file defers to it.
 
 ### Close options
 
