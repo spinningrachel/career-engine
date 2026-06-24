@@ -227,10 +227,12 @@ Read `CLAUDE.md`. Verify it contains "Single-build architecture" and "career-dat
 
 ### Check 11 — Skill directories present in the build
 
-These skill directories must exist in `skills/` (17 total):
-- `career-engine`, `career-engine-orchestrator`, `career-engine-intake`, `career-engine-new-application`, `career-engine-edit`, `career-engine-export`, `career-engine-setup`
-- `cv-writing`, `cover-letter`, `cover-letter-humanizer`, `gatekeeper-checks`, `career-coach`, `localization`
-- `source-open-roles`, `linkedin-coach`, `personal-brand`, `update-refs`
+These skill directories must exist in `skills/` (26 total):
+- Core pipeline: `career-engine`, `career-engine-orchestrator`, `career-engine-intake`, `career-engine-new-application`, `career-engine-edit`, `career-engine-export`, `career-engine-setup`
+- Writing & quality: `cv-writing`, `cover-letter`, `cover-letter-humanizer`, `gatekeeper-checks`, `career-coach`, `localization`
+- Standalone career: `source-open-roles`, `linkedin-coach`, `personal-brand`, `update-refs`
+- Content & freelance: `content-orchestrator`, `mind-dump`, `linkedin-post-writer`, `linkedin-post-reviewer`, `fiverr`, `upwork`, `freelance-shared`
+- Meta: `plugin-builder`, `technical-writing`
 
 **FAIL condition:** any directory missing.
 
