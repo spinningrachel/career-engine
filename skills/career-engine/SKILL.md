@@ -70,8 +70,6 @@ The complete list of pipelines this plugin can run. Before taking any action, co
 | 10 | Update references | "update my references", "update refs", "here's my updated CV", any shared career material to fold into references | `update-refs` | none | none | Never writes application content; never writes to Notion; never writes a reference without explicit approval |
 | 11 | Plugin builder | "help me work on the career-engine", "help me edit the career-engine", "help me create a PR for career-engine", any request to modify or extend the plugin | `plugin-builder` | none | none | Never writes personal data into the plugin; never runs the career pipeline |
 | 12 | Technical writer | "write documentation", "draft a README", "create a PRD", "document this API", "write a runbook", "write a tutorial", "create an SOP", "explain how to...", "how does X work", "write a prompt", "draft a spec", "write a functional spec", "document this feature", "write a user guide", "edit this doc", "review this documentation" | `technical-writer` | none | none | Never writes to Notion; never touches career pipeline outputs |
-| — | ~~career-engine-coach~~ | **RETIRED** — merged into career-engine-intake | `career-engine-coach` | — | — | Do not invoke. See `skills/career-engine-intake/SKILL.md`. |
-
 **One-pass utility modes** (no loops, no Notion writeback): `--coach` (conversational fit assessment), `--check` (single gatekeeper pass on pasted text), `--review` (single recruiter + HM pass), `--write-letter` (standalone letter draft), `--status` (read state.json and report).
 
 ## Running the Pipeline
@@ -88,7 +86,7 @@ Load the following skills in order before doing anything. Do not spawn any sub-a
 Load in order: `01-writing-rules.md`, `career-engine-export`, `career-engine-edit`. Follow the editing pipeline as written in that skill.
 
 **`--coach-skills` flag:**
-Load in order: `01-writing-rules.md`, `career-engine-intake`. Follow the intake pipeline (Notion-fetch mode: Hold roles). Stop after Step 0.9d (Status updated to Researched). Do not invoke `career-engine-coach` — that pipeline is retired.
+Load in order: `01-writing-rules.md`, `career-engine-intake`. Follow the intake pipeline (Notion-fetch mode: Hold roles). Stop after Step 0.9d (Status updated to Researched). Do not run a separate research or market-intelligence pass — the intake pipeline already covers it.
 
 **`--coach` flag:**
 Load `01-writing-rules.md` first. Then spawn `career-coach` in direct coaching mode. Pass the user's question, role URL, or JD text as the input. The coach responds conversationally — no structured output format, no Notion writeback.

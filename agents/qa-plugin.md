@@ -84,7 +84,7 @@ For each subdirectory in `skills/`, verify it contains either:
 
 ### Check 4 — No retired skill-name generations referenced
 
-Two retired naming generations must not appear anywhere in runtime files. Generation 1 (pre-June 8): `cv-campaign-intake`, `cv-campaign-setup`, `cv-campaign-steps`, `cv-campaign-edit`, `cv-campaign-orchestrator`, `cv-campaign-export`. Generation 2 (June 8 – June 11): `application-intake`, `application-edit`, `new-application-steps`, `applications-orchestrator`, `application-files-export`. The current names are `career-engine-intake`, `career-engine-edit`, `career-engine-new-application`, `career-engine-orchestrator`, `career-engine-export`, `career-engine-setup`. Note: `career-engine-coach` is retired (R-48) — its directory still exists with a RETIRED notice, but it is not an active pipeline skill. The active coach skill is `career-coach`.
+Two retired naming generations must not appear anywhere in runtime files. Generation 1 (pre-June 8): `cv-campaign-intake`, `cv-campaign-setup`, `cv-campaign-steps`, `cv-campaign-edit`, `cv-campaign-orchestrator`, `cv-campaign-export`. Generation 2 (June 8 – June 11): `application-intake`, `application-edit`, `new-application-steps`, `applications-orchestrator`, `application-files-export`. The current names are `career-engine-intake`, `career-engine-edit`, `career-engine-new-application`, `career-engine-orchestrator`, `career-engine-export`, `career-engine-setup`. Note: `career-engine-coach` is retired (R-48) and its directory has been removed; the name must not reappear as an active reference. The active coach skill is `career-coach`.
 
 **Note:** the literal legacy *output folder* pattern `cv-campaign-YYYY-MM-DD` (and `cv-campaign-<YYYY-MM-DD>`) is NOT banned — it matches real folders on disk from old runs and is required by the R-8 crash-recovery search. It does not match any banned skill name below.
 
@@ -227,8 +227,8 @@ Read `CLAUDE.md`. Verify it contains "Single-build architecture" and "career-dat
 
 ### Check 11 — Skill directories present in the build
 
-These skill directories must exist in `skills/` (18 total):
-- `career-engine`, `career-engine-orchestrator`, `career-engine-intake`, `career-engine-new-application`, `career-engine-edit`, `career-engine-export`, `career-engine-coach`, `career-engine-setup`
+These skill directories must exist in `skills/` (17 total):
+- `career-engine`, `career-engine-orchestrator`, `career-engine-intake`, `career-engine-new-application`, `career-engine-edit`, `career-engine-export`, `career-engine-setup`
 - `cv-writing`, `cover-letter`, `cover-letter-humanizer`, `gatekeeper-checks`, `career-coach`, `localization`
 - `source-open-roles`, `linkedin-coach`, `personal-brand`, `update-refs`
 
@@ -576,15 +576,14 @@ grep -c "mental review is sufficient\|by mental review\|mental review only" <loc
 
 ### Check 21q — career-coach is the active coach; career-engine-coach is retired (R-48)
 
-The active coach agent/skill is `career-coach`. The retired pipeline skill `career-engine-coach` must carry a RETIRED notice and must not be invoked from any active pipeline.
+The active coach agent/skill is `career-coach`. The retired pipeline skill `career-engine-coach` has been removed; its name must not reappear as an active reference in any runtime file.
 
 ```bash
-grep -c "RETIRED" <location>/skills/career-engine-coach/SKILL.md                  # must be >= 1
-grep -rn "career-engine-coach" <location>/skills <location>/agents --include="*.md" | grep -v "qa-plugin.md" | grep -v "career-engine-coach/SKILL.md" | grep -v "career-engine/SKILL.md" | wc -l  # must be 0
+grep -rn "career-engine-coach" <location>/skills <location>/agents --include="*.md" | grep -v "qa-plugin.md" | wc -l  # must be 0 (name fully removed)
 grep -c "career-coach" <location>/agents/career-coach.md                          # must be >= 1
 ```
 
-**FAIL condition:** RETIRED notice missing, active pipeline references found, or career-coach agent absent.
+**FAIL condition:** any `career-engine-coach` reference found in skills/agents, or career-coach agent absent.
 
 ### Check 21r — E0-pre resolves `$DRAFT_DIR_URL_BASE` and edit pipeline Draft Directory warning present
 
@@ -710,7 +709,7 @@ Read the grep output. For each referenced name, verify it exists. Flag anything 
 These names have been retired over the plugin's history and must not appear as active references in any runtime file:
 
 ```bash
-grep -rn "employment-coach\|career-engine-coach\b" <location>/agents <location>/skills <location>/references --include="*.md" | grep -v "qa-plugin.md" | grep -v "skills/career-engine-coach/SKILL.md" | grep -v "skills/career-engine/SKILL.md"
+grep -rn "employment-coach\|career-engine-coach\b" <location>/agents <location>/skills <location>/references --include="*.md" | grep -v "qa-plugin.md"
 grep -rn "cv-campaign-intake\|cv-campaign-setup\|cv-campaign-steps\|cv-campaign-edit\|cv-campaign-orchestrator\|cv-campaign-export" <location> --include="*.md" | grep -v "qa-plugin.md"
 grep -rn "application-intake\|application-edit\|new-application-steps\|applications-orchestrator\|application-files-export" <location> --include="*.md" | grep -v "qa-plugin.md"
 ```
