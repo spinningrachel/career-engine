@@ -17,6 +17,14 @@
   "favorite_brands": [],
   "preferred_job_sites": [],
   "local_job_sites": [],
+  "screening_answers": {
+    "travel": "",
+    "relocation": "",
+    "security_clearance": "",
+    "compensation_floor": "",
+    "availability": "",
+    "description": "Your standing answers to common screening questions. Intake flags a conflict OR confirms a match in Patterns; sourcing down-ranks a conflicting role with a visible label. Free text; leave any field blank to skip it (e.g. travel: 'open to frequent travel' or 'prefer minimal travel')."
+  },
   "idea_bank": {
     "database_id": "",
     "database_view_url": "",

@@ -156,6 +156,7 @@ Load `skills/career-coach/SKILL.md` and follow it exactly for:
 - Research phase (6 dimensions + post-research self-check)
 - Analysis Parts 0–3: priority scoring, writing guidance, strategic properties, patterns
 - Gap handling rules — all the calibration rules for preferred requirements, domain vs. product-category gaps
+- Screening-fit check — compare the user's `screening_answers` (standing answers to travel / relocation / clearance / comp floor / availability) against the JD; emit a one-line match-or-conflict note in `Patterns`. Flag-only, never a gate; skip entirely if `screening_answers` is absent or empty
 - Output format
 - Notion writeback rules
 

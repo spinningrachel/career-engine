@@ -160,6 +160,24 @@ If either key is absent or empty: **skip all location compatibility checks and w
 
 ---
 
+### Screening-fit check (standing answers)
+
+Read `screening_answers` from `${CAREER_DATA}/references/pipeline-preferences.json`. **If the block is absent or every field is empty: skip this check entirely** — no output, no noise (same graceful-skip discipline as Location Compatibility). For each *populated* field, compare the user's standing answer to what the JD states about that dimension:
+
+- `travel` vs. the JD's travel expectation; `relocation` vs. any relocation requirement; `security_clearance` vs. a clearance requirement; `compensation_floor` vs. a stated salary/band; `availability` vs. a start-date/notice expectation.
+
+**Output: one Patterns line per role, only when the JD actually addresses a dimension the user answered.** The check is **bidirectional and flag-only**:
+- **Match** → a brief confirming note: `Screening fit — Elbit: frequent intl travel matches your stated "open to frequent travel".`
+- **Conflict** → a brief flag: `Screening conflict — Elbit: JD expects frequent intl travel; your stated answer is "prefer minimal travel" → confirm before applying.`
+
+**Hard rules:**
+- This is **document framing / advisory only.** It NEVER drops the role, NEVER changes `Priority`, and NEVER gates the run — a role in the queue is a decision already made (the no-friction rule). It only surfaces the fact so the user can decide.
+- The answer reflects what the *user wrote* — never invent or assume a cap/limit she did not state. If she wrote nothing for a dimension, that dimension is silent.
+- Skip dimensions the JD does not mention — do not manufacture a flag from silence.
+- Writes to `Patterns` only; no new database property.
+
+---
+
 ### Location & eligibility deep-scan (Priority 1–4 roles only)
 
 Runs during full research. Not run for Priority 5–6 triage-exit roles.

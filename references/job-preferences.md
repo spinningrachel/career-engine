@@ -85,6 +85,8 @@ This check is mandatory before scoring priority. "Remote" does not mean the same
 
 **Excluded by default:** Pure contract, freelance, part-time, fractional (unless explicitly requested in a given session).
 
+> **Standing screening answers live elsewhere.** Travel willingness, relocation, security clearance, compensation floor, and availability/notice are held as structured fields in `screening_answers` in `pipeline-preferences.json` — not here. The coach reads both (this file plus `screening_answers`) for a complete fit picture. Keep them there to avoid duplication; this file owns role-type, seniority, domain, stage, remote eligibility, and employment-type preferences.
+
 ---
 
 ## Exclusion Patterns

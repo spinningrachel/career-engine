@@ -276,8 +276,11 @@ Score every result (0–100) after deduplication.
 | Hiring manager identified (LinkedIn only) | 15 |
 | Easy Apply available (LinkedIn only) | 4 |
 | Apply URL present (non-LinkedIn sources) | 6 |
+| Screening conflict — a populated `screening_answers` field contradicts a stated JD requirement | −15 (down-rank, never exclude; attach a visible label) |
 
 Cap at 100. Sort descending. Roles without a title match should not appear unless no matches exist.
+
+**Standing screening answers (`screening_answers` from `${CAREER_DATA}/references/pipeline-preferences.json`).** If present, compare each *populated* field (travel / relocation / security_clearance / compensation_floor / availability) against the JD. A hard conflict (e.g. role explicitly requires relocation while `relocation` = "no") applies the −15 down-rank above **and** attaches a visible reason label to the row (`⚠ screening: relocation required vs your "no"`) so the user sees exactly why it ranked lower. **Never silently exclude on a screening conflict** — down-rank + label only, and log it in the run output. `compensation_floor` feeds the existing `minSalary` signal: when `minSalary` is not otherwise configured, use `screening_answers.compensation_floor` as `minSalary`. If `screening_answers` is absent or empty, skip this entirely (no labels, no down-ranks).
 
 ---
 
@@ -300,6 +303,8 @@ While there, capture staleness signals: original posting date and re-post indica
 ## Exclusion Rules
 
 **Geography is never an exclusion for remote roles.** A geographic restriction in a remote-advertised role's text is handled by the Verification Pass remote-geography rule above — noted, never excluded.
+
+**A screening conflict is never an exclusion either.** A populated `screening_answers` field contradicting the JD is handled by the Scoring Rubric — down-ranked and labeled, never dropped. The user decides.
 
 Exclude any result where:
 - The title contains any `excludePatterns` value (case-insensitive substring match)

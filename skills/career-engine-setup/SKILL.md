@@ -533,6 +533,14 @@ If you don't have this property in your database or don't need it, skip this —
 
 **Favorite brands (optional).** Ask: "Do you have any companies you'd like to always prioritize one tier higher than the coach would normally score? If yes, list them. You can update this list at any time." Write the list to `favorite_brands` as a JSON array of strings. Empty array = no boost applied.
 
+**Screening answers (optional).** Ask: "A few standing answers help the coach flag fit and help sourcing rank roles — answer any that apply, skip the rest (free text):
+- Travel — how much are you up for? (e.g. 'open to frequent travel', 'prefer minimal', 'up to ~25%')
+- Relocation — willing to relocate, and where?
+- Security clearance — eligibility or status (matters for defense roles)
+- Compensation floor — minimum base you'd consider
+- Availability — when you could start / notice period"
+Write the answers into `screening_answers` (object with `travel`, `relocation`, `security_clearance`, `compensation_floor`, `availability` — each a free-text string, blank to skip). All optional: a blank field is simply not checked. Intake flags a match or conflict in Patterns (advisory, never a gate); sourcing down-ranks a conflicting role with a visible label (never excludes it).
+
 **Job site preferences (optional).** Ask in two parts:
 
 1. "Are there specific job sites you always want searched? List up to 5 (e.g. Wellfound, Greenhouse, a specific industry board). These will be searched on every sourcing run, in addition to standard boards."
@@ -572,7 +580,14 @@ Write the answers into `preferred_job_sites` (up to 5 entries) and `local_job_si
     },
     "favorite_brands": [],
     "preferred_job_sites": [],
-    "local_job_sites": []
+    "local_job_sites": [],
+    "screening_answers": {
+      "travel": "<e.g. 'open to frequent travel', or empty>",
+      "relocation": "<willing + where, or empty>",
+      "security_clearance": "<eligibility/status, or empty>",
+      "compensation_floor": "<minimum base, or empty>",
+      "availability": "<start date / notice, or empty>"
+    }
   }
   ```
   (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted; `location_compatibility` both keys empty = check skipped; `favorite_brands` empty array = no boost.) **Required for any run:** `output_folder`, `cv_template`; **also required when a database backend is configured:** `database_id`. **Every other key is optional** — a run completes without it and the config-health notice lists what is empty/missing. Write the `database_*` names on a fresh setup; the pipeline still reads the legacy `notion_database_id`/`notion_needs_editing_view_url`/`notion_property` names for older configs. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop only if a *required* key is missing. Never substitute any of these into plugin files.
