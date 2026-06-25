@@ -19,6 +19,11 @@ description: Analysis procedures for the career-coach agent (Option 2 — Intake
 - **Open — case-by-case, or no posture stated (the default):** give a shift role full, normal application support — research, strategy, properties, emphasis — exactly as for any other role. **A role in the pipeline is a role the user has decided to pursue. Shift detection is not a prompt to question that decision — it is a prompt to work harder.** For shift and step-down roles, the coach must actively mine `02-professional-background.md` and `03-framework.md` for transferable achievements, relevant skills, and stated passions that apply to the new function. Surface these explicitly in Strategy and Role emphasis — do not leave the transfer argument implicit or vague. Do not put additional emphasis on the shift itself in materials, and do not frame the application as a transition story unless she wrote that framing in Why I Want This Role.
 - **Primarily pursuing a shift:** treat shift roles as central — strategy, Role emphasis, and Gap handling may lean into the transition deliberately.
 
+**No hedging, no "friction," no permission-seeking — for any posture except `Not open`.** A role in the queue is a decision already made. Do not label a function, title, or operating-model change as "friction," and never end a role's analysis with a "confirm you're comfortable applying as [X] before the pipeline runs" gate — that hands the user a decision she already made and stalls the run. Specifically:
+- A **title the user has not held** (e.g. applying as a Product Manager when her record is marketing leadership) is a **recruiter/ATS filter risk to handle in the CV and letter** — lead with the transferable scope, surface the function's keywords — not a question to put back to her. The coach already distinguishes this correctly when it calls it "a filter challenge, not a gap"; the error is only in then asking permission to proceed. State the handling; do not ask.
+- Surface the shift in `Patterns` as a one-line orientation note at most (`function-shift into PM — leading with PLG-execution proof from Snyk/Coro`), never as a blocker, a "worth confirming," or a header reading "Friction."
+- The single exception is an explicit `Not open` posture, which still processes in full (R-24) with one flagged line — and even then the flag is informational, not a gate.
+
 This rule binds every pipeline that spawns the coach: intake, new application, and edit.
 
 ---
@@ -34,8 +39,12 @@ This rule binds every pipeline that spawns the coach: intake, new application, a
 
 ### Six research dimensions
 
-**1. What the company actually does today**
+**1. What the company actually does today — and how it goes to market**
 Product portfolio, current positioning, recent pivots or launches. Look for 2025–2026 press coverage and product pages. For stealth companies, infer from the JD and parent company thesis.
+
+**Go-to-market and business model — research this explicitly; never assume it from the category.** How does the company actually acquire users or customers and make money *today*? Name the motion (sales-led / product-led / community- or UGC-driven), the buyer relationship (self-serve vs. enterprise contract), and the revenue engine (ad-supported, subscription, transactional, platform/take-rate). Then check the one thing the JD will never tell you: **has the model changed recently?** A monetization motion can move to a parent or acquirer, a company can pivot enterprise→self-serve, and a product can run on a different revenue engine than its public category implies. The published category is the floor, not the operating model.
+
+*Worked example (generic):* a consumer mapping app whose ad-monetization was absorbed into its acquirer no longer hires GTM leaders to sell ads — it hires them to drive consumer adoption, community, and localization. The title on the JD would not reveal this; the GTM research does. **This dimension governs `Role emphasis` — the real mandate follows the real GTM model, not the title.** Capture the finding as a one-line "GTM reality" note you will use in the JD-vs-reality reconciliation (Part 1b).
 
 **2. Corporate structure**
 Ownership (independent / PE-backed / acquired / public), parent company if any, total funding and most recent round, employee headcount, notable M&A.
@@ -61,6 +70,8 @@ Draw ONLY from `02-professional-background.md` (Role Facts) and `03-framework.md
 
 **Anti-fabrication rule:** If the strongest credential you can name is not traceable to a named company and documented outcome in `02-professional-background.md` (Role Facts), do not write it. This rule is absolute.
 
+**Understanding a domain ≠ experience in it.** These are two different claims and only one of them needs to be true to use it. Demonstrating that the user *understands* a market, buyer, vertical, or geography — its dynamics, what good looks like, why it is hard — is allowed and is part of strategic framing. Asserting she has *worked in* it when Role Facts does not show it is fabrication. Keep them separate: the coach may note "she can speak to [domain] credibly from [adjacent documented work]," but must never state documented experience in a domain or market Role Facts does not contain. When a JD leans hard on a market the user has not worked (a specific country, industry, or buyer she has no documented record in), do not insert it to match the keyword — verify against Role Facts, and if it is absent, route it through `Gap handling` as an understanding/transfer angle, never as a credential. This is the discipline that keeps a Brazil-heavy JD from producing a letter that silently claims Brazil experience.
+
 **7. Company and org dynamics**
 How does this company actually operate beyond what the JD says? Research in this order — all four sources are mandatory, not a pick-one list:
 1. **Company Careers and About Us pages** — team structure, stated values, leadership listed by name. Read the actual page, not a summary.
@@ -76,9 +87,11 @@ What do they actually look for when hiring for this type of role? Check: Glassdo
 **9. Career path**
 Where does this role typically go? LinkedIn alumni search for this company if possible. For the sector broadly: what's the standard trajectory from this role type and seniority? One or two sentences.
 
-**10. Hiring manager and team research (LinkedIn MCP)**
+**10. Hiring manager and team research**
 
-Only run this step if the LinkedIn MCP is connected. If it is not, skip and note: "LinkedIn MCP not connected — HM research skipped."
+The LinkedIn MCP is the strongest tool for this step, but its absence is **not** a reason to skip — it is a reason to fall back. Never emit a bare "HM research skipped." Use the connected path when available; otherwise run the web-OSINT fallback and tag confidence down.
+
+**If the LinkedIn MCP is connected:**
 
 1. Identify the hiring manager: check the JD for a named contact, the company's LinkedIn Jobs page via `get_company_profile(company_name, sections="jobs")`, or the company About/Team page.
 2. If a hiring manager is found, run `get_person_profile(linkedin_username, sections="experience,education,posts")`. Extract: current title, tenure at this company, background before this company, any recent posts about hiring priorities or team direction.
@@ -86,15 +99,24 @@ Only run this step if the LinkedIn MCP is connected. If it is not, skip and note
 4. Produce a 3–5 line Hiring Manager and Team snapshot. Include: HM background relevance, tenure signal (new HM = flux; long-tenure = established culture), any public statements about what they value, team composition signal.
 5. This snapshot feeds directly into `Role emphasis` and the coach context block framing, and informs the `Strategy` letter-type selection.
 
+**If the LinkedIn MCP is not connected — web-OSINT fallback (run it; do not skip):**
+
+1. Identify the hiring manager with the non-LinkedIn ladder already specified under the `Hiring Manager's Name` property: JD reporting language → company About/Team page → Google `"[title]" [company]` → B2B intelligence platforms (theorg.com, Crunchbase, ZoomInfo public pages). Public LinkedIn profile previews surfaced by Google count here even without the MCP.
+2. For any named HM found, read what is publicly reachable without login: their company-blog posts, conference bios, published interviews, an indexed LinkedIn preview. Extract the same signals the MCP path would (background relevance, tenure, stated priorities).
+3. For team composition, use the company Team/About page and Google rather than `get_company_employees`. Note whatever is visible; do not assert headcount you cannot see.
+4. Produce the same 3–5 line snapshot, but tag every inferred element `[LOW]` and name the source inline. Note explicitly: "LinkedIn MCP not connected — HM/team snapshot built from web OSINT; reachability unverified."
+
+Either path produces a snapshot. The only acceptable empty result is "no named HM identifiable after the full ladder" — and that is a finding to flag in `Patterns`, not a skipped step.
+
 **11. User Voice**
 
 What do customers and users actually say about this product? Check G2, Capterra, and Reddit (use the most relevant subreddits for the domain). Look for: what users praise, what they complain about, and how they compare the product to alternatives. Goal is 2–3 specific observations — direct quotes or paraphrased findings, each sourced inline (e.g. "G2: ..."). Skip this dimension if no public reviews are found (common for newer or stealth products); do not manufacture observations.
 
 **12. Outreach contacts**
 
-Only run if the LinkedIn MCP is connected. If not, note: "LinkedIn MCP not connected — outreach map skipped."
-
 Goal: identify the 2–3 people most worth contacting at this company, decide what action to take for each, and produce a structured decision map the user can act on immediately. Do not produce a raw list of names — produce a decision.
+
+**The LinkedIn MCP is the best tool here, but its absence is not a reason to skip.** A bare "outreach map skipped" is the failure mode this step exists to prevent. When the MCP is connected, run the full priority ladder and research steps below. When it is **not** connected, run the web-OSINT fallback: identify the HM via the non-LinkedIn ladder (dimension 10 fallback), find one plausible internal advocate from the company Team/About page or a Google search for the adjacent function, and produce the same decision map — but set the action to "Find on LinkedIn and connect" (reachability and degree-of-connection cannot be verified without the MCP), tag every row `[LOW]`, and add the line "LinkedIn MCP not connected — contacts identified via web OSINT; verify reachability before outreach." Only skip the outreach map when the role is a triage exit (Priority 5–6) or was flagged `ROLE MAY BE CLOSED` — never skip it solely because the MCP is absent.
 
 **Priority ladder (work top to bottom; stop when you have 1 confirmed HM candidate + 1 internal advocate):**
 
@@ -142,18 +164,24 @@ If either key is absent or empty: **skip all location compatibility checks and w
 
 Runs during full research. Not run for Priority 5–6 triage-exit roles.
 
-Location truth is rarely confined to the location field — and different sources contradict each other. **Check at minimum three sources** and synthesize across them:
+Location truth is rarely confined to the location field — and different sources contradict each other. **A single site, or a single version of the posting, is never sufficient to set the location result.** Check at minimum three sources, AND at least two independent versions of the same posting (the original board plus one other board or the company's own page), then synthesize across them:
 
 - The JD itself (location field + full text for timezone/auth language)
+- **A second independent version of the same posting** — the same role mirrored on another board or, best, the company's own ATS/careers listing. The location field frequently differs between versions of one posting; the discrepancy is itself the signal.
 - The company's own careers page (may show other open roles with location patterns, EOR footer links)
 - LinkedIn company page (team member locations visible on the People tab — do any show `my_location` or neighboring countries?)
 - One web search: `"[company name]" remote hiring "[my_location]"` or `"[company name]" Deel OR Remote.com OR Oyster` to surface EOR signals
 
-Sources often say different things. Synthesize: a LinkedIn page showing 3 Israel-based employees and a careers page saying "Remote" outweighs a JD that says nothing about geography.
+**Two failure modes a single source cannot catch — both require cross-version reading:**
+
+- **Forced-location-field false positive (looks restricted, is remote).** Many boards refuse to publish a listing without a city, so they stamp one on (HQ city, "United States", the recruiter's city) even when the role is genuinely remote. A location field alone is therefore *not* evidence of an on-site or geographic requirement. Before downgrading on a stated city, confirm against the body text and a second version: if the JD body says remote / distributed / work-from-anywhere and another version omits or contradicts the city, treat the city as a board artifact, not a restriction.
+- **Hidden-restriction false negative (looks remote, is restricted).** A board labelled "Remote" is not confirmation of *worldwide* remote. The real limit often lives in the fine print of the full body ("must be authorized to work in the US", "within 3 hours of CET") or appears only on another version of the posting. Never accept a one-word "Remote" label as worldwide-open without scanning the full body of at least two versions for an authorization/timezone/residency lock.
+
+Sources often say different things, and the disagreement is the most useful data you have. Synthesize: a LinkedIn page showing 3 Israel-based employees and a careers page saying "Remote" outweighs a JD location field that says "New York"; equally, a single "Remote" tag is overridden the moment any version's body text states a residency or work-authorization lock.
 
 1. **Scan for restriction signals across all sources:** stated location requirements, timezone mandates, work-authorization language, and crucially the REASON given for any restriction. "Primarily EST timezone for healthy overlap with European business hours" restricts very differently than "must hold US work authorization": the first is a rationale the user's location may satisfy better than the stated geography does; the second is structural.
 2. **Check exception paths** when a restriction signal exists: does the company hire through an EOR (Deel, Remote.com, Oyster)? Does it already hire in `my_location` or nearby? Does the stated rationale actually hold against `my_location`?
-3. **Output a Location block** in the research findings: sources checked, restriction signal found (or "none"), exception-path evidence (or "none found"), and — when a restriction exists with a plausible path — a suggested ask-first action: a 2-line note to the named recruiter or People contact. This block feeds Priority scoring (Part 0) and `Role emphasis`.
+3. **Output a Location block** in the research findings: sources and versions checked (name each, and say explicitly whether a second independent version was found), restriction signal found (or "none"), exception-path evidence (or "none found"), a confidence tag — `[HIGH]` only when ≥2 independent versions/sources agree; `[LOW]` when only one version was reachable or sources conflict and the conflict could not be resolved — and, when a restriction exists with a plausible path, a suggested ask-first action: a 2-line note to the named recruiter or People contact. A `[LOW]` location result is a "confirm before relying on it" flag, not a fit downgrade. This block feeds Priority scoring (Part 0) and `Role emphasis`.
 4. **Update location compatibility result** if the deep-scan finding differs from the triage assessment.
 
 ---
@@ -313,6 +341,16 @@ Titles are unreliable. Read seniority from: required years of experience, whethe
 
 **Step-down identification — critical:** If the role's actual level is materially below the user's documented seniority (e.g., an IC execution role when she has been a VP, or a manager role when she has led functions), flag it explicitly in Role emphasis as: `Step-down: [reason — e.g., execution IC role vs. her VP-level background]`. This signals to the cv-writer to lead with execution and suppress strategy/leadership framing. Do not obscure or soften this — naming it is how the CV gets written correctly.
 
+**Operating-model transition identification — run this alongside step-down detection; it is a separate axis.** Compare the operating model this role sits in (from dimension 1 — GTM and business model) against the operating model(s) the user's record sits in (`02-professional-background.md` Role Facts, `03-framework.md` §Domain depth). If they differ on the **B2B ↔ B2C / enterprise ↔ consumer / sales-led ↔ product-led** axis, this is an operating-model transition — *even when the function and the seniority match*. A marketing leader moving from enterprise B2B to a mass-market consumer product is still a marketing leader; the move is real and it is none of the existing detectors.
+
+This is not a step-down and not a function shift. Do not collapse it into either — the handling is different:
+- **Name it** in `Role emphasis` and `Patterns`: `Operating-model transition: [from] → [to] — [the axis that differs]` (e.g., `enterprise B2B → mass-market B2C`).
+- **Name the KPI shift.** The metric set changes with the model: adoption, activation, usage, retention, virality for consumer; pipeline, ACV, win-rate, sales-cycle for enterprise. State the target model's KPIs so the writers frame toward them and not toward the model the user is leaving.
+- **Mine for transferable, model-correct evidence.** Actively pull from `02`/`03` any genuinely consumer/audience-facing work — DTC or app products, marketplaces, freelance/creator surfaces, consumer segmentation, community, localization, channel-fit by cohort or market — and surface it in `Gap handling` and the coach context block as the credibility-of-transfer proof. Reframe real evidence; never invent it (see the understanding-vs-experience rule in research dimension 6).
+- **Flag the wrong-model competence** so the writers do not lead with it: enterprise pipeline/ACV proof buried lower for a consumer role, and vice versa.
+
+This is the same credibility-of-transfer discipline the career-shift posture rules already require — applied to the audience/business-model axis, which those rules did not previously name as its own detector.
+
 **Layer 5 — Compensation and culture signals**
 Salary range signals the real budget and seniority expectation. Language like "fast-paced", "wear many hats", "startup environment" signals a generalist/execution context. "Cross-functional stakeholder management" signals internal politics and matrix orgs. These inform `Role emphasis` and the `Strategy` letter-type selection.
 
@@ -320,6 +358,18 @@ Salary range signals the real budget and seniority expectation. Language like "f
 
 **Layer 6 — Nice-to-haves and advantages are exactly that**
 If the user has a "nice-to-have" or "advantage" qualification: call it out in JD proof — it is a differentiator. If she doesn't have it: it is NOT a gap. Never flag a preferred/bonus requirement as a gap unless it is genuinely screening-critical in context. Write `satisfied via [Y] — [X] is additive` or simply omit it from Gap handling.
+
+**JD-vs-reality reconciliation — produce this before writing `Role emphasis`.**
+
+The JD title and responsibilities describe the role the company *advertised*. The GTM-reality note from research dimension 1 describes the role it is *actually* filling. Reconcile the two explicitly — this is the bridge into `Role emphasis`:
+
+- **Title/JD implies:** what a reader would assume the role owns, from the title and the responsibilities list.
+- **GTM reality says it really owns:** what the role actually drives, given how the company makes money and goes to market today.
+- **Does NOT own:** the scope the title implies but the reality excludes — the thing the candidate would wrongly position toward without this reconciliation.
+
+Where the two diverge, the **reality governs** `Role emphasis` and the coach context block. This is document framing only — it shapes what the materials lead with, nothing beyond the document stage.
+
+*Worked example (generic):* a "Head of GTM" title at a consumer app implies pipeline and revenue ownership; the GTM reality (consumer adoption and community, monetization owned elsewhere) means the role really owns audience growth and retention and does NOT own an enterprise sales motion. A letter that leads with ACV and pipeline answers the wrong brief. When the title and the reality agree, say so in one line and move on — the reconciliation is cheap and is run for every role.
 
 **Application instructions**
 If the JD specifies an unusual application instruction (e.g., "include a cover letter with your answer to X"), flag it in Patterns so the user sees it before applying.
@@ -345,6 +395,10 @@ Surface this reading in `Role emphasis`, and let it guide the `Strategy` letter-
 All eight fields are non-negotiable when gap handling is enabled (seven when disabled — `Gap handling` drops out entirely). The cv-writer and letter-writer cannot run without them. If you cannot produce a confident value, produce a [LOW]-tagged best estimate — do not leave any field blank.
 
 If `GAP_HANDLING = disabled` (set in the Settings pre-flight), leave `Gap handling` unpopulated and skip all gap analysis — do not write `N/A` (see Settings pre-flight and intake Step −1). If gap handling is enabled and there are no material gaps, write `N/A` — when enabled, an empty field signals an error, not a clean match.
+
+---
+
+**Likely KPIs (always produced — not a Notion property; travels in the coach context block and the briefing).** State, as one bullet, the metric set this role is actually measured on — for **every** role, **including when the JD names no targets at all.** When the JD is silent, do not skip it: infer the KPIs from the role's scope, the company's GTM and business model (research dimension 1), and market research. A consumer-adoption role is measured on activation, usage, retention, and engagement; an enterprise GTM role on pipeline, ACV, win-rate, and sales-cycle; a community/UGC role adds contribution and active-contributor metrics. For an operating-model transition, give the **target-model** KPIs, not the model the user is leaving. Purpose: orient the writers toward the right *past* proof and away from wrong-model metrics, and let the CV's "measured in [...]" framing and the letter's register match what the role actually rewards. Likely KPIs are framing input only — they are **never** restated in the letter as targets the user commits to hit (see the cover-letter judgment-not-promises rule). Tag `[LOW]` when inferred with no JD or market confirmation; never leave it blank.
 
 ---
 
@@ -425,7 +479,12 @@ If the specific AI category (e.g., conversational AI, NLP, voice agents) is not 
 
 ---
 
-**`Date first advertised`** — When was this role first posted? Check: LinkedIn "posted X days ago" (calculate the actual date), job board timestamps, URL date parameters. If the role has been open >60 days, flag it prominently. [HIGH] if confirmed from a primary source; [LOW] if estimated.
+**`Date first advertised`** — When was this role *first* posted? **One site is not enough: a single board's date is low-confidence by default and must be corroborated across at least two independent sources.** Boards reset the displayed date on every re-post, re-index, or syndication, so the same role routinely shows "2 days ago" on one site and "6 weeks ago" on another — and the *earliest* credible date is the true one. Procedure:
+
+1. Gather a date from at least two independent sources: LinkedIn "posted X days ago" (calculate the actual calendar date), the original job-board timestamp, the company's own ATS/careers listing, URL date parameters, and any other version surfaced during the JD-mirror search.
+2. **Take the earliest credible date** across all sources — not the date on the URL you happened to start from.
+3. Confidence: `[HIGH]` only when a primary source (the company's own ATS/careers page) gives the date, OR when ≥2 independent sources agree. `[LOW]` when only one source was reachable, or sources disagree and none is primary — in that case record a range (`earliest seen – latest seen`) rather than a single date, and note which sources gave which.
+4. If the role has been open >60 days (measured from the earliest date), flag it prominently. If no date is findable on any source, write `Unknown [LOW]` — never guess or approximate a single date.
 
 **`Remote compatibility`** — Apply the Remote Compatibility section from `references/job-preferences.md`. Options: `Confirmed worldwide` | `Confirmed region-restricted ([region])` | `Ambiguous — [reason and what was checked]`.
 
@@ -511,6 +570,7 @@ Return findings in this exact structure for every role received.
 
 #### <Company> — <Role Title>
 - **Role emphasis:** <1-2 sentences> [HIGH/LOW]
+- **Likely KPIs:** <the metric set this role is measured on — inferred from scope + GTM model when the JD names none; target-model set for a transition> [HIGH/LOW]
 - **JD proof:** "<verbatim quote>"
 - **Keywords:** Critical: <terms> | Important: <terms> | Nice-to-have: <terms>
 - **Strategy:** `IC` | `Strategic` | `Hybrid`
@@ -565,7 +625,7 @@ Return findings in this exact structure for every role received.
 
 ### Outreach map format
 
-Included for every role that completes full research (Priority 1–4) and where the LinkedIn MCP is connected. Omit if LinkedIn MCP is not connected or if the role was a triage exit.
+Included for every role that completes full research (Priority 1–4), whether or not the LinkedIn MCP is connected. With the MCP, rows carry verified degree/reachability and `[HIGH/MEDIUM]` confidence; without it, the map is built from the web-OSINT fallback (research dimension 12) with the action "Find on LinkedIn and connect," every row tagged `[LOW]`, and the unverified-reachability note. Omit the map only when the role was a triage exit (Priority 5–6) or was flagged `ROLE MAY BE CLOSED`.
 
 ```
 ## Outreach — <Company>
@@ -618,7 +678,8 @@ Format of the block:
 Priority 1: [what the HM is actually hiring for — direct, specific noun phrase, 20 words max]
 Priority 2: [second screening criterion]
 Priority 3: [third screening criterion]
-[If function shift or step-down: one line naming the credibility-of-transfer argument and any confirm-first note]
+Likely KPIs: [the metric set this role is actually measured on — adoption/usage/retention vs. pipeline/ACV/win-rate, etc.; inferred from scope + GTM model when the JD names none; framing input, never a commitment]
+[If function shift, step-down, or operating-model transition (B2B↔B2C / enterprise↔consumer / sales-led↔product-led): one line naming the credibility-of-transfer argument, the target-model KPI set to frame toward, and any confirm-first note]
 [GTM lens answers if material: why you / why them / why now — one tight line each, only if they add something not in the priorities]
 
 ---
@@ -628,6 +689,7 @@ Rules:
 - Each priority is a noun phrase, not a sentence. Name the capability or signal precisely. "PLG execution credibility — activation frameworks, PQL design, in-product lifecycle" is correct. "Someone who can drive growth through product-led strategies" is not. Hard cap: 20 words per priority.
 - No candidate credential names, no company names from her background in the priorities — writers read her background separately.
 - The GTM lens lines (why you / why them / why now) are optional; include only when they add material framing beyond the priorities themselves.
+- The `Likely KPIs` line is always included — one line, even when the JD names no targets (infer from scope + GTM model). It is framing input only; never phrase it as a target the user commits to hit.
 - If the field already has content: prepend the block above the existing content, keeping `---` as the separator. The existing content follows verbatim below the separator.
 - If the field is empty: write only the block (no separator needed — there is no user content below it yet).
 - This writeback applies to Option 2 (intake pipeline) only. Never write to `Why I Want This Role` from Options 1, 3, 4, 5, or 6.
@@ -676,7 +738,21 @@ Load and apply this mode for any discovery or coaching conversation: setup Phase
 *On what the user genuinely values:*
 > "If you had to identify the thread that runs through every role you've taken and every decision you've made in your career — something beyond 'I wanted to grow' or 'the opportunity was good' — what would it be? And if you can't identify it yet, that's actually a useful answer too."
 
+*On metric philosophy (high-signal — this is what makes a coached letter sound senior about KPIs):*
+> "What's the metric everyone in your field optimizes for that you think is wrong, or at least incomplete? What do you watch instead, and why?" Push for the specific case: a time the user refused the obvious number and was proven right. (This is the kind of conviction — e.g. distrusting time-in-app in favor of whether the user got the job done — that separates a senior candidate from one who chases vanity metrics.)
+
+*On operating-model range (B2B/B2C, enterprise/consumer, sales-led/product-led):*
+> "Where does your real depth sit — selling to companies or to people, enterprise or mass-market, sales-led or product-led? Walk me through the one time you actually crossed that line, and what you had to unlearn." This separates where the user has genuinely operated from where they understand the model only from the outside — the exact distinction intake's operating-model transition detector and the understanding-vs-experience rule depend on.
+
+*On professional obsession (surfaces durable, hard-to-fake differentiators):*
+> "What do you pay attention to professionally even when no one is paying you to — the thing you can't switch off, that you'd do on a Sunday? Be specific about what you actually look at and what you notice." (An always-on habit — e.g. living across every social platform and clocking who is there — often becomes a load-bearing differentiator the user would never have listed as a 'skill'.)
+
 **What to do with the answers.** Update `03-framework.md` with what you learn — real, specific, first-person content, not summaries. Voice samples should be actual quotes from the conversation where possible. Career-shift posture should reflect what the user revealed in the scenario responses, not just what they stated. Where an answer contradicts a `[DRAFT]` section, resolve it and remove the marker. Where a contradiction surfaced, note it explicitly: "Resolved tension between [X stated in materials] and [Y revealed in conversation] — [resolution]."
+
+**Capture three things explicitly — the automated intake pipeline reproduces them downstream, so they must be in the framework, not just in the conversation:**
+- **Metric philosophy** — what the user optimizes for and what they are skeptical of. This is what lets a coached letter speak about KPIs with seniority instead of chasing the obvious number. Store under §Professional methodology and POV.
+- **Operating-model range** — where the user has genuinely operated across B2B/B2C, enterprise/consumer, sales-led/product-led, versus where they only understand the model. This is the ground truth intake's operating-model transition detector reads against; without it the detector is guessing. Store under §Professional methodology and POV.
+- **Professional obsessions** — the always-on habits that double as differentiators. Store the habit under §Domain depth or §Professional methodology, and seed the user's signature phrasings about it into §Voice.
 
 **`Priority` exception:** If the coach's analysis produces a materially different priority than what is set (e.g., role is identifiable as an open application that must be `Fifth`, or research reveals a hard disqualifier that changes the score), flag the discrepancy in Patterns and note the recommended value — but still do not overwrite. The user decides.
 
