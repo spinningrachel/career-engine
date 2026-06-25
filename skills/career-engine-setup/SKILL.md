@@ -545,19 +545,11 @@ Write the answers into `screening_answers` (object with `travel`, `relocation`, 
 
 1. "Are there specific job sites you always want searched? List up to 5 (e.g. Wellfound, Greenhouse, a specific industry board). These will be searched on every sourcing run, in addition to standard boards."
 
-2. "Based on your location, here are common local job boards — pick up to 2 to prioritize:
-   1. LinkedIn Jobs (global, but local postings)
-   2. Glassdoor
-   3. Indeed (local version for your country)
-   4. Wellfound / AngelList Talent
-   5. Otta
-   6. Relocate.me
-   7. Remote OK
-   8. We Work Remotely
-   9. EuropeRemotely
-   10. Are there local boards specific to your location I should know about? Name them."
+2. Read `${CLAUDE_PLUGIN_ROOT}/references/locale-job-boards.md`, find the row for the user's country (from the location they gave), and propose that row's boards as the local shortlist: "Based on your location, these local boards are worth prioritizing: [list the country row's ATS / VC / aggregator / localized-major entries]. Pick up to 2, and name any others specific to your location I should know about." If no country row matches, propose the generic/default row.
 
 Write the answers into `preferred_job_sites` (up to 5 entries) and `local_job_sites` (up to 2 entries) in the career-data config. Empty arrays if the user skips or has no preferences.
+
+**Title variants / search keywords (recommended).** Sourcing searches each target title under several variants, not verbatim. Propose a set (~6–8 per target title) derived from the user's target titles + `USER_PROFESSION` / `USER_FUNCTION_SENIORITY_HIERARCHY`: "Here are the title variants I'd search for you — edit, add, or remove any:" then list one line per target title with its variants (e.g. *Product Marketing lead → PMM · Senior PMM · Technical PMM · Director of Product Marketing · Head of Product Marketing · GTM Lead*). Write the confirmed set into `${CAREER_DATA}/references/job-preferences.md` → the "Title variants / search keywords" section (replacing the `{{TITLE_VARIANTS}}` placeholder). This is what `source-open-roles` reads every run.
 
 **Rule: user-specified sites in `preferred_job_sites` and `local_job_sites` always take priority over plugin defaults. The plugin's built-in site list is a fallback, not a directive.**
 

@@ -33,7 +33,20 @@ Preferences are stored in `~/.career-engine-job-prefs.json`. The full schema:
 }
 ```
 
-`notionDatabaseId` is set during setup. If absent, deduplication against Notion is skipped and the agent notes this.
+`notionDatabaseId` is set during setup. If absent, deduplication against the database is skipped and the agent notes this.
+
+---
+
+## Keyword Expansion
+
+Target titles are searched as a **variant set**, not verbatim. The same role surfaces under many titles — "Product Marketing Manager," "Technical PMM Director," "Senior PMM," "GTM Enablement Lead," "Head of Marketing" — so a verbatim search for one misses the rest. Expanding at *search* time (not only fuzzy-matching at scoring time) is the single highest-payoff widener.
+
+**The variant set:**
+- **Source of truth:** the user's stored set in `${CAREER_DATA}/references/job-preferences.md` → "Title variants / search keywords." Seeded once (setup, or the agent's existing-user fallback), human-editable, auto-used every run, shown in the run header.
+- **If no stored set exists:** derive on the fly from the target titles in `job-preferences.md` plus `USER_PROFESSION` and `USER_FUNCTION_SENIORITY_HIERARCHY` (`01-writing-rules.md` §8) — seniority variants (Lead / Manager / Director / Head / VP), phrasing variants (Product Marketing ↔ PMM, Go-to-Market ↔ GTM), and any adjacent-function variants the user flagged — then trigger the agent's existing-user seed so the set is stored for next time.
+- **Cap: ~6–8 variants per target title.** Stop there; search volume and noise stay manageable, and dedup + scoring absorb the overlap.
+
+**Global search rule:** wherever a Site Catalog pattern below shows `[title]`, run it **once per variant** in the set (the LinkedIn `search_jobs` keywords and every `site:... "[title]"` WebSearch). Deduplication collapses the repeats; scoring ranks them.
 
 ---
 
@@ -83,6 +96,14 @@ a16z · First Round · Sequoia · Bessemer · NFX · Accel · Lightspeed · Inde
 
 Read `USER_PROFESSION` and `USER_FUNCTION_SENIORITY_HIERARCHY` from `career-data` `01-writing-rules.md` §8 before selecting. Include all sites relevant to the user's function; include startup-focused sites when the user's target companies are predominantly early-stage.
 
+### Tier 5 — Locale boards (the user's country)
+
+The default catalog is US/global-remote-centric, which misses the boards that dominate a given country (e.g. Israel: Comeet ATS, Israeli VC portfolio boards). Source locale boards in this order:
+1. **The user's configured boards first** — `preferred_job_sites` / `local_job_sites` from `pipeline-preferences.json` (already searched first per the top of Search Selection Logic).
+2. **The locale starter catalog** — read `${CLAUDE_PLUGIN_ROOT}/references/locale-job-boards.md`, find the row for the user's country (from `location` / `my_location`), and search the boards listed there that aren't already in the user's configured set. If no country row matches, use the generic/default row.
+
+Locale boards run with the same Keyword Expansion (each variant) and feed the same dedup + scoring as every other tier.
+
 ### Explicit mode overrides
 
 If the user specifies a mode keyword, apply it as an override on top of the tiers:
@@ -113,6 +134,8 @@ search_jobs(
 ```
 Collect all `job_ids`. Deduplicate across title searches. Fetch up to 30 job details via `get_job_details(job_id)`. A result is usable only if it contains role requirements or responsibilities — metadata-only responses (applicant stats only) are not usable.
 
+**LinkedIn hiring posts (when the MCP is connected).** Recruiters and founders announce roles in the feed, not only the jobs board. Surface them: scan `get_feed` and `get_company_posts` for target companies, and run a `site:linkedin.com/posts "[title]" hiring` WebSearch per variant. Treat a hiring post as a lead — capture the company, the role, and the poster (a likely hiring-manager/recruiter contact) — and verify it against the company careers page before offering it for a database add. Skip this sub-source if the LinkedIn MCP is not connected and the WebSearch returns nothing usable.
+
 ---
 
 ### Remote-focused sites
@@ -126,6 +149,7 @@ All fetched via `WebSearch` using the pattern: `site:<domain> "[title]" [time si
 | Remote.co | `WebFetch("https://remote.co/remote-jobs/")` — filter by title. If sparse: `WebSearch("site:remote.co [title] remote job")` |
 | We Work Remotely | `WebSearch("site:weworkremotely.com [title]")` — blocks direct fetch reliably; use WebSearch. |
 | Remote OK | `WebSearch("site:remoteok.com [title]")` or `WebFetch("https://remoteok.com/remote-[title-slug]-jobs")` |
+| Remotive | `WebFetch("https://remotive.com/remote-jobs/[category]")` — filter by title; fallback `WebSearch("site:remotive.com [title]")`. Curated remote board with strong coverage. |
 
 **Additional remote boards:**
 
@@ -164,12 +188,15 @@ All fetched via `WebSearch` using the pattern: `site:<domain> "[title]" [time si
 | BeBee | `WebSearch("site:bebee.com [title]")` |
 | Workable Jobs | `WebSearch("site:jobs.workable.com [title]")` |
 | Hacker News Who's Hiring | WebSearch for `"Ask HN: Who is hiring?" site:news.ycombinator.com [current month] [current year]`. Fetch thread via `https://hacker-news.firebaseio.com/v0/item/{THREAD_ID}.json`. Fetch up to 100 comment items. Parse `text` field of each. Filter by title fuzzy-match. |
+| Reddit hiring threads | WebSearch `site:reddit.com ("hiring" OR "who's hiring") "[title]"` and target the high-signal subreddits: `r/forhire`, `r/jobbit`, `r/remotejs`, plus the function/locale subreddits for the user's profession and country. Fetch a thread JSON via `https://www.reddit.com/<permalink>.json` and parse comments for company + role + apply link. Filter by variant fuzzy-match; verify against the company careers page before offering for a database add. |
 
 ---
 
 ### ATS / company career pages
 
 Use these to surface roles posted directly on company career pages via their ATS. These often appear earlier than aggregators and are not always indexed on general boards.
+
+**Native careers as a discovery source (not only verification).** For known target companies — `favorite_brands` from `pipeline-preferences.json`, and any companies surfaced during the run — fetch their own careers page directly (the rendering-capable extractor, or `site:<company-domain> "[title]"`) as a *discovery* step, per variant, not just to cross-check a board hit. A role can live on a company's careers page weeks before it reaches any aggregator.
 
 | Site | Fetch method |
 |---|---|
@@ -308,8 +335,10 @@ While there, capture staleness signals: original posting date and re-post indica
 
 Exclude any result where:
 - The title contains any `excludePatterns` value (case-insensitive substring match)
-- The role is already in the Notion database (see Deduplication)
+- The role is already in the database (see Deduplication)
 - The role was already surfaced in a previous search session saved to `{{OUTPUT_FOLDER}}/sourcing/` (check saved search files from the last 14 days — skip roles that appeared with the same company + title)
+
+**Sources deliberately not searched (echo aggregators).** Do **not** add Lensa, Metaintro, Work Whisper, or Remote Rocketship to the catalog. They re-publish roles already surfaced by the boards and ATS sources above, so they add deduplication load, not new openings. Skip them by default; do not reintroduce them as "more coverage."
 
 ---
 

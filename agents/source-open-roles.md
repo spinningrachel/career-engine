@@ -46,7 +46,8 @@ Load before any search begins:
 | File | What it contains |
 |---|---|
 | `skills/source-open-roles/SKILL.md` | Search mode definitions, full site catalog with fetch methods, scoring rubric, deduplication rules, exclusion rules |
-| `references/job-preferences.md` | Remote compatibility rules, target roles, seniority floor, industry fit, company stage, exclusion patterns, and coaching prioritization — governs which roles are surfaced and how they are ranked |
+| `references/job-preferences.md` | Remote compatibility rules, target roles, seniority floor, industry fit, company stage, exclusion patterns, coaching prioritization, and the **Title variants / search keywords** set (the variant set Keyword Expansion searches) — governs which roles are surfaced and how they are ranked |
+| `${CLAUDE_PLUGIN_ROOT}/references/locale-job-boards.md` | Per-country starter catalog of local boards (ATS, VC portfolio boards, aggregators) for **Tier 5 — Locale boards**. Match the user's country row; fall back to the generic row |
 | `${CAREER_DATA}/references/pipeline-preferences.json` | Read `preferred_job_sites` and `local_job_sites` (sites to search first), and `screening_answers` (standing travel/relocation/clearance/comp-floor/availability answers — a populated field that conflicts with a JD down-ranks + labels the role, never excludes it; `compensation_floor` feeds `minSalary`). Skip `screening_answers` entirely if absent or empty |
 
 ---
@@ -68,13 +69,24 @@ Ask in sequence (wait for all answers before saving):
 
 Save to `~/.career-engine-job-prefs.json` using the schema in `SKILL.md`. Confirm before proceeding.
 
+**Gate 1.5 — Keyword variants & locale seed (existing-user fallback)**
+
+Check `${CAREER_DATA}/references/job-preferences.md` → "Title variants / search keywords." **If it is unseeded** (empty, or still the `{{TITLE_VARIANTS}}` placeholder / example text):
+1. Derive a proposed variant set (~6–8 per target title) from the target titles plus `USER_PROFESSION` / `USER_FUNCTION_SENIORITY_HIERARCHY` (`01-writing-rules.md` §8), per the SKILL Keyword Expansion rules.
+2. Read `${CLAUDE_PLUGIN_ROOT}/references/locale-job-boards.md`, find the user's country row, and propose a locale-board shortlist.
+3. Show both to the user; let them edit.
+4. **Do not write `career-data` directly** (R-37 / single-build): emit a **career-data update-prompt** (canonical `references/career-data-update-prompt-format.md` format) that writes the confirmed variants into `job-preferences.md` → Title variants, and the chosen locale boards into `preferred_job_sites` / `local_job_sites`. The user applies it via Chat → repackage → reinstall.
+5. For *this* run, proceed with the proposed (in-memory) variants + locale boards so the run isn't blocked while the seed is applied.
+
+New users receive this same seed interactively through setup; this gate covers existing users on the first run after upgrade.
+
 **Gate 2 — Mode resolution**
 
 Resolve the search mode per the rules in `SKILL.md`. Display before searching:
 
 > **Sourcing with:**
-> Titles: [list] | Mode: [mode] | Time range: [value] | Remote: [value]
-> Sources: [list of sites being searched this run]
+> Titles: [list] | Variants: [expanded variant set used this run] | Mode: [mode] | Time range: [value] | Remote: [value]
+> Sources: [list of sites being searched this run, including any Tier 5 locale boards]
 
 ---
 
