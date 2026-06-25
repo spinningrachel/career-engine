@@ -64,9 +64,9 @@ Do not ask the user about this. The preference was set during setup (Phase 5). I
 
 ## Step 0 — Fetch Notion schema and roles
 
-**Guard — resolve the database ID from the career-data config (R-38).** The plugin keeps `{{NOTION_DATABASE_ID}}` literal by design (single build); the literal placeholder is **not** a sign of incomplete setup — do not abort on it. Resolve `$NOTION_DATABASE_ID` from `${CAREER_DATA}/references/pipeline-preferences.json` (`notion_database_id`) — read it yourself at intake start. **Stop only if that config value is missing or empty**, and tell the user:
+**Guard — resolve the database ID from the career-data config (R-38).** The plugin keeps `{{NOTION_DATABASE_ID}}` literal by design (single build); the literal placeholder is **not** a sign of incomplete setup — do not abort on it. Resolve `$NOTION_DATABASE_ID` from `${CAREER_DATA}/references/pipeline-preferences.json` — read the `database_id` key (or legacy `notion_database_id`) yourself at intake start (the `$NOTION_DATABASE_ID` var is the Notion adapter's internal name). **Stop only if that config value is missing or empty**, and tell the user:
 
-> "Your career-data config has no `notion_database_id`. Run `/career-engine:setup --phase 5` to add your Notion database ID to career-data."
+> "Your career-data config has no `database_id` (or legacy `notion_database_id`). Run `/career-engine:setup --phase 5` to add your database ID to career-data."
 
 Otherwise proceed with the resolved `$NOTION_DATABASE_ID`.
 
@@ -299,7 +299,7 @@ Where Path A1 (the `ntn` CLI, Step 0b gate) is active in this run, property writ
 For each role in the processing queue, apply this rule to:
 - `Priority` — write the coach's value (`1`–`6`) only if currently empty. If the role was coach-skipped (already coach-complete per Step 0.8), do not write at all — leave unchanged. In a mixed batch, apply per role individually.
 - `Priority Reason` — write the coach's one-sentence reason if currently empty. Written for every role the coach touches (both triage-exit roles and full-research roles).
-- Location compatibility property (name resolved from `location_compatibility.notion_property` in `pipeline-preferences.json`) — write if empty and if the property name is configured. Skip entirely if not configured.
+- Location compatibility property (name resolved from `location_compatibility.database_property`, legacy `notion_property`, in `pipeline-preferences.json`) — write if empty and if the property name is configured. Skip entirely if not configured.
 - `Role emphasis`, `Keywords`, `Strategy`, `Relationship type`, `Role summary`, `Person who Advertised Role (if not Hiring Manager)` — write if empty. (Triage-exit roles skip these — only full-research roles write them.)
 - `JD proof` — **always overwrite**, even if already populated. The coach's fresh verbatim quote from the current JD text supersedes any prior value (anti-fabrication guardrail). (Full-research roles only.)
 - `Hiring manager's role`, `Manager role confirmed`, `No incumbents in this function` — write if empty. (Full-research roles only.)

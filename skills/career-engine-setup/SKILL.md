@@ -412,7 +412,7 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 
    Say: "**One Notion responsibility:** The MCP connection uses your personal OAuth token — it expires or can be revoked. If the pipeline ever fails to read Notion mid-run, reconnect by repeating the step above."
 
-4. Write the database ID as `notion_database_id` in the career-data config (`${CAREER_DATA}/references/pipeline-preferences.json`). If the user gave a Needs-Editing view URL, write it as `notion_needs_editing_view_url`. Do NOT substitute `{{NOTION_DATABASE_ID}}` into plugin files — every skill resolves it from the config at runtime (R-38).
+4. Write `database_backend` = `notion` and the database ID as `database_id` in the career-data config (`${CAREER_DATA}/references/pipeline-preferences.json`). If the user gave a Needs-Editing view URL, write it as `database_edit_view_url`. (Notion is the current backend; the `database_*` names are backend-neutral so a future tracker can reuse them. Older configs may still carry the legacy `notion_database_id`/`notion_needs_editing_view_url` names — the pipeline reads both, but write the `database_*` names on a fresh setup.) Do NOT substitute `{{NOTION_DATABASE_ID}}` into plugin files — every skill resolves it from the config at runtime (R-38).
 5. Write the view ID to every `{{NOTION_VIEW_ID}}` placeholder (or leave placeholder if not provided).
 
 6. Say: "**Important:** Do not rename the columns in your Notion database. The pipeline writes to them by exact name — renaming breaks the integration silently."
@@ -528,8 +528,8 @@ Ask: "Do you want the coach to track whether each role is compatible with your l
 
 If you don't have this property in your database or don't need it, skip this — the coach will simply not check location compatibility."
 
-- If the user provides both values: write `location_compatibility: {"my_location": "<value>", "notion_property": "<value>"}` to the config.
-- If the user skips: write `location_compatibility: {"my_location": "", "notion_property": ""}` (the default from the plugin template — both empty means the check is skipped at runtime).
+- If the user provides both values: write `location_compatibility: {"my_location": "<value>", "database_property": "<value>"}` to the config.
+- If the user skips: write `location_compatibility: {"my_location": "", "database_property": ""}` (the default from the plugin template — both empty means the check is skipped at runtime).
 
 **Favorite brands (optional).** Ask: "Do you have any companies you'd like to always prioritize one tier higher than the coach would normally score? If yes, list them. You can update this list at any time." Write the list to `favorite_brands` as a JSON array of strings. Empty array = no boost applied.
 
@@ -559,22 +559,23 @@ Write the answers into `preferred_job_sites` (up to 5 entries) and `local_job_si
     "gap_handling": "enabled",
     "output_folder": "<the absolute path the user gave>",
     "cv_template": "references/<their-dotx-or-cv-template-default.dotx>",
-    "notion_database_id": "<32-char DB id, or empty for non-Notion trackers>",
+    "database_backend": "notion",
+    "database_id": "<32-char DB id, or empty for non-database trackers>",
     "draft_dir_url_base": "<cloud-share base URL, or skip>",
     "output_dir_prefix": "applications",
     "default_language": "English",
     "word_templates_path": "<Hebrew .dotx templates dir, or empty>",
-    "notion_needs_editing_view_url": "<Needs-Editing view URL, or empty>",
+    "database_edit_view_url": "<Needs-Editing view URL, or empty>",
     "location_compatibility": {
       "my_location": "<city/country/region, or empty to skip>",
-      "notion_property": "<Notion property name, or empty to skip>"
+      "database_property": "<property/field name in your tracker, or empty to skip>"
     },
     "favorite_brands": [],
     "preferred_job_sites": [],
     "local_job_sites": []
   }
   ```
-  (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted; `location_compatibility` both keys empty = check skipped; `favorite_brands` empty array = no boost.) **Required for any run:** `output_folder`, `cv_template`; **also required for Notion trackers:** `notion_database_id`. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop if a required key is missing. Never substitute any of these into plugin files.
+  (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted; `location_compatibility` both keys empty = check skipped; `favorite_brands` empty array = no boost.) **Required for any run:** `output_folder`, `cv_template`; **also required when a database backend is configured:** `database_id`. **Every other key is optional** — a run completes without it and the config-health notice lists what is empty/missing. Write the `database_*` names on a fresh setup; the pipeline still reads the legacy `notion_database_id`/`notion_needs_editing_view_url`/`notion_property` names for older configs. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop only if a *required* key is missing. Never substitute any of these into plugin files.
   (or `"disabled"`, matching the user's choice). Preserve any other keys already present in the file.
 - Apply the **Writing personal data** rule: in Claude Code write `career-data` directly; in Cowork stage the change and emit the Appendix-A handoff (`references/career-data-skill-handoff.md`). Refresh the `career-data` backup export after a direct write.
 - Do NOT write this preference to `~/.claude/settings.json` — that location is reachable only from the user's own machine and silently falls back to the default everywhere else. The pipeline still reads it as a legacy fallback, but `career-data` is the authority.

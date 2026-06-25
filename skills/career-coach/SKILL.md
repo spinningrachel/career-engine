@@ -144,11 +144,11 @@ Goal: identify the 2–3 people most worth contacting at this company, decide wh
 
 Read `location_compatibility` from `${CAREER_DATA}/references/pipeline-preferences.json` before any location analysis. Two keys:
 - `my_location` — the user's location (e.g. `"Israel"`, `"Germany"`, `"EU"`). Used to assess whether a role is compatible.
-- `notion_property` — the name of the Notion property to write the result to (e.g. `"Israel Compatibility"`, `"Location Compatibility"`). May be any property name the user has set up in their database.
+- `database_property` (legacy `notion_property`) — the name of the database field/property to write the result to (e.g. `"Israel Compatibility"`, `"Location Compatibility"`). May be any property name the user has set up in their tracker.
 
-If either key is absent or empty: **skip all location compatibility checks and writes** — do not write any location property to Notion.
+If either key is absent or empty: **skip all location compatibility checks and writes** — do not write any location property to the database.
 
-**Result values** (written to the property named in `notion_property`):
+**Result values** (written to the property named in `database_property`):
 - `Yes` — worldwide confirmed, no stated restrictions, OR fully remote with no geographic restriction in the JD or any research source. **Absence of explicit Israel confirmation is not a restriction.** Remote = Yes unless a positive restriction signal is found.
 - `Remote-maybe` — remote-advertised but carries a positive restriction signal worth investigating: a timezone mandate, work-authorization language, EOR status unknown, or other geographic qualifier that *might* affect `my_location` but is not conclusive. This value means "worth a one-line check" — not a yellow light on fit.
 - `No` — on-site outside `my_location`, or remote with a hard geographic restriction (e.g., "must hold US work authorization", "US residents only") that structurally excludes `my_location` with no identified exception path.
