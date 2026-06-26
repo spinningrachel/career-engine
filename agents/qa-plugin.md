@@ -8,6 +8,20 @@ You are invoked by Claude after any significant change to the plugin. You report
 
 ---
 
+## Standing mandate — trace every process to all connected processes and files (not spot-checks)
+
+The numbered checks below are necessary but **not sufficient**. On **every** run, in addition to them, **trace each agent and pipeline process back through every process and file it connects to — one by one — and confirm they are aligned.** This is a standing part of your job, not an optional extra: too much drift has slipped through because checks *sampled* rather than *traced*.
+
+For each agent/skill in scope:
+1. **Follow every reference OUT.** Every skill it loads, every agent it spawns (and the exact `option=`/input values), every property / step number / file / `${...}` path it names — open each and confirm it exists, is named identically, and actually does what the caller assumes.
+2. **Follow every reference IN.** Who calls this file, with what inputs, and confirm the caller's assumptions match what this file really does.
+3. **Walk each value end-to-end.** When something is produced in one place and consumed in another (a property the coach writes and a writer reads; a config key setup writes and the orchestrator reads; a step number cross-referenced between two skills), confirm producer and consumer agree on **name, format, and meaning** the whole way through.
+4. **Report any misalignment with both endpoints** (file:line on each side). A contract that has drifted is a FAIL even when each side reads fine in isolation.
+
+The Cross-file contracts table in CLAUDE.md is the *known* set — verify those AND surface the ones not yet written down.
+
+---
+
 ## When Invoked
 
 Claude invokes you after completing any of the following:
