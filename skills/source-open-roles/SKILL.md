@@ -28,12 +28,12 @@ Preferences are stored in `~/.career-engine-job-prefs.json`. The full schema:
     "excludePatterns": ["junior", "intern", "contract"],
     "defaultTimeRange": "last week",
     "location": "City, Country",
-    "notionDatabaseId": "<your-notion-database-id>"
+    "notionDatabaseId": "<legacy — optional; the database id is read from pipeline-preferences.json database_id>"
   }
 }
 ```
 
-`notionDatabaseId` is set during setup. If absent, deduplication against the database is skipped and the agent notes this.
+**Database id is no longer configured here.** The dedup database id is read from the main config — `${CAREER_DATA}/references/pipeline-preferences.json` → `database_id` (legacy `notion_database_id`) — the same single source the rest of the plugin uses, so you configure it once. The `notionDatabaseId` field above is a legacy fallback only, kept for older local prefs files. If neither resolves, dedup is skipped and the agent notes it.
 
 ---
 
@@ -278,11 +278,13 @@ These surfaces list roles at funded/tracked companies not always indexed on gene
 
 ## Deduplication
 
-Before scoring and displaying results, filter out any role that already exists in the Notion database.
+Before scoring and displaying results, filter out any role that already exists in the database.
 
-**How to check:** If the `ntn` CLI gate passes (`command -v ntn >/dev/null 2>&1 && ntn whoami >/dev/null 2>&1`), query the database with `ntn datasources query <data-source-id> --limit 100 --json` (resolve the data source ID once via `ntn api /v1/databases/<notionDatabaseId>` → `data_sources[0].id`; paginate with `--start-cursor` until `has_more` is false) and extract the `Company` + `Position` pairs in the shell. Otherwise query the Notion database using `notionApi` `API-query-data-source` with `notionDatabaseId` from preferences. If the `notionApi` server is not connected or returns an Enterprise-gated response, fall through and use `notion-query-database-view` — but note its two constraints (R-39): it takes no ad-hoc `filter` argument and requires a real **view URL** (`...?v=<VIEW_ID>`), never the bare database URL. Resolve a view by name using a two-step fetch: (1) call `notion-fetch id="<notionDatabaseId>"` to get the `collection://` URL from the `<data-sources>` block; (2) call `notion-fetch id="<collection_url>"` to list views, find one named "All Active Applications" (or any broad view), take its UUID from the `view://UUID-with-dashes` format, **remove all dashes**, and construct `https://www.notion.so/<DB_ID_NO_DASHES>?v=<VIEW_ID_NO_DASHES>`; call `notion-query-database-view` with that `view_url` and extract the same pairs — but if the returned table is misaligned (row/column counts don't match, cells empty where neighbours are not), do not parse it: log a warning, skip dedup for this run, and note in the results that duplicates were not filtered. A skipped dedup is recoverable; a mispaired Company/Position exclusion silently hides a real role. Extract all `Company` + `Position` pairs. For each search result: if `(company name, role title)` matches any existing pair (case-insensitive, substring match on title), exclude it from results. Log the count of excluded duplicates.
+**Resolve the database id from the main config first — one place to configure it.** Use `database_id` (legacy `notion_database_id`) from `${CAREER_DATA}/references/pipeline-preferences.json` — the same source every other pipeline reads. Only if the config has no value there, fall back to `notionDatabaseId` in the sourcing-local `~/.career-engine-job-prefs.json` (a legacy store). Everywhere below, the database id written `<notionDatabaseId>` means this resolved value.
 
-If `notionDatabaseId` is not set, skip dedup and display a warning: "Notion deduplication skipped — no database ID configured. Run /career-engine:setup to configure."
+**How to check:** If the `ntn` CLI gate passes (`command -v ntn >/dev/null 2>&1 && ntn whoami >/dev/null 2>&1`), query the database with `ntn datasources query <data-source-id> --limit 100 --json` (resolve the data source ID once via `ntn api /v1/databases/<notionDatabaseId>` → `data_sources[0].id`; paginate with `--start-cursor` until `has_more` is false) and extract the `Company` + `Position` pairs in the shell. Otherwise query the Notion database using `notionApi` `API-query-data-source` with `notionDatabaseId` from preferences. If the `notionApi` server is not connected or returns an Enterprise-gated response, fall through and use `notion-query-database-view` — but note its two constraints (R-39): it takes no ad-hoc `filter` argument and requires a real **view URL** (`...?v=<VIEW_ID>`), never the bare database URL. Resolve a view by name from a **single fetch**: call `notion-fetch id="<notionDatabaseId>"` — its response contains BOTH a `<data-sources>` block and a `<views>` block. Find the `<view>` whose config JSON `"name"` is "All Active Applications" (or any broad view), strip the `{{...}}` wrapper, take its UUID from the `view://UUID-with-dashes` form, **remove all dashes**, and construct `https://www.notion.so/<DB_ID_NO_DASHES>?v=<VIEW_ID_NO_DASHES>`. (Do NOT fetch the `collection://` URL to find views — it returns only the data-source schema, no views.) call `notion-query-database-view` with that `view_url` and extract the same pairs — but if the returned table is misaligned (row/column counts don't match, cells empty where neighbours are not), do not parse it: log a warning, skip dedup for this run, and note in the results that duplicates were not filtered. A skipped dedup is recoverable; a mispaired Company/Position exclusion silently hides a real role. Extract all `Company` + `Position` pairs. For each search result: if `(company name, role title)` matches any existing pair (case-insensitive, substring match on title), exclude it from results. Log the count of excluded duplicates.
+
+If no database id resolves (neither `database_id` in the config nor the legacy `notionDatabaseId`), skip dedup and display a warning: "Deduplication skipped — no database ID configured. Run /career-engine:setup to configure."
 
 ---
 

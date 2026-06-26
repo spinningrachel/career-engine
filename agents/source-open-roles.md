@@ -65,9 +65,9 @@ Ask in sequence (wait for all answers before saving):
 4. Exclude patterns — "Words that should auto-exclude a role? (e.g., 'junior', 'intern') Or 'none'."
 5. Default time range — "How far back should searches look? (last week / 2 weeks / month)"
 6. Location — "What location for LinkedIn searches? (city and country)"
-7. Notion database ID — "Your Notion job tracking database ID? (find it in the Notion URL when viewing your database — the UUID after the last `/`). Or 'skip' to disable deduplication."
+7. Database ID — **first check `${CAREER_DATA}/references/pipeline-preferences.json` → `database_id` (legacy `notion_database_id`); if it's set there, use it and do NOT ask.** Only if the main config has no database id, ask: "Your job-tracking database ID? (in Notion, the UUID in the database URL after the last `/`). Or 'skip' to disable deduplication." The database id lives in the main config — this question is a fallback for when it isn't configured there yet.
 
-Save to `~/.career-engine-job-prefs.json` using the schema in `SKILL.md`. Confirm before proceeding.
+Save the answers to `~/.career-engine-job-prefs.json` using the schema in `SKILL.md` (the database id is resolved from the main config at run time, so it need not be duplicated here). Confirm before proceeding.
 
 **Gate 1.5 — Keyword variants & locale seed (existing-user fallback)**
 
