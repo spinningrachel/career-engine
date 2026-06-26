@@ -289,7 +289,7 @@ Before any analysis, determine the gap handling mode in this order:
 2. **Plugin preferences file** — otherwise, Read `${CLAUDE_PLUGIN_ROOT}/references/pipeline-preferences.json` (Read tool — you do not have Bash) and use its `gap_handling` value.
 3. **Default** — if the file or key is missing, use `enabled`.
 
-- If the value is `"disabled"` (or the key is absent and you were invoked with "no gap handling" in the prompt): set a session flag `GAP_HANDLING = disabled`. Skip all gap analysis in Part 2 and do NOT populate the `Gap handling` property at all — do not write `N/A` (this matches intake Step −1: the property stays empty when gap handling is disabled).
+- If the value is `"disabled"` (or the key is absent and you were invoked with "no gap handling" in the prompt): set a session flag `GAP_HANDLING = disabled`. **Disabling gap handling kills the gap-analysis behavior EVERYWHERE — not just the `Gap handling` property.** Specifically: skip all gap analysis in Part 2; do NOT populate the `Gap handling` property at all (do not write `N/A`); and **the coach context block's transfer/credibility line must NOT enumerate gaps, name "the X real gaps," catalog what she lacks, or do any gap framing.** A disabled feature that still parks gap analysis in the transfer note has leaked — that is the seam this rule closes. The transfer line may still state the one-line credibility-of-transfer argument (an affirmative "her [X] transfers because [Y]"), but never a gap inventory.
 - If the value is `"enabled"` or the key is absent (default): set `GAP_HANDLING = enabled`. Proceed normally.
 - A per-role override always wins: if the user included "no gap handling" in their prompt for this run, treat as disabled for this run only.
 
@@ -586,6 +586,8 @@ If the specific AI category (e.g., conversational AI, NLP, voice agents) is not 
 
 **`Role summary`** — A compressed summary of the JD itself. Not about the user. This property serves as the JD proxy for all downstream agents — they read this instead of the full JD body.
 
+**⛔ The #1 defect here is bleeding fit/gap/title analysis into this field.** Role summary describes the **job only**. If a sentence mentions the candidate, her fit, her seniority or title, a title she "hasn't held," a gap, or the word "transferable," it does not belong here — it belongs in `Priority Reason` or the coach context block. Re-read every sentence before writing: any sentence whose subject is the candidate, or that judges her fit, gets cut. A reader of `Role summary` should not be able to tell whose application it is.
+
 **Hard limit: 400 characters total including spaces.** Count before writing. This is a Notion property field, not a document — it must be short enough to be read at a glance. If you need to choose between coverage and brevity: cut coverage, keep brevity.
 
 Write from the JD body only. Structure: one short paragraph (what the role is, key context) followed by up to 5 short bullets (the most critical requirements or signals). Only the most important aspects of the role — everything else is noise.
@@ -688,7 +690,8 @@ Return findings in this exact structure for every role received.
   ## Career Path
   [1 sentence on typical trajectory from this role/seniority level.]
   ```
-- **Culture:** 2–3 **one-line bullets, a blank line between them** (never a paragraph), each a sourced observation about how the company actually operates — source named inline (Glassdoor / LinkedIn / Reddit / Careers-About). Flag burn-out or culture-warning signals. For a sub-unit with thin signal, use the **parent company's** culture and note it as such (research dimension 7). `N/A` only if all sources returned nothing usable. **Do not repeat this content inside the Landscape `## Company & Org` section.**
+- **Culture:** 2–3 **one-line bullets, a blank line between them** (never a paragraph), each a sourced observation about **working style and operating environment** — how decisions get made, what they reward, hiring philosophy, named perks/benefits/development programs, pace, and any burn-out or culture-warning signal. Source named inline (Glassdoor / LinkedIn / Reddit / Careers-About). For a sub-unit with thin signal, use the **parent company's** culture and note it as such (research dimension 7). `N/A` only if all sources returned nothing usable.
+  - **⛔ The #1 defect here is dumping `Landscape` research into Culture.** Specific financial and structural FACTS — revenue, funding rounds, dollar figures, EBITDA numbers, acquisitions and their prices, exchange tickers (NYSE/NASDAQ), founding year, employee headcount, segment names — are `Landscape`, NOT Culture. If you have written any of those data points here, delete them. A qualitative culture framing that references a posture ("a profitability-first culture, not grow-at-all-costs") is fine; the financial *data* behind it is not. **Do not repeat this content inside the Landscape `## Company & Org` section.**
 - **Role summary:** ≤400 chars total. Short paragraph + up to 5 bullets. JD vocabulary only. No candidate references. No location/contact info. Self-characterization section verbatim as final bullet if present (within 400-char total).
 - **Outreach map:** See format below.
 
@@ -717,8 +720,10 @@ Included for every role that completes full research (Priority 1–4), whether o
 - <Specific angle>
 
 **Email / WhatsApp**
-<Assessment of whether any actionable contact has an email or WhatsApp path visible (company website, personal site, conference bio, mutual contact who could introduce). If none found: "No email or WhatsApp path identified for this company.">
+<Assessment of whether **the hiring target** has an email or WhatsApp path visible (company website, personal site, conference bio, mutual contact who could introduce). If none found: "No email or WhatsApp path identified for this company.">
 ```
+
+**⛔ This section is the TARGET's reachability — never the user's own details, never drafting advice.** Do not write the user's own email, phone, or contact line here (she already has them). Do not write application or messaging advice ("lead with…", "available now", "a bilingual note works") — that is not contact intelligence and belongs nowhere in the outreach map. The only content is a real path to a hiring-side contact, or the "No path identified" line.
 
 Rules:
 - Maximum 3 rows in the table (1 HM candidate, 1 advocate, 1 skip). Do not pad with additional contacts.
@@ -756,7 +761,7 @@ Priority 1: [what the HM is actually hiring for — direct, specific noun phrase
 Priority 2: [second screening criterion]
 Priority 3: [third screening criterion]
 Likely KPIs: [the metric set this role is actually measured on — adoption/usage/retention vs. pipeline/ACV/win-rate, etc.; inferred from scope + GTM model when the JD names none; framing input, never a commitment]
-[If function shift, step-down, or operating-model transition: ONE line, ≤25 words, naming only the credibility-of-transfer argument (the target-model KPIs are already on the Likely KPIs line above; do not repeat them). A confirm-first note, if any, is a separate ≤10-word line.]
+[If function shift, step-down, or operating-model transition: ONE line, ≤25 words, naming only the credibility-of-transfer argument (the target-model KPIs are already on the Likely KPIs line above; do not repeat them). A confirm-first note, if any, is a separate ≤10-word line. **When `GAP_HANDLING = disabled`, this is an affirmative transfer claim only — never a gap inventory or "the X real gaps" cataloging.**]
 [GTM lens answers if material: why you / why them / why now — one tight line each, only if they add something not in the priorities]
 
 ---

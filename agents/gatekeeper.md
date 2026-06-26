@@ -98,18 +98,24 @@ Every advisory violation must include a `→ [resolution]` per the resolution fo
 
 ### Coach Output Check
 
-If all claims are verifiable:
+Run BOTH the fabrication check and the **Field-fit and format checks** in `skills/gatekeeper-checks/SKILL.md` → Coach Output Check. Either kind of violation is a FAIL.
+
+If everything passes:
 ```
 PASS — coach output
 ```
 
-If any are unverifiable:
+If anything fails:
 ```
 FAIL — coach output
 Return to: career-coach
 
 Unverifiable claims:
 - [Company] — [Role Title] — [Property]: "[exact claim]" — not traceable to 01-writing-rules.md, 02-professional-background.md, or 03-framework.md §Domain depth
+
+Field/format violations:
+- [Company] — [Role Title] — [Property]: "[offending text]" → [the field-fit/format rule broken and the fix]
 ```
+Omit a section that has no violations. List every violation in a single pass.
 
 List every unverifiable claim. Quote the exact text. Name the property it came from. **Before flagging, confirm you actually read `02-professional-background.md` and `03-framework.md` §Domain depth** — a claim absent from `01` but present in `02`/`03` is verifiable, not a violation.

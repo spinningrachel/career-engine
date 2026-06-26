@@ -271,8 +271,21 @@ A claim is verifiable if it traces to **any** of these three files. Checking aga
 - Attributes a metric, outcome, or responsibility not found in **any** of the three background files
 - Describes a skill or domain depth that is not documented in `02` Role Facts or `03` §Domain depth
 
-**Do not flag:**
+**Do not flag (for the fabrication check):**
 - Claims about the role or company (from the JD, not the user's background)
 - Role emphasis sentences describing what the role requires
 - Coach context-block framing instructions (the Priority lines prepended to Why I Want This Role) — directional guidance, not factual claims about the user's past
 - Gap handling entries identifying what the user does NOT have (gaps are expected absences, not fabrications)
+
+### Field-fit and format checks
+
+The fabrication check above verifies *traceability*. It does NOT catch content that is true but **in the wrong field**, **over a length cap**, or that **leaks a disabled feature** — the recurring coach defects. Run these in addition; **any hit is a FAIL** that returns to the coach for revision, exactly like a fabrication FAIL. (These examine field placement and format; they do not re-judge the framing the fabrication check already exempts.)
+
+1. **Role summary contamination — JD-only.** FAIL if `Role summary` references the candidate ("she/her", her name), her fit, her seniority or title, a title she "hasn't held," a gap, or "transferable." `Role summary` describes the job only. Quote the offending sentence.
+2. **Culture contamination — working-style only, no Landscape data.** FAIL if `Culture` contains specific financial or structural FACTS: dollar/revenue/funding figures, EBITDA numbers, named acquisitions or prices, exchange tickers (NYSE/NASDAQ), founding year, employee headcount, or segment names. Those belong in `Landscape`. A qualitative culture framing that references a posture ("profitability-first culture") is fine; the financial *data* is not.
+3. **Gap leak when gap handling is disabled.** ONLY when the spawner states gap handling is disabled for this run: FAIL if any coach property OR the `Why I Want This Role` coach context block enumerates gaps — "gap", "the X real gaps", "doesn't have / lacks / missing", or any catalog of what the candidate lacks. A disabled feature must suppress the behavior everywhere, including the transfer note.
+4. **Transfer note length.** FAIL if the coach context block's transfer/credibility line runs longer than **one line** (cap: one line, ≤25 words).
+5. **Outreach self-contact / advice.** FAIL if the outreach map's `Email / WhatsApp` section contains the user's own email, phone, or contact line, or any drafting/application advice ("lead with…", "available now"). That section is the hiring target's reachability only.
+6. **Length caps.** FAIL if `Keywords` exceeds 9 total (Critical >4, Important >3, or Nice-to-have >2); or `Culture` exceeds 3 bullets; or `Role emphasis` is missing its labeled **Mandate** / **Likely KPIs** structure.
+
+Each FAIL names the property, quotes the offending text, and states the fix.

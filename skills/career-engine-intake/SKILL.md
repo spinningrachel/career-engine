@@ -192,17 +192,19 @@ The coach returns:
 
 Hold the coach output in memory. Proceed immediately to Step 0.8.5.
 
-## Step 0.8.5 — Coach output fact check
+## Step 0.8.5 — Coach output check (fabrication + field-fit)
 
-Spawn `gatekeeper` with `option=coach-output`, passing:
-- The full coach output for all roles (Role emphasis, Strategy, Gap handling, Role summary per role)
-- `01-writing-rules.md` is already in memory — confirm it is loaded before spawning
+Spawn `gatekeeper` with `option=coach-output`. This gate runs BOTH the fabrication check (traceability) and the **field-fit/format checks** (wrong-field content, length caps, disabled-feature leak) — the latter catch the recurring coach defects the fabrication check structurally cannot. Pass:
+- **The full coach output per role** — not just four properties: `Role emphasis`, `Role summary`, `Culture`, `Keywords`, `Landscape`, `Strategy`, `Gap handling`, the `Why I Want This Role` coach context block, AND the outreach map. The field-fit checks need all of them.
+- **Whether gap handling is disabled this run** (`gap_handling_mode`), so the gatekeeper can run the gap-leak check.
+- `CAREER_DATA=${CAREER_DATA}` — so the gatekeeper reads `01/02/03` from career-data for the fabrication check (rather than relying on its self-locate fallback).
+- `01-writing-rules.md` is already in memory — confirm it is loaded before spawning.
 
 **If PASS:** proceed to Step 0.9.
 
-**If FAIL:** the gatekeeper returns a list of specific unverifiable claims per role and per property. Return those claims to the career coach with this instruction: "The following claims in your output cannot be traced to `01-writing-rules.md`. Revise the affected properties to remove or correct them. Do not substitute alternative fabrications — if a claim cannot be grounded in the reference file, omit it." Spawn the coach with only the affected roles and properties.
+**If FAIL:** the gatekeeper returns unverifiable claims and/or field/format violations, per role and property. Return them to the career coach with this instruction: "Fix each item below. For unverifiable claims: remove or correct them; do not substitute alternative fabrications. For field/format violations: move the content to the correct field, cut to the cap, or remove the leaked gap framing as stated. Revise only the affected properties." Spawn the coach with only the affected roles and properties.
 
-**Cap: 2 revision passes.** If still failing after pass 2, strip the unverifiable claims from the affected properties (replace with `[UNVERIFIABLE — removed]`), log all removed claims in the run-level revision log under `## Coach Fact Check — Unverifiable Claims Removed`, flag for the user in final delivery, and proceed to Step 0.9.
+**Cap: 2 revision passes.** If still failing after pass 2: strip unverifiable claims (replace with `[UNVERIFIABLE — removed]`), and for unresolved field/format violations apply the stated fix mechanically (move or trim the content; clear a leaked transfer-note gap inventory). Log everything removed or moved in the run-level revision log under `## Coach Output Check — Unresolved`, flag for the user in final delivery, and proceed to Step 0.9.
 
 ## Step 0.9 — Writeback and briefing
 
