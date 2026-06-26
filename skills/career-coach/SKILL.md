@@ -409,6 +409,39 @@ These properties are owned exclusively by the career-coach. Set them based on yo
 
 Surface this reading in `Role emphasis`, and let it guide the `Strategy` letter-type selection. Do not repeat what the JD says — translate what it means for this specific company in this specific moment.
 
+### Property reference — what each coach-owned property is for
+
+The plain-language purpose of every property the coach owns. The detailed spec for each (format, caps, rules) is in the definitions below this table; this is the at-a-glance map.
+
+| Property | What it is |
+|---|---|
+| `Priority` | Numeric urgency/fit rank (1 = highest). The sort handle; the *why* lives in `Priority Reason`. |
+| `Priority Reason` | One sentence justifying the score — name the driver(s) and any reason it isn't higher (e.g. fractional vs. full-time domain proof, remote ambiguity, scope uncertainty). |
+| `Role emphasis` | An interpretive read of what will matter most to succeed: the real mandate (not the responsibilities), where the job sits in the company's moment, special constraints, and the most-likely/implied KPIs. |
+| `Role summary` | The plain-language "what the job is in practice" — scope, stage, ownership areas, constraints (solo, budget), business timing. The version you'd tell a friend. ≤400 chars. |
+| `Landscape` | A structured market + company + product brief: snapshot (location, size, founders), product (what it is, how it works), buyers/personas, GTM motion, funding/stage, org context, competitive frame. |
+| `Keywords` | A prioritized requirements map from the JD — Critical / Important / Nice-to-have, hard-capped. For ATS targeting, proof-point selection, and go/no-go on a missing "Critical". |
+| `Strategy` | Letter-type Select — `IC` / `Strategic` / `Hybrid`. Sets the cover-letter structure only. |
+| `Company Stage` | Maturity label — Seed / Series A–C / Public / PE-backed / Stealth / Other. Calibrates scrappiness-vs-process, what "Head of X" really means, and which proof points land. |
+| `[Country] Compatibility` | Whether the role is realistically workable from the user's location — Yes / Remote-maybe / No. Early gating factor to avoid wasted effort. (Property name is configured, e.g. "Israel Compatibility".) |
+| `Role Type` | Multi-select shape — Builder (0→1, first hire) / Scaler (growth, existing motion) / Leader (team/org ownership) / Specialist (narrow lane). |
+| `Relationship type` | Full time / Part time / Temporary / Fractional. |
+| `Gap handling` | The material gaps and how to handle each (max 3), or `N/A`. |
+| `Culture` | A concise, sourced hypothesis about working style and operating environment — "does my style fit their reality". |
+| `Hiring Manager's Name` | Best-inferred HM name (confirmed from JD/LinkedIn/site, or marked inferred/uncertain). For outreach, letter addressing, interview prep. |
+| `Hiring manager's role` | HM's inferred title + functional context, including who likely runs the process vs. who the role reports to. Calibrates audience (technical founder vs. revenue leader vs. marketing leader). |
+| `Person who Advertised Role (if not Hiring Manager)` | The poster/recruiter when different from the HM. |
+| `Manager role confirmed` | `Yes` or `No; this is only a hypothesis`. |
+| `No incumbents in this function` | Whether the function is already staffed. |
+| `Recent news` | One sentence, or "None found in last 6 months". |
+| `Funding context` | Most recent round, amount, date, investors. |
+| `First Advertised` | Earliest corroborated posting date (YYYY-MM-DD); uncertainty is carried to the briefing, never into the Date field. |
+| `JD proof` | A short verbatim JD sentence that proves the `Role emphasis` read — the user's reference and an anti-fabrication guardrail. No writing agent reads it. |
+| `JD Body` | The full verbatim JD text, persisted so later runs need not re-fetch. |
+| `JD Fetch Status` | The fetch outcome — Fetched / LinkedIn-blocked / Unfetchable / Manual-entry. |
+
+---
+
 **Required — must be populated for every role that passes the pre-flight check:**
 `Role emphasis` · `JD proof` · `Keywords` · `Strategy` · `Role Type` · `Relationship type` · `Gap handling` · `Landscape`
 
@@ -425,7 +458,7 @@ If `GAP_HANDLING = disabled` (set in the Settings pre-flight), leave `Gap handli
 **⛔ KEYSTONE — written-back values are scannable briefs, not essays.** Every text property the coach writes (`Role emphasis`, `Culture`, `Landscape`, `Role summary`, `Priority Reason`, `Gap handling`) must be **formatted to scan AND tight.** This is mandatory, not cosmetic — the user reads these at a glance in a database row.
 - **Format (mirror the `Landscape` sectioned style the user approved):** use **bold labels**, a **blank line between distinct topics**, and **bullets** for any list. Never a single dense paragraph. A wall of prose is a format failure even when the content is correct.
 - **Brevity:** say it in the fewest words that carry the signal — cut throat-clearing, hedges, qualifiers, and restatement. Written-back content has been running far too long; if a value exceeds its cap below, it is over-written — trim it.
-- **Hard caps:** `Role emphasis` → **Mandate** ≤2 short sentences, **Likely KPIs** one line (a comma list, not prose), each on its own line with a blank line between; `Culture` → 2–3 one-line bullets, blank-line-separated; `Priority Reason` → one sentence; `Role summary` → ≤400 chars (existing); each `Landscape` bullet → one line. When in doubt, cut.
+- **Hard caps:** `Role emphasis` → **Mandate** ≤2 short sentences, **Likely KPIs** one line (a comma list, not prose), each on its own line with a blank line between; `Culture` → 2–3 one-line bullets, blank-line-separated; `Keywords` → ≤9 total (Critical ≤4 / Important ≤3 / Nice-to-have ≤2); `Priority Reason` → one sentence; `Role summary` → ≤400 chars (existing); each `Landscape` bullet → one line. When in doubt, cut.
 
 ---
 
@@ -455,9 +488,9 @@ For Specialist / practitioner roles (IC contributor, no direct reports), explici
 
 ---
 
-**`Keywords`** — 6–10 exact terms pulled verbatim from or directly derivable from the JD text. Divided into three tiers. Aim for 2–4 terms per tier — no padding.
+**`Keywords`** — a tight, prioritized requirements map from the JD. **Hard-capped — too many keywords muddies ATS targeting, bloats downstream context, and risks rate limits.** Three tiers, format `Critical: [terms] | Important: [terms] | Nice-to-have: [terms]`.
 
-Format: `Critical: [terms] | Important: [terms] | Nice-to-have: [terms]`
+**Hard caps — count before writing, never exceed:** Critical ≤4 · Important ≤3 · Nice-to-have ≤2 (**total ≤9**). Keep only the terms that actually gate the screen; drop the rest. Each term is an exact phrase from, or directly derivable from, the JD — never a paraphrase, never padding. **Over-production is the failure mode here — when in doubt, fewer.**
 
 - **Critical** — terms in required qualifications, repeated multiple times, or likely hard ATS filters. cv-writer must include ≥80% of this group.
 - **Important** — terms in preferred qualifications or appearing 1–2 times. cv-writer should include ≥60% of this group.
