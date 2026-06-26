@@ -249,19 +249,16 @@ The complete list of pipelines this plugin can run. Before taking any action, co
 
 ## Pipeline Flow
 
-**The orchestrator owns the Interested queue.** It fetches Interested roles directly using the A1/A2/B ladder (same ladder as intake, Status = `Interested`), runs a readiness check, builds the processing queue, and passes it to `career-engine-new-application`. It does NOT delegate queue-fetching to `career-engine-intake` — intake processes only Hold roles and is never called from here.
+**The orchestrator owns the Interested queue.** It fetches Interested roles directly via the database adapter (Status = `Interested`), runs a readiness check, builds the processing queue, and passes it to `career-engine-new-application`. It does NOT delegate queue-fetching to `career-engine-intake` — intake processes only Hold roles and is never called from here.
 
-### Step O1 — Fetch Interested roles
+### Step O1 — Fetch Interested roles (via the database adapter)
 
-Using the same A1 → A2 → B ladder described in `career-engine-intake` Step 0b (with Status filter `Interested` instead of `Hold`), fetch all roles with Status = `Interested`.
+These are database operations. **Load `${CLAUDE_PLUGIN_ROOT}/skills/database-notion/SKILL.md`** — the Notion adapter, mandatory when `database_backend` is `notion` (the default) — and follow it:
+- **§1 Schema read** — fetch the schema reference (the SQLite `CREATE TABLE` block) and keep it in context for all property writes. If the schema fetch fails, stop and report.
+- **§2 Read ladder** — query the queue with **target status `Interested`** (A1 → A2 → B). On Path B the adapter resolves the "Interested" view via **§3 view discovery** (one DB fetch → read the `<views>` block → match by name — never a `collection://` fetch), then per-page `notion-fetch` for properties (discovery-only, R-1).
+- If every rung fails, stop and report — never treat it as zero results, and never improvise `notion-search` (R-39).
 
-- **Path A1:** same gate check + `--filter '{"property":"Status","status":{"equals":"Interested"}}'`
-- **Path A2:** same `API-query-data-source` with `{"property": "Status", "status": {"equals": "Interested"}}`
-- **Path B:** locate the "Interested" view by name using the two-step fetch (DB → collection → view by name `"Interested"`), query it, then per-page `notion-fetch` for properties
-
-Apply the same all-paths-fail rule: if all paths fail, stop and report — never treat it as zero results.
-
-Also apply the Step 0a schema fetch before this step: call `notion-fetch` on `$NOTION_DATABASE_ID` to get the SQLite schema block. Use it for all property writes.
+(If `database_backend` is ever not `notion`, load that backend's adapter instead — the operation is the same: read schema, query the `Interested` queue.)
 
 Report count: "Found N Interested roles."
 

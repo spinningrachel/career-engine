@@ -39,10 +39,7 @@ Resolve `${CAREER_DATA}` by checking `~/.claude/skills/career-data/` (Code) or t
 2. If the key is missing or empty → stop: "Your pipeline-preferences.json is missing `idea_bank.database_id`. Run setup or add it manually before using mind-dump."
 3. Query the idea bank database to retrieve existing idea titles. Store the list for deduplication during the interview.
 
-**Notion read ladder for Step 0:**
-- A1: `notionApi` `API-query-data-source` with the database ID and a filter on `Title` property — preferred.
-- A2: `notion-query-database-view` with the database view URL from `idea_bank.database_view_url` (legacy `idea_bank.notion_page_url`) — fallback.
-- If both fail: proceed without dedup, note that existing ideas could not be fetched.
+**Read ladder for Step 0 (via the database adapter).** When `database_backend` is `notion` (the default), follow `${CLAUDE_PLUGIN_ROOT}/skills/database-notion/SKILL.md` → §2 read ladder, querying the idea-bank database (`idea_bank.database_id`) for existing idea titles (filter on the `Title` property). Path B uses `idea_bank.database_view_url` (legacy `idea_bank.notion_page_url`) as the view, or §3 view discovery to resolve it by name. If every rung fails, proceed without dedup and note that existing ideas could not be fetched.
 
 ## Interview (Step 1)
 

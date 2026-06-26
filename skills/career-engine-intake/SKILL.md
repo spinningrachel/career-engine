@@ -74,95 +74,11 @@ The database ID for this run: `$NOTION_DATABASE_ID` (resolved from the career-da
 
 ---
 
-**Step 0a — Fetch the database schema.** Run `notion-fetch` on the configured database ID:
-
-```
-notion-fetch id="{{NOTION_DATABASE_ID}}"
-```
-
-If the schema fetch fails (tool error, empty response) or the response contains no `CREATE TABLE` block, stop immediately and report the error to the user — do not proceed without a schema reference and do not improvise one.
-
-Extract the SQLite `CREATE TABLE` block from the response. This is your **schema reference** for the entire run — the authoritative list of property names and valid select option values. Keep it in context.
-
-**Use the schema reference for every Notion write in this run.** When writing a select field, look up the valid options in the SQLite comment for that column (e.g., `-- one of ["Yes", "Remote-only", "No"]`) and write the exact string from the schema. Never hardcode select option values. If any agent returns a value that does not match a schema option, map it to the closest matching option using the schema as the authority.
-
-**Pass the SQLite block to the career coach** in its prompt as a "Notion schema reference" section so it can write select values that exactly match the live Notion options.
+**Step 0a — Read the schema reference (via the database adapter).** This is a database operation. **Load `${CLAUDE_PLUGIN_ROOT}/skills/database-notion/SKILL.md`** — the Notion adapter, mandatory whenever `database_backend` is `notion` (the default) — and follow its **§1 Schema read**: fetch the schema, extract the SQLite `CREATE TABLE` block as the run's authoritative schema reference (property names + valid select-option values), keep it in context, and pass it to the career coach as a "Notion schema reference" section so it writes select values that match the live options. If the schema fetch fails, stop and report. (If `database_backend` is ever not `notion`, load that backend's adapter instead — the operation is the same.)
 
 ---
 
-**Step 0b — Fetch Hold roles using a direct Status filter.**
-
-Target status: `Hold`.
-
-Two query paths exist, and Path A has two rungs. Use **Path A1** (the `ntn` CLI) whenever its gate check passes; fall to **Path A2** (the `notionApi` server) when A1 is unavailable; use **Path B** when both A rungs are absent or unusable (e.g. a Cowork session with no CLI in its sandbox and no `notionApi` server — only the standard Notion connector). Falling down the ladder is sanctioned routing, never a reportable failure. Both intake modes use the same paths.
-
-**Path A1 — `ntn` CLI structured query (preferred where available).** The official Notion CLI returns the same structured JSON as the API, but through Bash — so the result is trimmed in the shell and only the fields the pipeline needs ever enter context. The gate, not the environment label, decides: any runtime whose shell passes the gate — including a sandboxed session where the CLI is installed and a token is configured — uses A1; where the gate fails, the ladder falls to A2 without comment. The gate never installs the CLI and never prompts for credentials mid-run. Keychain auth requires an interactive login session; in headless or sandboxed shells auth comes from the `NOTION_API_TOKEN` environment variable (or `NOTION_KEYRING=0` file-based auth) — if neither is present, `ntn whoami` fails, and that is the gate working as designed.
-
-Gate check (both conditions must pass):
-```bash
-command -v ntn >/dev/null 2>&1 && ntn whoami >/dev/null 2>&1 && echo "Path A1 available"
-```
-
-Resolve the data source ID once per run from the database ID, then query:
-
-```bash
-ntn api /v1/databases/{{NOTION_DATABASE_ID}}   # read data_sources[0].id from the response
-ntn datasources query <data-source-id> \
-  --filter '{"property":"Status","status":{"equals":"Hold"}}' \
-  --limit 100 --json
-```
-
-Trim the JSON in the shell (`python3` or `jq`) down to each row's page `id` plus the named properties this step needs — always read by property name, never by column position. If `has_more` is true, continue with `--start-cursor` until exhausted. For a full single-row read, `ntn pages get <page_id>` returns every property plus the page body as markdown in one call.
-
-Better still, project at the source so bulk payloads never arrive at all: repeat the httpie-style query param `filter_properties==<property_id>` on a direct query call —
-
-```bash
-ntn api /v1/data_sources/<data-source-id>/query 'filter_properties==title' 'filter_properties==<property_id>' \
-  -X POST -d '{"filter": {...}, "page_size": 100}'
-```
-
-— which returns only the named properties (verified: ~3KB for a projected batch vs ~120KB unprojected). `filter_properties` takes property IDs read from the data source schema, not property names.
-
-Syntax notes for direct API calls: `ntn api` is httpie-style — the path is given directly with no get/post verb words (`ntn api /v1/pages/<page_id>`; method is inferred, override with `-X PATCH -d '{...}'`); query params are `name==value` inline inputs. When unsure of syntax, verify instead of guessing: `ntn api ls` lists supported endpoints, `ntn api <path> --docs` prints the official endpoint docs, and `--spec` prints the request/response schema.
-
-If any A1 call errors after the gate passed (auth revoked mid-run, network failure), fall to Path A2 for the remainder of the run.
-
-**Path A2 — `notionApi` structured query.** `notionApi` returns structured JSON keyed by property name. There is no column alignment to get wrong, no table to parse, no off-by-one risk.
-
-The `notionApi` tools are deferred and their schemas are not pre-loaded. Before calling, run a ToolSearch to load the schema:
-```
-ToolSearch query="select:notionApi__API-query-data-source"
-```
-If ToolSearch returns a schema, proceed with Path A2. If it returns nothing, try the full tool name `mcp__notionApi__API-query-data-source` directly — deferred tools are still callable by their full name even if ToolSearch doesn't surface them. If the direct call returns a tool-not-found error, the `notionApi` server is not connected in this session — **execute Path B immediately: go directly to the numbered steps under "Path B" below and call `notion-fetch` then `notion-query-database-view`.** If the Path A2 call returns any other error (auth failure such as a 401, Enterprise-gated response, malformed response, timeout), treat the `notionApi` server as unusable in this session — **execute Path B immediately: go directly to the numbered steps under "Path B" below and call `notion-fetch` then `notion-query-database-view`.** In neither case report this as a failure; Path B is a sanctioned route, not a workaround. Do NOT attempt `notion-search`, `notion-fetch` on the view URL directly, or any other improvised route — the next action is always `notion-fetch id="$NOTION_DATABASE_ID"` (Path B step 1). If Path B then also fails, apply the all-paths-fail rule at the end of this step.
-
-Call `notionApi` `API-query-data-source` (full tool name: `mcp__notionApi__API-query-data-source`) with:
-- database ID: `$NOTION_DATABASE_ID` (resolved from career-data config)
-- filter: `{"property": "Status", "status": {"equals": "Hold"}}`
-- page_size: 100
-
-This returns a JSON array of page objects. Each object has an `id` field and a `properties` object with named fields — read property values by name, not by column position.
-
-**Path B — standard connector view query for discovery, per-page fetch for properties (only when the `notionApi` server is absent or unusable).** **Start here with step 1 below — call `notion-fetch id="$NOTION_DATABASE_ID"` first.** Do not call `notion-fetch` on any other URL, do not call `notion-search`, and do not attempt any other tool before completing steps 1–4 in order. `notion-query-database-view` (used in step 2) executes a *view's own saved filter and sort* and returns a *rendered table*. Two hard constraints on this tool (R-39): it does **not** accept an ad-hoc `filter` argument — any filter you pass is silently ignored — and it requires a real **view URL** (`https://www.notion.so/<DB_ID>?v=<VIEW_ID>`), never the bare database URL. The rendered table is also susceptible to column misalignment (the R-1 failure: 17 companies, 16 status tags) and shows only the view's visible columns, so it is used **only to discover candidate pages**; property values are always read per page. The rule that survives from R-1: **a misaligned rendered table must never be parsed** — and in Path B no rendered table is ever parsed for property values, aligned or not.
-
-1. **Resolve the view URL by name — do not hardcode it and do not pass a filter. ONE fetch is enough** (verified against the live `notion-fetch` 2026-06). Call `notion-fetch id="$NOTION_DATABASE_ID"`. **This single response contains BOTH:**
-   - a `<data-sources>` block — each `<data-source url="{{collection://UUID}}">` is the data-source/collection id (used by `API-query-data-source`, Path A2); **and**
-   - a `<views>` block listing every view as `<view url="{{view://UUID-with-dashes}}">` followed by its config JSON, which includes `"name":"<view name>"`.
-   - **Find the view in that same response:** scan the `<views>` block for the `<view>` whose JSON `"name"` matches the target (e.g. `"name":"Hold"`). Strip the `{{...}}` wrapper to get `view://<UUID-with-dashes>`. (All URLs in the response are wrapped in `{{...}}` — strip it before use.)
-   - **Do NOT fetch the `collection://` URL to find views.** A `notion-fetch` on a `collection://` returns **only** the data-source schema (properties + a SQLite table definition) with **no `<views>` block** — looking for a view there finds nothing. Views live only in the database fetch above. Fetching `collection://` is for reading the data-source schema, not for view discovery.
-   - **Build the query URL:** take the view's UUID (e.g. `11112222-3333-4444-5555-666677778888`), **remove all dashes**, and construct `https://www.notion.so/<DB_ID_NO_DASHES>?v=<VIEW_ID_NO_DASHES>` (e.g. `https://www.notion.so/aaaaaaaabbbbccccddddeeeeeeeeeeee?v=11112222333344445555666677778888`). The DB ID is already known (no-dash form); only the view UUID needs dash removal. View IDs change when views are reorganised, so the by-name lookup is always the source of truth.
-2. Call `notion-query-database-view` with `view_url` = that URL and **no other arguments**. The view already restricts to the target status; do not construct your own filter.
-3. **Use the result for discovery only.** Extract the page IDs/links from the result — these are unambiguous even in a misaligned table. Do not read any property value out of the rendered table.
-4. **Fetch full properties per page:** call `notion-fetch id="<page_id>"` on each candidate page and read its complete property set from the structured page response. Discard pages whose Status does not match the target. Every downstream read in this run — Step 0.6 priorities, the Step 0.8 coach-complete check, the Step 0.9a write-only-to-empty rule — uses these per-page property sets, never the rendered table.
-
-**Rules for all paths:**
-
-**Never create, update, or modify Notion database views.** Do not call `create-database-view`, `update-database-view`, or any equivalent tool under any circumstance — not as a workaround, not to filter results, not to resolve misalignment.
-
-**On Paths A2 and B, do not use Bash or Grep on the query result.** Process it directly from the tool response in context. On Path A1 the result arrives through the shell, and trimming it there (`python3`/`jq`) is the sanctioned mechanism — that is the point of the rung, not a violation of this rule.
-
-The result should contain only rows matching the target status. If unfiltered rows appear, discard non-matching ones in memory and log a warning. Do not process any row whose Status does not match the target.
-
-If all paths fail with tool errors or unparseable responses, stop immediately and report the error to the user — do not treat it as zero results and do not improvise a query route outside the ladder. In particular, **never fall back to `notion-search` (or any semantic/keyword search) to discover queue rows** (R-39): it is relevance-ranked and capped, cannot enumerate the queue, and will silently miss roles — producing a false "no roles" when roles exist.
+**Step 0b — Fetch the Hold queue (via the database adapter).** Target status: `Hold`. Following `skills/database-notion/SKILL.md` (loaded in Step 0a) → **§2 Read ladder**, query the queue for `Status = Hold` (A1 → A2 → B; falling down the ladder is sanctioned routing, never a reportable failure). **Both intake modes use the same ladder.** On Path B the rendered view is **discovery-only** → per-page `notion-fetch`; **every downstream read in this run** — Step 0.6 priorities, the Step 0.8 coach-complete check, the Step 0.9a write-only-to-empty rule — uses those per-page property sets, never a rendered table. If every rung fails, stop and report — never treat it as zero results, and never improvise `notion-search` to enumerate the queue (R-39). The adapter also carries the all-paths rules (no view creation, no Bash/Grep on A2/B results, target-status filtering).
 
 Skip any entry where neither a Job URL nor job description details in the RTF body of the record are populated.
 
@@ -300,7 +216,7 @@ This step is mechanical and runs end-to-end without pausing.
 
 **Most-skipped, treat as mandatory:** the **location-compatibility property** and **`First Advertised`** are the two writes agents most often drop. When the coach produced a value (including a `[LOW]`/range/`Unknown`), these MUST be written — do not finish a role with either left empty. Same for `Role emphasis` (with its Mandate + Likely KPIs lines) and `Landscape` (sectioned format).
 
-Where Path A1 (the `ntn` CLI, Step 0b gate) is active in this run, property writes may equivalently go through `ntn api /v1/pages/<page_id> -X PATCH -d '{"properties": {...}}'` — same write-only-to-empty rule, same parallelism. Otherwise use the connector tools as written below.
+Write through the database adapter (`skills/database-notion/SKILL.md` → §4 Writeback): where Path A1 (the `ntn` CLI) is active this run, property writes may go through `ntn api /v1/pages/<page_id> -X PATCH` (same write-only-to-empty rule, same parallelism); otherwise use `notion-update-page`. The property list and write-if-empty rules below are intake's contract; the adapter provides the mechanism (including the never-create-a-property guard).
 
 For each role in the processing queue, apply this rule to:
 - `Priority` — write the coach's value (`1`–`6`) only if currently empty. If the role was coach-skipped (already coach-complete per Step 0.8), do not write at all — leave unchanged. In a mixed batch, apply per role individually.

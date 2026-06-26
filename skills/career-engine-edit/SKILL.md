@@ -61,27 +61,7 @@ Then read `${CAREER_DATA}/references/pipeline-preferences.json` and set `$NOTION
 
 ---
 
-**Path A1 — `ntn` CLI (preferred where available).** If the gate passes (`command -v ntn >/dev/null 2>&1 && ntn whoami >/dev/null 2>&1`), query directly instead of the A2/B routes below (resolve the data source ID from `{{NOTION_DATABASE_ID}}` via `ntn api /v1/databases/{{NOTION_DATABASE_ID}}` → `data_sources[0].id`):
-
-```bash
-ntn datasources query <data-source-id> \
-  --filter '{"property":"Status","status":{"equals":"Needs editing"}}' \
-  --limit 100 --json
-```
-
-Trim the JSON in the shell to page `id` plus the named properties E0 needs; for the full per-role payload, `ntn pages get <page_id>` returns all properties plus the page body as markdown in one call. The pre-built view exists to serve the connector route — on A1, the direct Status filter is the sanctioned equivalent. If the gate fails or any A1 call errors, fall through to Path A2 (then Path B) below without comment (intake Step 0b documents the full ladder and syntax).
-
-**Path A2 — `notionApi` structured query.** If A1 is unavailable, load the schema (`ToolSearch query="select:notionApi__API-query-data-source"`, or call `mcp__notionApi__API-query-data-source` directly). A tool-not-found error means the server is not connected — fall through to Path B; on any other error (401, Enterprise-gated response, timeout, malformed response) treat it as unusable and also fall through. Otherwise call `API-query-data-source` with database ID `{{NOTION_DATABASE_ID}}`, filter `{"property":"Status","status":{"equals":"Needs editing"}}`, page_size 100. It returns structured JSON keyed by property name.
-
-**Path B — standard connector view query (discovery only).** `notion-query-database-view` runs a *view's own saved filter* — it takes no ad-hoc `filter` argument (any filter you pass is ignored) and needs a real view URL (`...?v=<VIEW_ID>`), never the bare database URL (R-39). Query the Job Applications database using the pre-built "Needs Editing" view:
-
-```
-View URL: {{NOTION_NEEDS_EDITING_VIEW_URL}}
-```
-
-This view is pre-configured to return only rows with `Status = Needs editing`. Call `notion-query-database-view` with this `view_url` and no other arguments — do not construct your own filter (the A1/A2 direct filters above are the only sanctioned filtered routes). The view URL is a fast path; if it is empty, fails, or is stale (view deleted or reorganised), resolve it by name instead using a two-step fetch: (1) call `notion-fetch id="{{NOTION_DATABASE_ID}}"` to get the `collection://` URL from the `<data-sources>` block; (2) call `notion-fetch id="<collection_url>"` to list views, find the one with `"name":"Needs Editing"`, take its UUID (from the `view://UUID-with-dashes` format), **remove all dashes**, and construct `https://www.notion.so/<DB_ID_NO_DASHES>?v=<VIEW_ID_NO_DASHES>`.
-
-**The view result is for discovery only (R-1).** `notion-query-database-view` returns a rendered table that is susceptible to column misalignment and shows only the view's visible columns — never enough for the full row payload below. Extract only the page IDs/links from the result (unambiguous even in a misaligned table), then call `notion-fetch id="<page_id>"` on each page and read the full payload from the structured page response. Never read property values out of the rendered table.
+**Query the Needs-Editing queue via the database adapter.** Following `${CLAUDE_PLUGIN_ROOT}/skills/database-notion/SKILL.md` (the Notion adapter; loaded when `database_backend` is `notion`) → **§2 read ladder**, query the queue for **`Status = Needs editing`** (A1 → A2 → B; falling down the ladder is sanctioned routing). For Path B, the configured edit view is the fast path — pass `{{NOTION_NEEDS_EDITING_VIEW_URL}}` (resolved from `database_edit_view_url`, legacy `notion_needs_editing_view_url`) as the `view_url`; if it is empty, stale, or fails, fall back to the adapter's **§3 view discovery** to resolve the "Needs Editing" view by name. Path B is **discovery-only** → per-page `notion-fetch` (R-1) — never parse the rendered table. If every rung fails, stop and report — never `notion-search` (R-39).
 
 For each page fetched, capture the full row payload including:
 - Page ID
@@ -461,7 +441,6 @@ If not accurate, remove it from your Why I Want This Role before the next run.
 If no [WIWTR-UNLOGGED] items were found in this run, omit Section 2 entirely.
 
 Log in the final delivery per role: "Update prompt written/appended to `<company_dir>/update-prompt-<company>-<monYYYY>.md` — paste into Chat or Code (do both if you use both environments)" or "No Why I Want This Role content and no WIWTR-UNLOGGED items — skipped."
-
 
 ## State file (crash-recovery resilience)
 

@@ -42,10 +42,7 @@ This agent does NOT: write post copy directly, schedule or publish posts (Postiz
 
 Query the idea bank for ideas with `Status = Idea` (not yet drafted).
 
-**Notion read ladder:**
-- A1: `notionApi` `API-query-data-source` with database ID and filter `Status = Idea` — preferred
-- A2: `notion-query-database-view` with the view URL from `idea_bank.database_view_url` (legacy `idea_bank.notion_page_url`) — fallback; filter by Status after retrieval
-- If both fail: stop and report
+**Read ladder (via the database adapter).** When `database_backend` is `notion` (the default), follow `${CLAUDE_PLUGIN_ROOT}/skills/database-notion/SKILL.md` → §2 read ladder, querying the idea-bank database (`idea_bank.database_id`) for `Status = Idea`. Path B uses `idea_bank.database_view_url` (legacy `idea_bank.notion_page_url`) as the view (filter by Status after retrieval), or §3 view discovery to resolve it by name. If every rung fails, stop and report.
 
 Retrieve: Title, Category, Summary, Status, and (if present) any date fields.
 
