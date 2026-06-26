@@ -416,13 +416,23 @@ If `GAP_HANDLING = disabled` (set in the Settings pre-flight), leave `Gap handli
 
 ---
 
-**Likely KPIs (always produced — not a Notion property; travels in the coach context block and the briefing).** State, as one bullet, the metric set this role is actually measured on — for **every** role, **including when the JD names no targets at all.** When the JD is silent, do not skip it: infer the KPIs from the role's scope, the company's GTM and business model (research dimension 1), and market research. A consumer-adoption role is measured on activation, usage, retention, and engagement; an enterprise GTM role on pipeline, ACV, win-rate, and sales-cycle; a community/UGC role adds contribution and active-contributor metrics. For an operating-model transition, give the **target-model** KPIs, not the model the user is leaving. Purpose: orient the writers toward the right *past* proof and away from wrong-model metrics, and let the CV's "measured in [...]" framing and the letter's register match what the role actually rewards. Likely KPIs are framing input only — they are **never** restated in the letter as targets the user commits to hit (see the cover-letter judgment-not-promises rule). Tag `[LOW]` when inferred with no JD or market confirmation; never leave it blank.
+**⛔ KEYSTONE — analysis properties describe the ROLE and the COMPANY, never the candidate.** `Role emphasis`, `Landscape`, `Culture`, `Role summary`, `Company Stage`, and every research-derived property (`Competitors`, `Market Signals`, `Recent news`, `Funding context`, `Recruitment Signals`, `Career Path`, `Hiring Manager's Name`) answer *"what is this role / company / market?"* — objectively, as a recruiter-grade intelligence brief. They must NOT name the candidate, reference "her letter," describe what she must do, or carry letter strategy. A line like "the domain bridge Rachel's letter must cross" does not belong in `Culture` — it belongs in none of these properties. **Candidate-facing framing lives in exactly three places: the coach context block (prepended to `Why I Want This Role`), `Gap handling`, and the `Strategy` select — nowhere else.** If you catch yourself writing the candidate's name, "she/her," or "the letter" inside a role/company property, you have leaked framing into the wrong field: cut it and move it to the coach context block.
 
 ---
 
-**`Role emphasis`** — 1–2 sentences on the real mandate beneath the job title. What does success in this role actually look like, beyond what the title says?
+**Likely KPIs (always produced — a required part of the `Role emphasis` property, plus a one-line echo in the coach context block for the letter-writer).** State, as one bullet, the metric set this role is actually measured on — for **every** role, **including when the JD names no targets at all.** When the JD is silent, do not skip it: infer the KPIs from the role's scope, the company's GTM and business model (research dimension 1), and market research. A consumer-adoption role is measured on activation, usage, retention, and engagement; an enterprise GTM role on pipeline, ACV, win-rate, and sales-cycle; a community/UGC role adds contribution and active-contributor metrics. For an operating-model transition, give the **target-model** KPIs, not the model the user is leaving. Purpose: orient the writers toward the right *past* proof and away from wrong-model metrics, and let the CV's "measured in [...]" framing and the letter's register match what the role actually rewards. Likely KPIs are framing input only — they are **never** restated in the letter as targets the user commits to hit (see the cover-letter judgment-not-promises rule). Tag `[LOW]` when inferred with no JD or market confirmation; never leave it blank.
 
-**Role Emphasis must name a business problem, not a task list.** Ask: what breaks if this role goes unfilled for 6 months? What is the hiring manager actually losing sleep over? "Manage social media channels and create content calendars" is a task list — it fails this step. "Own the company's voice in a crowded SaaS market where brand trust is the primary conversion driver — no established playbook, build it from scratch" is a Role Emphasis. Never restate the JD's responsibilities section in different words. Never produce a list of verbs. The JD Reality Filter extracted the 20% business problem — Role Emphasis must name it.
+---
+
+**`Role emphasis`** — the real mandate beneath the job title **and the metrics that mandate is judged on.** About the ROLE, not the candidate and not the letter (keystone rule above). **Format it for scanning, the way `Landscape` is formatted — short labeled lines, never a wall of prose:**
+
+```
+**Mandate:** 1–2 sentences naming the business problem — what breaks if this role goes unfilled for 6 months, what the hiring manager is losing sleep over.
+**Likely KPIs:** the metric set this role is measured on (from the Likely KPIs analysis above) — target-model set for a transition. [HIGH/LOW]
+**Step-down / transition:** one line, ONLY if step-down or operating-model-transition detection fired; otherwise omit this line.
+```
+
+**The Mandate names a business problem, not a task list.** Ask: what breaks if this role goes unfilled for 6 months? "Manage social media channels and create content calendars" is a task list — it fails. "Own the company's voice in a crowded SaaS market where brand trust is the primary conversion driver — no established playbook, build it from scratch" is a Mandate. Never restate the JD's responsibilities in different words; never produce a list of verbs; **never put letter strategy, coaching notes, or anything addressed to the candidate here** — that is the coach context block's job. The JD Reality Filter extracted the 20% business problem — the Mandate names it.
 
 For Specialist / practitioner roles (IC contributor, no direct reports), explicitly state all three:
 - **Reporting line:** Who does this role report to?
@@ -587,8 +597,10 @@ Return findings in this exact structure for every role received.
 ### Strategic properties
 
 #### <Company> — <Role Title>
-- **Role emphasis:** <1-2 sentences> [HIGH/LOW]
-- **Likely KPIs:** <the metric set this role is measured on — inferred from scope + GTM model when the JD names none; target-model set for a transition> [HIGH/LOW]
+- **Role emphasis:** (scannable labeled lines, like Landscape — about the role, not the candidate)
+  - **Mandate:** <business problem / real mandate> [HIGH/LOW]
+  - **Likely KPIs:** <metric set the role is measured on; target-model set for a transition> [HIGH/LOW]
+  - **Step-down / transition:** <one line, only if detected>
 - **JD proof:** "<verbatim quote>"
 - **Keywords:** Critical: <terms> | Important: <terms> | Nice-to-have: <terms>
 - **Strategy:** `IC` | `Strategic` | `Hybrid`
@@ -682,13 +694,19 @@ Rules:
 
 ## Notion Writeback Rules
 
+**Write to existing properties only — never create a property.** Write each value to the existing database property of that exact name. **Never create a new property, and never create a numbered or renamed variant** (the "Strategy 1" failure: an agent that couldn't write `Strategy` cleanly created a duplicate field). If a target property is missing, rejects the write, or its type doesn't match, STOP and report it in Patterns — never invent a field.
+
+**Write to properties, never to the page body.** All coach output goes into the named properties below. **Do not write letter strategy, coaching notes, priorities, KPIs, or any analysis into the page body.** The only sanctioned body-adjacent write is prepending the coach context block to the existing `Why I Want This Role` field (a property, not the page body). If something doesn't fit a property, it doesn't get written.
+
+**These writes are mandatory every full-research run — not best-effort.** `Role emphasis` (with its Mandate + Likely KPIs lines), `Landscape` (sectioned format), `Strategy`, `Keywords`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, the **location-compatibility property**, and **`Date first advertised` / First Advertised** must be populated (write-only-to-empty still applies — fill an empty field, don't overwrite). **Location and First Advertised are the two most-skipped — do not finish a role with either left empty** when research produced a value (or its `[LOW]` / range / `Unknown` per their rules). If a mandatory write is genuinely impossible, name the property and the reason in Patterns.
+
 **Write only to empty properties.** For every coach-owned property, check the current Notion value before writing. If a value already exists — regardless of what the coach produced — skip it. Do not overwrite.
 
 This applies to all coach-owned properties: `Role emphasis`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, `Company Stage`, `Culture`, `Person who Advertised Role (if not Hiring Manager)`, `Priority`, `Priority Reason`, `Landscape`, and all research-derived properties (`Hiring Manager's Name`, `Recent news`, `Funding context`, etc.), as well as the location compatibility property (name resolved from `pipeline-preferences.json`).
 
 **`JD proof` exception — always overwrite.** Unlike all other coach-owned properties, `JD proof` must be written even if already populated. The current run's verbatim quote from the JD text supersedes any prior value. This is the anti-fabrication guardrail: the quote must be traceable to the JD text this run fetched or found, never to a cached Notion value from a prior run.
 
-**`Why I Want This Role` — coach context block (intake / Option 2 only).** Prepend a coaching context block to the `Why I Want This Role` Notion field. This block carries the strategic priorities and framing the letter-writer needs; the user may edit or remove it before submitting to the pipeline.
+**`Why I Want This Role` — coach context block (intake / Option 2 only).** Prepend a coaching context block to the `Why I Want This Role` Notion field. This block carries the strategic priorities and framing the letter-writer needs; the user may edit or remove it before submitting to the pipeline. **Existing content in `Why I Want This Role` is NEVER a reason to skip this write** — the field already having the user's notes is the normal case. Always prepend the block above whatever is there (this is the one exception to "write only to empty"; the block goes on regardless). An agent that skipped the context block because the field "already had values" got this wrong.
 
 Format of the block:
 ```
@@ -697,20 +715,23 @@ Priority 1: [what the HM is actually hiring for — direct, specific noun phrase
 Priority 2: [second screening criterion]
 Priority 3: [third screening criterion]
 Likely KPIs: [the metric set this role is actually measured on — adoption/usage/retention vs. pipeline/ACV/win-rate, etc.; inferred from scope + GTM model when the JD names none; framing input, never a commitment]
-[If function shift, step-down, or operating-model transition (B2B↔B2C / enterprise↔consumer / sales-led↔product-led): one line naming the credibility-of-transfer argument, the target-model KPI set to frame toward, and any confirm-first note]
+[If function shift, step-down, or operating-model transition: ONE line, ≤25 words, naming only the credibility-of-transfer argument (the target-model KPIs are already on the Likely KPIs line above; do not repeat them). A confirm-first note, if any, is a separate ≤10-word line.]
 [GTM lens answers if material: why you / why them / why now — one tight line each, only if they add something not in the priorities]
 
 ---
 ```
 
 Rules:
-- Each priority is a noun phrase, not a sentence. Name the capability or signal precisely. "PLG execution credibility — activation frameworks, PQL design, in-product lifecycle" is correct. "Someone who can drive growth through product-led strategies" is not. Hard cap: 20 words per priority.
+- Each priority is a noun phrase, not a sentence. Name the capability or signal precisely. "PLG execution credibility — activation frameworks, PQL design, in-product lifecycle" is correct. "Someone who can drive growth through product-led strategies" is not. **Hard cap: 20 words per priority — enforce it; the priorities were running far too long.**
+- **Whole-block cap.** The context block is a scannable brief, not an essay. Total: the Letter type line + 3 priorities + the one-line Likely KPIs + at most the one-line transfer note + optional GTM-lens line. If the block runs past ~8 short lines, you have over-written it — cut back to the caps above. The transfer note in particular is ONE line, never a paragraph.
 - No candidate credential names, no company names from her background in the priorities — writers read her background separately.
 - The GTM lens lines (why you / why them / why now) are optional; include only when they add material framing beyond the priorities themselves.
 - The `Likely KPIs` line is always included — one line, even when the JD names no targets (infer from scope + GTM model). It is framing input only; never phrase it as a target the user commits to hit.
 - If the field already has content: prepend the block above the existing content, keeping `---` as the separator. The existing content follows verbatim below the separator.
 - If the field is empty: write only the block (no separator needed — there is no user content below it yet).
 - This writeback applies to Option 2 (intake pipeline) only. Never write to `Why I Want This Role` from Options 1, 3, 4, 5, or 6.
+
+**`Landscape` format is mandatory — always the sectioned, scannable structure, never a prose blob.** Every Landscape write uses the `## Competitors` / `## Market Signals` / `## User Voice` / `## Company & Org` / `## Recruitment Signals` / `## Career Path` headings with one tight sourced bullet per point (see the Output Format spec). A wall of paragraphs is a format failure even if the content is right — it is too hard to scan. Same discipline as `Role emphasis`: labeled sections, short lines.
 
 **`Landscape` exception:** If Landscape is already populated, do not replace it — prepend the new section-format content above the existing content, separated by a `---` divider. Existing content is less current but still valuable; preserve it verbatim below the divider.
 
