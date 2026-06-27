@@ -49,6 +49,8 @@ Before Step 1, create `<output_dir>/<company_dir>/_pipeline/` (the run's scratch
 
 ## CV Steps (1 through 4.5)
 
+> **Step numbering:** the CV stages are Steps 1, 1.5, 2, 4, and 4.5. There is no Step 3 — the numbering skips it intentionally; "Steps 1 through 4.5" is the full CV range.
+
 ### Step 1 — CV writer (draft)
 
 Spawn `cv-writer` with `option=draft`, passing:
@@ -233,6 +235,19 @@ The humanizer changed the text after the last PASS, so that PASS is no longer va
 
 **If both pass:** proceed to Step 6. **If either fails:** spawn `cover-letter-humanizer` again with the specific failures named (language-level issues) or `letter-writer` with `option=revision` (content-level issues), then re-run this step. Cap: 2 rounds. After the cap, revert to the `.prehumanizer.md` file saved in Step 5.9 (the last text that passed Step 5.3) and flag the letter for manual review in the final delivery. Never export text that has not passed this step.
 
+**Sync the passing bytes to the export path — do this on EVERY exit from this step, before Step 6 runs.** The retry branches above edit `$PIPE/letter-final.md` in place, and the revert branch restores `$PIPE/letter-final.prehumanizer.md` — in both cases the `/tmp/<coverletter_filename>.md` copy made in Step 5.9 is now stale, and Step 6 would convert the wrong bytes. After the verification passes (and after any revert), re-copy the authoritative final letter to the export working path and the output backup:
+
+```bash
+# Revert branch only: restore the last text that passed Step 5.3 as the final letter.
+# cp "$PIPE/letter-final.prehumanizer.md" "$PIPE/letter-final.md"
+
+# Both branches: re-sync the passing bytes Step 6 will convert.
+cp "$PIPE/letter-final.md" /tmp/<coverletter_filename>.md
+cp "$PIPE/letter-final.md" "<output_dir>/<company_dir>/<coverletter_filename>.md"
+```
+
+On Path B, run these copies through the host file tool (R-30), writing the intermediate markdown host-side rather than to sandbox `/tmp/`.
+
 ---
 
 ## Step 6 — Produce DOCX
@@ -249,11 +264,13 @@ Follow the `career-engine-export` skill's Step 6 production protocol exactly —
 
 ## Step 6H — Additional language localization (conditional)
 
+**Skip in `--now` mode** — no Notion row exists, so there is no `Languages` property to read. Produce output in `$DEFAULT_LANGUAGE` only and proceed to Step 7.
+
 **Language resolution rule — apply before deciding whether to run this step:**
 
-1. Read the `Languages` property from the Notion row fetched in Step 0.
+1. Read the `Languages` property from this role's Notion row — the one the orchestrator/queue pipeline already fetched upstream and holds in memory. Do not re-fetch.
 2. **If `Languages` is empty or not set:** produce output in `$DEFAULT_LANGUAGE` only. Skip this step entirely and proceed to Step 7.
-3. **If `Languages` is populated:** produce output in every listed language. The `$DEFAULT_LANGUAGE` output has already been produced in Steps 1–5.96. This step handles all additional languages listed in `Languages` beyond the default.
+3. **If `Languages` is populated:** produce output in every listed language. The `$DEFAULT_LANGUAGE` output has already been produced in Steps 1–5.95. This step handles all additional languages listed in `Languages` beyond the default.
 
 **Hebrew localization — runs only if `Languages` explicitly includes `Hebrew`** (i.e. the `Languages` property is non-empty and `Hebrew` is one of its values). If `Hebrew` is not listed, skip Hebrew localization even if other non-default languages are listed.
 
@@ -263,8 +280,8 @@ Spawn `localization` with:
 - `CAREER_DATA=${CAREER_DATA}`
 - The final English CV markdown (read from `$PIPE/cv-final.md`)
 - The final English cover letter markdown (read from `$PIPE/letter-final.md`)
-- The structured JD
-- The exact role title from the JD
+- The structured JD — the same in-memory JD the queue pipeline fetched in Step 0.5 and passed through Steps 1–5. On a crash-recovery resume where that in-memory JD is no longer available, omit it: the localization agent translates from the on-disk English markdown above (the authoritative source content) plus the role title below — the structured JD is supplementary context, not required.
+- The exact role title from the JD — on a resume where the in-memory value is gone, recover it from the `<roletitle>` slug in the staged English filenames / `<company_dir>` (the same slug Step 4 and Step 5.3 wrote to disk).
 
 The agent returns a Hebrew CV markdown block and a Hebrew cover letter markdown block.
 
@@ -394,6 +411,8 @@ where `$OUTPUT_DIR` is the run directory resolved by the orchestrator (e.g. `{{O
 
 Write the following properties using `notion-update-page`. All values are already in memory.
 
+**Confirm every property name against the schema before writing.** The database-notion adapter's §1 schema read (the SQLite `CREATE TABLE` block — the authoritative list of property names and select-option values) was already done upstream and is in context; do not re-fetch it. Before the `notion-update-page` call, check each property name below against that schema. Per the adapter's writeback rule (`skills/database-notion/SKILL.md` §3), a property that is missing, renamed, or whose type doesn't match the schema must **not** be silently dropped and must **never** spawn a numbered variant ("Strategy 1") — omit only that property from the call and surface a named note in the final chat delivery: "Notion property `<name>` not found in the database schema for [Company] — renamed or removed; its value was not written. Update the property name or your `database_property` mapping." Write the properties that do match; one renamed property never blocks the others.
+
 **Coach-owned properties** — write verbatim from the coach's output in Step 0.8. Do not rewrite or reinterpret.
 
 | Property | Source |
@@ -519,7 +538,7 @@ After updating the file, repackage the `career-data` directory as a `.skill` zip
 - If there is nothing new to add, say so explicitly: "No new content to promote from this entry."
 ```
 
-**After the §5 promotion section, append a WIWTR-UNLOGGED section if applicable:** Collect every item the gatekeeper flagged as `[WIWTR-UNLOGGED]` during this run (from Steps 5.3, 5.5, and 5.95 violation reports). For each item, append to the update-prompt file:
+**After the §5 promotion section, append a WIWTR-UNLOGGED section if applicable:** Collect every item the gatekeeper flagged as `[WIWTR-UNLOGGED]` during this run (from Steps 5.2, 5.3, and 5.95 violation reports). For each item, append to the update-prompt file:
 
 ```
 ## Role facts needing verification (WIWTR-UNLOGGED — from [Company] [Run Date])
@@ -543,7 +562,7 @@ Log in the final delivery per role: "Update prompt written to `<company_dir>/upd
 
 ### Step 7g — Clean up `_pipeline/` scratch directory
 
-After Step 7f, remove the `_pipeline/` directory for this role. All content needed for delivery (feedback file, revision log) has already been written to the output folder in Step 7d and in the post-Step-4 and post-Step-5.7 staging blocks. The `_pipeline/` files are intermediate scratch — they are not deliverables and do not belong in the user's output folder.
+After Step 7f, remove the `_pipeline/` directory for this role. All content needed for delivery (feedback file, revision log) has already been written to the output folder in Step 7d and in the post-Step-4 and post-Step-5.3 staging blocks. The `_pipeline/` files are intermediate scratch — they are not deliverables and do not belong in the user's output folder.
 
 - **Path A:** `rm -rf "$PIPE"`
 - **Path B:** delete `$PIPE` through the host file tool (Desktop Commander `move_file`/delete or equivalent).

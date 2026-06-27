@@ -262,6 +262,8 @@ These are database operations. **Load `${CLAUDE_PLUGIN_ROOT}/skills/database-not
 
 Report count: "Found N Interested roles."
 
+**Empty queue (genuine zero):** if the read ladder succeeds but returns **0 `Interested` roles**, this is a clean terminal stop, not a failure and not a scoping question. Report plainly — "No roles with Status = Interested. Move a role from Hold → Interested (or add one as Interested) and re-run." — and stop. Do NOT ask how to scope the run, do NOT fall back to another status, and do NOT improvise a search. (This is distinct from "every rung failed," which is the stop-and-report error above.)
+
 ### Step O2 — Readiness check
 
 For each fetched role, verify these **writer-needed fields** are populated (non-empty):
@@ -273,6 +275,8 @@ For each fetched role, verify these **writer-needed fields** are populated (non-
 - **Any field missing** → log: "[Company] — [Position]: excluded — missing writer-needed field(s) `<list>`. Run intake first, then re-run the New Application pipeline." Remove from queue. Leave Status unchanged.
 
 Roles that pass are the processing queue.
+
+**Empty queue after the readiness filter:** if every fetched role was excluded here (0 roles pass the readiness check), the queue is empty. This is a clean terminal stop — report plainly: "All N Interested role(s) were excluded for missing writer-needed fields. Run intake (`/career-engine --coach-skills`) to populate them, then re-run the New Application pipeline." — and stop. Do NOT proceed to O3, do NOT ask how to scope the run, and do NOT process a role with missing fields.
 
 ### Step O3 — Build the processing queue
 
@@ -301,7 +305,7 @@ Write this once and begin O4 immediately. Do not surface it in chat.
 
 ### Step O4 — Per-role pipeline
 
-Run `career-engine-new-application` Steps 1 through 8 for each role in queue order.
+Run `career-engine-new-application` Steps 1 through 7 for each role in queue order. Step 8 (LinkedIn updates) is orchestrator-owned and runs ONCE after the per-role loop completes — see *Step 8 — LinkedIn Updates File* below. It is not part of the per-role new-application pipeline; do not run it inside the loop.
 
 **Carry all resolved config vars into every role's execution.** The preflight set `$OUTPUT_FOLDER`, `$DRAFT_DIR_URL_BASE`, `$CV_TEMPLATE`, `$DEFAULT_LANGUAGE`, `$OUTPUT_DIR_PREFIX`, `$CAREER_DATA`, and `$NOTION_DATABASE_ID`. These must remain in scope through every step of new-application — including Step 7a (which builds the Draft Directory URL from `$DRAFT_DIR_URL_BASE`) and Step 6 (which uses `$CV_TEMPLATE` and `$OUTPUT_FOLDER`). If any of these is unset when a step needs it, stop and report rather than silently defaulting or skipping.
 
@@ -309,7 +313,7 @@ Run `career-engine-new-application` Steps 1 through 8 for each role in queue ord
 
 | Pipeline | What runs | Deliverables |
 |---|---|---|
-| `New Applications` (default) | cv pipeline — Steps 1 through 8 | CV DOCX + cover letter DOCX + feedback MD |
+| `New Applications` (default) | cv pipeline — Steps 1 through 7 per role, then orchestrator Step 8 once | CV DOCX + cover letter DOCX + feedback MD |
 | `--now` | fast track — see below | CV DOCX + feedback MD + cover letter DOCX only if Why I Want This Role content is provided in chat (see Step N4) |
 | `Needs editing` | career-engine-edit (separate skill) — Steps E0 through E10 | Updated CV DOCX + updated cover letter DOCX; starts from existing Notion outputs, not from scratch. Trigger when the user says "edit CVs" or similar, or when roles have Status = Needs editing. |
 
