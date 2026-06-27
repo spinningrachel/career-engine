@@ -115,11 +115,11 @@ Run both in parallel. Collect results. Do not loop or fix anything yet — this 
 **The career coach is never spawned from the edit pipeline.** Coach properties are set during intake (Hold → Researched) and are expected to be present when the editing pipeline runs.
 
 For each role in the editing queue, verify these **writer-needed fields** are populated (non-empty):
-`Role emphasis`, `Keywords`, `Strategy`.
+`Role summary`, `Role emphasis`, `Keywords`, `Strategy`.
 
-`JD proof` is not checked — it is reference-only. `Gap handling` is not required when `gap_handling_mode = disabled`.
+`Role summary` is the **JD proxy** every downstream agent reads instead of the full JD body (see `skills/career-coach/SKILL.md` → `Role summary`). Steps E7.4 and E8.5 pass it to the gatekeeper and coach review "from the coach properties verified in Step E1" with **no fallback**, so it must be gated here — exactly as the orchestrator's O2 readiness gate does (`skills/career-engine-orchestrator/SKILL.md` Step O2). This list must stay in parity with O2's writer-needed fields. `JD proof` is not checked — it is reference-only. `Gap handling` is not required when `gap_handling_mode = disabled`.
 
-- **All three fields present** → role is ready; carry its existing coach values forward.
+- **All four fields present** → role is ready; carry its existing coach values forward.
 - **Any field missing** → **hard-drop this role from the queue**. Log: "Career coach properties missing for [Company] — [Role Title]: missing `<list>`. Run intake first (`/career-engine --coach-skills`), then re-run edit." Leave Status unchanged.
 
 After the gate, confirm in chat: "Coach properties verified: N roles proceed, M excluded (missing coach properties)."
