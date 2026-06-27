@@ -18,7 +18,9 @@ All of it draws from one source of truth: **`career-data`**, a separate skill th
 
 [![Download career-engine.plugin](https://img.shields.io/badge/⬇%20Download-career--engine.plugin-2563eb?style=for-the-badge)](https://raw.githubusercontent.com/spinningrachel/career-engine/main/career-engine.plugin)
 
-Open the Claude Desktop app → **Customize → Connectors → Personal plugins** → **+** → **Create plugin** → **Upload plugin**, and select the downloaded file. It becomes available in **Cowork** and **Claude Code** (not Chat).
+Open the Claude Desktop app → **Customize → Personal Plugins → +** → **Personal** (tab) → **+** → **Upload plugin**, and select the downloaded file. It becomes available in **Cowork** and **Claude Code** (not Chat).
+
+![Installing the career-engine plugin](assets/install-plugin.gif)
 
 Claude Code users can install via the marketplace instead, for automatic updates:
 
