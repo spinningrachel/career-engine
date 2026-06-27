@@ -33,7 +33,7 @@ Called by the career-engine-orchestrator after the coach, CV writer, and gatekee
 
 **From prior pipeline steps:**
 - Final CV — for coherence checking only
-- HM CV verdict — if Conditional, the letter must address the condition with named proof
+- Recruiter review — includes the "Interview-trigger gaps" section; where Why I Want This Role or documented background gives a real answer, the letter addresses the gap proactively (see Interview-trigger gaps below)
 
 ### Standalone
 
