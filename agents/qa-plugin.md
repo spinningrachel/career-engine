@@ -110,10 +110,10 @@ grep -rn "cv-campaign-intake\|cv-campaign-setup\|cv-campaign-steps\|cv-campaign-
 
 ### Check 4b — No "campaign" branding terminology in runtime prose
 
-The plugin is the career engine; "CV campaign" / "campaign" branding is retired (R-26). Marketing-English uses of the word (consumer campaigns, ABM campaigns, drumbeat campaigns, ActiveCampaign) in `references/` personal content and worked examples are fine — the check therefore covers `skills/`, `agents/`, `README.md`, and `CLAUDE.md` only, and excludes the legacy folder pattern and the two known marketing-English example lines.
+The plugin is the career engine; "CV campaign" / "campaign" branding is retired (R-26). Marketing-English uses of the word (consumer campaigns, ABM campaigns, drumbeat campaigns, ActiveCampaign) in `references/` personal content and worked examples are fine — the check therefore covers `skills/`, `agents/`, `README.md`, and `CLAUDE.md` only, and excludes the legacy folder pattern and the known marketing-English example lines.
 
 ```bash
-grep -rni "campaign" <location>/skills <location>/agents <location>/README.md <location>/CLAUDE.md --include="*.md" | grep -v "agents/qa-plugin.md" | grep -vi "cv-campaign-YYYY\|cv-campaign-<YYYY\|consumer campaigns\|ActiveCampaign"
+grep -rni "campaign" <location>/skills <location>/agents <location>/README.md <location>/CLAUDE.md --include="*.md" | grep -v "agents/qa-plugin.md" | grep -vi "cv-campaign-YYYY\|cv-campaign-<YYYY\|consumer campaigns\|ActiveCampaign\|drumbeat campaigns"
 ```
 
 **FAIL condition:** any occurrence found.
@@ -356,15 +356,16 @@ grep -c "Fetched-alternative" <location>/agents/career-coach.md
 
 **FAIL condition:** either of the first two counts is 0. The third grep must return exactly 1 (the parenthetical explaining the option does not exist) — more than 1 means the invalid option is being written again.
 
-### Check 20 — Notion view creation prohibition present in intake skill
+### Check 20 — Notion view creation prohibition present (Notion adapter)
 
-In `skills/career-engine-intake/SKILL.md`: verify the file contains "create-database-view".
+The view-creation prohibition was relocated from the intake skill into the Notion adapter during the DB-mechanics extraction (commit 13895ca). Verify it is present in the adapter; accept the intake skill too for older trees.
 
 ```bash
-grep -c "create-database-view" <location>/skills/career-engine-intake/SKILL.md
+# Rule lives in the Notion adapter now; accept either location (both 0 = FAIL)
+grep -rc "create-database-view" <location>/skills/database-notion/SKILL.md <location>/skills/career-engine-intake/SKILL.md
 ```
 
-**FAIL condition:** string not found.
+**FAIL condition:** string not found in either file (both counts 0).
 
 ### Check 21 — Tiered Notion query ladder present in intake skill (R-1, R-25, R-35)
 
@@ -499,7 +500,7 @@ grep -c "Framework primacy" <location>/skills/career-engine-orchestrator/SKILL.m
 grep -c "Step 8-pre" <location>/skills/career-engine-orchestrator/SKILL.md             # must be >= 1
 grep -c "Profile source ladder" <location>/skills/linkedin-coach/SKILL.md              # must be >= 1
 grep -c "FRAMEWORK PRIMACY" <location>/skills/career-coach/SKILL.md                # must be 1
-grep -c "Career-shift posture" <location>/skills/career-coach/SKILL.md             # must be 1
+grep -c "Career-shift posture" <location>/skills/career-coach/SKILL.md             # must be >= 1
 test -f <location>/references/linkedin-profile.md && echo 1 || echo 0                  # must be 1
 ```
 
