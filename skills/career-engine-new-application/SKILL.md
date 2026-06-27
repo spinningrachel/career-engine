@@ -198,12 +198,12 @@ The coach writes its diagnostic review to that file and returns: `COACH-LETTER-R
 
 **If no issues identified:** proceed directly. Do not spawn letter-writer.
 
-After this step, copy `$PIPE/letter-draft.md` to `$PIPE/letter-final.md`, `/tmp/<coverletter_filename>.md`, and the output backup path:
+After this step, copy `$PIPE/letter-draft.md` to `$PIPE/letter-final.md`, `/tmp/<cl_filename>.md`, and the output backup path:
 
 ```bash
 cp "$PIPE/letter-draft.md" "$PIPE/letter-final.md"
-cp "$PIPE/letter-draft.md" /tmp/<coverletter_filename>.md
-cp "$PIPE/letter-draft.md" "<output_dir>/<company_dir>/<coverletter_filename>.md"
+cp "$PIPE/letter-draft.md" /tmp/<cl_filename>.md
+cp "$PIPE/letter-draft.md" "<output_dir>/<company_dir>/<cl_filename>.md"
 ```
 
 ---
@@ -218,7 +218,7 @@ The humanizer is a writing editor and linguistics expert. It loads `skills/cover
 
 **Wait for the humanizer to finish** editing `$PIPE/letter-final.md` in place and writing its change log before proceeding.
 
-After it returns, copy `$PIPE/letter-final.md` to `/tmp/<coverletter_filename>.md` and the output backup path. The humanizer writes its change log to `$PIPE/humanizer-changes.md`; append it to the revision log under `## Humanizer changes`.
+After it returns, copy `$PIPE/letter-final.md` to `/tmp/<cl_filename>.md` and the output backup path. The humanizer writes its change log to `$PIPE/humanizer-changes.md`; append it to the revision log under `## Humanizer changes`.
 
 If the humanizer fails or returns no changes, proceed with the pre-humanizer version (`$PIPE/letter-final.prehumanizer.md`, which already passed Step 5.3).
 
@@ -235,15 +235,15 @@ The humanizer changed the text after the last PASS, so that PASS is no longer va
 
 **If both pass:** proceed to Step 6. **If either fails:** spawn `cover-letter-humanizer` again with the specific failures named (language-level issues) or `letter-writer` with `option=revision` (content-level issues), then re-run this step. Cap: 2 rounds. After the cap, revert to the `.prehumanizer.md` file saved in Step 5.9 (the last text that passed Step 5.3) and flag the letter for manual review in the final delivery. Never export text that has not passed this step.
 
-**Sync the passing bytes to the export path — do this on EVERY exit from this step, before Step 6 runs.** The retry branches above edit `$PIPE/letter-final.md` in place, and the revert branch restores `$PIPE/letter-final.prehumanizer.md` — in both cases the `/tmp/<coverletter_filename>.md` copy made in Step 5.9 is now stale, and Step 6 would convert the wrong bytes. After the verification passes (and after any revert), re-copy the authoritative final letter to the export working path and the output backup:
+**Sync the passing bytes to the export path — do this on EVERY exit from this step, before Step 6 runs.** The retry branches above edit `$PIPE/letter-final.md` in place, and the revert branch restores `$PIPE/letter-final.prehumanizer.md` — in both cases the `/tmp/<cl_filename>.md` copy made in Step 5.9 is now stale, and Step 6 would convert the wrong bytes. After the verification passes (and after any revert), re-copy the authoritative final letter to the export working path and the output backup:
 
 ```bash
 # Revert branch only: restore the last text that passed Step 5.3 as the final letter.
 # cp "$PIPE/letter-final.prehumanizer.md" "$PIPE/letter-final.md"
 
 # Both branches: re-sync the passing bytes Step 6 will convert.
-cp "$PIPE/letter-final.md" /tmp/<coverletter_filename>.md
-cp "$PIPE/letter-final.md" "<output_dir>/<company_dir>/<coverletter_filename>.md"
+cp "$PIPE/letter-final.md" /tmp/<cl_filename>.md
+cp "$PIPE/letter-final.md" "<output_dir>/<company_dir>/<cl_filename>.md"
 ```
 
 On Path B, run these copies through the host file tool (R-30), writing the intermediate markdown host-side rather than to sandbox `/tmp/`.
@@ -385,7 +385,7 @@ where `$OUTPUT_DIR` is the run directory resolved by the orchestrator (e.g. `{{O
       "track": "<cv | now>",
       "status": "completed",
       "cv_path": "<company_dir>/<cv_filename>.docx",
-      "cover_letter_path": "<company_dir>/<coverletter_filename>.docx",
+      "cover_letter_path": "<company_dir>/<cl_filename>.docx",
       "feedback_path": "<company_dir>/feedback-<roletitle>-<company>-<monYYYY>.md",
       "revision_log_path": "<company_dir>/revision-log-<roletitle>-<company>-<monYYYY>.md",
       "draft_dir_url": "$DRAFT_DIR_URL (the value constructed in Step 7a — empty string if $DRAFT_DIR_URL_BASE was skip/unset)",
