@@ -38,7 +38,12 @@ If intake is invoked directly (standalone), locate `career-data` now:
 
 Never fall back to blank plugin templates if `career-data` is absent for a configured user.
 
-**Before any step:** Read `${CAREER_DATA}/references/01-writing-rules.md` — the user's **real** writing rules (R-37; `${CAREER_DATA}` is resolved in Step −0.5). This file contains the fabrication rule and attribution constraints enforced at Step 0.8.5. It must be in context before the gatekeeper runs. Never read it from the plugin's blank template (`${CLAUDE_PLUGIN_ROOT}/references/`) — that silently loads empty rules for a configured user (the very fallback the line above forbids).
+**Before any step:** Read `01-writing-rules.md` — the fabrication rule and attribution constraints enforced at Step 0.8.5; it must be in context before the gatekeeper runs. Resolve it like every personal-data file (R-37), same ordering discipline as the gap_handling resolution at Step −1:
+
+1. `${CAREER_DATA}/references/01-writing-rules.md` — the user's **real** writing rules (`${CAREER_DATA}` is resolved in Step −0.5). **Authoritative source.**
+2. `${CLAUDE_PLUGIN_ROOT}/references/01-writing-rules.md` — the plugin's **blank template**, used **only** when `${CAREER_DATA}` is unset (a genuinely new user with no career-data installed).
+
+A **configured** user's missing/unreachable career-data is a hard stop per the R-37 block above — never silently fall back to the blank template for them; that loads empty rules and is the exact failure R-37 prevents.
 
 ---
 
