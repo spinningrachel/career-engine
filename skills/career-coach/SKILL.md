@@ -286,8 +286,9 @@ The career-coach is always invoked by the intake pipeline after intake has queri
 Before any analysis, determine the gap handling mode in this order:
 
 1. **Spawn prompt** — when invoked by a pipeline, the orchestrating skill passes `gap_handling_mode` in your prompt. Use it; skip the rest of this pre-flight.
-2. **Plugin preferences file** — otherwise, Read `${CLAUDE_PLUGIN_ROOT}/references/pipeline-preferences.json` (Read tool — you do not have Bash) and use its `gap_handling` value.
-3. **Default** — if the file or key is missing, use `enabled`.
+2. **Career-data config** — otherwise (standalone), Read `${CAREER_DATA}/references/pipeline-preferences.json` (Read tool — you do not have Bash) and use its `gap_handling` value. **This is the user's real config and the authority** — resolve `${CAREER_DATA}` first (per the R-37 data-root block above) if it is not already set.
+3. **Last-resort fallback** — only if career-data is unreachable: `~/.claude/settings.json`, then `${CLAUDE_PLUGIN_ROOT}/references/pipeline-preferences.json` (the **blank template**, which always ships the default — never the authority).
+4. **Default** — if no source yields a value, use `enabled`.
 
 - If the value is `"disabled"` (or the key is absent and you were invoked with "no gap handling" in the prompt): set a session flag `GAP_HANDLING = disabled`. **Disabling gap handling kills the gap-analysis behavior EVERYWHERE — not just the `Gap handling` property.** Specifically: skip all gap analysis in Part 2; do NOT populate the `Gap handling` property at all (do not write `N/A`); and **the coach context block's transfer/credibility line must NOT enumerate gaps, name "the X real gaps," catalog what she lacks, or do any gap framing.** A disabled feature that still parks gap analysis in the transfer note has leaked — that is the seam this rule closes. The transfer line may still state the one-line credibility-of-transfer argument (an affirmative "her [X] transfers because [Y]"), but never a gap inventory.
 - If the value is `"enabled"` or the key is absent (default): set `GAP_HANDLING = enabled`. Proceed normally.

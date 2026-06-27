@@ -44,14 +44,21 @@ Never fall back to blank plugin templates if `career-data` is absent for a confi
 
 ## Step −1 — Gap handling mode
 
-Read `gap_handling` from `${CLAUDE_PLUGIN_ROOT}/references/pipeline-preferences.json` (use the Read tool — this file ships inside the plugin, so it is present in every environment, including Cowork). Set `gap_handling_mode` as follows:
+Read `gap_handling` (use the Read tool) in this resolution order — **the user's career-data config is the authority, exactly as for every other config key (R-37)**:
 
+1. `${CAREER_DATA}/references/pipeline-preferences.json` → `gap_handling` — the user's real config (resolved in Step −0.5). **This is the authoritative source.**
+2. `~/.claude/settings.json` → `gap_handling` (legacy location, reachable only in Claude Code on the user's own machine).
+3. `${CLAUDE_PLUGIN_ROOT}/references/pipeline-preferences.json` → `gap_handling` — the plugin's **blank template**. Always present in every environment (including Cowork), but it ships the shipped default — a last-resort fallback only, **never** the authority.
+
+Set `gap_handling_mode` as follows:
 - `"gap_handling": "disabled"` → `gap_handling_mode = disabled`
 - `"gap_handling": "enabled"` → `gap_handling_mode = enabled`
-- File or key missing → fall back to reading `gap_handling` from `~/.claude/settings.json` (legacy location, reachable only in Claude Code on the user's own machine); apply the same mapping.
-- Key missing in both locations, or any other value → `gap_handling_mode = enabled` (default). Never treat an unreadable legacy file as an error — the plugin file is the authority.
+- Key missing/empty at a source → try the next source in order. Never treat an unreadable file as an error.
+- Missing or any other value at every source → `gap_handling_mode = enabled` (default).
 
-Do not ask the user about this. The preference was set during setup (Phase 5). If she wants to change the default, she updates `references/pipeline-preferences.json` (or re-runs setup Phase 5). To suppress gap handling for a single run without changing the setting, she can add "no gap handling" to her prompt — check for that phrase in the current prompt and override to `disabled` if found.
+> **Why career-data first, not the plugin file:** the plugin's `references/pipeline-preferences.json` is the single-build **blank template** — it always ships `"gap_handling": "enabled"`. Reading it first silently ignores a user who set `disabled` in career-data, so the coach does gap analysis the user turned off. Every other config key (`database_id`, `location_compatibility`, `screening_answers`, `favorite_brands`) reads from `${CAREER_DATA}`; gap handling must too.
+
+Do not ask the user about this. The preference was set during setup (Phase 5). If she wants to change the default, she updates `gap_handling` in her **career-data** config (`${CAREER_DATA}/references/pipeline-preferences.json`) — or re-runs setup Phase 5, which writes it there. To suppress gap handling for a single run without changing the setting, she can add "no gap handling" to her prompt — check for that phrase in the current prompt and override to `disabled` if found.
 
 **If `gap_handling_mode = disabled`:**
 - Instruct the coach (in Step 0.8) to skip the `Gap handling` property entirely — do not populate it, do not write `N/A`.
