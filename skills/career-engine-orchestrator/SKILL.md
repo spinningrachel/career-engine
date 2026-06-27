@@ -164,7 +164,7 @@ No other agent rewrites or second-guesses any of these. **`Gap handling` is the 
 
 **Triage-exit roles** (Priority 5–6, non-`--full-research`): only the first group of properties above is written. Full-research properties are skipped — they remain blank and are not required for triage-exit roles.
 
-**`Why I Want This Role` is set manually by the user in Notion.** Agents never write to it. If it is empty when the pipeline runs, the cover letter is skipped for that role — only the CV is delivered.
+**`Why I Want This Role` is set manually by the user in Notion.** Agents never write to it. If it is empty when the pipeline runs, the letter-writer still runs and writes from the **Motivation Bank** (its primary source); it skips the letter for that role (CV only) **only** when neither `Why I Want This Role` nor any role-relevant Motivation Bank entry has usable material — that decision belongs to the letter-writer's Sufficiency Gate, not a pre-skip here.
 
 **The `Note` field is the user's space.** Agents may write to it only for context that structured properties cannot carry — never to repeat or summarize content already in a structured property.
 
@@ -360,7 +360,7 @@ If all three required properties are present, continue with them as the coach ou
 **Step N4 — Per-role pipeline**
 
 Run `career-engine-new-application` Steps 1 through 7d exactly as in the standard pipeline. The only differences:
-- **Why I Want This Role (before Step 5)** — no Notion row exists, so the field cannot be read. Ask the user in chat: "Why do you want this role? One or two sentences in your own words — this becomes the letter's opener. Reply 'skip' for CV only." If she provides content, use it as the Why I Want This Role input for Step 5 and the letter proceeds normally. If she replies "skip", declines, or provides nothing usable, **skip the cover letter entirely** (Steps 5–5.8) and deliver the CV only — the letter-writer's Intake Gate refuses to write without this content, and that gate is never overridden.
+- **Why I Want This Role (before Step 5)** — no Notion row exists, so the field cannot be read. Ask the user in chat: "Why do you want this role? One or two sentences in your own words — this strengthens the letter's opener. Reply 'skip' to let the letter-writer work from your Motivation Bank instead." If she provides content, use it as the Why I Want This Role input for Step 5. If she replies "skip", declines, or provides nothing usable, **pass Why I Want This Role empty and spawn the letter-writer anyway** — its Sufficiency Gate writes the letter from the role-matched Motivation Bank entries, or returns a skip (deliver the CV only for this role) when neither Why I Want This Role nor the Bank has usable material. Do not pre-skip the letter.
 - Step 6H (Hebrew localization) — skip entirely. No Notion row exists, so `Languages` cannot be read. `--now` mode does not support Hebrew output. If the user wants Hebrew, add the role to Notion and run normally.
 - Step 7a (Draft Directory writeback) — skip entirely. No Notion row exists for this role.
 - Step 7b (state.json) — write as normal to the output folder.

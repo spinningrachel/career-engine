@@ -371,7 +371,91 @@ Populate Section 9 (testimonials) from LinkedIn recommendations or peer feedback
 
 Write attribution rules into Section 1 for any outcomes confirmed as company-level rather than personal contribution. Write framing rules for any scope limitations confirmed in the interview. Write the target role information into Section 2.
 
-Confirm: "Your positioning framework, career background, and candidate rules are now configured. Let's set up your job tracking and output folder."
+---
+
+### Phase 4 — Motivation Bank seeding
+
+**Do this after the framework/posture interview, while the user is still in a reflective frame — it is the single highest-leverage thing in all of setup.** The Motivation Bank (`02-professional-background.md` → Section 5) holds the user's standing motivations and reactions in their **own verbatim words**, tagged for retrieval. It is the **letter-writer's primary content and voice source** — the writer loads it first, ahead of any constructed alternative. The richer it is, the better every cover letter, and the *less* per-role `Why I Want This Role` the user has to write over time. A well-seeded bank means future runs reuse standing motivation instead of demanding fresh input each time — eventually the user writes almost no per-role motivation at all.
+
+So setup must actively coach this — not just mention it.
+
+**1. Explain why it matters (say this plainly):**
+
+> "We're now going to seed your Motivation Bank — and this is the most important thing we'll do in setup. It's where your real, standing motivations live, in your own words, tagged so the letter-writer can pull the right one for each role. Every cover letter the pipeline ever writes draws from this first. The richer and more honest this is, the better your letters — and the less you'll have to write a fresh 'Why I Want This Role' for each application. Seed it well now and it pays off on every run after."
+
+**2. Present the recommended seed topics.** Adapt the wording to the user's profession and what surfaced in the interview, and tell them they can add their own. Default set:
+
+- **core identity / the problem you exist to solve** — the thread that runs through your whole career
+- **what energizes you** — the work that genuinely lights you up
+- **why this kind of company or mission** — the type of company/mission you want to be part of and why
+- **your operating philosophy / what you optimize for** — how you work, what you refuse to compromise on
+- **leadership or mentorship philosophy** *(only if they lead or mentor)*
+- **domain passion** — the verticals or problem spaces you genuinely care about
+- **career-shift motivation** *(only if they're making a change)* — what's pulling you toward the shift
+
+Say: "These are the topics worth seeding first — each one deserves an honest, emotional, motivational answer. Add any of your own that matter to you."
+
+**3. Coach effort — explicitly, in plain words:**
+
+> "Take your time with these. Put real effort in. Write honestly and specifically, in your own voice — scrappy, imperfect English is not just fine, it's *better* than polished. Real beats smooth every time. The quality of these answers directly becomes the quality of your letters: vague entries produce vague letters; specific, felt entries produce letters that sound like you and land. This is not a box to tick fast — it's the highest-leverage writing you'll do in this whole setup."
+
+**4. Hand the user the OPENING of a career-data update prompt.** Generate it now in the canonical update-prompt format (`career-engine/references/career-data-update-prompt-format.md`) — same Chat/Code path as every other career-data edit. It targets `02-professional-background.md` → Section 5 — Motivation Bank and **appends rows** to the `| Tags | Motivation |` table (append-only; never rewrite, reorder, or delete existing rows; never change the two-column layout). Pre-seed one row per suggested tag (and any the user added) with the **Tags** cell filled and the **Motivation** cell left as a fill-in slot. Make clear the user types their verbatim answers into the Motivation cells **before** sending the prompt to Chat (or applying it in Code). Substitute the user's chosen/adapted tags; keep the table's existing seed row intact (append below it).
+
+Present it as one copyable block, led by the four-step Phase 0 visual in Cowork (or written directly in Code):
+
+```
+career-data update prompt — 02-professional-background.md Section 5 — seed Motivation Bank
+Generated: <YYYY-MM-DD> | Apply in: Chat AND Code (if using both)
+
+Context (fixed — do not change this block)
+You are updating a skill called career-data. This is a packaged `.skill` file installed
+via Customize → Skills in the Claude Desktop app. It contains personal career data —
+writing rules, professional background, and framework files. To find career-data:
+
+* Look for a directory containing `career-data-marker.json`
+* It will be under your skills path (check `~/.claude/skills/career-data/` or the
+  Desktop app's local session skills path)
+* Confirm the marker file exists before editing
+
+After making the edit below:
+1. Verify the change is correct
+2. Repackage the directory as a `.skill` file (zip the contents, rename to `.skill`)
+3. Upload via Customize → Skills → replace the existing career-data skill
+4. If you use both Chat/Cowork AND Claude Code, you must apply this update in both environments
+
+⚠️ Do NOT paraphrase the new text. Copy it exactly as written below.
+
+The fix
+File: `references/02-professional-background.md`
+In Section 5 — Motivation Bank, APPEND the rows below to the existing `| Tags | Motivation |`
+table. Do not rewrite, reorder, merge, or delete any existing row, and do not change the
+two-column layout. Each Motivation cell holds my exact words — correct grammar and spelling
+only; never rephrase, paraphrase, summarize, or "clean up."
+
+Append these rows:
+| core identity, the problem you exist to solve | <I fill this in, in my own words> |
+| what energizes you, the work that lights you up | <I fill this in, in my own words> |
+| why this kind of company or mission | <I fill this in, in my own words> |
+| operating philosophy, what you optimize for | <I fill this in, in my own words> |
+| leadership/mentorship philosophy | <I fill this in, in my own words — or delete this row if it doesn't apply> |
+| domain passion, verticals I care about | <I fill this in, in my own words> |
+| career-shift motivation | <I fill this in, in my own words — or delete this row if I'm not making a shift> |
+
+Why: seeds my standing Motivation Bank — the letter-writer's primary content and voice
+source — so every future cover letter draws from my own honest, verbatim motivations.
+
+Verification
+After applying, confirm:
+* Section 5's table still has exactly two columns: `| Tags | Motivation |`
+* The original seed row is untouched and my new rows were appended below it
+* No other files were modified
+```
+
+Tell the user: "Fill in each Motivation cell in your own words — take your time — then this goes to Chat (or Code) the same way as the rest of your career-data, via the Build & install handoff at the end. You can also append to your Motivation Bank any time later with 'update my references'."
+
+**Format discipline (state it once):** the Motivation Bank is a fixed two-column `| Tags | Motivation |` table, verbatim and append-only — the user's exact words, grammar/spelling corrected only, new rows appended, never the layout changed. This mirrors the Section 5 structure contract in `02-professional-background.md`; do not deviate from it here.
+
+Confirm: "Your positioning framework, career background, candidate rules, and Motivation Bank seed are now configured. Let's set up your job tracking and output folder."
 
 ---
 
@@ -758,13 +842,13 @@ For roles where you already have a CV and/or letter and want targeted revisions.
 | Job URL or JD Body | Required — pipeline cannot run without one | Required |
 | Status = Interested | Required | Status = any active status |
 | Edit type field | Not used | Required — CV / Letter / Both |
-| Why I Want This Role | **Required for a cover letter.** If empty, CV is produced but the letter step is skipped entirely. | Required if Edit type = Letter or Both |
+| Why I Want This Role | **Optional.** Role-specific motivation that strengthens the letter's opener. If empty, the letter-writer works from your Motivation Bank; the letter is skipped only if neither this field nor a role-relevant Bank entry has usable material. | Optional |
 
 ---
 
-### Why I Want This Role — what "good" looks like
+### Why I Want This Role and the Motivation Bank — what "good" looks like
 
-This field is the only source the letter-writer uses for the opener. The opener is the most important paragraph in the letter — it is what makes a letter yours rather than a template. The agent cannot invent your motivation, your specific reaction, or your angle on this company. If it does, that is fabrication.
+`Why I Want This Role` is your **role-specific** motivation for a given role; the **Motivation Bank** (`02-professional-background.md` → `Section 5`, seeded during setup) is your **standing** motivation, reused across roles. Both are the same kind of content — your own words — and the same "good" standard applies to both. The letter-writer's *primary* source is the Motivation Bank; `Why I Want This Role` adds role-specific motivation on top when you provide it. The richer your Motivation Bank, the less often you'll need to write `Why I Want This Role` at all. The opener is the most important paragraph in the letter — it is what makes a letter yours rather than a template. The agent cannot invent your motivation, your specific reaction, or your angle on a company. If it does, that is fabrication.
 
 **Good:** Specific. Your actual reaction when you read the JD. What you noticed, what excited you, what connected to something you've done or want to do. A few sentences is enough. Examples of what works:
 - "The thing that grabbed me was that they're building agentic SecOps — I spent two years marketing exactly this layer and I've been watching this space evolve. I want to be the person building the story for the next platform."
@@ -773,7 +857,7 @@ This field is the only source the letter-writer uses for the opener. The opener 
 
 **Not enough:** "I think this role is a great fit." / "I'm excited about this opportunity." / "This company does interesting work." These give the agent nothing to work from. The letter will be a placeholder until you fill in more.
 
-**The hard rule:** If Why I Want This Role is empty when the pipeline runs, the cover letter step is skipped. The agent will not generate motivation on your behalf — that would not be your letter. Fill in this field before running the pipeline for any role where you want a cover letter.
+**How empty works:** If `Why I Want This Role` is empty, the letter-writer doesn't stop — it writes from your Motivation Bank (your standing motivations). It skips the letter only when *neither* `Why I Want This Role` *nor* any role-relevant Motivation Bank entry gives it usable material; when it skips, it tells you to add `Why I Want This Role` for that role or enrich your Bank. The agent never generates motivation on your behalf — that would not be your letter. The takeaway: seed your Motivation Bank well (see the Motivation Bank seeding step), and over time you'll rarely need to write `Why I Want This Role` at all.
 
 ---
 

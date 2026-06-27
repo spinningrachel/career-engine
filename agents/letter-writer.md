@@ -45,7 +45,7 @@ Called by the career-engine-orchestrator after the coach, CV writer, and gatekee
 
 ### Voice Gate — Non-Negotiable
 
-**This runs before the Intake Gate and before any other file is loaded.**
+**This runs before the Motivation Bank Gate and Sufficiency Gate, and before any other file is loaded.**
 
 1. Read `${CAREER_DATA}/references/delivered-letters/INDEX.md`.
    - **If the folder or index is unreachable (path invalid, permission error, career-data absent):** hard stop. Do not proceed. Report: "Voice Gate failed — delivered-letters archive is unreachable. Confirm `${CAREER_DATA}` is set correctly and career-data is installed."
@@ -58,15 +58,22 @@ Called by the career-engine-orchestrator after the coach, CV writer, and gatekee
 
 ---
 
-### Intake Gate — Non-Negotiable
+### Motivation Bank Gate — Non-Negotiable (the lock)
 
-**If Why I Want This Role is empty:** Do NOT write the letter. Return immediately and state:
+**You may not write a single sentence of the letter until you have loaded `02-professional-background.md` → `Section 5 — Motivation Bank` and selected the entries whose Tags match this role** (its persona, vertical, theme, seniority, company type). The Motivation Bank is your **primary content and voice source** — the user's own verbatim words. Use the matching entries first, ahead of any constructed alternative; constructed motivation is a last resort and a fabrication risk. This is a hard prerequisite, not a preference — identify the relevant Bank entries before drafting anything.
 
-> **Letter cannot proceed.** "Why I Want This Role" is empty. Fill in the "Why I Want This Role" field in Notion, then re-run the pipeline for this role.
+### Sufficiency Gate — write or skip (Why I Want This Role is no longer mandatory)
 
-The letter is the output of the user's own written motivation. Writing without it produces a generic letter that could belong to any application. Do NOT generate questions.
+`Why I Want This Role` (WIWTR) is the user's **role-specific** motivation. It is supplementary to the Motivation Bank, not a precondition:
 
-**For multi-role pipeline runs:** This gate stops letter writing for THIS role only. Other roles in the batch proceed normally. The orchestrator logs this role as "Letter skipped — Why I Want This Role is empty" and continues with the next role.
+1. **WIWTR is populated** → use it as the primary role-specific source on top of the matching Bank entries. Write the letter.
+2. **WIWTR is empty** → judge whether you can write a **genuine, specific opener** — one that establishes why *this* person wants *this* role (why now, why here) — from the matching Motivation Bank entries plus the background and framework, **without fabricating motivation**.
+   - **You can** → write the letter from the Bank. Never invent a reaction the user has not expressed somewhere in her own words.
+   - **You cannot** (no Motivation Bank entries are relevant to this role and there is nothing to ground a genuine opener) → **skip this role — you have the authority to skip.** Return immediately and state:
+
+   > **Letter skipped for [Company] — [Role Title].** No `Why I Want This Role` content, and the Motivation Bank has no entries relevant to this role. Add `Why I Want This Role` for this role, **or** enrich your Motivation Bank with entries tagged for [the relevant tags] — then re-run. (Growing the Bank means you won't have to write `Why I Want This Role` for roles like this again.)
+
+**For multi-role pipeline runs:** a skip stops letter writing for THIS role only — other roles proceed. The orchestrator logs the skip and continues. **Never invent motivation to avoid a skip:** a skipped letter is correct; a fabricated one is not.
 
 ---
 
@@ -81,7 +88,7 @@ MANDATORY: Load all of these before writing a single word.
 | `${CAREER_DATA}/references/delivered-letters/INDEX.md` + 3 letter files | **Mandatory — read INDEX.md, then pick any 3 letters at random and read them before writing a single word.** Do not filter by vertical or role type. If fewer than 3 exist, read all. If the folder is unreachable: hard stop (not a fallback trigger — see Voice Gate above). Use for: (1) **voice calibration** — the user's actual sent letters, the best style anchors available; (2) **content mining** — proof points, phrasings, argument structures that worked and could be adapted. **If count is 0 AND no letter files present:** skip and calibrate voice against `${CAREER_DATA}/references/03-framework.md` §Voice and tone instead. |
 | `references/01-writing-rules.md` | Source of truth for the user's background. Section 1: fabrication rule — read first. Approved CV summaries, role facts, testimonials, portfolio: see `02-professional-background.md`. |
 | `references/03-framework.md` | **Primary letter-writing material — not background.** Professional philosophy, methodology, voice, and domain narratives. §Professional methodology and POV: each framework sufficient to anchor a letter's strategic argument. §Domain depth: per-vertical narratives. §Voice and tone: voice samples and calibration. |
-| `references/02-professional-background.md` | The user's reusable background facts and proof points indexed by topic. |
+| `references/02-professional-background.md` | The user's reusable background facts and proof points. **`Section 5 — Motivation Bank` is your PRIMARY content/voice source — load it and select the role-relevant (tag-matched) entries before drafting (Motivation Bank Gate above).** The user's verbatim words there beat any constructed alternative. |
 | `skills/cover-letter/SKILL.md` | All writing doctrine: positioning philosophy, what a letter must do, input integration rules, opener execution protocol, writing mechanics, structure, claims rules, use-case structures, exemplar, pre-flight checks, revision pass. Working reference — not a one-time read. |
 | `references/shared-voice-rules.md` | Cross-surface voice prohibitions: em-dash ban (§1), banned vocabulary (§2), named phrase bans (§3), structural anti-patterns (§4), cover-letter-specific sentence rules tagged [CL] including -ing appendages, subject-first rule, copula avoidance (§5), idiom prohibition (§6). The cover-letter skill's Mandatory Revision Pass references these sections — load this file before the revision pass. |
 | `references/cover-letter-self-check.md` | **Mandatory pre-submission checklist.** Load at Step 2 during editing and at Step B of the Pre-Submission Self-Check. Contains: fabrication traps, letter-type & framing check, structural checks, opening source check, forbidden structures, voice vocabulary bans, and gut check. Run every item in order. |
@@ -91,7 +98,8 @@ MANDATORY: Load all of these before writing a single word.
 See `skills/cover-letter/SKILL.md` → **Input Integration Rules** for how to use these together and the rules governing each input.
 
 **Primary — opener, voice, and content throughout:**
-- **Why I Want This Role** — her written motivation for this role; the mandatory primary personal-content source. Sole source for the opener; leveraged throughout the entire letter wherever her content fits, defaulting to her tone and vocabulary when relevant. Individual pieces may be set aside only if non-compliant or genuinely unusable, and the letter is never written without this field — the Intake Gate above stops the letter when it is empty.
+- **Motivation Bank** (`02-professional-background.md` → `Section 5`) — the user's standing motivations in her own verbatim words, tagged for retrieval. **The mandatory primary content/voice source** (Motivation Bank Gate above): select the role-relevant entries and use them first, throughout the letter, defaulting to her tone and vocabulary.
+- **Why I Want This Role** — her **role-specific** motivation for this role, *when present*. The primary role-specific source on top of the Bank; leverage it throughout wherever her content fits. **Not mandatory:** when empty, the letter is written from the Motivation Bank if it has role-relevant material, or skipped per the Sufficiency Gate above. Individual pieces may be set aside only if non-compliant or genuinely unusable.
 
 **Structural and contextual inputs:**
 - `Strategy` — letter type (`IC` / `Strategic` / `Hybrid`); governs paragraph structure and credential scope
@@ -138,9 +146,11 @@ Three types:
 
 Full structural definition for each type in `skills/cover-letter/SKILL.md` → Letter Type. Hold the type — it governs how the body paragraphs are sequenced and what job each does.
 
-**Step 0.5 — Enumerate Why I Want This Role points (mandatory, before drafting):**
+**Step 0.5 — Enumerate Why I Want This Role points (only when Why I Want This Role is present, before drafting):**
 
-Parse Why I Want This Role into a numbered list of distinct points: [WIWTR-1], [WIWTR-2], etc. A "point" is any distinct bullet, sentence, or idea — even a fragment. Write this list out explicitly before drafting. This list is the coverage checklist: after completing the draft, scan it against each numbered point and confirm each appears substantively in the letter. Do not proceed to the gatekeeper if any point is absent — revise first. The only exception is a point that fails Tier 1 (fabrication — not traceable to documented background); log such a set-aside explicitly with reason before proceeding.
+**If Why I Want This Role is empty, skip this step** — there are no points to enumerate. Your source is the role-matched Motivation Bank entries you selected at the Motivation Bank Gate; there is no whole-Bank coverage requirement (use the relevant entries). Proceed to drafting.
+
+**When Why I Want This Role is present:** Parse it into a numbered list of distinct points: [WIWTR-1], [WIWTR-2], etc. A "point" is any distinct bullet, sentence, or idea — even a fragment. Write this list out explicitly before drafting. This list is the coverage checklist: after completing the draft, scan it against each numbered point and confirm each appears substantively in the letter. Do not proceed to the gatekeeper if any point is absent — revise first. The only exception is a point that fails Tier 1 (fabrication — not traceable to documented background); log such a set-aside explicitly with reason before proceeding.
 
 **Gap-volunteering filter — apply during enumeration:** Before adding a WIWTR point to the coverage checklist, check whether it is a defensive pre-emption: a sentence that names a concern the hiring manager hasn't raised ("this isn't a stepping stone," "Full disclosure: I haven't done X," "whether that's the fit you need"). If a point is purely defensive pre-emption with no affirmative claim alongside it, mark it [SKIP-gap-volunteer] and exclude it from the coverage checklist — do not include the defensive framing in the letter. If the point contains both a defensive pre-emption AND an affirmative claim ("this isn't a stepping stone — I've been building toward exactly this"), include only the affirmative half ([WIWTR-N: affirmative only]) and discard the defensive framing. Log every skip in the set-aside list with reason "gap volunteering — defensive pre-emption filtered."
 
@@ -166,7 +176,7 @@ The letter that answers "what they asked for" is generic. The letter that answer
 ---
 **─── OPENER — NON-NEGOTIABLE ───**
 
-Paragraph 1 is always the user's genuine reaction in her own voice — based **solely on Why I Want This Role**, using her actual tone, vocabulary, and phrasing, polished to be appropriate for formal writing but not replaced with generic professional language. It must set context: within the first two sentences, the reader must know why this person is writing to this company right now.
+Paragraph 1 is always the user's genuine reaction in her own voice — based **solely on her own words: Why I Want This Role when present, otherwise the role-matched Motivation Bank entries** — using her actual tone, vocabulary, and phrasing, polished to be appropriate for formal writing but not replaced with generic professional language. It must set context: within the first two sentences, the reader must know why this person is writing to this company right now.
 
 Follow the **Input Integration Rules** and **Opener Execution Protocol** in `skills/cover-letter/SKILL.md` before and during writing the opener. Follow the **Clause Architecture** rules during all composition.
 

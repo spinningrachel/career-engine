@@ -40,14 +40,14 @@ Run every item in order before returning output.
 - [ ] **Bullets (if used):** Is this a transferability/pivot letter OR a multi-mandate role requiring visible range? If neither: remove the list and make the case in prose. If yes: parallel form, 2–5 words each, no periods, colon-introduced, positioned between proof paragraphs and close. No CV language. JD mirroring is permitted and appropriate here — the point is to show the skills map.
 
 ### Opening
-- [ ] **Source check — do this first:** Does the opener express the angle and content the candidate provided in Why I Want This Role? The substance — what they said they want to communicate, their key phrases, their specific angle on this role — must be present. The opener must not express a different framing derived from the agent's own reading of the JD. Check specifically: (a) are their key phrases and ideas present? (b) does any sentence express something they did not write and did not ask for? If yes to (b), remove it.
-- [ ] The opener is based **solely on Why I Want This Role** — not on the JD, not on the coach output
+- [ ] **Source check — do this first:** Does the opener express the angle and content from the candidate's own words — Why I Want This Role when present, otherwise the role-matched Motivation Bank entries (`02` §5)? The substance — what they want to communicate, their key phrases, their specific angle — must be present. The opener must not express a different framing derived from the agent's own reading of the JD. Check specifically: (a) are their key phrases and ideas present? (b) does any sentence express something they did not write? If yes to (b), remove it.
+- [ ] The opener is based **solely on the candidate's own words** (Why I Want This Role when present, otherwise the role-matched Motivation Bank entries) — not on the JD, not on the coach output
 - [ ] The opener uses the candidate's actual language — their tone, their vocabulary, their phrasing — polished to be appropriate for formal writing, but not replaced with generic professional language
 - [ ] The opening paragraph is first person and establishes the candidate's reaction to this specific role
 - [ ] No second-person sentences in the opening paragraph ("Your buyers are...," "Your product does...," "Your sales motion...")
 - [ ] The **first sentence** does not make a general claim about the market, the role, or "the job." The test: does the clause after a pivot ("and," "but," "—") describe the market/industry rather than the candidate's reaction to THIS role? If yes, rewrite.
 - [ ] The first sentence is not a setup frame — the opener does not frame the industry challenge, role stakes, or market condition before the candidate appears as the subject reacting to this specific opportunity
-- [ ] **Traceability test:** Can every sentence in the opener be traced to a specific word, phrase, or reaction the candidate wrote in Why I Want This Role? Any sentence that cannot be traced to something they wrote must be removed or replaced with `[USER TO FILL IN]`.
+- [ ] **Traceability test:** Can every sentence in the opener be traced to a specific word, phrase, or reaction the candidate wrote — in Why I Want This Role, or in a role-matched Motivation Bank entry? Any sentence that cannot be traced to something they wrote must be removed or replaced with `[USER TO FILL IN]`.
 
 ### Content
 - [ ] At least one specific number or named outcome appears in the letter body
@@ -63,7 +63,7 @@ Run every item in order before returning output.
 - [ ] No claims about scope, attribution, or seniority not documented in `01-writing-rules.md` or `02-professional-background.md`
 - [ ] No consulting/freelance engagements described as full function ownership — fractional is always fractional
 - [ ] No specific numeric claim not traceable to the reference files
-- [ ] No expansion of sparse Why I Want This Role notes — if the candidate's notes are one sentence or a few words, the opener is `[USER TO FILL IN]`, not an invented paragraph
+- [ ] No expansion of sparse notes — if Why I Want This Role is one sentence or a few words AND no role-matched Motivation Bank entry adds usable material, the opener is `[USER TO FILL IN]`, not an invented paragraph (the genuinely-empty case is skipped upstream by the letter-writer's Sufficiency Gate)
 
 ### Forbidden structures (strategic — not syntax)
 - [ ] No antithesis/pivot: "It's not about X, it's about Y" / "This isn't just A, it's B"

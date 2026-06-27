@@ -74,6 +74,7 @@ career-data/
 ├── SKILL.md
 ├── career-data-marker.json
 └── references/
+    ├── _STRUCTURE-DO-NOT-CHANGE.md   ← the structure contract; preserve section structure
     ├── 01-writing-rules.md
     ├── 02-professional-background.md
     ├── 03-framework.md
@@ -88,7 +89,17 @@ SKILL.md contents:
 store, loaded on request, never auto-applied]
 
 career-data-marker.json contents:
-[FULL MARKER JSON — including expected_files list]
+[FULL MARKER JSON — including expected_files list, which MUST list
+references/_STRUCTURE-DO-NOT-CHANGE.md alongside every other file]
+
+references/_STRUCTURE-DO-NOT-CHANGE.md contents:
+[FULL CONTENT, untruncated — a verbatim copy of the plugin's
+references/career-data-structure.md. This is the structure contract: it lists every
+load-bearing file and section heading and the Section 5 Motivation Bank table format.
+Keep it inside the skill so it sits in front of you on every future edit. Edit content
+WITHIN sections freely; do NOT rename, renumber, reorder, or delete any section or file,
+and do NOT change the Motivation Bank table format — structural changes go through the
+career-engine update-refs skill, not an ad-hoc edit.]
 
 references/01-writing-rules.md contents:
 [FULL CONTENT, untruncated]
@@ -112,9 +123,13 @@ For the .dotx template and any delivered-letter files: I am attaching them to th
 place them in references/ (and references/delivered-letters/ for the letters).
 
 After building:
-1. Confirm career-data-marker.json lists every file above in expected_files.
-2. Package the directory as a .skill and install via Customize → Skills.
-3. Tell me the skill is installed so I can return to Cowork and continue.
+1. Confirm career-data-marker.json lists every file above in expected_files —
+   including references/_STRUCTURE-DO-NOT-CHANGE.md.
+2. Confirm references/_STRUCTURE-DO-NOT-CHANGE.md is present and matches the structure
+   contract verbatim; preserve its section structure on any future edit (edit content
+   within sections; structural changes go through the update-refs skill).
+3. Package the directory as a .skill and install via Customize → Skills.
+4. Tell me the skill is installed so I can return to Cowork and continue.
 
 ⚠️ Do NOT paraphrase any file content above. Copy it exactly as written.
 ```

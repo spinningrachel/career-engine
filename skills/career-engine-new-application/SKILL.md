@@ -114,13 +114,11 @@ The cover letter receives the **final revised CV** as input. letter-writer uses 
 
 Read the following from Notion for this role:
 
-**Why I Want This Role property** — the user's written motivation for this role, filled in manually in Notion. If populated, include the full content in the letter-writer prompt as the primary content input.
+**Why I Want This Role property** — the user's written motivation for this role, filled in manually in Notion. If populated, pass the full content to the letter-writer as the role-specific content input. **Why I Want This Role is NOT required to produce a letter** — the letter-writer's primary source is the Motivation Bank (the user's standing motivations in `02-professional-background.md` → `Section 5`), and the letter-writer itself decides whether it has enough to write.
 
-**If Why I Want This Role is empty:** Do NOT proceed to Step 5 for this role. Skip the cover letter entirely. Deliver the CV only. Log this role as "Letter skipped — Why I Want This Role is empty." Do NOT generate questions. Do NOT spawn letter-writer. Surface this message to the user:
+**Always proceed to Step 5 and spawn the letter-writer for this role — whether or not Why I Want This Role is populated.** Pass the Why I Want This Role value if present; if empty, pass it empty and let the letter-writer's **Sufficiency Gate** decide (write from the role-matched Motivation Bank entries, or skip). **Do NOT pre-skip the letter on an empty Why I Want This Role** — that decision belongs to the letter-writer now.
 
-> **Letter skipped for [Company] — [Role Title].** The "Why I Want This Role" field in Notion is empty. Fill it in and re-run the pipeline for this role to get a cover letter.
-
-**This gate applies only to this role.** Other roles in the batch are not affected — continue processing them normally.
+**If the letter-writer returns a skip status** (it judged there was no Why I Want This Role content and no role-relevant Motivation Bank material): this is not an error. Deliver the CV only for this role, log "Letter skipped — [reason returned by the writer]", and surface the writer's message to the user (it tells her to add Why I Want This Role or enrich the Motivation Bank). **This applies only to this role** — continue processing other roles normally.
 
 ---
 
@@ -133,7 +131,7 @@ Read the following from Notion for this role:
 - **Strategy** property — from the career coach
 - **Gap handling** property — from the career coach
 
-**Priority rule:** Why I Want This Role is the primary content source. Strategy provides the letter type only — it does not govern content selection.
+**Priority rule:** the **Motivation Bank** (`02-professional-background.md` → `Section 5`, loaded by the letter-writer from career-data) is the primary content source; **Why I Want This Role** is the role-specific source on top of it **when present**. Strategy provides the letter type only — it does not govern content selection.
 
 **Include this verbatim at the front of the letter-writer prompt:**
 > STRUCTURE IS NON-NEGOTIABLE. Regardless of any reviewer feedback you receive, the letter structure defined in `cover-letter/SKILL.md` must be observed in full — in particular the tone, voice, and content of the opening paragraph. Reviewer feedback informs what proof to include or emphasise; it does not change how the letter is structured or how the opening is written.
@@ -144,8 +142,8 @@ Spawn `letter-writer` with `option=cover-letter`, passing:
 - The **final revised CV** path `$PIPE/cv-final.md` to read (for CV/letter coherence)
 - `Role summary` (contains the role context, key requirements, and Company self-characterization section verbatim if present — this is the JD proxy for the letter-writer)
 - The coach's Relationship type
-- **Why I Want This Role** from Notion (read above) — primary content input; include if populated
-- **Strategy** and **Gap handling** from Notion (read above) — secondary context; defer to Why I Want This Role on any conflict
+- **Why I Want This Role** from Notion (read above) — the role-specific content input; include if populated (the letter-writer loads its primary source, the Motivation Bank, from career-data itself). If empty, pass it empty — the letter-writer's Sufficiency Gate decides write-or-skip.
+- **Strategy** and **Gap handling** from Notion (read above) — secondary context; defer to the user's own words (Why I Want This Role or the Motivation Bank) on any conflict
 - **Recruiter review** path `$PIPE/recruiter-cv.md` to read — includes the "Interview-trigger gaps" section: things clear enough to pass the recruiter screen but that would prompt a hiring manager question; the letter-writer uses these to proactively address gaps where Why I Want This Role or documented background provides a real answer. **Fabrication rules always trump reviewer input — even when a gap is passed, the letter-writer may only answer it with documented background or Why I Want This Role content. A reviewer flag does not authorise invention.**
 
 **Orchestrator quality read — before passing to gatekeeper:**
@@ -524,16 +522,17 @@ After updating the file, repackage the `career-data` directory as a `.skill` zip
 
 ## What to add
 
-**Target location:** Section 5 → "Promoted from Why I Want This Role"
+**Target location:** `Section 5 — Motivation Bank` — the `| Tags | Motivation |` table. Append new rows to it. There is **no** "Promoted from Why I Want This Role" subsection — promoted content is simply new rows in this table.
 
 **Source content** (from Why I Want This Role — [Company], [Role Title], [YYYY-MM-DD]):
-> [INSERT VERBATIM WHY I WANT THIS ROLE CONTENT HERE]
+> [INSERT THE USER'S WHY I WANT THIS ROLE CONTENT HERE — VERBATIM, EXACTLY AS SHE WROTE IT. Do NOT correct grammar or spelling, do NOT polish, do NOT paraphrase. Scrappy English is fine and preferred over a cleaned-up version; the user fixes her own wording inside this prompt before sending if she wants.]
 
 **Promotion rules:**
 - Compare the source content against the entire file. Add only what is genuinely new: durable motivation themes, standing professional observations, reusable angles, or characteristic phrasings the user wrote.
 - Exclude: anything already captured (even in different words), purely company- or role-specific reactions with no reuse value, and anything not in the user's own written words.
-- Quote verbatim. Entry format: `- **[Topic]** — "[verbatim quote]" *(from Why I Want This Role — [Company], [YYYY-MM-DD])*`
-- Append-only. Never paraphrase, infer, or edit existing entries.
+- **Verbatim, raw.** The Motivation cell is the user's exact words — never paraphrased, polished, or grammar-"fixed" by the agent. Quote what she wrote. The user may correct her own wording in this prompt before sending; the agent never does.
+- **Entry format — append a new table row:** `| [suggested tags] | "[verbatim quote]" *(Why I Want This Role — [Company], [YYYY-MM-DD])* |`. Suggest the **tags** (comma-separated: where/when this applies in a cover letter — persona, theme, vertical, opener-vs-body, audience); the user can adjust them. The Motivation text stays raw verbatim regardless of the tags.
+- Append-only. Never rewrite, merge, reorder, or delete existing rows; never change the table's column layout.
 - If the content contains a new durable career fact (outcome, metric, deliverable, role detail) that belongs in Section 7 (Role Facts), do NOT write it there — Section 7 requires the user's explicit approval. Flag it instead: "New role fact found: '[quote]' — add to §7 if accurate."
 - If there is nothing new to add, say so explicitly: "No new content to promote from this entry."
 ```
