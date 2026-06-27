@@ -74,10 +74,11 @@ Present the full structured list to the user for review before writing to Notion
 
 After user approval:
 
-1. For each idea, create a new page in the idea bank database using `notionApi` `API-post-page` (preferred) or `notion-create-pages`.
-2. Set all fields from Step 2.
-3. On success: confirm how many ideas were created and list their titles.
-4. On any write failure: report which idea failed and its content so the user can add it manually.
+1. **Validate select-property options against the schema first.** When `database_backend` is `notion` (the default), confirm the select option values you will write (`Status = Idea`, and each `Category` value) against the live schema via `${CLAUDE_PLUGIN_ROOT}/skills/database-notion/SKILL.md` → §1 schema read (read it if the schema reference is not already in context). Write the exact option strings from the schema, keyed by exact property name, per §4 writeback. If a needed option (`Idea`, or a chosen `Category`) does not exist in the schema, surface a note to the user and pick the closest valid option rather than writing an invalid value.
+2. For each idea, create a new page in the idea bank database using `notionApi` `API-post-page` (preferred) or `notion-create-pages`.
+3. Set all fields from Step 2, using the schema-confirmed select-option strings.
+4. On success: confirm how many ideas were created and list their titles.
+5. On any write failure: report which idea failed and its content so the user can add it manually.
 
 ## Output Format
 

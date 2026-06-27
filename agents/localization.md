@@ -26,7 +26,7 @@ Produces a {{USER_SECOND_LANGUAGE}} version of the user's CV and cover letter. T
 
 ## Load Before Starting
 
-> Prefix all paths with `${CLAUDE_PLUGIN_ROOT}/` — bare relative paths fail when this agent runs as a subagent.
+> **Path resolution:** Prefix PLUGIN file paths with `${CLAUDE_PLUGIN_ROOT}/` — bare relative paths fail when this agent runs as a subagent. **Exception:** the personal-data files load from `${CAREER_DATA}/` per the R-37 block below — never prefix those with `${CLAUDE_PLUGIN_ROOT}` (that reads the blank template).
 
 > **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight and passes into this spawn. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` was not provided (direct or standalone invocation), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
 

@@ -39,5 +39,18 @@
     "default_batch_size": 3,
     "dedup_lookback_days": 30,
     "description": "Content calendar orchestrator config. default_batch_size is the number of posts per orchestrator run."
+  },
+  "freelance": {
+    "fiverr_username": "",
+    "upwork_profile_url": "",
+    "brand_name": "",
+    "pricing_floors": {
+      "fiverr_basic": "",
+      "fiverr_standard": "",
+      "fiverr_premium": "",
+      "upwork_hourly": "",
+      "description": "Your minimum prices (the agent never quotes below these in copy). fiverr_basic/standard/premium are the three Fiverr gig-tier floors; upwork_hourly is your Upwork hourly-rate floor (net — list rate is this divided by 0.8 to absorb Upwork's 20% cut). Leave any field blank to skip it."
+    },
+    "description": "Freelance-manager config (Fiverr + Upwork). fiverr_username, upwork_profile_url, and brand_name are platform handles; pricing_floors holds your minimum prices. All optional — the freelance-manager asks inline for anything blank."
   }
 }

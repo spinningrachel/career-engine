@@ -161,6 +161,11 @@ Based on their answers:
 3. **If either language is right-to-left (RTL)** — this includes Hebrew, Arabic, Persian/Farsi, Urdu, and others:
    > ⚠️ **RTL template required.** RTL text in a left-to-right Word template will render incorrectly — characters appear in the wrong order and alignment breaks. You will need a separate `.dotx` template configured for right-to-left layout before running the pipeline for RTL-language roles. See `skills/career-engine-export/SKILL.md` for template setup instructions.
 
+   Then ask:
+   > "What is the absolute path to the directory holding your RTL `.dotx` template(s)? (Leave blank if you don't have it ready yet — RTL export will be skipped until you add it via 'update my references'.)"
+
+   Write the answer (or empty string if skipped) into `word_templates_path` in the career-data config (Phase 5). Without it, `career-engine-export` silently skips RTL export, so collecting it here is what makes RTL roles produce output.
+
 4. **Database reminder:** Tell the user:
    > "Add all languages you configured to the **Languages** column in your Notion (or tracking) database for each role. The pipeline reads this column to decide whether to run localization. Use the exact values you configured: `{{USER_DEFAULT_LANGUAGE}}`, `{{USER_SECOND_LANGUAGE}}` (or both). A role with Languages = `{{USER_DEFAULT_LANGUAGE}}` only gets one set of outputs. A role with Languages = `{{USER_DEFAULT_LANGUAGE}}, {{USER_SECOND_LANGUAGE}}` gets both."
 

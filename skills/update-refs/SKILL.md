@@ -53,7 +53,7 @@ Classify every shared item against this map. Multiple items in one document are 
 | Positioning, voice profile, methodology, messaging, taglines, goals, ICP, career-shift posture, employment status | `references/03-framework.md` | **The primary source of truth about the user — see Framework Updates below.** Changes here alter agent behavior everywhere; every proposal must name the behavioral consequence, not just the text change. |
 | Sent cover letters for voice calibration | `references/delivered-letters/` | **Do not write directly** — route through letter-writer Option 3 (Manage Letter Examples; cap 6) |
 | LinkedIn profile PDF export (new or updated) | `references/linkedin-profile.md` | **Replace, wholesale** — extract the export into the file's structure (headline, About verbatim, skills, experience entries, education), stamp the snapshot date, and supersede the previous snapshot entirely. This is the canonical base for all LinkedIn recommendations; no usage questions needed — the wiring exists. |
-| Word templates (.dotx) | `references/` | Personalized version only |
+| Word templates (.dotx) | `${CAREER_DATA}/references/` | Personalized version only — personal data, never the plugin repo (see line 83 / R-37) |
 | Anything that fits none of the above | **Unknown — ask** | See New Files below |
 
 ## Operations
@@ -117,7 +117,7 @@ An unwired file is a failed add — do not report success until the wiring is in
 
 6. **Data vs code.** Personal data goes only to `career-data`, never to the plugin repo. A genuinely new *reference-file type* and its agent wiring (REFERENCES.md rows, loading-table entries) are code changes and go to the repo with `{{...}}` placeholders. When in doubt whether something is data or code — ask.
 
-7. **Repackage** every `.plugin` zip whose tree changed. Both files are always named `career-engine.plugin`.
+7. **Repackage** `career-engine.plugin` if the tree changed.
 
 8. **Report.** Summarize per item: what was written, where, and which operation. List anything parked at the clarification gate. Remind the user that the live installation picks up the changes only after the updated `career-engine.plugin` is re-uploaded.
 

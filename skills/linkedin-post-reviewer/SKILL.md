@@ -82,9 +82,11 @@ If a claim appears fabricated or unverifiable → FAIL with the exact claim quot
 
 ### Check 10 — Close
 
-Does the post end with an explicit engagement request ("like this if you agree", "comment below", "share with someone who needs this")? → FAIL
+Does the post end with an explicit engagement request / engagement bait ("like this if you agree", "comment below", "share with someone who needs this", "Agree?")? → FAIL
 
-Does the post end with a rhetorical question used as a CTA ("What do you think?", "Have you experienced this?")? → FAIL
+Does the post end with a *rhetorical* question used as a CTA — a generic, content-free prompt to comment ("What do you think?", "Have you experienced this?")? → FAIL
+
+**Permitted (do NOT fail):** a specific, substantive implementation question tied to the framework — the Format A "Implementation CTA" mandated by `shared-voice-rules.md §8`. A close that asks a concrete question about applying or adapting the framework and invites substantive responses is correct, not a violation. Only fail closing questions that are rhetorical or engagement bait, not those that ask a real implementation/adaptation question.
 
 ## Grade Criteria
 

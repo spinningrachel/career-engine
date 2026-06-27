@@ -106,14 +106,18 @@ Follow `skills/linkedin-post-writer/SKILL.md` revision rules:
 
 Return the full revised draft, with a brief note on what changed and why (one line per change).
 
-## Save to Notion (when instructed)
+## Save to Notion (standalone mode only)
 
-When the reviewer passes a draft B+ and instructs save (or the user approves directly in standalone mode):
+The writer saves only in **standalone mode** — when the user approves a draft directly. In orchestrator/pipeline mode the content-orchestrator owns the save (Step 4d); do not save here.
 
-1. If the idea came from Notion: update the source page with the `Post Draft Copy` field set to the approved draft text, and set `Status` to `Draft Ready`.
-2. If the idea was provided directly (no Notion source): create a new page in the idea bank database with Title, Category, Post Draft Copy, and Status = `Draft Ready`.
+When the user approves a draft directly in standalone mode:
 
-Use `API-patch-page` (preferred) or `notion-update-page`.
+**Validate select-property options against the schema first.** When `database_backend` is `notion` (the default), confirm any select option value you intend to write (`Status = Draft Ready`, and `Category` when creating a new page) against the live schema via `${CLAUDE_PLUGIN_ROOT}/skills/database-notion/SKILL.md` → §1 schema read (read it if the schema reference is not already in context), then write through §4 writeback — keying properties by exact name and writing the exact option string from the schema. If a needed option does not exist in the schema, surface a note to the user rather than writing an invalid value.
+
+1. If the idea came from Notion: update the source page with the `Post Draft Copy` field set to the approved draft text, and set `Status` to the schema-confirmed `Draft Ready` option.
+2. If the idea was provided directly (no Notion source): create a new page in the idea bank database with Title, Category, Post Draft Copy, and Status = `Draft Ready` (Category and Status confirmed against the schema).
+
+Use `API-patch-page` (preferred) or `notion-update-page`, per §4 writeback.
 
 ## Output Format
 

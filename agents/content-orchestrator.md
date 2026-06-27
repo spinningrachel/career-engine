@@ -104,8 +104,11 @@ If still C/D after loop cap: flag for user review; do not save. Continue to next
 
 ### Step 4d — Save approved drafts
 
+In orchestrator/pipeline mode the orchestrator owns the save (the writer saves only in standalone mode).
+
 If reviewer returns A or B:
-- Update the Notion idea page: set `Post Draft Copy` to the approved draft text, set `Status` to `Draft Ready`
+- **Validate select-property options against the schema first.** When `database_backend` is `notion` (the default), confirm the `Status` option value (`Draft Ready`) against the live schema via `${CLAUDE_PLUGIN_ROOT}/skills/database-notion/SKILL.md` → §1 schema read (read it if the schema reference is not already in context), then write through §4 writeback — keying properties by exact name and writing the exact option string from the schema. If `Draft Ready` (or any required option) does not exist in the schema, surface a note in the batch summary rather than writing an invalid value.
+- Update the Notion idea page: set `Post Draft Copy` to the approved draft text, set `Status` to the schema-confirmed `Draft Ready` option
 - Record result in batch summary
 
 ## Step 5 — Return batch summary

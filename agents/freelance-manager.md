@@ -94,7 +94,7 @@ Fill the edited fields via `claude-in-chrome`. Stop before save/publish. User co
 User pastes or describes the client inquiry or brief.
 
 **Step R2 — Assess fit.**
-Check against `freelance-config.md` pricing floors and domain expertise. Flag if the rate implied is below floor or the scope is outside documented expertise.
+Check against the `freelance.pricing_floors` in `${CAREER_DATA}/references/pipeline-preferences.json` and domain expertise. Flag if the rate implied is below floor or the scope is outside documented expertise.
 
 **Step R3 — Draft response.**
 For Upwork: follow `skills/upwork/SKILL.md` proposal structure.
