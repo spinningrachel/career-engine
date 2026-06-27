@@ -358,14 +358,13 @@ grep -c "Fetched-alternative" <location>/agents/career-coach.md
 
 ### Check 20 — Notion view creation prohibition present (Notion adapter)
 
-The view-creation prohibition was relocated from the intake skill into the Notion adapter during the DB-mechanics extraction (commit 13895ca). Verify it is present in the adapter; accept the intake skill too for older trees.
+The view-creation prohibition lives in the Notion adapter (relocated from the intake skill during the DB-mechanics extraction, commit 13895ca); pipeline skills delegate to the adapter rather than restating it. Verify it is present in the adapter.
 
 ```bash
-# Rule lives in the Notion adapter now; accept either location (both 0 = FAIL)
-grep -rc "create-database-view" <location>/skills/database-notion/SKILL.md <location>/skills/career-engine-intake/SKILL.md
+grep -c "create-database-view" <location>/skills/database-notion/SKILL.md
 ```
 
-**FAIL condition:** string not found in either file (both counts 0).
+**FAIL condition:** string not found in `skills/database-notion/SKILL.md`.
 
 ### Check 21 — Tiered Notion query ladder present in intake skill (R-1, R-25, R-35)
 
