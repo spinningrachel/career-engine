@@ -19,6 +19,19 @@ Then work through every step in order. Do not skip steps. Do not run steps in pa
 
 ---
 
+## Step 0 — MANDATORY: Native, idiomatic English (run first)
+
+Read every sentence one by one. Before any AI-pattern work, each sentence must read as natural, native, idiomatic English — the way a fluent executive writes, judged against the delivered letters. AI-pattern fixes cannot be applied to a sentence that does not parse, so this runs first.
+
+For each sentence, two checks:
+
+1. **Non-idiomatic / translated-feeling → REWRITE.** A sentence whose meaning is clear but whose English is unnatural — a literal calque from another language, a wrong preposition or missing/extra article, unnatural word order, a literally-translated idiom, a construction no native writer would use — gets rewritten to convey **the same meaning** in natural English in her register. Use the delivered letters as the bar for "natural." Change only the wording — never add, drop, or alter the meaning.
+2. **Meaning unrecoverable → FLAG, do not invent.** If a sentence is so garbled you cannot tell what it was meant to say, do **NOT** guess or invent a meaning — you have no role context to reconstruct it (you receive only the letter and her voice files). Leave the sentence in place and name it in your change log (`humanizer-changes.md`) under **"⚠ Unrecoverable sentence(s) — writer must fix"**, quoting it. The pipeline surfaces it for the writer/user; inventing content here is a violation of "I do not add content."
+
+**Guard — never "correct" her voice.** This step fixes broken or translated-feeling English, NOT informality, directness, sentence fragments, or intentional stylistic choices. A construction that appears in her delivered letters, or that reads as a deliberate, confident choice, is her voice — leave it. The target is comprehensible native idiom, never added formality or blandness. **When unsure whether a sentence is broken English or her intentional voice, treat it as her voice and leave it.**
+
+---
+
 ## Step 1 — MANDATORY: Top 4
 
 Read every sentence in the letter one by one. For each sentence, compare it against every rule in this table one by one. Rewrite immediately if it violates any rule — even if that means rewriting the same sentence multiple times. Do not move to Step 2 until every sentence passes every rule in this step.
@@ -109,6 +122,7 @@ Before returning the letter, do all four of the following:
 
 Before returning anything, run this checklist in order. If any item fails, fix it before continuing.
 
+- [ ] Step 0: Every sentence reads as natural, native English — no translated-feeling or non-idiomatic constructions. Any sentence whose meaning is unrecoverable is flagged in the change log under "⚠ Unrecoverable sentence(s) — writer must fix", not invented. Her intentional voice and archive-consistent constructions are left untouched.
 - [ ] Step 1: No em dashes or colons (no carve-out). No contrived agent-drafted rhetorical tricolons; no same-opening monotone runs (the user's real parallel lists pass). No more than three -ing appendages, each carrying real content. Sentence openings: no expletives ("There was/is/are") and no abstract label noun-phrase subjects — these two carry no carve-out; archive-consistent dependent-clause and prepositional ramps are the user's register and pass.
 - [ ] Step 2: No dangling participles. No long noun phrase subjects. No deeply embedded relative clauses in objects. No wh-clause stacking. No inanimate subjects performing human actions. Parallel structure intact. No "and...and...and..." stacking. Long and short sentences balanced — no paragraph that reads monotone, judged against the delivered letters rather than by counting.
 - [ ] Step 3: No AI vocabulary. Active voice throughout. No "serves/stands/acts as." No approach-announcement labels. No demonstrative declarations. No demonstrative determiners pointing at agent-coined abstractions ("that exact [noun]" / "exactly that [noun]" / "this same [noun]"). No synonym cycling. No appended negating contrast (", not [X]" / ", not as [X]"). No antithesis/pivot formula ("Not X — Y" / "It's not about X, it's about Y" / "This isn't just A, it's B"). No expert-claims anywhere in the letter. No agent-invented methodology. No filler phrases. No false ranges. No word-stem echoes. No prohibited vocabulary phrases.
