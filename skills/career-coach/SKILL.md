@@ -1,6 +1,6 @@
 ---
 name: career-coach
-description: Analysis procedures for the career-coach agent (Option 2 — Intake Pipeline). Contains the research phase, post-research self-check, priority scoring, writing guidance, strategic property definitions, gap handling rules, output format template, and Notion writeback rules. Load this after pre-flight JD acquisition is complete.
+description: Analysis procedures for the career-coach agent (Option 2 — Intake Pipeline). Contains the research phase, post-research self-check, priority scoring, writing guidance, strategic property definitions, gap handling rules, output format template, and output rules (the coach RETURNS properties; intake writes them — the coach never writes Notion). Load this after pre-flight JD acquisition is complete.
 ---
 
 # Career Coach — Analysis Procedures
@@ -450,7 +450,7 @@ If `GAP_HANDLING = disabled` (set in the Settings pre-flight), leave `Gap handli
 
 ---
 
-**⛔ KEYSTONE — written-back values are scannable briefs, not essays.** Every text property the coach writes (`Role emphasis`, `Culture`, `Landscape`, `Role summary`, `Priority Reason`, `Gap handling`) must be **formatted to scan AND tight.** This is mandatory, not cosmetic — the user reads these at a glance in a database row.
+**⛔ KEYSTONE — returned values are scannable briefs, not essays.** Every text property the coach produces (`Role emphasis`, `Culture`, `Landscape`, `Role summary`, `Priority Reason`, `Gap handling`) must be **formatted to scan AND tight.** This is mandatory, not cosmetic — the user reads these at a glance in a database row.
 - **Format (mirror the `Landscape` sectioned style the user approved):** use **bold labels**, a **blank line between distinct topics**, and **bullets** for any list. Never a single dense paragraph. A wall of prose is a format failure even when the content is correct.
 - **Brevity:** say it in the fewest words that carry the signal — cut throat-clearing, hedges, qualifiers, and restatement. Written-back content has been running far too long; if a value exceeds its cap below, it is over-written — trim it.
 - **Hard caps:** `Role emphasis` → **Mandate** ≤2 short sentences, **Likely KPIs** one line (a comma list, not prose), each on its own line with a blank line between; `Culture` → 2–3 one-line bullets, blank-line-separated; `Keywords` → ≤9 total (Critical ≤4 / Important ≤3 / Nice-to-have ≤2); `Priority Reason` → one sentence; `Role summary` → ≤400 chars (existing); each `Landscape` bullet → one line. When in doubt, cut.
@@ -739,21 +739,19 @@ Rules:
 
 ---
 
-## Notion Writeback Rules
+## Output Rules — RETURN these for intake to write (the coach does NOT write Notion)
 
-**Write to existing properties only — never create a property.** Write each value to the existing database property of that exact name. **Never create a new property, and never create a numbered or renamed variant** (the "Strategy 1" failure: an agent that couldn't write `Strategy` cleanly created a duplicate field). If a target property is missing, rejects the write, or its type doesn't match, STOP and report it in Patterns — never invent a field.
+**You do not write to Notion. You return your analysis; intake (Step 0.9a) is the single authoritative writer.** In the intake pipeline (Option 2), the orchestrating intake skill takes the properties you return in your output and writes them to the database through the adapter (schema-validated select values, write-only-to-empty, never creating a property, with a post-write confirmation pass). Your job is to **produce every property below and include it, complete and correctly formatted, in your returned output.** A property you analyzed but omitted from your output never reaches Notion — that exact gap left `Role summary` and `Priority Reason` empty on past runs. Do not call any Notion write tool; you have none.
 
-**Write to properties, never to the page body.** All coach output goes into the named properties below. **Do not write letter strategy, coaching notes, priorities, KPIs, or any analysis into the page body.** The only sanctioned body-adjacent write is prepending the coach context block to the existing `Why I Want This Role` field (a property, not the page body). If something doesn't fit a property, it doesn't get written.
+**Return every property to its named slot — never as page-body prose.** All your output maps to the named properties below. Do not emit letter strategy, coaching notes, priorities, or KPIs as free page-body text — they belong in their properties (candidate-facing framing goes in the coach context block you return for `Why I Want This Role`). The outreach map is the one body write, which intake makes (Step 0.9e) from the map you return.
 
-**These writes are mandatory every full-research run — not best-effort.** `Role emphasis` (with its Mandate + Likely KPIs lines), `Landscape` (sectioned format), `Strategy`, `Keywords`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, the **location-compatibility property**, and **`Date first advertised` / First Advertised** must be populated (write-only-to-empty still applies — fill an empty field, don't overwrite). **Location and First Advertised are the two most-skipped — do not finish a role with either left empty** when research produced a value (or its `[LOW]` / range / `Unknown` per their rules). If a mandatory write is genuinely impossible, name the property and the reason in Patterns.
+**These properties are MANDATORY to return on every full-research run — not best-effort.** `Role emphasis` (Mandate + Likely KPIs lines), `Role summary`, `Priority`, `Priority Reason`, `Landscape` (sectioned), `Strategy`, `Keywords`, `Role Type`, `Relationship type`, `Gap handling`, `Culture`, the **location-compatibility result**, **`Date first advertised` / First Advertised**, and the **`Why I Want This Role` coach context block**. `Role summary`, `Priority Reason`, location, and First Advertised are the most-dropped — never finish a role with any of these missing from your output when you produced a value (or its `[LOW]` / range / `Unknown`). If a value is genuinely impossible, say so by property name in Patterns; do not silently omit it.
 
-**Write only to empty properties.** For every coach-owned property, check the current Notion value before writing. If a value already exists — regardless of what the coach produced — skip it. Do not overwrite.
+**Select / multi-select values MUST match the schema.** For every Select (`Strategy`, `Relationship type`, `Gap handling`, etc.) and multi-select (`Role Type`, etc.) property, return only values that exist in the "Notion schema reference" intake passed you (the live option list). If your intended value isn't an existing option, return the **closest existing option** and note the mismatch in Patterns — **never invent an option value.** Inventing non-schema option values is exactly what made past writes fail and silently drop properties. `Date first advertised` is a Date — return a clean `YYYY-MM-DD`, no appended text.
 
-This applies to all coach-owned properties: `Role emphasis`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Role summary`, `Company Stage`, `Culture`, `Person who Advertised Role (if not Hiring Manager)`, `Priority`, `Priority Reason`, `Landscape`, and all research-derived properties (`Hiring Manager's Name`, `Recent news`, `Funding context`, etc.), as well as the location compatibility property (name resolved from `pipeline-preferences.json`).
+**`JD proof` — return it fresh every run** (intake overwrites it, the one exception to write-only-to-empty): the verbatim quote must be traceable to the JD text this run fetched or found, never a cached Notion value.
 
-**`JD proof` exception — always overwrite.** Unlike all other coach-owned properties, `JD proof` must be written even if already populated. The current run's verbatim quote from the JD text supersedes any prior value. This is the anti-fabrication guardrail: the quote must be traceable to the JD text this run fetched or found, never to a cached Notion value from a prior run.
-
-**`Why I Want This Role` — coach context block (intake / Option 2 only).** Prepend a coaching context block to the `Why I Want This Role` Notion field. This block carries the strategic priorities and framing the letter-writer needs; the user may edit or remove it before submitting to the pipeline. **Existing content in `Why I Want This Role` is NEVER a reason to skip this write** — the field already having the user's notes is the normal case. Always prepend the block above whatever is there (this is the one exception to "write only to empty"; the block goes on regardless). An agent that skipped the context block because the field "already had values" got this wrong.
+**`Why I Want This Role` — coach context block (intake / Option 2 only).** RETURN a coaching context block in your output; **intake prepends it** to the `Why I Want This Role` Notion field. This block carries the strategic priorities and framing the letter-writer needs; the user may edit or remove it before submitting to the pipeline. Intake prepends it above any existing content (the field already having the user's notes is the normal case and is never a reason to skip — this is the one always-write, not write-only-to-empty), keeping `---` as the separator. Always include this block in your output — a coach that omits it leaves the letter-writer without its framing.
 
 Format of the block:
 ```
@@ -774,9 +772,8 @@ Rules:
 - No candidate credential names, no company names from her background in the priorities — writers read her background separately.
 - The GTM lens lines (why you / why them / why now) are optional; include only when they add material framing beyond the priorities themselves.
 - The `Likely KPIs` line is always included — one line, even when the JD names no targets (infer from scope + GTM model). It is framing input only; never phrase it as a target the user commits to hit.
-- If the field already has content: prepend the block above the existing content, keeping `---` as the separator. The existing content follows verbatim below the separator.
-- If the field is empty: write only the block (no separator needed — there is no user content below it yet).
-- This writeback applies to Option 2 (intake pipeline) only. Never write to `Why I Want This Role` from Options 1, 3, 4, 5, or 6.
+- Intake's placement: if the field already has content, the block goes above it with `---` as the separator and the existing content verbatim below; if empty, just the block (no separator). You return the block; intake handles placement.
+- This block is returned for Option 2 (intake pipeline) only. Never produce a `Why I Want This Role` block for Options 1, 3, 4, 5, or 6 (those have no Notion writeback).
 
 **`Landscape` format is mandatory — always the sectioned, scannable structure, never a prose blob.** Every Landscape write uses the `## Competitors` / `## Market Signals` / `## User Voice` / `## Company & Org` / `## Recruitment Signals` / `## Career Path` headings with one tight sourced bullet per point (see the Output Format spec). A wall of paragraphs is a format failure even if the content is right — it is too hard to scan. Same discipline as `Role emphasis`: labeled sections, short lines.
 

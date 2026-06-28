@@ -90,7 +90,7 @@ The database ID for this run: `$NOTION_DATABASE_ID` (resolved from the career-da
 
 ---
 
-**Step 0a — Read the schema reference (via the database adapter).** This is a database operation. **Load `${CLAUDE_PLUGIN_ROOT}/skills/database-notion/SKILL.md`** — the Notion adapter, mandatory whenever `database_backend` is `notion` (the default) — and follow its **§1 Schema read**: fetch the schema, extract the SQLite `CREATE TABLE` block as the run's authoritative schema reference (property names + valid select-option values), keep it in context, and pass it to the career coach as a "Notion schema reference" section so it writes select values that match the live options. If the schema fetch fails, stop and report. (If `database_backend` is ever not `notion`, load that backend's adapter instead — the operation is the same.)
+**Step 0a — Read the schema reference (via the database adapter).** This is a database operation. **Load `${CLAUDE_PLUGIN_ROOT}/skills/database-notion/SKILL.md`** — the Notion adapter, mandatory whenever `database_backend` is `notion` (the default) — and follow its **§1 Schema read**: fetch the schema, extract the SQLite `CREATE TABLE` block as the run's authoritative schema reference (property names + valid select-option values), keep it in context (intake writes from it in Step 0.9a, validating every Select/multi-select value against the live option list), and pass it to the career coach as a "Notion schema reference" section so the coach RETURNS select values that match the live options. If the schema fetch fails, stop and report. (If `database_backend` is ever not `notion`, load that backend's adapter instead — the operation is the same.)
 
 ---
 
@@ -151,7 +151,7 @@ For each role:
 
 **Cross-version capture for location and First Advertised.** The fallback ladder above stops at the first rung that returns usable JD *content*, but `First Advertised` and location compatibility cannot be set reliably from a single version of a posting (a board's location field is often a forced artifact, and its posting date resets on every re-post). So: whenever the ladder surfaces a second version of the same role — a board mirror, an ATS/careers listing, a LinkedIn posting — capture that version's **location field (verbatim)** and its **posting/"posted X ago" date** even after you already have usable content, and pass every captured version's URL, location field, and date to the coach alongside the JD. Do not fetch full mirrors solely for this where the ladder already succeeded on rung 1 — but record any version that does come into view during the search. The coach corroborates across these versions per `skills/career-coach/SKILL.md` → Location & eligibility deep-scan and → `Date first advertised`.
 
-Pass the full row payload (including `JD Body` content, any fetched URL content, and every captured alternate version's URL/location field/date) to the career coach in Step 0.8. The coach writes `JD Body`, `JD Fetch Status`, `Priority`, `Priority Reason`, and the location compatibility property (if configured).
+Pass the full row payload (including `JD Body` content, any fetched URL content, and every captured alternate version's URL/location field/date) to the career coach in Step 0.8. The coach **returns** `JD Body`, `JD Fetch Status`, `Priority`, `Priority Reason`, and the location compatibility result; **intake writes them in Step 0.9a** (the coach does not write Notion).
 
 Hold all structured JD data in memory. Proceed immediately to Step 0.6.
 
@@ -196,14 +196,16 @@ Partial population (any required field missing) is not coach-complete and the ro
 
 Spawn `career-coach` with the applicable roles. Pass:
 - Full JD data and the complete Notion row properties for each role — **exclude the `JD proof` property value entirely**, even if populated. The coach must derive a fresh verbatim quote from the JD text. Passing the existing `JD proof` value would undermine the anti-fabrication guardrail.
-- `$NOTION_DATABASE_ID` (resolved from career-data config) — the coach needs this for Notion writebacks
+- `$NOTION_DATABASE_ID` (resolved from career-data config) — for reference only; **intake** performs all Notion writes in Step 0.9a, the coach does not write
 - `${CAREER_DATA}` (the resolved career-data root) — the coach needs this to read references
-- The SQLite schema reference from Step 0a (as a "Notion schema reference" section) — the coach uses it to write select values that exactly match live Notion options
+- The SQLite schema reference from Step 0a (as a "Notion schema reference" section) — the coach uses it to RETURN Select / multi-select values that exactly match the live option list (intake writes them; every returned value must be an existing option)
 
-The coach returns:
+The coach returns — **intake writes ALL of these in Step 0.9a; the coach does not write Notion:**
 - Priority scores for all roles (Part 0 of the coach's output) — always
 - Batch analysis and per-role writing guidance (Part 1)
-- Strategic Notion properties: Role emphasis, JD proof, Keywords, Strategy, Company Stage, Role Type, Relationship type, Gap handling (Part 2)
+- **Every strategic Notion property (Part 2), each as a named value:** `Priority`, `Priority Reason`, `Role emphasis`, `Role summary`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Culture`, `Landscape`, `Company Stage`, `JD proof`, `JD Body` / `JD Fetch Status` (when fetched), the location-compatibility result (when configured), `First Advertised` / `Date first advertised`, and the research-derived properties (`Hiring Manager's Name`, `Recent news`, `Funding context`, etc.)
+- The **`Why I Want This Role` coach context block** (intake prepends it in Step 0.9a)
+- The **outreach map** (intake writes it to the page body in Step 0.9e)
 - Patterns and notes for the user (Part 3)
 
 Hold the coach output in memory. Proceed immediately to Step 0.8.5.
@@ -226,15 +228,17 @@ Spawn `gatekeeper` with `option=coach-output`. This gate runs BOTH the fabricati
 
 This step is mechanical and runs end-to-end without pausing.
 
-### 0.9a — Write coach outputs to Notion
+### 0.9a — Write coach outputs to Notion (intake is the SOLE writer)
 
-**Rule: write only to empty properties.** For every property below, check the current Notion value first. If already populated — skip it. Do not overwrite any existing value. `N/A` counts as populated.
+**Intake is the single authoritative writer of every coach-produced property.** The career coach RETURNS its analysis in its output and does NOT write Notion itself (it has no write tool). Intake writes everything below from the coach's returned output — a property the coach produced reaches Notion only here. **This step always runs after the coach** (and after Step 0.8.5); it is never skipped on the assumption the coach already wrote. This is the fix for the past failure where `Role summary` and `Priority Reason` were silently dropped in the gap between two writers.
+
+**Rule: write only to empty properties** (the two always-writes — `JD proof` and the `Why I Want This Role` coach context block — are the named exceptions below). For every other property, check the current Notion value first. If already populated — skip it. Do not overwrite any existing value. `N/A` counts as populated.
 
 **Write to the EXISTING property of that exact name — never create a property or a numbered variant** (the "Strategy 1" bug came from an agent that couldn't write `Strategy` cleanly and made a duplicate). If a property is missing or rejects the write, report it in the briefing — do not invent a field. **Write to properties only, never to the page body** (the sole sanctioned body write is the outreach map in Step 0.9e).
 
 **Most-skipped, treat as mandatory:** the **location-compatibility property** and **`First Advertised`** are the two writes agents most often drop. When the coach produced a value (including a `[LOW]`/range/`Unknown`), these MUST be written — do not finish a role with either left empty. Same for `Role emphasis` (with its Mandate + Likely KPIs lines) and `Landscape` (sectioned format). **The location-compatibility MUST-write obligation applies only when the property name is configured** (`location_compatibility.database_property`, legacy `notion_property`, is present in `pipeline-preferences.json`) — when it is not configured, skip the write entirely, exactly as the per-property rule below states. The two are not in conflict: "mandatory" means "do not drop it when configured," not "write it even when unconfigured."
 
-Write through the database adapter (`skills/database-notion/SKILL.md` → §4 Writeback): where Path A1 (the `ntn` CLI) is active this run, property writes may go through `ntn api /v1/pages/<page_id> -X PATCH` (same write-only-to-empty rule, same parallelism); otherwise use `notion-update-page`. The property list and write-if-empty rules below are intake's contract; the adapter provides the mechanism (including the never-create-a-property guard).
+Write through the database adapter (`skills/database-notion/SKILL.md` → §4 Writeback): where Path A1 (the `ntn` CLI) is active this run, property writes may go through `ntn api /v1/pages/<page_id> -X PATCH` (same write-only-to-empty rule, same parallelism); otherwise use `notion-update-page`. The property list and write-if-empty rules below are intake's contract; the adapter provides the mechanism (including the never-create-a-property guard). **Validate every Select / multi-select value against the live schema option list from Step 0a before writing** — a value that is not an existing option is reported in the briefing, never sent as a write (an invalid select value errors the call and, in a batch, silently drops the other properties — that was a cause of the past data loss). **Write per property (or in small validated batches) so one rejected property can never drop the others.**
 
 For each role in the processing queue, apply this rule to:
 - `Priority` — write the coach's value (`1`–`6`) only if currently empty. If the role was coach-skipped (already coach-complete per Step 0.8), do not write at all — leave unchanged. In a mixed batch, apply per role individually.
@@ -245,14 +249,17 @@ For each role in the processing queue, apply this rule to:
 - `Hiring manager's role`, `Manager role confirmed`, `No incumbents in this function` — write if empty. (Full-research roles only.)
 - `First Advertised` — write if empty. **Use the coach's corroborated `Date first advertised` value, not a single page scan.** This is a Date property, so it always holds a clean `YYYY-MM-DD` and never appended text. A posting date from one site is low-confidence: boards reset the displayed date on re-post and syndication, so the same role shows different ages on different sites. Always write the **earliest** corroborated date seen across sources (re-posts only ever move the date later), formatted `YYYY-MM-DD`. When the coach marked it `[HIGH]` (primary source, or ≥2 independent sources agree), write it as the confident value. When the coach's value is `[LOW]` (one source only, or sources disagree), still write the earliest date as the best estimate, but carry the uncertainty in the Step 0.9b briefing — list it as "First Advertised: <date> — unconfirmed, earliest of N sources / sources disagreed." If no date was findable on any source, leave the property empty and note "First Advertised: unknown" in the briefing. Never guess or approximate a date from one page.
 - `JD Body` — write if empty AND the role was marked with any `url-fetched*` marker in Step 0.5 — `url-fetched`, `url-fetched-via-linkedin-mcp`, `url-fetched-via-connector`, `url-fetched-via-extraction`, or `url-fetched-via-search` (i.e., a live fetch succeeded on the original URL or via any fallback rung and returned usable JD content). Copy the fetched JD text verbatim into this property. Do NOT overwrite an existing `JD Body` value. Do NOT write if the role was marked `content-exists` (already has JD Body) or `needs-manual` (no usable JD available). Purpose: persisting the fetched JD avoids re-fetching on every subsequent edit run; if the job listing expires, the edit pipeline has the content it needs without re-fetching.
+- `JD Fetch Status` — write the coach's returned value (e.g. `Fetched`, `Unfetchable`) if empty. Validate against the schema option list (Step 0a).
 - `Gap handling` — write if empty. If gap_handling_mode = disabled, skip entirely.
-- `Why I Want This Role` — the **coach context block** (Letter type line + Priority 1/2/3 + the one-line Likely KPIs + optional one-line transfer note), written by the coach per its Notion Writeback Rules; intake confirms it was written and does not re-write. The coach **prepends** this block above any existing content (existing content is never a reason to skip — it is the normal case), keeping `---` as the separator. Do not overwrite if the coach already completed this write.
+- `Why I Want This Role` — the **coach context block** (Letter type line + Priority 1/2/3 + the one-line Likely KPIs + optional one-line transfer note) that the coach **returned** in its output. **Intake prepends it** to the field above any existing content (existing content is the normal case and is never a reason to skip — this is an always-write, not write-only-to-empty), keeping `---` as the separator: the block on top, then `---`, then the existing content verbatim (or just the block if the field was empty). If the coach returned no block for a full-research role, report it by name in the briefing.
 - `Company Stage` — write if empty. Exact option values: `Seed`, `Series A`, `Series B`, `Series C`, `Public`, `PE-backed`, `Stealth`, or `N/A`.
 - `Role Type` — write if empty. Multi-select exact values: `Builder`, `Scaler`, `Specialist`, `Leader`, or `N/A`.
 - `Culture` — write if empty. Skip entirely if already has content.
 - `Landscape` — if empty, write the full section-format content. If already populated, prepend the new content above the existing content separated by a `---` divider (per the career-coach output format).
 
-Confirm in chat: "Writeback complete: K roles updated, M properties skipped (already populated)."
+**Confirmation pass — run after the writes (this closes the past silent-drop).** Re-read each processed role's properties (one `notion-fetch` per role). For every MANDATORY property that the coach produced a value for — `Role emphasis`, `Role summary`, `Priority`, `Priority Reason`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Culture`, `Landscape`, `Gap handling` (unless `gap_handling_mode = disabled`), the location-compatibility property (only when configured), `First Advertised` (only when the coach produced a value), and the `Why I Want This Role` coach context block — that is **still empty** after the write, attempt the write once more from the coach's returned output. If it is still empty afterward (or the coach genuinely produced no value), name the property and role in the 0.9b briefing under **"⚠ Unwritten mandatory fields"**. **No mandatory property may end the run silently empty** — every miss is either written on retry or surfaced by name. (Triage-exit roles are confirmed only on their reduced set: `Priority`, `Priority Reason`, `JD Fetch Status`, `Role Type`, `Relationship type`, and location when configured.)
+
+Confirm in chat: "Writeback complete: K roles updated, M properties skipped (already populated), N flagged unwritten (see briefing)."
 
 ### 0.9b — Brief the user
 

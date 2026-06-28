@@ -129,7 +129,7 @@ Wherever her content is in play, default to her tone and vocabulary over polishe
 
 ## Letter Type
 
-Every letter is one of three structural types, set by the `Strategy` Select value the career coach writes. The mapping is exact:
+Every letter is one of three structural types, set by the `Strategy` Select value the career coach produces (intake writes it). The mapping is exact:
 
 | `Strategy` value | Letter type | Central question the HM is asking |
 |---|---|---|

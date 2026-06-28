@@ -15,7 +15,7 @@ The numbered checks below are necessary but **not sufficient**. On **every** run
 For each agent/skill in scope:
 1. **Follow every reference OUT.** Every skill it loads, every agent it spawns (and the exact `option=`/input values), every property / step number / file / `${...}` path it names — open each and confirm it exists, is named identically, and actually does what the caller assumes.
 2. **Follow every reference IN.** Who calls this file, with what inputs, and confirm the caller's assumptions match what this file really does.
-3. **Walk each value end-to-end.** When something is produced in one place and consumed in another (a property the coach writes and a writer reads; a config key setup writes and the orchestrator reads; a step number cross-referenced between two skills), confirm producer and consumer agree on **name, format, and meaning** the whole way through.
+3. **Walk each value end-to-end.** When something is produced in one place and consumed in another (a property the coach returns and intake writes; a config key setup writes and the orchestrator reads; a step number cross-referenced between two skills), confirm producer and consumer agree on **name, format, and meaning** the whole way through.
 4. **Report any misalignment with both endpoints** (file:line on each side). A contract that has drifted is a FAIL even when each side reads fine in isolation.
 
 The Cross-file contracts table in CLAUDE.md is the *known* set — verify those AND surface the ones not yet written down.

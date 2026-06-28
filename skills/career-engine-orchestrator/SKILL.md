@@ -160,7 +160,7 @@ Each Notion property in the Job Applications database has a single designated ow
 
 No other agent rewrites or second-guesses any of these. **`Gap handling` is the exception to the carry-forward rule — if the user has edited it in Notion, the pipeline reads her version as authoritative. The write-only-to-empty rule enforces this: if the field is non-empty, the coach skips writing.**
 
-**Mandatory value rule:** Every coach-owned property that the coach writes must receive an explicit value — `N/A` when genuinely inapplicable. A blank field signals agent failure, not inapplicability. This applies to `Company Stage` and `Role Type` in particular. **Prerequisite:** `N/A` must be present as a valid option in the Notion select fields for `Company Stage` and `Role Type` — the user adds this directly in Notion.
+**Mandatory value rule:** Every coach-owned property the coach returns (and intake writes) must receive an explicit value — `N/A` when genuinely inapplicable. A blank field signals agent failure, not inapplicability. This applies to `Company Stage` and `Role Type` in particular. **Prerequisite:** `N/A` must be present as a valid option in the Notion select fields for `Company Stage` and `Role Type` — the user adds this directly in Notion.
 
 **Triage-exit roles** (Priority 5–6, non-`--full-research`): only the first group of properties above is written. Full-research properties are skipped — they remain blank and are not required for triage-exit roles.
 
