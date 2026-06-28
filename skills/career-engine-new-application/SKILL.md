@@ -186,6 +186,7 @@ After the gatekeeper passes the draft, spawn `career-coach` with `option=letter-
 - `CAREER_DATA=${CAREER_DATA}`
 - The cover letter path `$PIPE/letter-draft.md` to read
 - `Role summary`, `Strategy`, `Keywords` (from the coach's Step 0.8 output)
+- `Gap handling` property (so the review knows whether gap handling is off for this run — an **empty** `Gap handling` means it is disabled and there are no gaps; the review must then give zero gap feedback)
 - Why I Want This Role content (from the Pre-Step 5 read) — pass verbatim, not summarized
 - Company name and role title
 - `OUTPUT_PATH=$PIPE/coach-letter-review.md`

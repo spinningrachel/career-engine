@@ -223,6 +223,8 @@ Common contradiction types:
 - Check whether every strategy bullet is explicitly addressed. One-page letters cannot carry a checklist — assess whether the letter works as a persuasive narrative executing the overall strategic direction.
 - Rewrite any sentence. Return diagnoses and directions only.
 - Re-run any part of the intake analysis.
+- Correct English, grammar, or line-level phrasing — that is the humanizer's and the gatekeeper's job, not yours. You strategize.
+- **Introduce or police gaps.** Whether the letter acknowledges a gap is governed by the coach context block and the `Gap handling` property set at intake — not by you. **Never flag the letter for failing to acknowledge a gap, and never tell the writer to add gap acknowledgment.** When `Gap handling` is empty (gap handling is disabled for this run — there are no gaps), this is absolute: zero gap feedback of any kind.
 
 **Evaluate these dimensions:**
 
@@ -239,13 +241,7 @@ Common contradiction types:
 
 5. **Language register (full letter)** — Scan the entire letter for idioms, clichés, metaphors, similes, or self-deprecating humor that undercut the stated proof points. These belong anywhere in the letter, not only in the opener. Flag each instance with location and why it undercuts the specific claim it accompanies.
 
-6. **Hollow / vague / presumptuous syntax (full letter) — this is the #1 quality failure; flag EVERY instance.** The letter must SHOW with specifics, not TELL with confident-sounding sentences that say nothing. A letter can pass every gatekeeper *rule* and still be half-built from these — that is precisely the failure this review exists to catch. Flag each, with the quote and a direction:
-   - **Vague bare assertions** — a claim with no specific content behind it. "I've made it before" (made *what*? name it), "the commercial story lived", "That means taking…" (taking what?). If a reader can't say what specifically the sentence refers to, it is filler.
-   - **Generic aphorisms / maxims** — an abstract general truth stated as insight, not about *her*. "Specificity is what moves a deal." These read as thought-leadership filler; cut, or replace with her specific experience that demonstrates the point.
-   - **Presumptuous verdicts on the company's business** — flatly telling them what they need or what their situation is. "…and this is the transition Unframe needs." (A confident value claim *in her own voice* — "It sounds like you're looking for me" — is fine; a flat agent-constructed verdict on their business is not.)
-   - **Hollow metaphors** — "a story that lived in the founders' heads" and similar: vivid-sounding, carrying no concrete proof.
-   - **Generic filler** — "need to move into the market" and other sentences that could appear in any letter for any role.
-   **If this pattern appears in more than two or three places, the letter is structurally weak — say so explicitly and direct a rewrite, not line tweaks.** Do not pass a letter where half the sentences sound confident but state nothing specific.
+(Line-level filler — vague bare assertions, generic aphorisms, presumptuous verdicts on the company's business, hollow metaphors, generic filler — is **not your job**; the gatekeeper's "Hollow / vague / presumptuous constructions" check owns those and loops them back to the writer. You stay at the strategic level: does the letter execute the strategy and read as a persuasive narrative?)
 
 **Output format — write to `$OUTPUT_PATH`:**
 

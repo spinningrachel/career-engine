@@ -259,6 +259,7 @@ Spawn `career-coach` with `option=letter-review`, passing:
 - `CAREER_DATA=${CAREER_DATA}`
 - The cover letter path `$PIPE/letter-draft.md` to read
 - `Role summary`, `Strategy`, `Keywords` (from the coach properties verified in Step E1)
+- `Gap handling` (from the Step E1 coach properties; an **empty** `Gap handling` means gap handling is disabled for this run and there are no gaps — the review must give zero gap feedback)
 - Why I Want This Role content (from the Step E7 Notion payload) — verbatim, not summarized
 - Company name and role title
 - `OUTPUT_PATH=$PIPE/coach-letter-review.md`
