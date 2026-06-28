@@ -204,6 +204,19 @@ Load `skills/cover-letter/SKILL.md` → **Mandatory Revision Pass** section. Run
 **Step B — Rules checklist (after revision pass):**
 Load `references/cover-letter-self-check.md` → Option 1 and run every item in order.
 
+**Step C — Opener and content quality (after Step B — fix inline before writing the file):**
+Run all five checks against the letter as written. If any of (1), (2), or (3) fail, revise the letter before writing `LETTER_PATH`. Do NOT return a partially-passing letter for the orchestrator to re-read — fix it here.
+
+1. **Opener quality** — Does it establish genuine fit within the first two sentences? Fails if the opener:
+   - Uses an idiom, cliché, or self-deprecating humor (e.g., "without putting my thinking cap on," "needless to say," "it goes without saying")
+   - Makes a joke or casual aside as its first move
+   - Opens with a generic enthusiasm statement ("I was excited to see," "I would love to bring my skills")
+   - Establishes fit through a NEGATION rather than a direct claim ("nothing about X feels abstract to me" instead of stating directly what DOES feel concrete)
+2. **Opener coherence** — Does the opener undercut the content cues in Why I Want This Role? If the opener jokes or hedges where the WIWTR signals directness and conviction, that is a mismatch.
+3. **WIWTR implementation** — Is the user's WIWTR material woven into specific narrative moments, or merely mentioned, summarized, or used as a topic heading? The letter must draw from the user's actual words and framing — not produce a thematic summary.
+4. **Concrete vs. abstract** — Does it name something specific about this company or role the reader will recognize as real (a product detail, a market fact, a named proof point)?
+5. **Closing force** — Does it end with a reason to respond, or trail off?
+
 ---
 
 ### Output Format

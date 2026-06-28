@@ -146,26 +146,6 @@ Spawn `letter-writer` with `option=cover-letter`, passing:
 - **Strategy** and **Gap handling** from Notion (read above) — secondary context; defer to the user's own words (Why I Want This Role or the Motivation Bank) on any conflict
 - **Recruiter review** path `$PIPE/recruiter-cv.md` to read — includes the "Interview-trigger gaps" section: things clear enough to pass the recruiter screen but that would prompt a hiring manager question; the letter-writer uses these to proactively address gaps where Why I Want This Role or documented background provides a real answer. **Fabrication rules always trump reviewer input — even when a gap is passed, the letter-writer may only answer it with documented background or Why I Want This Role content. A reviewer flag does not authorise invention.**
 
-**Orchestrator quality read — before passing to gatekeeper:**
-
-After letter-writer returns, read `$PIPE/letter-draft.md`. Check ALL of the following:
-
-1. **Opener quality** — Does it establish genuine fit within the first two sentences? Fails if the opener:
-   - Uses an idiom, cliché, or self-deprecating humor (e.g., "without putting my thinking cap on," "needless to say," "it goes without saying")
-   - Makes a joke or casual aside as its first move
-   - Opens with a generic enthusiasm statement ("I was excited to see," "I would love to bring my skills")
-   - Establishes fit through a NEGATION rather than a direct claim ("nothing about X feels abstract to me" instead of stating directly what DOES feel concrete)
-
-2. **Opener coherence** — Does the opener undercut the content cues in Why I Want This Role? If the opener jokes or hedges where the WIWTR signals directness and conviction, that is a mismatch. Quote both to confirm alignment before proceeding.
-
-3. **Why I Want This Role implementation** — Is the user's WIWTR material woven into specific narrative moments, or merely mentioned, summarized, or used as a topic heading? The letter must draw from the user's actual words and framing — not produce a thematic summary of them.
-
-4. **Concrete vs. abstract** — Does it name something specific about this company or this role the reader will recognize as real (a product detail, a market fact, a named proof point), or does it trade in abstractions and claimed qualities?
-
-5. **Closing force** — Does it end with a reason to respond, or trail off?
-
-If the answer to ANY of (1), (2), or (3) is "no," re-spawn `letter-writer` with `option=cover-letter` (same `LETTER_PATH=$PIPE/letter-draft.md`) and quote the specific problem verbatim. One retry only. Then proceed to Step 5.2 regardless.
-
 ### Step 5.2 — Gatekeeper (cover letter draft check)
 
 Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter path `$PIPE/letter-draft.md` to read, `Role summary`, the user's Why I Want This Role content (from the Pre-Step 5 read), the final CV path `$PIPE/cv-final.md` to read (required for the CV-repetition check; if no CV exists for this role, state that explicitly so the gatekeeper reports the skipped check by name), and `OUTPUT_PATH=$PIPE/gatekeeper-cl-<round>.md`. The Why I Want This Role content allows the gatekeeper to apply the personal-content exemption correctly — see the exemption rule at the top of Cover Letter Check in `gatekeeper-checks/SKILL.md`.
