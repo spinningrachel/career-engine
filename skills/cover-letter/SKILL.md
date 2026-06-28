@@ -249,7 +249,8 @@ How it achieves that varies. Delivered letters have used:
 - A genuine emotional reaction + the credential that earns it ("I nearly screamed when I saw this role. Because I was just doing it at [Company]...")
 - An existing relationship ("I've worked for [Company] already when I was freelancing...")
 - A personal tension that explains the application ("I daydream about consumer campaigns. I've spent 15 years in B2B...")
-- A value claim that names their mandate and pivots to the user's answer ("You're looking for a strategic builder — that's the work I do.")
+- A value claim that names their mandate and pivots to the user's answer ("It sounds like you're looking for me! I'm a strategic builder...")
+- A confident direct claim that leads straight into the role ("I'm an expert strategist and a builder at heart, which is why I'm applying for the VP Marketing role at [Company].")
 - A warm connection that sets human context first ("Thanks for the [prior conversation]...")
 
 There is no required sentence count and no required sequence. The only test: finish reading the opener and ask — does the reader now know why this person, why here, why now? If not, rewrite it.
@@ -559,12 +560,12 @@ I know how to learn new domains quickly and deeply, and I know how to find the b
 
 **When:** The best, most natural opener. Use whenever the role allows a confident, direct statement of what the user does and why this company is the right fit for it. Especially strong for strategic/senior roles, regulated-industry companies, and roles where the user's positioning/research edge is the core credential.
 
-**The move:** Name the company and the posting (one clause) → observe what they need → pivot immediately to the value claim ("that's the work I do") → state HOW in one concise clause → thread the domain connection (why this company is the natural next chapter, not just a job) → close with a warm, confident one-liner.
+**The move:** Name the company and the posting (one clause) → observe what they need → pivot immediately to a confident value claim **in her own voice** (that she is who they're looking for, e.g. "It sounds like you're looking for me!") → state HOW in one concise clause → thread the domain connection (why this company is the natural next chapter, not just a job) → close with a warm, confident one-liner. Do **not** use a demonstrative capability-announcement like "that's the work I do" (it points at an abstraction — banned below); name the value with a concrete claim instead.
 
 **The rule:** The user is the subject by the second sentence at the latest. The company observation is the setup; the user's claim is the payload. Do not narrate methodology — name it in a clause.
 
 **Template:**
-> Reading the [Company] posting, it was clear you're looking for [what they need] — and that's the work I do. [Value proposition in one sentence — what the user does, what integrity/outcome it produces.] I get there by [HOW in a brief, non-exhaustive clause]. [Domain connection — why this company is the natural next step, grounded in a specific, named thread from the user's background.] And I'm confident the team at [Company] won't be sorry.
+> Reading the [Company] posting, it was clear you're looking for [what they need]. It sounds like you're looking for me. [Value proposition in one sentence, naming what the user does and the concrete outcome it produces.] I get there by [HOW in a brief, non-exhaustive clause]. [Domain connection grounded in a specific, named thread from the user's background, naming why this company is the natural next step.] And I'm confident the team at [Company] won't be sorry.
 
 **Example:** [Example from your background — see your worked examples in your `career-data` background]
 
