@@ -148,7 +148,7 @@ Spawn `letter-writer` with `option=cover-letter`, passing:
 
 ### Step 5.2 — Gatekeeper (cover letter draft check)
 
-Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter path `$PIPE/letter-draft.md` to read, `Role summary`, the user's Why I Want This Role content (from the Pre-Step 5 read), the final CV path `$PIPE/cv-final.md` to read (required for the CV-repetition check; if no CV exists for this role, state that explicitly so the gatekeeper reports the skipped check by name), and `OUTPUT_PATH=$PIPE/gatekeeper-cl-<round>.md`. The Why I Want This Role content allows the gatekeeper to apply the personal-content exemption correctly — see the exemption rule at the top of Cover Letter Check in `gatekeeper-checks/SKILL.md`.
+Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter path `$PIPE/letter-draft.md` to read, `Role summary`, the user's Why I Want This Role content (from the Pre-Step 5 read), the final CV path `$PIPE/cv-final.md` to read (required for the CV-repetition check; if no CV exists for this role — including in `--now` mode where no CV pipeline ran — state that explicitly so the gatekeeper reports the skipped check by name; do not pass a path that doesn't exist), and `OUTPUT_PATH=$PIPE/gatekeeper-cl-<round>.md`. The Why I Want This Role content allows the gatekeeper to apply the personal-content exemption correctly — see the exemption rule at the top of Cover Letter Check in `gatekeeper-checks/SKILL.md`.
 
 **If PASS:** proceed to Step 5.3.
 
