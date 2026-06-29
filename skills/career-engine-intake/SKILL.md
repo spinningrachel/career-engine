@@ -80,11 +80,9 @@ Do not ask the user about this. The preference was set during setup (Phase 5). I
 
 ## Step 0 — Fetch Notion schema and roles
 
-**Guard — resolve the database ID from the career-data config (R-38).** The plugin keeps `{{NOTION_DATABASE_ID}}` literal by design (single build); the literal placeholder is **not** a sign of incomplete setup — do not abort on it. Resolve `$NOTION_DATABASE_ID` from `${CAREER_DATA}/references/pipeline-preferences.json` — read the `database_id` key (or legacy `notion_database_id`) yourself at intake start (the `$NOTION_DATABASE_ID` var is the Notion adapter's internal name). **Stop only if that config value is missing or empty**, and tell the user:
-
-> "Your career-data config has no `database_id` (or legacy `notion_database_id`). Run `/career-engine:setup --phase 5` to add your database ID to career-data."
-
-Otherwise proceed with the resolved `$NOTION_DATABASE_ID`.
+**Guard — resolve the database ID and view URLs from the career-data config (R-38).** The plugin keeps `{{NOTION_DATABASE_ID}}` literal by design (single build); the literal placeholder is **not** a sign of incomplete setup — do not abort on it. Resolve from `${CAREER_DATA}/references/pipeline-preferences.json`:
+- `$NOTION_DATABASE_ID` ← `database_id` (legacy `notion_database_id`). **Stop only if missing or empty:** "Your career-data config has no `database_id`. Run `/career-engine:setup --phase 5`."
+- `$NOTION_HOLD_VIEW_URL` ← `database_hold_view_url` (optional fast-path; empty string if absent).
 
 The database ID for this run: `$NOTION_DATABASE_ID` (resolved from the career-data config; any `{{NOTION_DATABASE_ID}}` token in this skill is a literal placeholder, not a value).
 
@@ -94,7 +92,7 @@ The database ID for this run: `$NOTION_DATABASE_ID` (resolved from the career-da
 
 ---
 
-**Step 0b — Fetch the Hold queue (via the database adapter).** Target status: `Hold`. Following `skills/database-notion/SKILL.md` (loaded in Step 0a) → **§2 Read ladder**, query the queue for `Status = Hold` (A1 → A2 → B; falling down the ladder is sanctioned routing, never a reportable failure). **Both intake modes use the same ladder.** On Path B the rendered view is **discovery-only** → per-page `notion-fetch`; **every downstream read in this run** — Step 0.6 priorities, the Step 0.8 coach-complete check, the Step 0.9a write-only-to-empty rule — uses those per-page property sets, never a rendered table. If every rung fails, stop and report — never treat it as zero results, and never improvise `notion-search` to enumerate the queue (R-39). The adapter also carries the all-paths rules (no view creation, no Bash/Grep on A2/B results, target-status filtering).
+**Step 0b — Fetch the Hold queue (via the database adapter).** Target status: `Hold`. Following `skills/database-notion/SKILL.md` (loaded in Step 0a) → **§2 Read ladder**, query the queue for `Status = Hold` (A1 → A2 → B; falling down the ladder is sanctioned routing, never a reportable failure). **Both intake modes use the same ladder.** On Path B: if `$NOTION_HOLD_VIEW_URL` is non-empty, use it directly as the view URL (skips the DB discovery fetch); otherwise the adapter resolves the "Hold" view via **§3 view discovery**. The rendered view is **discovery-only** → per-page `notion-fetch`; **every downstream read in this run** — Step 0.6 priorities, the Step 0.8 coach-complete check, the Step 0.9a write-only-to-empty rule — uses those per-page property sets, never a rendered table. If every rung fails, stop and report — never treat it as zero results, and never improvise `notion-search` to enumerate the queue (R-39). The adapter also carries the all-paths rules (no view creation, no Bash/Grep on A2/B results, target-status filtering).
 
 Skip any entry where neither a Job URL nor job description details in the RTF body of the record are populated.
 

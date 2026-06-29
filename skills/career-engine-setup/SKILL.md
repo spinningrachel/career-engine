@@ -475,7 +475,14 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 
 2. Once they confirm it's set up, ask:
    - "Paste your database ID." (the 32-character string from the Notion URL — `notion.so/[workspace]/DATABASE_ID?v=...`)
-   - "Do you have a filtered view you want to use? If so, paste the view ID too." (the `v=...` part of the URL)
+   - Then say: "Now paste the URL for each of these views — open each one in your browser and copy the full URL from the address bar. You can skip any you haven't set up yet (the pipeline will find them automatically, but pasting them now eliminates a large background fetch every run that can cause early context compaction)."
+     - **Interested** view URL (the pipeline's main queue — roles you've decided to apply for)
+     - **Hold** view URL (roles under research before deciding)
+     - **Researched** view URL (roles the coach has analysed; ready for your decision)
+     - **CV Ready for Review** view URL (roles with completed pipeline output awaiting your review)
+     - **Needs Editing** view URL (roles queued for the edit pipeline)
+   
+   Each URL looks like: `https://www.notion.so/<workspace>/<DB_ID>?v=<VIEW_ID>`. The `?v=` part is the view ID. Collect only the ones they have; leave the rest empty.
 
 3. **Check and install the Notion MCP.** The pipeline reads and writes your Notion database using the `notionApi` MCP server. Check whether it is already connected:
 
@@ -501,8 +508,16 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 
    Say: "**One Notion responsibility:** The MCP connection uses your personal OAuth token — it expires or can be revoked. If the pipeline ever fails to read Notion mid-run, reconnect by repeating the step above."
 
-4. Write `database_backend` = `notion` and the database ID as `database_id` in the career-data config (`${CAREER_DATA}/references/pipeline-preferences.json`). If the user gave a Needs-Editing view URL, write it as `database_edit_view_url`. (Notion is the current backend; the `database_*` names are backend-neutral so a future tracker can reuse them. Older configs may still carry the legacy `notion_database_id`/`notion_needs_editing_view_url` names — the pipeline reads both, but write the `database_*` names on a fresh setup.) Do NOT substitute `{{NOTION_DATABASE_ID}}` into plugin files — every skill resolves it from the config at runtime (R-38).
-5. Write the view ID to every `{{NOTION_VIEW_ID}}` placeholder (or leave placeholder if not provided).
+4. Write to the career-data config (`${CAREER_DATA}/references/pipeline-preferences.json`):
+   - `database_backend` = `notion`
+   - `database_id` = the database ID the user provided
+   - `database_interested_view_url` = the Interested view URL (or empty string if not provided)
+   - `database_hold_view_url` = the Hold view URL (or empty string)
+   - `database_researched_view_url` = the Researched view URL (or empty string)
+   - `database_cv_ready_view_url` = the CV Ready for Review view URL (or empty string)
+   - `database_edit_view_url` = the Needs Editing view URL (or empty string)
+   
+   (The `database_*` names are backend-neutral. Older configs may carry legacy `notion_database_id`/`notion_needs_editing_view_url` names — the pipeline reads both, but always write the `database_*` names on a fresh setup.) Do NOT substitute `{{NOTION_DATABASE_ID}}` into plugin files — every skill resolves it from the config at runtime (R-38).
 
 6. Say: "**Important:** Do not rename the columns in your Notion database. The pipeline writes to them by exact name — renaming breaks the integration silently."
 
@@ -650,11 +665,15 @@ Write the answers into `preferred_job_sites` (up to 5 entries) and `local_job_si
     "cv_template": "references/<their-dotx-or-cv-template-default.dotx>",
     "database_backend": "notion",
     "database_id": "<32-char DB id, or empty for non-database trackers>",
+    "database_interested_view_url": "<Interested view URL, or empty>",
+    "database_hold_view_url": "<Hold view URL, or empty>",
+    "database_researched_view_url": "<Researched view URL, or empty>",
+    "database_cv_ready_view_url": "<CV Ready for Review view URL, or empty>",
+    "database_edit_view_url": "<Needs Editing view URL, or empty>",
     "draft_dir_url_base": "<cloud-share base URL, or skip>",
     "output_dir_prefix": "applications",
     "default_language": "English",
     "word_templates_path": "<Hebrew .dotx templates dir, or empty>",
-    "database_edit_view_url": "<Needs-Editing view URL, or empty>",
     "location_compatibility": {
       "my_location": "<city/country/region, or empty to skip>",
       "database_property": "<property/field name in your tracker, or empty to skip>"

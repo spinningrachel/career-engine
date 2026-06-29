@@ -104,7 +104,7 @@ Only when the `notionApi` server is absent or unusable. **Start with step 1 — 
 
 ## §3 — View discovery (resolve a view by name)
 
-This is Path B step 1 above, also used wherever a skill needs a view URL (e.g. the edit pipeline's Needs-Editing view, source-open-roles' dedup view): one `notion-fetch` on the DB id → read the `<views>` block → match `"name"` → strip `{{...}}` → dash-remove → `?v=` URL. A known view URL may be used as a fast path (e.g. a configured `database_edit_view_url`), but the by-name lookup is always the fallback because saved URLs break when views are reorganised. **Never fetch the `collection://` URL to find a view.**
+This is Path B step 1 above, also used wherever a skill needs a view URL: one `notion-fetch` on the DB id → read the `<views>` block → match `"name"` → strip `{{...}}` → dash-remove → `?v=` URL. **Fast path (skip the fetch when a URL is already known):** the calling skill passes its pre-resolved view URL (e.g. `$NOTION_INTERESTED_VIEW_URL`, `$NOTION_HOLD_VIEW_URL`, `$NOTION_NEEDS_EDITING_VIEW_URL`, etc., resolved from `pipeline-preferences.json`). When the URL is non-empty and not stale, proceed directly to step 2 (`notion-query-database-view`). When the URL is empty, stale, or the query fails, fall back to this by-name lookup — it is always the fallback because saved URLs break when views are reorganised. **Never fetch the `collection://` URL to find a view.**
 
 ---
 
