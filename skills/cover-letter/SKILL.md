@@ -375,7 +375,7 @@ These rules apply to every claim and every framing decision in the letter body.
 
 **Demand-gen framing:** When a JD signals demand-gen ownership, do not frame the absence of a standalone pipeline attribution number as a gap or limitation in the letter. Surface the builder evidence instead: outbound infrastructure at VL, content production, G-CMO Early Stage Marketing training. For seed/early Series A build roles this is a match, not a gap.
 
-**Unfamiliar domains:** Do NOT frame any domain as "not her background." Do not call it out. Lead with what transfers — see Use-Case Structure #2 below.
+**Strength first — never volunteer scope or qualifications.** Cover letters lead with strength. Different domains and verticals are never a gap, never a weakness, and never referenced as a limitation. If there is a perceived skill gap a hiring manager might notice, the letter names the work done and lets it stand — it does not add a scope qualifier the hiring manager did not ask for. Phrases like "one product, not a portfolio," "smaller than the rest of my CV," "narrower than full-time" are forbidden. Do NOT frame any domain as "not her background" or call it out in any form. Lead with what transfers — see Use-Case Structure #2 below.
 
 **The twist as a narrative tool.** When the user's background doesn't map directly to the role, that gap is not a weakness to manage — it is a story to tell. Name the unexpected credential, name what it proves at the level of skill or judgment, name why that is actually exactly what this role needs. A twist is more memorable than a straight line. The failure mode: apologizing for the gap instead of reframing it as an asset.
 

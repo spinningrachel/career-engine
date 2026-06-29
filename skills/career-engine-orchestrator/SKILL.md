@@ -107,13 +107,6 @@ If a single role fails, log the failure and move to the next role. The only vali
 
 When the user invokes a pipeline by name ("run a new application pipeline", "run the edit pipeline", "run intake"), that command decides the route. Row metadata — `Edit type`, `Last Pipeline Run`, prior outputs on disk, recent Status changes — is context, never a veto. Do not pause before launch to ask whether she meant a different pipeline, whether the roles were "already processed", or how to scope the run. The command already answered those questions. If the metadata suggests another pipeline might also be relevant, add a one-line note to the briefing and proceed with the pipeline named.
 
-**Cover letters lead with strength and never volunteer scope or qualifications.**
-
-This rule governs every agent that touches cover letter content:
-- Different domains and verticals are never a gap, never a weakness, and never referenced as a limitation in a cover letter.
-- If there is any perceived skill gap a hiring manager might notice, the letter names the work the user has done, names what was actually done, and lets it stand. It does not add a scope qualifier the hiring manager did not ask for. Phrases like "one product, not a portfolio," "smaller than the rest of my CV," "narrower than full-time" — all forbidden.
-- If letter-writer or any cover letter agent produces language that qualifies, hedges, or volunteers scope, return it for revision before accepting the output.
-
 ---
 
 ## Configuration

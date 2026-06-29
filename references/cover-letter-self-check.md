@@ -66,6 +66,7 @@ Run every item in order before returning output.
 - [ ] No expansion of sparse notes — if Why I Want This Role is one sentence or a few words AND no role-matched Motivation Bank entry adds usable material, the opener is `[USER TO FILL IN]`, not an invented paragraph (the genuinely-empty case is skipped upstream by the letter-writer's Sufficiency Gate)
 
 ### Forbidden structures (strategic — not syntax)
+- [ ] No scope volunteering or qualification framing. Different domains and verticals are never named as a gap or limitation. The letter names the work done and lets it stand — no scope qualifier the hiring manager didn't ask for. Forbidden phrases: "one product, not a portfolio," "smaller than the rest of my CV," "narrower than full-time."
 - [ ] No antithesis/pivot: "It's not about X, it's about Y" / "This isn't just A, it's B"
 - [ ] No preaching to the choir — never tell the hiring team what their company is good at, how hard their market is, or what their buyers need
 - [ ] No analyst paragraph anywhere in the letter body — no paragraph where the candidate describes the company's product/positioning/market back to them, makes market observations from outside, or announces a capability instead of naming proof. Every paragraph: is the candidate the subject, speaking from their own named experience?
