@@ -698,6 +698,24 @@ grep -c "Placeholder resolution" <build>/CLAUDE.md                              
 
 **FAIL condition:** any count below its stated requirement.
 
+### Check 30 — Changelog rules present in CLAUDE.md; README.md changelog is well-formed
+
+CLAUDE.md must document the changelog rules (newest-first, never-remove, date format). README.md's Changelog section must follow them.
+
+```bash
+grep -c "Changelog rules" <build>/CLAUDE.md                        # must be >= 1
+grep -c "Newest at the top" <build>/CLAUDE.md                      # must be >= 1
+grep -c "never removed" <build>/CLAUDE.md                          # must be >= 1
+grep -c "## Changelog" <build>/README.md                           # must be >= 1
+```
+
+Then read the `## Changelog` section of README.md. Verify:
+1. Each entry uses a `### YYYY-MM-DD` heading.
+2. Entries are in reverse-chronological order (newest date first).
+3. No entry is missing its `### YYYY-MM-DD` date heading.
+
+**FAIL condition:** any grep count is 0; README.md has no Changelog section; entries are in wrong chronological order; or any entry is missing a `### YYYY-MM-DD` heading.
+
 ---
 
 ## Phase 0 — Cross-reference inventory sweep
