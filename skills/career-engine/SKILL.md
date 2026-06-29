@@ -82,39 +82,40 @@ The complete list of pipelines this plugin can run. Before taking any action, co
 Load the following skills in order before doing anything. Do not spawn any sub-agent until all required skills are loaded.
 
 **Main run (no flag):**
-1. `01-writing-rules.md` — core constraints governing every agent; load first
-2. `career-engine-orchestrator` — Interested queue fetch (Steps O1–O4), Role Type and Priority Definitions, Notion property ownership, Steps 8–9 (LinkedIn updates file, run-level revision log), Post-Run Validation, State File and crash recovery
-3. `career-engine-new-application` — Step 0.10 and Steps 1 through 7d: CV draft, gatekeeper, recruiter review, CV revision, cover letter draft through final gatekeeper, DOCX export, Notion writeback, reviewer feedback file
-4. `career-engine-export` — DOCX production protocol, pandoc commands, template styles, page count verification
+1. `career-engine-orchestrator` — Interested queue fetch (Steps O1–O4), Role Type and Priority Definitions, Notion property ownership, Steps 8–9 (LinkedIn updates file, run-level revision log), Post-Run Validation, State File and crash recovery
+2. `career-engine-new-application` — Step 0.10 and Steps 1 through 7d: CV draft, gatekeeper, recruiter review, CV revision, cover letter draft through final gatekeeper, DOCX export, Notion writeback, reviewer feedback file
+3. `career-engine-export` — DOCX production protocol, pandoc commands, template styles, page count verification
+
+> **Do NOT load `01-writing-rules.md` here.** The orchestrator routes and spawns — it does not write content and does not apply writing rules directly. Each writing subagent (cv-writer, letter-writer, gatekeeper, humanizer) loads its own context from `${CAREER_DATA}` via the `CAREER_DATA` path the orchestrator injects at spawn time.
 
 **`--edit` flag:**
-Load in order: `01-writing-rules.md`, `career-engine-export`, `career-engine-edit`. Follow the editing pipeline as written in that skill.
+Load in order: `career-engine-export`, `career-engine-edit`. Follow the editing pipeline as written in that skill.
 
 **`--coach-skills` flag:**
-Load in order: `01-writing-rules.md`, `career-engine-intake`. Follow the intake pipeline (Notion-fetch mode: Hold roles). Stop after Step 0.9d (Status updated to Researched). Do not run a separate research or market-intelligence pass — the intake pipeline already covers it.
+Load `career-engine-intake`. Follow the intake pipeline (Notion-fetch mode: Hold roles). Stop after Step 0.9d (Status updated to Researched). Do not run a separate research or market-intelligence pass — the intake pipeline already covers it.
 
 **`--coach` flag:**
-Load `01-writing-rules.md` first. Then spawn `career-coach` in direct coaching mode. Pass the user's question, role URL, or JD text as the input. The coach responds conversationally — no structured output format, no Notion writeback.
+Spawn `career-coach` in direct coaching mode. Pass the user's question, role URL, or JD text as the input. The coach responds conversationally — no structured output format, no Notion writeback.
 
 **`--now <url or JD text>` flag:**
-Load in order: `01-writing-rules.md`, `career-engine-orchestrator` (read the `--now` mode section), `career-engine-new-application`, `career-engine-export`. Follow the `--now` flow defined in `career-engine-orchestrator`.
+Load in order: `career-engine-orchestrator` (read the `--now` mode section), `career-engine-new-application`, `career-engine-export`. Follow the `--now` flow defined in `career-engine-orchestrator`.
 
 **`--status` flag:**
 Load `career-engine-orchestrator` (read the `--status` section). No other skills needed. No Notion access, no agents spawned — read-only filesystem operation.
 
 **`--check` flag:**
-Load `01-writing-rules.md` first. Then spawn `gatekeeper` directly:
+Spawn `gatekeeper` directly:
 - If the user says "check my CV" or pastes CV text → spawn with `option=cv`. Pass the CV text and JD if provided. If no JD, note that checks requiring JD comparison (keyword coverage and JD phrase checks) will be skipped.
 - If the user says "check my cover letter" or pastes letter text → spawn with `option=cover-letter`. Pass the letter text and JD if provided. If no JD, note that Check 7 (company self-characterization) will be skipped.
 Return the gatekeeper's PASS or FAIL result directly. No loop.
 
 **`--review` flag:**
-Load `01-writing-rules.md` first. Ask the user to paste the document (CV or cover letter) and the JD if she hasn't already. Then:
+Ask the user to paste the document (CV or cover letter) and the JD if she hasn't already. Then:
 1. Spawn `recruiter-reviewer` with the document and JD. Return results.
 Deliver the review. No revision loop.
 
 **`--write-letter` flag:**
-Load `01-writing-rules.md` and `cover-letter` skill. Ask the user for the URL or JD text if not provided. Then spawn `letter-writer` using the Standalone Invocation path — no final CV required, no reviewer loop, no gatekeeper spawn. Return the cover letter draft directly for the user to use or refine.
+Ask the user for the URL or JD text if not provided. Then spawn `letter-writer` using the Standalone Invocation path — no final CV required, no reviewer loop, no gatekeeper spawn. Return the cover letter draft directly for the user to use or refine.
 
 ## Rules
 

@@ -140,7 +140,7 @@ Where `<date-folder>` = the run folder name (e.g. `${OUTPUT_DIR_PREFIX:-applicat
 
 Load these skills in order before doing anything else. Do not begin processing until all three are loaded.
 
-**Note:** `01-writing-rules.md` is pre-loaded by the `/career-engine` command. If invoking the orchestrator directly (not via the command), load `${CAREER_DATA}/references/01-writing-rules.md` first (per the career-data discovery preflight above) — it contains the fabrication rule and all constraint definitions that every downstream agent depends on.
+**Note:** The orchestrator does NOT load `01-writing-rules.md`. Each writing subagent (cv-writer, letter-writer, gatekeeper, humanizer) loads its own context from `${CAREER_DATA}` via the `CAREER_DATA` path injected at spawn time. Loading it in the orchestrator adds ~30K tokens to the startup context with no benefit — the orchestrator routes and spawns; it does not apply writing rules directly.
 
 1. `career-engine-new-application` — Steps 1 through 7: per-role CV writing, gatekeeper checks, reviews, cover letter (letter-writer), HM cover letter review, DOCX export (including Step 6H Hebrew), Notion writeback
 2. `career-engine-edit` — Steps E0 through E10: editing pipeline for `Needs editing` roles; starts from existing Notion row content, not from scratch
@@ -397,7 +397,7 @@ For each CV being validated:
 2. **Experience ordering:** Confirm the most recent full-time role appears first in `## EXPERIENCE` (see `02-professional-background.md` for the correct ordering), followed by other full-time roles in reverse-chronological order. Flag if any consulting/fractional entry appears in `## EXPERIENCE` — it belongs in `## CONSULTING`. Flag if `## CONSULTING` section is absent from the document.
 3. **Tagline:** Confirm the subtitle under the user's name is the exact role title from the JD — not a generic descriptor. It must be the job title the user applied for (e.g., "[Role Title]"). Flag if absent, if it is a generic tagline, or if it differs from the JD role title.
 4. **Repetition:** Flag any opening action verb appearing more than twice. Flag any phrase appearing verbatim in more than one bullet.
-5. **Fabrication:** For every metric and specific claim in the Experience section, identify the reference file line that supports it. Flag any metric or claim that cannot be traced — especially numbers, event names, tool names, client names, and responsibilities.
+5. **Fabrication:** (Skip — enforced upstream by the cv-writer's mandatory self-check and the gatekeeper. Any CV reaching this step has already passed both gates.)
 6. **JD language:** Flag any bullet that uses JD phrasing verbatim to describe something the user did, where that language does not appear in the references. **Exemption:** skip this check for any bullet that matches a bullet in `02-professional-background.md` (Role Facts) exactly or with only minor role-specific adaptation — approved bullets predate the JD and cannot have been lifted from it.
 
 If flags found: append them to the matching role's revision log file (`revision-log-<roletitle>-<company>-<monYYYY>.md`) under a `## CV Validation Issues` section.
@@ -413,7 +413,7 @@ For each cover letter being validated:
 4. **Key proof signals:** Confirm that key proof signals from `02-professional-background.md` (Role Facts) — the most recent role's key outcomes — are woven naturally into the body. Flag if the body contains no named outcomes from the candidate's background.
 5. **Sign-off:** Confirm the letter closes with "Looking forward to next steps," followed by the user's full name and nothing else. Flag any additional text after the name.
 6. **Opening paragraph:** Confirm the first paragraph is the user's personal reaction to this specific role — first person, her response to the opportunity, before any credential or company description. This check cannot be waived by coach output or Strategy. Flag if the first paragraph: leads with company analysis; leads with a career credential; leads with an availability statement; OR has the user as the grammatical subject of the first sentence but the sentence pivots immediately to a general market/industry observation rather than her reaction to THIS role (Pattern G2 — e.g. "I've spent six years in [field], and the job — above everything else — is [general market observation]." [Example from your background]). Also flag if the very first sentence frames an industry challenge or market condition before the user appears as a reacting subject (Pattern I).
-7. **Fabrication:** For every specific claim, number, or named outcome in the letter, identify the reference file line that supports it. Flag any claim that cannot be traced to `01-writing-rules.md`.
+7. **Fabrication:** (Skip — enforced upstream by the letter-writer's mandatory self-check and the gatekeeper. Any letter reaching this step has already passed both gates.)
 8. **Voice:** Flag any sentence that opens with a gerund, prepositional phrase, or dependent clause instead of the user as subject. Flag any hollow phrase from the banned list in `skills/cover-letter/SKILL.md`.
 
 If flags found: append them to the matching role's revision log file under a `## Cover Letter Validation Issues` section.
@@ -743,4 +743,4 @@ Nothing else. All feedback, validation results, and decisions are in the revisio
 - Narrate progress briefly between steps: "Role 3/5: recruiter review done, moving to CV revision."
 - Do not deliver individual role outputs during processing — deliver everything together at the end.
 - If any step fails, log it and move on. All failures are written to the run-level revision log (Step 9).
-- The fabrication rule is absolute. Every claim must trace to `01-writing-rules.md`. If it is not documented there, it does not exist.
+- The fabrication rule is absolute. Every claim in a CV or cover letter must trace to the candidate's documented background. Enforcement belongs to the writing subagents and gatekeeper — not the orchestrator.
