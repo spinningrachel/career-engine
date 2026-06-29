@@ -81,6 +81,59 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-06-29 — Motivation Bank and pipeline reliability
+
+This release introduces the Motivation Bank, restructures the cover letter content model, adds Notion fast-paths for all five pipeline views, and fixes two CAREER_DATA propagation gaps in the revision loops.
+
+#### Upgrading from a previous version
+
+Two changes to `career-data` are required before the cover letter pipeline runs correctly. The rest are optional enhancements.
+
+**Required**
+
+1. **Reinstall the plugin.** Download `career-engine.plugin` from the Releases page and reinstall it via **Customize → Connectors → Personal plugins**. The previous installation must be replaced. Updating in place is not supported.
+
+2. **Add the Motivation Bank to `02-professional-background.md`.** The cover letter pipeline reads from this table as its primary content and voice source. Without it, the letter-writer has no standing motivation content and skips roles where Why I Want This Role is also empty.
+
+   Add this section to `02-professional-background.md` at §5:
+
+   ```markdown
+   ## Section 5 — Motivation Bank
+
+   | Tags | Motivation |
+   |---|---|
+   ```
+
+   Populate the table with your standing motivations in your own words: why you do this work, what draws you to the roles you pursue, what you want to contribute. The pipeline appends rows automatically after each run when Why I Want This Role content is worth preserving.
+
+   Apply this change via the update-prompt path: generate an update-prompt, paste it into Chat, then repackage and reinstall `career-data` via the Desktop app. See [Updating career-data](https://github.com/spinningrachel/career-engine/wiki/Updating-career-data) for the update-prompt procedure.
+
+**Optional**
+
+- **Notion view URL fast-paths.** Five optional keys in `pipeline-preferences.json` skip the Notion database discovery fetch when populated. The adapter falls back to view-by-name discovery when any key is absent.
+
+  ```json
+  "database_interested_view_url": "",
+  "database_hold_view_url": "",
+  "database_researched_view_url": "",
+  "database_cv_ready_view_url": "",
+  "database_edit_view_url": ""
+  ```
+
+- **Screening answers.** A `screening_answers` section in `career-data` holds standing answers to common gating questions. Intake applies them automatically when the field is present.
+
+**Changes in this release**
+
+- **Motivation Bank.** A `| Tags | Motivation |` table in `02-professional-background.md` §5 is now the letter-writer's mandatory primary content and voice source. Each row holds your own words; the pipeline reads from it ahead of any constructed alternative. Why I Want This Role is now supplementary: when both are present, WIWTR's distinct points must appear in the letter; when WIWTR is absent, the Bank alone drives the opener.
+- **Sufficiency Gate.** When both the Motivation Bank and WIWTR are empty for a role, the letter-writer skips that role rather than writing with fabricated or constructed motivation.
+- **WIWTR promotion.** Durable Why I Want This Role content is appended to the Motivation Bank as new tagged rows after each run, keeping the Bank current without manual edits.
+- **Gatekeeper: Bank-derived content exempted.** Sentences drawn from Motivation Bank entries pass the personal-content check and are not flagged as fabricated even when they don't appear verbatim in the CV.
+- **Notion view URL fast-paths.** Five new optional config keys skip the Notion database discovery fetch when populated. View-by-name discovery remains the fallback when any key is absent.
+- **CAREER_DATA pass-through fixed.** All eight revision-branch spawns in the new-application and edit pipelines now pass `CAREER_DATA=${CAREER_DATA}` explicitly. Previously, gatekeeper-fail loops and re-spawn branches lost access to personal data at runtime.
+- **CV path fixed for edit-mode Letter-type.** The edit pipeline now writes the pandoc-extracted CV text to `$PIPE/cv-text.md` before spawning the gatekeeper, giving the repetition check a concrete file to read.
+- **CV path fixed for `--now` mode.** The fast-track path now passes an explicit no-CV instruction to the gatekeeper instead of referencing a file that does not exist in that mode.
+- **Changelog rules.** Format (`### YYYY-MM-DD — <label>`, newest-first, never-remove) is now documented in CLAUDE.md and checked by the QA agent on every run.
+
 ### 2026-06-23
 
 - **Documentation moved to the Wiki.** The README is now a quick start; full docs live in the [Wiki](https://github.com/spinningrachel/career-engine/wiki).
