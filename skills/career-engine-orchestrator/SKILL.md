@@ -135,112 +135,28 @@ Load these skills in order before doing anything else. Do not begin processing u
 
 **Note:** The orchestrator does NOT load `01-writing-rules.md`. Each writing subagent (cv-writer, letter-writer, gatekeeper, humanizer) loads its own context from `${CAREER_DATA}` via the `CAREER_DATA` path injected at spawn time. Loading it in the orchestrator adds ~30K tokens to the startup context with no benefit — the orchestrator routes and spawns; it does not apply writing rules directly.
 
-1. `career-engine-new-application` — Steps 1 through 7: per-role CV writing, gatekeeper checks, reviews, cover letter (letter-writer), HM cover letter review, DOCX export (including Step 6H Hebrew), Notion writeback
-2. `career-engine-edit` — Steps E0 through E10: editing pipeline for `Needs editing` roles; starts from existing Notion row content, not from scratch
-3. `career-engine-export` — DOCX template styles, pandoc commands, file naming, `/tmp → output folder` copy protocol, page count verification
+1. `database` — Status values, Priority values, and property ownership rules (backend-neutral pipeline concepts). Load before Step O1.
+2. `career-engine-new-application` — Steps 1 through 7: per-role CV writing, gatekeeper checks, reviews, cover letter (letter-writer), HM cover letter review, DOCX export (including Step 6H Hebrew), Notion writeback
+3. `career-engine-edit` — Steps E0 through E10: editing pipeline for `Needs editing` roles; starts from existing Notion row content, not from scratch
+4. `career-engine-export` — DOCX template styles, pandoc commands, file naming, `/tmp → output folder` copy protocol, page count verification
 
-## Notion Property Ownership
+## Property Ownership
 
-Each Notion property in the Job Applications database has a single designated owner. Agents write each piece of information once, to the correct field, and must not duplicate content across properties.
+Full Status values, Priority values, and property ownership rules are in `skills/database/SKILL.md` — load it before Step O1. Role Type Definitions (Builder/Scaler/Specialist/Leader and their effect on CV structure) are in `references/role-type-definitions.md` — loaded by the career coach and cv-writer as needed. The orchestrator does not use either table directly.
 
-**Career coach owns exclusively:**
+This orchestrator writes only two database properties per role: `Draft Directory` (Step 7a, after DOCX files confirmed on disk) and Status → `CV Ready for Review` (Step 7c). It never writes or rewrites coach-owned properties.
 
-*Strategic properties (written for all roles — triage-exit and full-research):*
-`Priority`, `Priority Reason`, `JD Body`, `JD Fetch Status`, `Role Type`, `Relationship type`, and the location compatibility property (name from `pipeline-preferences.json` → `location_compatibility.database_property`, legacy `notion_property`; written only if configured).
-
-*Strategic properties (written for full-research roles only — Priority 1–4, pre-scored, or `--full-research`):*
-`Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Gap handling`, `Role summary`, `Company Stage`, `Culture`, `Landscape`, `Person who Advertised Role (if not Hiring Manager)`, `Hiring Manager's Name`, `Hiring manager's role`, `Manager role confirmed`, `No incumbents in this function`, `First Advertised`, `Recent news`, `Funding context`.
-
-No other agent rewrites or second-guesses any of these. **`Gap handling` is the exception to the carry-forward rule — if the user has edited it in Notion, the pipeline reads her version as authoritative. The write-only-to-empty rule enforces this: if the field is non-empty, the coach skips writing.**
-
-**Mandatory value rule:** Every coach-owned property the coach returns (and intake writes) must receive an explicit value — `N/A` when genuinely inapplicable. A blank field signals agent failure, not inapplicability. This applies to `Company Stage` and `Role Type` in particular. **Prerequisite:** `N/A` must be present as a valid option in the Notion select fields for `Company Stage` and `Role Type` — the user adds this directly in Notion.
-
-**Triage-exit roles** (Priority 5–6, non-`--full-research`): only the first group of properties above is written. Full-research properties are skipped — they remain blank and are not required for triage-exit roles.
-
-**`Why I Want This Role` is set manually by the user in Notion.** Agents never write to it. If it is empty when the pipeline runs, the letter-writer still runs and writes from the **Motivation Bank** (its primary source); it skips the letter for that role (CV only) **only** when neither `Why I Want This Role` nor any role-relevant Motivation Bank entry has usable material — that decision belongs to the letter-writer's Sufficiency Gate, not a pre-skip here.
-
-**The `Note` field is the user's space.** Agents may write to it only for context that structured properties cannot carry — never to repeat or summarize content already in a structured property.
-
----
-
-## Role Type Definitions
-
-Role Type is a multi-select property set exclusively by the career coach. Choose all that apply — roles commonly combine types.
-
-| Value | Definition |
-|---|---|
-| `Builder` | First or founding hire; building the function or infrastructure from zero with no team or existing motion |
-| `Scaler` | Growing an existing function, managing a team, scaling what's already working |
-| `Specialist` | Deep domain expert hired for a specific craft without a function-building mandate |
-| `Leader` | Explicitly managing people; leadership-team membership expected from day one |
-
-Multi-select examples: "Builder, Leader" = founding hire who also owns people management. "Scaler, Specialist" = growing a specialist function (e.g., scaling a PMM team with deep product marketing craft required).
-
-**Effect on CV structure:** Builder or Leader → one-line skills, no Key Achievements section (function-builder framing). Scaler or Specialist → categorized skills block, compact Key Achievements acceptable (craft/scaling framing). When combined, lead with the stronger signal for the specific JD.
-
----
-
-## Status Definitions
-
-Status is the single property that drives what the pipeline does with a role. The user sets and updates it in Notion; agents update it at pipeline completion only.
-
-| Status | Who sets it | Meaning |
-|---|---|---|
-| `Hold` | user | Being researched before a decision to apply. **NOT handled by this (CV-writing) pipeline.** Use `/career-engine --coach-skills` (which runs `career-engine-intake` in Notion-fetch mode) to research Hold roles. That pipeline runs the career coach, writes strategic properties, and promotes Hold roles to Researched. |
-| `Interested` | user | The user has decided to apply. **This is what the main career-engine pipeline (orchestrator) pulls directly.** Move a role from Hold → Interested (or add directly as Interested) when a CV and cover letter need to be produced. Intake does not process Interested roles — it only processes Hold roles. |
-| `Needs editing` | user | Queued for the editing pipeline. Pipeline starts from existing outputs in the Notion row — does not run fresh. |
-| `CV Ready for Review` | Pipeline (on completion) | Pipeline finished; the user needs to review before sending. |
-| `Applied` | user | Sent. |
-| `Researched` | Coach standalone pipeline (on completion) | Coach has run market intelligence — competitive landscape, priority scoring, strategic properties, PMM expert analysis. Role is ready for the user to decide whether to move to Interested. |
-
-**Pipeline reads:** `Interested` (this orchestrator, Step O1) and `Needs editing` (editing pipeline). All other statuses — including `Hold` and `Researched` — are ignored by this pipeline.
-
-**The two upstream pipelines are separate:**
-- `career-engine-intake` → researches **Hold** roles → sets Status to **Researched**
-- This orchestrator → fetches **Interested** roles directly → feeds the CV writing pipeline
-
----
-
-## Priority Definitions
-
-**`Priority`** is the sole queue ordering signal. It is set by the career coach **during intake** — that is where scoring happens. This pipeline never scores: it reads the `Priority` intake already wrote and uses it purely for queue order (an unscored role still processes, just ordered last). Values and meanings:
-
-| Label | Notion value | Meaning |
-|---|---|---|
-| `Highest` | `1` | Urgent — drop everything, run this role first |
-| `First` | `2` | Excellent fit — strong domain, right seniority, right stage, no red flags |
-| `Second` | `3` | Strong fit — domain or seniority match is clear; minor friction elsewhere |
-| `Third` | `4` | Reasonable fit — worth applying but the cover letter has work to do |
-| `Fourth` | `5` | Weaker fit — possible if the user wants to stretch |
-| `Fifth` | `6` | Weakest fit in this batch. Also the hard floor for Open Application entries regardless of any other criterion. |
-
-**Always write the numeric Notion value (1–6) when setting Priority via `notion-update-page`.** The label names are internal shorthand — Notion rejects them as select values.
-
-Roles with `Priority` already set are always selected into the queue before unscored roles, ordered 1 → 6. Unscored roles fill any remaining slots and are processed in queue order after the scored ones. In the New Application pipeline the coach is **not** spawned to score them (R-42 — the coach runs only in standalone intake); an unscored role is still processed, and `Priority` affects ordering only.
-
-**Open Application hard floor:** Roles identifiable as open/speculative/unsolicited applications (no specific listing posted) must always sort and be treated as `6` (Fifth) in the queue, regardless of any Priority value currently in Notion. The coach will write `6` to Notion in Step 0.8. If the coach is skipped (all coach-complete), verify any open application entry is set to `6` before queue ordering — correct it inline if not.
+**Queue ordering (summary):** scored roles 1→6 first, unscored last. Open Application entries always sort as `6`. The orchestrator reads Priority — it never writes it (coach writes Priority during intake).
 
 ---
 
 ## Pipeline Registry
 
-The complete list of pipelines this plugin can run. Before taking any action, confirm it belongs to the pipeline you are running — anything owned by another pipeline's row is out of scope and must not be improvised.
+See `skills/career-engine/SKILL.md` (canonical, always current). This orchestrator owns **Pipeline 4 — New Application** and **Pipeline 5 — Fast track (`--now`)**. All other pipeline commands route elsewhere — do not improvise their steps here.
 
-| # | Pipeline | Trigger | Entry skill | Hard preconditions | Status transitions owned | Never does |
-|---|---|---|---|---|---|---|
-| 1 | Setup | `/career-engine:setup`, "set up the plugin" | `career-engine-setup` | none | none | Writes no application content |
-| 2 | Sourcing | "find open roles", "source roles" | `source-open-roles` | preferences saved | creates rows (new roles enter as `Hold`) | Never writes CVs or letters |
-| 3 | Intake | "run intake", `--coach-skills` | `career-engine-intake` | database configured | `Hold` → `Researched` | Hold roles only. Two modes: inline (URL in chat) or Notion-fetch (Hold queue). Always invokes career-coach. Ends at Researched. Does not process Interested roles. Never writes CVs or letters; never creates or modifies Notion views. |
-| 4 | New Application | career-engine command, no flag | `career-engine-orchestrator` + `career-engine-new-application` | Intake has run; `Why I Want This Role` filled for any role needing a letter | `Interested` → downstream statuses per orchestrator | Orchestrator never authors document content |
-| 5 | Fast track | `--now <url or JD>` | `career-engine-orchestrator` → --now Mode | Why I Want This Role collected in chat, else CV-only | none — no Notion row | Never reads or writes Notion |
-| 6 | Edit | "edit CVs", `--edit`, Status = `Needs editing` | `career-engine-edit` | `Edit type` set; `Why I Want This Role` populated for the letter track | `Needs editing` → `CV Ready for Review` | Never starts from scratch; always edits the existing Notion-documented outputs |
-| 7 | Localization | automatic when `Languages` includes the second language | `localization` | English DOCX files complete | none | Translation only — never drafts, revises, or evaluates |
-| 8 | LinkedIn coach | "review my LinkedIn", "optimise my profile" | `linkedin-coach` | none | none | Never writes to Notion |
-| 9 | Personal brand | "build my personal brand", "refresh my bio" | `personal-brand` | none | none | Never writes to Notion |
+**One-pass utility modes** (no loops, no database writeback): `--coach` (conversational fit assessment), `--check` (single gatekeeper pass on pasted text), `--review` (single recruiter + HM pass), `--write-letter` (standalone letter draft), `--status` (read state.json and report).
 
-**One-pass utility modes** (no loops, no Notion writeback): `--coach` (conversational fit assessment), `--check` (single gatekeeper pass on pasted text), `--review` (single recruiter + HM pass), `--write-letter` (standalone letter draft), `--status` (read state.json and report).
-
-## Pipeline Flow
+## Orchestrator Steps
 
 **The orchestrator owns the Interested queue.** It fetches Interested roles directly via the database adapter (Status = `Interested`), runs a readiness check, builds the processing queue, and passes it to `career-engine-new-application`. It does NOT delegate queue-fetching to `career-engine-intake` — intake processes only Hold roles and is never called from here.
 
@@ -378,39 +294,9 @@ When spawning reviewers, inject this note verbatim into the prompt:
 
 ## Post-Run Validation
 
-Both the CV and the cover letter are validated before the final summary is delivered. Validate at least 2 pairs (CV + cover letter) from this run — the first role produced and one other chosen at random. If fewer than 2 roles were produced, validate all of them.
+Validate at least 2 CV + cover letter pairs from this run — the first role produced and one other chosen at random. If fewer than 2 roles were produced, validate all of them. This step is not optional. A self-reporting cv-writer or letter-writer is not validation.
 
-This step is not optional. A self-reporting cv-writer or letter-writer is not validation.
-
-### CV validation
-
-For each CV being validated:
-
-1. Convert to plain text: `pandoc "<output-path>/<cv>.docx" -t plain`
-2. **Experience ordering:** Confirm the most recent full-time role appears first in `## EXPERIENCE` (see `02-professional-background.md` for the correct ordering), followed by other full-time roles in reverse-chronological order. Flag if any consulting/fractional entry appears in `## EXPERIENCE` — it belongs in `## CONSULTING`. Flag if `## CONSULTING` section is absent from the document.
-3. **Tagline:** Confirm the subtitle under the user's name is the exact role title from the JD — not a generic descriptor. It must be the job title the user applied for (e.g., "[Role Title]"). Flag if absent, if it is a generic tagline, or if it differs from the JD role title.
-4. **Repetition:** Flag any opening action verb appearing more than twice. Flag any phrase appearing verbatim in more than one bullet.
-5. **Fabrication:** (Skip — enforced upstream by the cv-writer's mandatory self-check and the gatekeeper. Any CV reaching this step has already passed both gates.)
-6. **JD language:** Flag any bullet that uses JD phrasing verbatim to describe something the user did, where that language does not appear in the references. **Exemption:** skip this check for any bullet that matches a bullet in `02-professional-background.md` (Role Facts) exactly or with only minor role-specific adaptation — approved bullets predate the JD and cannot have been lifted from it.
-
-If flags found: append them to the matching role's revision log file (`revision-log-<roletitle>-<company>-<monYYYY>.md`) under a `## CV Validation Issues` section.
-If no flags: append a single line to the revision log: `CV validation passed.`
-
-### Cover letter validation
-
-For each cover letter being validated:
-
-1. Convert to plain text: `pandoc "<output-path>/<cover-letter>.docx" -t plain`
-2. **Greeting:** Confirm the letter opens with "Hi to the" — not "Dear" or any formal variant.
-3. **Word count:** Count body words (excluding greeting and sign-off). Flag if over 320 words (no minimum).
-4. **Key proof signals:** Confirm that key proof signals from `02-professional-background.md` (Role Facts) — the most recent role's key outcomes — are woven naturally into the body. Flag if the body contains no named outcomes from the candidate's background.
-5. **Sign-off:** Confirm the letter closes with "Looking forward to next steps," followed by the user's full name and nothing else. Flag any additional text after the name.
-6. **Opening paragraph:** Confirm the first paragraph is the user's personal reaction to this specific role — first person, her response to the opportunity, before any credential or company description. This check cannot be waived by coach output or Strategy. Flag if the first paragraph: leads with company analysis; leads with a career credential; leads with an availability statement; OR has the user as the grammatical subject of the first sentence but the sentence pivots immediately to a general market/industry observation rather than her reaction to THIS role (Pattern G2 — e.g. "I've spent six years in [field], and the job — above everything else — is [general market observation]." [Example from your background]). Also flag if the very first sentence frames an industry challenge or market condition before the user appears as a reacting subject (Pattern I).
-7. **Fabrication:** (Skip — enforced upstream by the letter-writer's mandatory self-check and the gatekeeper. Any letter reaching this step has already passed both gates.)
-8. **Voice:** Flag any sentence that opens with a gerund, prepositional phrase, or dependent clause instead of the user as subject. Flag any hollow phrase from the banned list in `skills/cover-letter/SKILL.md`.
-
-If flags found: append them to the matching role's revision log file under a `## Cover Letter Validation Issues` section.
-If no flags: append a single line to the revision log: `Cover letter validation passed.`
+Full validation checklists (CV — 6 checks; cover letter — 8 checks; pandoc commands; results-appending instructions) are in `references/orchestrator-post-run-check.md`. Load it and follow it exactly.
 
 ---
 

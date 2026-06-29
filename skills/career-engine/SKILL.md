@@ -82,7 +82,7 @@ The complete list of pipelines this plugin can run. Before taking any action, co
 Load the following skills in order before doing anything. Do not spawn any sub-agent until all required skills are loaded.
 
 **Main run (no flag):**
-1. `career-engine-orchestrator` — Interested queue fetch (Steps O1–O4), Role Type and Priority Definitions, Notion property ownership, Steps 8–9 (LinkedIn updates file, run-level revision log), Post-Run Validation, State File and crash recovery
+1. `career-engine-orchestrator` — Interested queue fetch (Steps O1–O4), Steps 8–9 (LinkedIn updates file, run-level revision log), Post-Run Validation, State File and crash recovery
 2. `career-engine-new-application` — Step 0.10 and Steps 1 through 7d: CV draft, gatekeeper, recruiter review, CV revision, cover letter draft through final gatekeeper, DOCX export, Notion writeback, reviewer feedback file
 3. `career-engine-export` — DOCX production protocol, pandoc commands, template styles, page count verification
 
