@@ -63,7 +63,7 @@ Load before doing anything.
 
 ## Option 1 — Inline
 
-**When this applies:** The user provides a URL, JD, or freeform question directly in chat. No intake pipeline. No processing queue. No Notion writeback.
+**When this applies:** The user provides a URL, JD, or freeform question directly in chat. No intake pipeline. No processing queue. No Notion writeback. This is also the option intake's own **Inline mode** spawns for a single ad hoc role (`skills/career-engine-intake/SKILL.md` — Inline mode never uses Option 2, which is reserved for the batch/Notion-fetch path).
 
 **Triggers:** "Should I apply to this role?", "What's my angle for [role type]?", "Is [company] a good fit?", "How should I frame my background for [X]?"
 

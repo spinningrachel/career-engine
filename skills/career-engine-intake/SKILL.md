@@ -15,10 +15,10 @@ description: >
 
 > **Registry:** this pipeline is listed in the Pipeline Registry in `skills/career-engine/SKILL.md`. Actions owned by another pipeline's registry row are out of scope here — route to that pipeline instead of improvising.
 
-This skill covers Steps 0 through 0.9 of the intake pipeline. Two modes:
+This skill has two modes with different procedures — **Steps 0 through 0.9 below are Notion-fetch mode's procedure only.** Inline mode is a separate, much shorter flow that ends after the bullet below; it never reaches Step 0, never creates `$PIPE` (Step 0.4 explicitly skips it), and never touches Steps 0.6 through 0.9 (priority queue, the batch coach spawn, the Coach Output Check, or Notion writeback) — there is no Notion row to write back to and no batch to queue.
 
-- **Inline mode** — the user provides a URL or JD text directly in chat. No Notion fetch. Run JD acquisition and the career coach. Deliver output conversationally. Use when the user says something like "coach me on this role" and pastes a URL or JD, outside of the batch Notion-fetch flow.
-- **Notion-fetch mode** — queries the Notion database for Hold roles, runs JD acquisition and the career coach for each, writes all results to Notion, and updates Status to Researched. This is the standard "run intake" path.
+- **Inline mode** — the user provides a URL or JD text directly in chat. No Notion fetch, no `$PIPE`, no `queue.md`. Run JD acquisition (the Step 0.5 fetch ladder, applied to the single provided URL/JD) on that one role, then spawn `career-coach` with **Option 1 — Inline** (not Option 2 — Option 2 is exclusively for the batch/Notion path, per its own "Always invoked... for Hold roles" scope statement), passing the fetched content directly in the spawn prompt. Deliver the coach's response conversationally — no Notion writeback, no further steps. Use when the user says something like "coach me on this role" and pastes a URL or JD, outside of the batch Notion-fetch flow.
+- **Notion-fetch mode** — queries the Notion database for Hold roles, runs JD acquisition and the career coach (Option 2) for each, writes all results to Notion, and updates Status to Researched. This is the standard "run intake" path, and the one Steps 0 through 0.9 below describe.
 
 The career coach runs for every role that is not already coach-complete. If all roles in the queue are coach-complete, the coach spawn is skipped and the pipeline proceeds directly to Step 0.9 using existing values. The goal of this pipeline is to give the career coach complete information — full JD data for every role — before it makes any prioritization or writing decisions.
 
@@ -214,9 +214,9 @@ All roles not selected are deferred. Proceed immediately to Step 0.8.
 
 The career coach runs for every role that is not already coach-complete. If all roles in the queue are coach-complete, the coach spawn is skipped entirely and the pipeline proceeds directly to Step 0.9 using existing values.
 
-Before spawning, check each remaining role in the queue: a role is `coach-complete` only if all required fields are populated. The required count depends on `gap_handling_mode`:
-- **When `gap_handling_mode = enabled` (default):** all nine fields must be populated — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Culture`, and `Landscape`.
-- **When `gap_handling_mode = disabled`:** eight fields — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Culture`, and `Landscape`. `Gap handling` is NOT required and must NOT block coach-complete status.
+Before spawning, check each remaining role in the queue: a role is `coach-complete` only if all required fields are populated. This list must stay in parity with the Step 0.9a confirmation pass's mandatory-property list below — a field mandatory there but absent here lets a role skip the coach with that field silently empty forever, since coach-complete roles never reach 0.9a's writes or confirmation. The required count depends on `gap_handling_mode`:
+- **When `gap_handling_mode = enabled` (default):** all twelve fields must be populated — `Role summary`, `Priority`, `Priority Reason`, `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Culture`, and `Landscape`.
+- **When `gap_handling_mode = disabled`:** eleven fields — same list minus `Gap handling`, which is NOT required and must NOT block coach-complete status.
 
 Partial population (any required field missing) is not coach-complete and the role must be sent to the coach. `Landscape` and `Culture` are always required — the coach must populate both for every role, even if only to confirm no intelligence was found.
 
@@ -313,7 +313,7 @@ For each role in the processing queue, apply this rule to:
 
 **Confirmation pass — run immediately after this role's writes, before moving to the next role (this closes the past silent-drop; see the per-role sequencing rule above).** Re-read this role's properties (one `notion-fetch`). For every MANDATORY property that the coach produced a value for — `Role emphasis`, `Role summary`, `Priority`, `Priority Reason`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Culture`, `Landscape`, `Gap handling` (unless `gap_handling_mode = disabled`), the location-compatibility property (only when configured), `Location` (only when the DB has a `Location` property), `First Advertised` (only when the coach produced a value), and the `Why I Want This Role` coach context block — that is **still empty** after the write, attempt the write once more from the coach's returned output. The `wiwtr_questions` coaching prompts are write-only-to-empty and are not retried if skipped (the pre-write content took precedence). If it is still empty afterward (or the coach genuinely produced no value), name the property and role in the 0.9b briefing under **"⚠ Unwritten mandatory fields"**. **No mandatory property may end the run silently empty** — every miss is either written on retry or surfaced by name. (Triage-exit roles are confirmed only on their reduced set: `Priority`, `Priority Reason`, `JD Fetch Status`, `Role Type`, `Relationship type`, and location when configured.)
 
-Confirm in chat: "Writeback complete: K roles updated, M properties skipped (already populated), N flagged unwritten (see briefing)."
+Confirm in chat: "Writeback complete: K roles updated, M properties skipped (already populated), N flagged unwritten (see briefing)." Do not wait for a response — proceed immediately to Step 0.9b.
 
 ### 0.9b — Brief the user
 
@@ -331,7 +331,7 @@ For every role in the processing queue, write `Status = Researched` **through th
 
 **Per-role failure path:** a Status write may fail for one role while others succeed. Do not let one failure abort the batch or silently drop the role. Collect any per-role write failures, continue writing the remaining roles, and report the failures in the chat confirmation (a failed role keeps its current Status and surfaces again on the next intake run, completing per Step 0).
 
-After all writes complete, confirm in chat: "Status updated to Researched for N roles." If any writes failed, append: "M roles could not be updated: [Company — Position, …] — Status unchanged; they will be retried on the next intake run."
+After all writes complete, confirm in chat: "Status updated to Researched for N roles." If any writes failed, append: "M roles could not be updated: [Company — Position, …] — Status unchanged; they will be retried on the next intake run." Do not wait for a response — proceed immediately to Step 0.9e.
 
 ### 0.9e — Outreach map (runs in main intake context)
 
