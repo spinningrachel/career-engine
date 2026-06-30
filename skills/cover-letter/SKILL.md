@@ -640,7 +640,13 @@ After producing the draft, enter revision mode. Read the letter sentence by sent
 
 ### Step 1 — Voice calibration
 
-Before starting the revision, confirm the voice you're editing toward. Read `${CAREER_DATA}/references/delivered-letters/INDEX.md` — if the archive is reachable and count > 0, read ALL letters in it (every file, not 2–3). **If the archive is unreachable:** hard stop — do not proceed with the revision. **If count is 0 AND no letter files present:** fall back to `references/03-framework.md` §Voice and tone — read the voice samples there instead. Note these six dimensions:
+Before starting the revision, confirm the voice you're editing toward.
+
+**Pipeline mode:** `$PIPE/voice-calibration.md` was loaded in the Voice Gate. Your calibration is already in context — apply the six dimensions from it directly. No re-read needed. Skip to the six dimensions below.
+
+**Standalone mode (no `$PIPE/voice-calibration.md` provided):** Read `${CAREER_DATA}/references/delivered-letters/INDEX.md` — if the archive is reachable and count > 0, read ALL letters in it (every file, not 2–3). **If the archive is unreachable:** hard stop — do not proceed with the revision. **If count is 0 AND no letter files present:** fall back to `references/03-framework.md` §Voice and tone — read the voice samples there instead.
+
+Note these six dimensions:
 
 1. **Sentence length** — short and punchy? Long and flowing? Mixed?
 2. **Word choice level** — casual? somewhere between?

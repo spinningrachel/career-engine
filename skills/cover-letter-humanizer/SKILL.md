@@ -13,7 +13,15 @@ This is the complete and only rule list. Every rule lives here. Nothing is elsew
 
 **Shared rules source:** This skill enforces rules from `references/shared-voice-rules.md` (annotated below with §N) plus cover-letter-specific rules from `skills/cover-letter/SKILL.md`. Source annotations in the step tables are for audit only — the checklist is the authority.
 
-**Before running any step:** Read the delivered letters AND the voice fingerprint. Go to `${CAREER_DATA}/references/delivered-letters/`, read `INDEX.md`, and read ALL letters in the archive — every file listed, not 2–3. Read `${CAREER_DATA}/references/03-framework.md` §Voice fingerprint for the quantitative targets. These are your positive calibration — what you are rewriting *toward*, not just what you are rewriting away from.
+**Before running any step — load voice calibration:**
+
+**Pipeline mode:** Read `$PIPE/voice-calibration.md` (pre-computed by the voice-analyst from all delivered letters). Calibration is complete — no archive read needed.
+
+**Standalone mode:** Go to `${CAREER_DATA}/references/delivered-letters/`, read `INDEX.md`, and read ALL letters in the archive — every file listed, not 2–3.
+
+Then read `${CAREER_DATA}/references/03-framework.md` §Voice fingerprint for the user's documented voice targets. These are your positive calibration — what you are rewriting *toward*, not just what you are rewriting away from.
+
+Also load `${CLAUDE_PLUGIN_ROOT}/references/humanizer-target-metrics.md` before starting the steps — the burstiness thresholds, passive density target, and hedging ceiling are the measurable standard you verify in the Final Gate.
 
 Then work through every step in order. Do not skip steps. Do not run steps in parallel. Do not return output until Step 5 is complete and no violations remain.
 
@@ -129,5 +137,6 @@ Before returning anything, run this checklist in order. If any item fails, fix i
 - [ ] Step 3: No AI vocabulary. Active voice throughout. No "serves/stands/acts as." No approach-announcement labels. No demonstrative declarations. No demonstrative determiners pointing at agent-coined abstractions ("that exact [noun]" / "exactly that [noun]" / "this same [noun]"). No synonym cycling. No appended negating contrast (", not [X]" / ", not as [X]"). No antithesis/pivot formula ("Not X — Y" / "It's not about X, it's about Y" / "This isn't just A, it's B"). No expert-claims anywhere in the letter. No agent-invented methodology. No filler phrases. No false ranges. No word-stem echoes. No prohibited vocabulary phrases.
 - [ ] Step 4: Company name in paragraph 1. Role title named in the first sentence. No example, proof point, or number repeated. No distinctive multi-word phrase repeated anywhere in the letter. Every pronoun and demonstrative still has a live antecedent after all cuts. No company product problems mentioned or implied. No rhetorical questions in opener. No manufactured opener. No strategy analysis opener. Close is its own paragraph. Greeting format correct.
 - [ ] Step 5: Every sentence sounds like it belongs in the delivered letters. Nothing sounds assembled.
+- [ ] **Metric check** (`references/humanizer-target-metrics.md` §7): Run the six ordered checks — sentence burstiness ≥20 word range, paragraph burstiness no adjacent pair within 20 words, passive density ≤25%, hedging density = 0, transition density ≤1 paragraph opener, no repeated compound phrases. Any FAIL means the letter is not done.
 
 **If any box cannot be checked: fix the violation and rerun the checklist from the top. You are not done until every box passes.**

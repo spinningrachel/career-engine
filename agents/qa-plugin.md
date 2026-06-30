@@ -243,13 +243,13 @@ Read `CLAUDE.md`. Verify it contains "Single-build architecture" and "career-dat
 
 **Source of truth is the live filesystem, not this list.** First run `ls -d <location>/skills/*/` and use that actual set as the count and membership. Then reconcile it against the enumeration below: every directory on disk should be categorizable here, and every name below should exist on disk. Do not report a count from memory — derive it from `ls`. (The list below is a categorized reference; new skills are added over time, so a directory on disk that isn't listed here is a "categorize and note," not a fail.)
 
-These skill directories must exist in `skills/` (27 as of this writing):
+These skill directories must exist in `skills/` (28 as of this writing):
 - Core pipeline: `career-engine`, `career-engine-orchestrator`, `career-engine-intake`, `career-engine-new-application`, `career-engine-edit`, `career-engine-export`, `career-engine-setup`
 - Writing & quality: `cv-writing`, `cover-letter`, `cover-letter-humanizer`, `gatekeeper-checks`, `career-coach`, `localization`
 - Standalone career: `source-open-roles`, `linkedin-coach`, `personal-brand`, `update-refs`
 - Content & freelance: `content-orchestrator`, `mind-dump`, `linkedin-post-writer`, `linkedin-post-reviewer`, `fiverr`, `upwork`, `freelance-shared`
 - Meta: `plugin-builder`, `technical-writing`
-- Database adapters: `database-notion`
+- Database adapters: `database-notion`, `database`
 
 **FAIL condition:** any directory missing.
 

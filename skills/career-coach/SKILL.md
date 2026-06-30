@@ -389,6 +389,30 @@ Where the two diverge, the **reality governs** `Role emphasis` and the coach con
 **Application instructions**
 If the JD specifies an unusual application instruction (e.g., "include a cover letter with your answer to X"), flag it in Patterns so the user sees it before applying.
 
+**Organizational Mandate Type — set for director/VP/C-suite roles; also set for senior IC roles where mandate-type signals are strong.**
+
+After reading all six layers, classify the role into one of three mandate types. This classification governs `Role emphasis` framing, the coaching questions you generate, and what the letter-writer must lead with.
+
+| Type | JD signals | The reality | What the hire must prove |
+|---|---|---|---|
+| **Builder** | "scale," "pioneer," "build from scratch," "accelerate," "first hire," "0→1" | Company has runway/opportunity but lacks infrastructure. Hire loves messy execution and building playbooks. | Zero-to-one frameworks, prior hiring and playbook-building, scale metrics from prior growth cycles |
+| **Fixer** | "optimize," "streamline," "turn around," "drive efficiencies," "evaluate existing architecture," "reduce churn" | Something is broken — margins down, churn high, tech debt crushing, or function never established cleanly. Hire is the surgical corrective force. | Diagnostic skills, cutting waste, managing change resistance, rapid stabilization, proof of turning around a broken function |
+| **Maintainer** | "govern," "sustain," "protect market share," "standardize," "mature," "harden," "scale what works" | The business engine works well but is getting too big for current infrastructure. No cowboy needed — steady hand to harden and scale reliably. | Risk management, governance, operational maturity models, long-term sustainable yield |
+
+Surface the mandate type in `Role emphasis` (one line: `Mandate type: Builder / Fixer / Maintainer — [one-line reason]`). It informs the letter's lead, the CV's foreground proof, and the coaching questions you generate for the user.
+
+**Jargon Decoder — corporate phrases and their operational reality.** When any of these phrases appear in the JD, decode them before proceeding to `Role emphasis` and the coach context block. Surface the decoded reality in `Culture` and `Patterns`.
+
+| JD says | Operational reality | Strategic use |
+|---|---|---|
+| "Thrives in ambiguity" / "Self-starter" | Zero documentation, no onboarding process, goalposts move frequently | Ask: has the user built structure out of chaos before? That proof leads. |
+| "Wear many hats" | Team is understaffed; hire will do tasks both above and below their pay grade | Flag resource-allocation risk in Patterns; if Priority ≥ 3, call it out |
+| "Fast-paced environment" | High volume, tight turnaround, burnout risk if boundaries aren't set | Surface in Culture; flag as Fixer/Builder signal |
+| "We are like a family" | Blurred work-life boundaries; expectation of overtime and emotional investment | High-attrition risk; flag in Culture |
+| "Matrixed environment" | Multiple stakeholders with competing priorities; no direct authority | Proof of aligning disagreeing stakeholders belongs in the letter |
+| "Results-driven" with no JD metrics | Performance expectations undefined; negotiating leverage gap | Flag in Signals as a Red flag |
+| Constant re-posting (same role 3× in 12 months) | Attrition in the role; expectation mismatch | Flag in Signals as a hard Red flag |
+
 ---
 
 ### Part 2 — Strategic properties
@@ -695,6 +719,7 @@ Return findings in this exact structure for every role received.
   - **⛔ The #1 defect here is dumping `Landscape` research into Culture.** Specific financial and structural FACTS — revenue, funding rounds, dollar figures, EBITDA numbers, acquisitions and their prices, exchange tickers (NYSE/NASDAQ), founding year, employee headcount, segment names — are `Landscape`, NOT Culture. If you have written any of those data points here, delete them. A qualitative culture framing that references a posture ("a profitability-first culture, not grow-at-all-costs") is fine; the financial *data* behind it is not. **Do not repeat this content inside the Landscape `## Company & Org` section.**
 - **Role summary:** ≤400 chars total. Short paragraph + up to 5 bullets. JD vocabulary only. No candidate references. No location/contact info. Self-characterization section verbatim as final bullet if present (within 400-char total).
 - **Outreach map:** See format below.
+- **wiwtr_questions:** (full-research roles only — see WIWTR Question Generation section) — the `[COACH PROMPTS]` block for intake to write to the WIWTR field.
 
 [repeat for each role]
 
@@ -778,6 +803,57 @@ Rules:
 **`Landscape` format is mandatory — always the sectioned, scannable structure, never a prose blob.** Every Landscape write uses the `## Competitors` / `## Market Signals` / `## User Voice` / `## Company & Org` / `## Recruitment Signals` / `## Career Path` headings with one tight sourced bullet per point (see the Output Format spec). A wall of paragraphs is a format failure even if the content is right — it is too hard to scan. Same discipline as `Role emphasis`: labeled sections, short lines.
 
 **`Landscape` exception:** If Landscape is already populated, do not replace it — prepend the new section-format content above the existing content, separated by a `---` divider. Existing content is less current but still valuable; preserve it verbatim below the divider.
+
+**`wiwtr_questions` — return for full-research roles (Priority 1–4); never for triage-exit roles (Priority 5–6).** These are bespoke coaching questions for the USER (not the agent), written in second person, to inspire genuine motivation content before the letter pipeline runs. Intake writes them to the WIWTR field in Notion below the coach context block (write-only-to-empty: only when no user content exists). See WIWTR Question Generation below for doctrine.
+
+---
+
+## WIWTR Question Generation
+
+Questions for the user, not the pipeline. Their purpose: prompt the user to develop specific, authentic motivation content that the letter-writer can use as WIWTR. Generic coaching questions are worthless — each question must be answerable in a way that is useful ONLY for this role.
+
+**Four dimensions (generate 3–4 questions total, not one per dimension — use only the dimensions that produce a useful question for this specific role):**
+
+**Dimension 1 — Gap/experience transfer (highest priority; always include when useful):** After carefully analyzing the core role responsibilities against the user's documented experience: where do you see genuine transfer — and where do you see a real gap? Ask the user to articulate the bridge. Questions here force the user to name what she actually brings, not what looks good on paper.
+
+*Example pattern:* "You've [documented experience from 02]. The JD leads with [top responsibility]. What's the most direct line you'd draw from your [X] work to what they actually need here — and where would you need to acknowledge the stretch?"
+
+**Dimension 2 — Core requirement emphasis:** Based on the core requirements and the JD's overall tone/structure, which 1–2 seem most weighted by this hiring manager? Ask the user which of those requirements she finds genuinely exciting to take on, and whether there's a specific angle or proof point she hasn't yet documented.
+
+*Example pattern:* "The JD emphasizes [specific requirement] more than anything else — the verb choice ['own'/'architect'/'build'] and the placement both signal it's the real filter. What's your sharpest answer to 'why you for this specific problem'?"
+
+**Dimension 3 — Nice-to-haves and company culture leverage:** Where could the user leverage an advantage from the preferred qualifications, the stated culture signals, or specific language from the company's About/Careers/Glassdoor research? Ask the user to name one concrete connection to something specific about this company that no other candidate can claim.
+
+*Example pattern:* "The company [specific cultural signal from research]. Is there something specific about their approach to [X] that resonates with how you work — and can you name a real example from your background that proves it?"
+
+**Dimension 4 — Methodology depth:** What about the user's documented methodology could be leveraged strategically for this role — and what about her undocumented methodology (approaches she uses but hasn't articulated in career-data) needs to be drawn out?
+
+*Example pattern:* "Your [documented methodology from 03-framework.md] maps well to what this role needs. But is there a way you approach [specific role challenge] that you haven't written down yet? What would you tell someone who just landed this job about how to succeed in the first 90 days?"
+
+**Quality rules for question generation:**
+
+- Every question must reference something specific to THIS role or THIS company — not a generic career question
+- Draw from the JD's actual language, the research findings, or the user's documented background. Quote JD phrases. Name the company's specific product or challenge.
+- Write in direct second person: "You've..." / "The JD emphasizes..." / "You said..."
+- Maximum 4 questions. If fewer than 3 dimensions produce useful questions for this role, generate 3 (use the most productive dimensions multiple times before generating a generic one)
+- Questions are written to inspire introspection and specificity, not to elicit credentials already in the CV
+
+**Output format for `wiwtr_questions`:**
+
+Return a ready-to-paste block. Intake writes it to WIWTR with the `[COACH PROMPTS]` header:
+
+```
+wiwtr_questions:
+[COACH PROMPTS — write your answers below each question, then delete this header and the questions]
+
+1. [Question 1]
+
+2. [Question 2]
+
+3. [Question 3]
+
+4. [Question 4 — if needed]
+```
 
 ---
 

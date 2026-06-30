@@ -122,6 +122,16 @@ Read the following from Notion for this role:
 
 ---
 
+### Step 4.9 — Voice calibration (pre-compute)
+
+Spawn `voice-analyst`, passing `CAREER_DATA=${CAREER_DATA}` and `PIPE=${PIPE}`.
+
+- **On `PASS`:** proceed to Step 5. The calibration file is at `$PIPE/voice-calibration.md`.
+- **On `FALLBACK`:** proceed to Step 5. The calibration file contains voice data drawn from `03-framework.md §Voice` — the letter-writer uses it as-is.
+- **On any other error:** log the failure. Proceed to Step 5 without passing `$PIPE/voice-calibration.md`. The letter-writer falls back to its standalone Voice Gate (reads the archive directly).
+
+---
+
 ### Step 5 — Cover letter (draft)
 
 **Before spawning letter-writer:** Read `${CAREER_DATA}/references/02-professional-background.md` (Role Facts) for the user's role facts — key proof points from `02-professional-background.md` (Role Facts). Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
@@ -191,7 +201,7 @@ cp "$PIPE/letter-draft.md" "<output_dir>/<company_dir>/<cl_filename>.md"
 
 **Before spawning, snapshot the revert target:** copy `$PIPE/letter-final.md` (the Step 5.3-passing text) to a sibling `$PIPE/letter-final.prehumanizer.md` — the revert target for Step 5.95. (The humanizer edits in place, so this snapshot must be taken first.)
 
-Spawn `cover-letter-humanizer`, passing `CAREER_DATA=${CAREER_DATA}` and the final cover letter markdown path `$PIPE/letter-final.md` (it edits in place). Do not pass Role summary, strategy, JD, or any role-specific context — the humanizer reads only the letter and calibrates against the delivered-letters archive and voice fingerprint in career-data.
+Spawn `cover-letter-humanizer`, passing `CAREER_DATA=${CAREER_DATA}`, the final cover letter markdown path `$PIPE/letter-final.md` (it edits in place), and `$PIPE/voice-calibration.md` (the pre-computed voice calibration from the voice-analyst; the humanizer uses it instead of reading the archive directly). Do not pass Role summary, strategy, JD, or any role-specific context — the humanizer's only inputs are the letter, the career-data path, and the voice-calibration file.
 
 The humanizer is a writing editor and linguistics expert. It loads `skills/cover-letter-humanizer/SKILL.md` and removes AI writing patterns sentence by sentence. It does not change structure, strategy, or content — only language.
 
@@ -212,7 +222,7 @@ The humanizer changed the text after the last PASS, so that PASS is no longer va
    - Zero hits for the named banned patterns: "I know this", "that's where", "that's what", "that's the kind", "that exact", "exactly that", "this same", "serves as", "stands as", "acts as"; also grep "the same" — a hit fails only when it points at an agent-coined abstraction ("the same engine"), not in benign uses ("the same week").
 2. **Final gatekeeper pass** — spawn `gatekeeper` with `option=cover-letter` on this exact text, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter path `$PIPE/letter-final.md` to read, `Role summary`, the user's Why I Want This Role content (same as Step 5.2), the final CV path `$PIPE/cv-final.md` to read, and `OUTPUT_PATH=$PIPE/gatekeeper-cl-<round>.md`.
 
-**If both pass:** proceed to Step 6. **If either fails:** spawn `cover-letter-humanizer` again with `CAREER_DATA=${CAREER_DATA}` and the specific failures named (language-level issues) or `letter-writer` with `option=revision` passing `CAREER_DATA=${CAREER_DATA}` (content-level issues), then re-run this step. Cap: 2 rounds. After the cap, revert to the `.prehumanizer.md` file saved in Step 5.9 (the last text that passed Step 5.3) and flag the letter for manual review in the final delivery. Never export text that has not passed this step.
+**If both pass:** proceed to Step 6. **If either fails:** spawn `cover-letter-humanizer` again with `CAREER_DATA=${CAREER_DATA}`, `$PIPE/voice-calibration.md`, and the specific failures named (language-level issues) or `letter-writer` with `option=revision` passing `CAREER_DATA=${CAREER_DATA}` (content-level issues), then re-run this step. Cap: 2 rounds. After the cap, revert to the `.prehumanizer.md` file saved in Step 5.9 (the last text that passed Step 5.3) and flag the letter for manual review in the final delivery. Never export text that has not passed this step.
 
 **Sync the passing bytes to the export path — do this on EVERY exit from this step, before Step 6 runs.** The retry branches above edit `$PIPE/letter-final.md` in place, and the revert branch restores `$PIPE/letter-final.prehumanizer.md` — in both cases the `/tmp/<cl_filename>.md` copy made in Step 5.9 is now stale, and Step 6 would convert the wrong bytes. After the verification passes (and after any revert), re-copy the authoritative final letter to the export working path and the output backup:
 

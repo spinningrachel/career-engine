@@ -47,14 +47,18 @@ Called by the career-engine-orchestrator after the coach, CV writer, and gatekee
 
 **This runs before the Motivation Bank Gate and Sufficiency Gate, and before any other file is loaded.**
 
+**Pipeline mode (voice-analyst ran before this spawn):** Read `$PIPE/voice-calibration.md`. Your calibration is complete — proceed directly to the Motivation Bank Gate. No archive read needed.
+
+**Standalone mode (no `$PIPE/voice-calibration.md` provided):** Run the direct-read path:
+
 1. Read `${CAREER_DATA}/references/delivered-letters/INDEX.md`.
    - **If the folder or index is unreachable (path invalid, permission error, career-data absent):** hard stop. Do not proceed. Report: "Voice Gate failed — delivered-letters archive is unreachable. Confirm `${CAREER_DATA}` is set correctly and career-data is installed."
-   - **If count is 0 AND no letter files are present:** skip to the fallback below. This is the only legitimate skip.
-2. Read exactly 3 letters from the archive. Pick any 3 at random — do not filter by vertical, role type, or recency. If fewer than 3 exist, read all of them.
-3. From those letters, note: how does the opener start — what is the register, the directness, the first move? What does a typical sentence look like in length and rhythm? How does she close?
+   - **If count is 0 AND no letter files are present:** calibrate voice against `${CAREER_DATA}/references/03-framework.md` §Voice and tone instead. Note this in working context. This is the only legitimate skip.
+2. Read ALL letters from the archive (every file, not 2–3). If fewer than 3 exist, read all of them.
+3. From those letters, note: how does the opener start — what is the register, the directness, the first move? What does a typical sentence look like in length and rhythm? How does she close? Also flag any proof points or phrasings worth lifting.
 4. Hold this calibration. You will compare your draft against it before continuing.
 
-**This gate does not complete until you have read every delivered letter in the archive.** The only legitimate skip is a genuinely empty archive (count = 0 AND no letter files present) — in that case, calibrate voice against `${CAREER_DATA}/references/03-framework.md` §Voice and tone instead and note this in your working context. An unreachable archive is a hard stop, not a fallback trigger.
+**This gate does not complete until calibration is loaded** — from the pre-computed file (pipeline) or from the direct read (standalone). An unreachable archive in standalone mode is a hard stop, not a fallback trigger.
 
 ---
 
@@ -66,8 +70,10 @@ Called by the career-engine-orchestrator after the coach, CV writer, and gatekee
 
 `Why I Want This Role` (WIWTR) is the user's **role-specific** motivation. It is supplementary to the Motivation Bank, not a precondition:
 
-1. **WIWTR is populated** → use it as the primary role-specific source on top of the matching Bank entries. Write the letter.
-2. **WIWTR is empty** → judge whether you can write a **genuine, specific opener** — one that establishes why *this* person wants *this* role (why now, why here) — from the matching Motivation Bank entries plus the background and framework, **without fabricating motivation**.
+**Pre-check — detect coaching prompts:** WIWTR always has a coach context block prepended at the top (Priority 1/2/3, Likely KPIs). Strip that block (everything above the first `---` separator) and look at what remains. **If the remaining content contains `[COACH PROMPTS`**, the intake pipeline wrote coaching questions that the user has not yet answered (the delete-header instruction has not been followed). Treat this as WIWTR-absent: proceed to Case 2 below. The coaching prompts are questions waiting for the user's answers — they are not voiced motivation and must not be used as WIWTR content. When the user has answered the questions and deleted the header and questions (as instructed), the remaining content is their genuine motivation — proceed to Case 1.
+
+1. **WIWTR is populated** (and does NOT contain `[COACH PROMPTS` after stripping the coach context block) → use it as the primary role-specific source on top of the matching Bank entries. Write the letter.
+2. **WIWTR is empty** (or contains only unanswered coaching prompts — see pre-check above) → judge whether you can write a **genuine, specific opener** — one that establishes why *this* person wants *this* role (why now, why here) — from the matching Motivation Bank entries plus the background and framework, **without fabricating motivation**.
    - **You can** → write the letter from the Bank. Never invent a reaction the user has not expressed somewhere in her own words.
    - **You cannot** (no Motivation Bank entries are relevant to this role and there is nothing to ground a genuine opener) → **skip this role — you have the authority to skip.** Return immediately and state:
 
@@ -85,7 +91,7 @@ MANDATORY: Load all of these before writing a single word.
 
 | File | What it contains |
 |---|---|
-| `${CAREER_DATA}/references/delivered-letters/INDEX.md` + 3 letter files | **Mandatory — read INDEX.md, then pick any 3 letters at random and read them before writing a single word.** Do not filter by vertical or role type. If fewer than 3 exist, read all. If the folder is unreachable: hard stop (not a fallback trigger — see Voice Gate above). Use for: (1) **voice calibration** — the user's actual sent letters, the best style anchors available; (2) **content mining** — proof points, phrasings, argument structures that worked and could be adapted. **If count is 0 AND no letter files present:** skip and calibrate voice against `${CAREER_DATA}/references/03-framework.md` §Voice and tone instead. |
+| Voice calibration (see Voice Gate above) | **Pipeline mode:** Read `$PIPE/voice-calibration.md` — pre-computed by the voice-analyst from all delivered letters; contains the six-dimension calibration and representative phrases. No archive read needed. **Standalone mode:** Read `${CAREER_DATA}/references/delivered-letters/INDEX.md` and ALL letter files in the archive directly (see Voice Gate above). |
 | `references/01-writing-rules.md` | Source of truth for the user's background. Section 1: fabrication rule — read first. Approved CV summaries, role facts, testimonials, portfolio: see `02-professional-background.md`. |
 | `references/03-framework.md` | **Primary letter-writing material — not background.** Professional philosophy, methodology, voice, and domain narratives. §Professional methodology and POV: each framework sufficient to anchor a letter's strategic argument. §Domain depth: per-vertical narratives. §Voice and tone: voice samples and calibration. |
 | `references/02-professional-background.md` | The user's reusable background facts and proof points. **`Section 5 — Motivation Bank` is your PRIMARY content/voice source — load it and select the role-relevant (tag-matched) entries before drafting (Motivation Bank Gate above).** The user's verbatim words there beat any constructed alternative. |
@@ -148,7 +154,7 @@ Full structural definition for each type in `skills/cover-letter/SKILL.md` → L
 
 **Step 0.5 — Enumerate Why I Want This Role points (only when Why I Want This Role is present, before drafting):**
 
-**If Why I Want This Role is empty, skip this step** — there are no points to enumerate. Your source is the role-matched Motivation Bank entries you selected at the Motivation Bank Gate; there is no whole-Bank coverage requirement (use the relevant entries). Proceed to drafting.
+**If Why I Want This Role is empty — or if the Sufficiency Gate pre-check found `[COACH PROMPTS` (unanswered coaching prompts) — skip this step.** There are no user-voiced points to enumerate. Your source is the role-matched Motivation Bank entries you selected at the Motivation Bank Gate; there is no whole-Bank coverage requirement (use the relevant entries). Proceed to drafting.
 
 **When Why I Want This Role is present:** Parse it into a numbered list of distinct points: [WIWTR-1], [WIWTR-2], etc. A "point" is any distinct bullet, sentence, or idea — even a fragment. Write this list out explicitly before drafting. This list is the coverage checklist: after completing the draft, scan it against each numbered point and confirm each appears substantively in the letter. Do not proceed to the gatekeeper if any point is absent — revise first. The only exception is a point that fails Tier 1 (fabrication — not traceable to documented background); log such a set-aside explicitly with reason before proceeding.
 

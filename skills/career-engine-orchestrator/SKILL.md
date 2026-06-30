@@ -588,7 +588,6 @@ cat > "<output_dir>/run-metrics-$(date +%Y-%m-%d).json" << 'JSON_EOF'
     "letter_writer_draft": <N>,
     "letter_writer_revision": <N>,
     "gatekeeper_cl": <N>,
-    "recruiter_reviewer_cl": <N>,
     "localization": <N>
   },
   "token_counts": "pending — written by Stop hook at session end"
