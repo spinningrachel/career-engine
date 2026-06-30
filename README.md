@@ -83,13 +83,37 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ### 2026-06-30 — Coach R-41, career-data v1.5.0 router support, pipeline reliability fixes
 
-**New features**
+This release restructures the `career-data` content bank into sub-files, fixes the Motivation Bank read path and role-facts read path, and adds two pipeline reliability improvements.
+
+#### Upgrading from a previous version
+
+**Required**
+
+1. **Reinstall the plugin.** Download `career-engine.plugin` and reinstall it via **Customize → Connectors → Personal plugins**.
+
+2. **Migrate `career-data` to the v1.5.0 structure.** `02-professional-background.md` is now a router — all content has moved to dedicated sub-files in `background/`. The plugin reads the Motivation Bank from `background/background-motivation-bank.md`; if your `career-data` still has the flat structure (Motivation Bank at §5), the pipeline will not find it.
+
+   The updated blank router and seven sub-file templates ship with the plugin at `references/02-professional-background.md` and `references/background/`. To migrate:
+
+   - Replace `02-professional-background.md` with the router template. Add a row to the Career History Table for each role in your history.
+   - Move your Motivation Bank table to `background/background-motivation-bank.md`.
+   - Move role facts for each company to `background/background-role-facts-<company>.md` (one file per company, slugified name).
+   - Move any other content to its matching sub-file (`background-cv-summaries.md`, `background-approved-bullets.md`, `background-testimonials.md`, `background-portfolio.md`, `background-cross-cutting-skills.md`).
+
+   Apply these changes via the update-prompt path. See [Updating career-data](https://github.com/spinningrachel/career-engine/wiki/Updating-career-data) for the procedure.
+
+   > **Minimum migration if you just installed June 29:** if you only added the Motivation Bank at §5 and haven't filled in role facts or other sections yet, the minimum required change is to replace `02-professional-background.md` with the router template and create `background/background-motivation-bank.md` with your Motivation Bank table.
+
+**Optional**
+
+Nothing additional is required. WIWTR instruction parsing, role properties on disk, and the pipeline reliability fixes are purely plugin-side.
+
+**Changes in this release**
+
 - **Coach R-41 output protocol.** The career coach now writes its full analysis to `$PIPE/coach-output.md` (R-41) in intake pipeline mode and returns a single status line. Previously the coach returned its analysis inline, which was vulnerable to context compression during 5-role batch runs — the compression event could occur between the coach return and the Step 0.9a Notion writes, destroying the analysis. File-based output survives compression; the intake skill reads the file in Step 0.8.5 and passes it to the gatekeeper. All other coach options continue to return inline.
-- **career-data v1.5.0 router support.** All plugin agents, skills, and reference files now use the v1.5.0 sub-file paths for `02-professional-background.md` (which is now a router to `background/background-*.md` sub-files) and `03-framework.md` (which routes methodology/POV sections to `framework/framework-*.md` sub-files). The plugin's blank template for `02-professional-background.md` has been converted to a router, and `references/background/` now ships seven blank sub-file templates.
+- **career-data v1.5.0 router support.** All plugin agents, skills, and reference files now use the v1.5.0 sub-file paths for `02-professional-background.md`, which has been converted from a flat file to a router pointing to `background/background-*.md` sub-files. The plugin's blank template for `02-professional-background.md` has been updated accordingly, and `references/background/` now ships seven blank sub-file templates.
 - **WIWTR instruction parsing.** The letter-writer now classifies Why I Want This Role content before building the coverage checklist. Instruction directives ("Find in motivation bank...", "Refer to professional background...") are executed as sourcing instructions rather than quoted as letter content. Mixed items are split: the directive is executed, the genuine motivation is kept verbatim. This prevents instructions written in the WIWTR field from appearing in the letter body.
 - **Role properties on disk at pipeline start.** A new Step 0.data writes all role metadata (company, role title, Strategy, Keywords, Gap handling, Role summary) to `$PIPE/role-properties.md` immediately after the pipeline directory is created. The file survives context compression and gives all subagents a lightweight on-disk reference to role metadata.
-
-**Bug fixes**
 - **Screen 1/2/3 renamed from Priority 1/2/3.** The coach's priority classification labels were renamed to Screen 1/2/3 to avoid colliding with the Notion `Priority` property during intake writeback.
 - **Priority Select value annotation fixed.** The coach context block in the coach skill now correctly annotates select values with their allowed options so intake can validate before writing.
 - **Likely KPIs removed from coach context block.** The coach no longer writes a `Likely KPIs` field to the coach context block written to WIWTR; the field is not part of the Notion schema and caused writeback errors.
