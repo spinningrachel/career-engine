@@ -152,11 +152,28 @@ Three types:
 
 Full structural definition for each type in `skills/cover-letter/SKILL.md` → Letter Type. Hold the type — it governs how the body paragraphs are sequenced and what job each does.
 
-**Step 0.5 — Enumerate Why I Want This Role points (only when Why I Want This Role is present, before drafting):**
+**Step 0.5 — Classify and enumerate Why I Want This Role points (only when Why I Want This Role is present, before drafting):**
 
 **If Why I Want This Role is empty — or if the Sufficiency Gate pre-check found `[COACH PROMPTS` (unanswered coaching prompts) — skip this step.** There are no user-voiced points to enumerate. Your source is the role-matched Motivation Bank entries you selected at the Motivation Bank Gate; there is no whole-Bank coverage requirement (use the relevant entries). Proceed to drafting.
 
-**When Why I Want This Role is present:** Parse it into a numbered list of distinct points: [WIWTR-1], [WIWTR-2], etc. A "point" is any distinct bullet, sentence, or idea — even a fragment. Write this list out explicitly before drafting. This list is the coverage checklist: after completing the draft, scan it against each numbered point and confirm each appears substantively in the letter. Do not proceed to the gatekeeper if any point is absent — revise first. The only exception is a point that fails Tier 1 (fabrication — not traceable to documented background); log such a set-aside explicitly with reason before proceeding.
+**When Why I Want This Role is present:** First classify all content:
+
+**WIWTR content classification (run before enumeration):**
+
+Scan each item (line, sentence, bullet, or paragraph) in WIWTR and classify:
+
+- **Motivation content** — genuine first-person voice expressing reasons, feelings, experiences, or intentions about this role. Include in the coverage checklist verbatim. Use the user's actual words and phrasing.
+- **Instruction directive** — a line or clause directing the letter-writer's sourcing behavior. Identified by imperative or third-person action verbs pointing at agent tasks: "Find in motivation bank...", "Refer to professional background...", "Use...", "Include...", "See...", "Check...". DO NOT include in the coverage checklist. DO NOT quote in the letter. EXECUTE the directive instead (see below).
+- **Mixed item** — contains both a directive clause AND genuine motivation content. Split: extract and execute the directive portion; add only the genuine motivation portion to the coverage checklist.
+
+**Executing directives (do this before drafting):**
+- "Find in motivation bank [topic/theme]" → search the already-loaded Motivation Bank for entries tagged with or thematically related to [topic/theme]; treat matching entries as additional Bank material for this role.
+- "Refer to professional background for [topic]" → read the relevant background sub-file(s) for [topic] content (e.g. `background/background-role-facts-<company>.md`, `background/background-cross-cutting-skills.md`); treat found content as documented background evidence — use it as factual proof, not as WIWTR voice.
+- Other directives: execute the spirit using available sources; note what you found in working context.
+
+Execute all directives before beginning the coverage enumeration. Note what each resolved to. Only genuine motivation content enters the [WIWTR-N] coverage checklist.
+
+Parse the motivation content into a numbered list of distinct points: [WIWTR-1], [WIWTR-2], etc. A "point" is any distinct bullet, sentence, or idea — even a fragment. Write this list out explicitly before drafting. This list is the coverage checklist: after completing the draft, scan it against each numbered point and confirm each appears substantively in the letter. Do not proceed to the gatekeeper if any point is absent — revise first. The only exception is a point that fails Tier 1 (fabrication — not traceable to documented background); log such a set-aside explicitly with reason before proceeding.
 
 **Gap-volunteering filter — apply during enumeration:** Before adding a WIWTR point to the coverage checklist, check whether it is a defensive pre-emption: a sentence that names a concern the hiring manager hasn't raised ("this isn't a stepping stone," "Full disclosure: I haven't done X," "whether that's the fit you need"). If a point is purely defensive pre-emption with no affirmative claim alongside it, mark it [SKIP-gap-volunteer] and exclude it from the coverage checklist — do not include the defensive framing in the letter. If the point contains both a defensive pre-emption AND an affirmative claim ("this isn't a stepping stone — I've been building toward exactly this"), include only the affirmative half ([WIWTR-N: affirmative only]) and discard the defensive framing. Log every skip in the set-aside list with reason "gap volunteering — defensive pre-emption filtered."
 
@@ -169,7 +186,7 @@ Every job posting exists because something is broken or missing. Before writing 
 
 The letter that answers "what they asked for" is generic. The letter that answers "what they actually need" gets interviews.
 
-1. **Background facts** — draw key role facts from `references/02-professional-background.md`. Use them woven into sentences doing a specific job for this letter — never as standalone credential paragraphs.
+1. **Background facts** — draw key role facts from `background/background-role-facts-<company>.md` (reached via the router in `references/02-professional-background.md`); if no file exists for the company, draw from the framework and WIWTR. Use them woven into sentences doing a specific job for this letter — never as standalone credential paragraphs.
 2. **Delivered letters archive** — read letters for similar domains or company types from `${CAREER_DATA}/references/delivered-letters/`. These are the best voice anchors available.
 3. **Worked examples** — read the use-case structure examples in `cover-letter/SKILL.md` before writing.
 4. **Self-characterization** — if the JD has a "you'll thrive here if" section, extract 2–3 traits with real candidate proof and weave into the letter body.

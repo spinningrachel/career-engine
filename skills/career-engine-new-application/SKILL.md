@@ -47,6 +47,29 @@ This is the only inter-role learning mechanism. It does not require agents to sh
 
 Before Step 1, create `<output_dir>/<company_dir>/_pipeline/` (the run's scratch area for intermediate text artifacts — reviewer feedback, revision logs, gatekeeper violations). Call this path `$PIPE`. On Path A use `mkdir -p`; on Path B create it through the host file tool (R-30). Every subagent below is given an exact `$PIPE/<file>.md` path to write to, and returns only a short status plus that path — never its full output (R-41). The orchestrator branches on the short status and, when a later step needs prior content, passes the path so that step reads it from disk. `_pipeline/` is intermediate only — it is not a deliverable and is not written to Notion.
 
+### Step 0.data — Write role properties to `$PIPE/role-properties.md`
+
+Immediately after creating `$PIPE`, write the role's Notion-sourced properties to disk before spawning any subagent. This file is the single on-disk record of role metadata for this pipeline run — it survives context compression and is available to every subagent in this role's pipeline as `$PIPE/role-properties.md`.
+
+**Content to write:**
+
+````markdown
+# Role Properties — <Company> — <Role Title>
+
+**Company:** <company name>
+**Role title:** <role title>
+**Strategy:** <IC / Strategic / Hybrid>
+**Relationship type:** <Full time / Part time / Temporary / Fractional>
+**Keywords:** <keywords string — tiered: Critical: ... | Important: ... | Nice-to-have: ...>
+**Gap handling:** <value, or "disabled (empty)">
+**Role summary (JD proxy):**
+<full Role summary content — the compressed JD proxy including role context, key requirements, and self-characterization section verbatim if present>
+````
+
+**Write mechanics:** On Path A use the `Write` tool or `cat >` to write the file directly. On Path B (host-bridge MCP), use Desktop Commander `write_file` to create it host-side — same R-30 pattern as other `$PIPE/` writes.
+
+---
+
 ## CV Steps (1 through 4.5)
 
 > **Step numbering:** the CV stages are Steps 1, 1.5, 2, 4, and 4.5. There is no Step 3 — the numbering skips it intentionally; "Steps 1 through 4.5" is the full CV range.
@@ -58,6 +81,8 @@ Spawn `cv-writer` with `option=draft`, passing:
 - `Role summary` (the compressed JD proxy — contains role context, key requirements, and self-characterization section)
 - The coach's output for this role: `Role emphasis`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`
 - `CV_PATH=$PIPE/cv-draft.md` — the writer writes the draft there and returns the path (R-41).
+
+**Note:** `Role summary`, `Strategy`, `Keywords`, `Relationship type`, and `Gap handling` are also written to `$PIPE/role-properties.md` (Step 0.data). Subagents that need a lightweight reference to role metadata may read from that file instead of receiving the full content inline in every spawn prompt.
 
 ### Step 1.5 — Gatekeeper (CV draft check)
 
@@ -114,7 +139,7 @@ The cover letter receives the **final revised CV** as input. letter-writer uses 
 
 Read the following from Notion for this role:
 
-**Why I Want This Role property** — the user's written motivation for this role, filled in manually in Notion. If populated, pass the full content to the letter-writer as the role-specific content input. **Why I Want This Role is NOT required to produce a letter** — the letter-writer's primary source is the Motivation Bank (the user's standing motivations in `02-professional-background.md` → `Section 5`), and the letter-writer itself decides whether it has enough to write.
+**Why I Want This Role property** — the user's written motivation for this role, filled in manually in Notion. If populated, pass the full content to the letter-writer as the role-specific content input. **Why I Want This Role is NOT required to produce a letter** — the letter-writer's primary source is the Motivation Bank (`background/background-motivation-bank.md`), and the letter-writer itself decides whether it has enough to write.
 
 **Always proceed to Step 5 and spawn the letter-writer for this role — whether or not Why I Want This Role is populated.** Pass the Why I Want This Role value if present; if empty, pass it empty and let the letter-writer's **Sufficiency Gate** decide (write from the role-matched Motivation Bank entries, or skip). **Do NOT pre-skip the letter on an empty Why I Want This Role** — that decision belongs to the letter-writer now.
 
@@ -134,14 +159,14 @@ Spawn `voice-analyst`, passing `CAREER_DATA=${CAREER_DATA}` and `PIPE=${PIPE}`.
 
 ### Step 5 — Cover letter (draft)
 
-**Before spawning letter-writer:** Read `${CAREER_DATA}/references/02-professional-background.md` (Role Facts) for the user's role facts — key proof points from `02-professional-background.md` (Role Facts). Pass this context to letter-writer so it can draw proof naturally from her background rather than assembling pre-written paragraphs.
+**Before spawning letter-writer:** Read `${CAREER_DATA}/references/background/background-role-facts-<company>.md` for the user's role facts for this company — key proof points the letter-writer can draw from naturally rather than assembling pre-written paragraphs. Derive `<company>` from the company name in the Notion role record, slugified: lowercase, spaces and punctuation to hyphens (e.g., "Visit TLV" → `background-role-facts-visit-tlv.md`). If the file does not exist for this company, note it in the spawn context: "No pre-documented role facts file found for this company — letter-writer draws from the Motivation Bank, framework, and WIWTR only."
 
 **Before spawning, pass the following for this role:**
 - **Why I Want This Role property** — use the value retrieved in Pre-Step 5. Do not re-read from Notion.
 - **Strategy** property — from the career coach
 - **Gap handling** property — from the career coach
 
-**Priority rule:** the **Motivation Bank** (`02-professional-background.md` → `Section 5`, loaded by the letter-writer from career-data) is the primary content source; **Why I Want This Role** is the role-specific source on top of it **when present**. Strategy provides the letter type only — it does not govern content selection.
+**Priority rule:** the **Motivation Bank** (`background/background-motivation-bank.md`, loaded by the letter-writer from career-data) is the primary content source; **Why I Want This Role** is the role-specific source on top of it **when present**. Strategy provides the letter type only — it does not govern content selection.
 
 **Include this verbatim at the front of the letter-writer prompt:**
 > STRUCTURE IS NON-NEGOTIABLE. Regardless of any reviewer feedback you receive, the letter structure defined in `cover-letter/SKILL.md` must be observed in full — in particular the tone, voice, and content of the opening paragraph. Reviewer feedback informs what proof to include or emphasise; it does not change how the letter is structured or how the opening is written.
