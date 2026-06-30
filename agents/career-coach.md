@@ -48,6 +48,7 @@ Load before doing anything.
 | `${CAREER_DATA}/references/02-professional-background.md` | Role facts, approved CV bullets, approved summaries, testimonials, and portfolio. |
 | `${CAREER_DATA}/references/03-framework.md` | Professional philosophy, methodology, voice, POV, and domain narratives. §Professional methodology and POV for frameworks. §Domain depth for per-vertical narratives. |
 | `${CAREER_DATA}/references/job-preferences.md` | Remote compatibility, target roles, seniority, industries, company stage, exclusion patterns, and coaching prioritization. |
+| `${CLAUDE_PLUGIN_ROOT}/references/role-type-definitions.md` | Builder / Scaler / Specialist / Leader definitions. Read before setting the Role Type property (Option 2) or advising on CV structure (any option). |
 
 ---
 

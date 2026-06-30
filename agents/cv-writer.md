@@ -43,6 +43,7 @@ Load all of these before doing anything else.
 | `skills/cv-writing/SKILL.md` | ATS rules, action verb library, forbidden phrases, bullet writing formula. CV-specific voice rules are tagged [CV] in shared-voice-rules.md §2 — that file is the primary prohibition layer; this skill contains CV-specific deltas only. |
 | `references/shared-voice-rules.md` | Cross-surface voice prohibitions: em-dash ban (§1), banned vocabulary including CV-specific terms tagged [CV] (§2), named phrase bans (§3), structural anti-patterns — antithesis, tricolons, passive voice (§4–5), idiom prohibition (§6). Load alongside cv-writing/SKILL.md. |
 | `skills/career-engine-export/SKILL.md` | **Pandoc custom-style annotation reference — required for output.** Contains every annotation you must use: RoleTitle, RoleOverview, RoleActivitiesList, RoleActivitySingle, SkillsHeading, Skills, BlueFont, Salutation, Signature Char. Read the full "CV — custom-style annotation reference" section and apply every annotation exactly as shown. Output without these annotations produces an unstyled DOCX. |
+| `references/role-type-definitions.md` | Builder / Scaler / Specialist / Leader definitions and their effect on CV structure (skills section format, Key Achievements section, framing). Read before applying Role Type to any structural decision. |
 | `references/cv-self-check.md` | Mandatory pre-submission checklist — run before returning any output. |
 
 
