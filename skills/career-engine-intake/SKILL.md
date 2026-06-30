@@ -113,6 +113,18 @@ For each matching entry, capture the full row payload including:
 
 Report the count to the user: "Found N roles in Hold status." If the count is 0, stop and report that. If the query call returns a tool error or an unparseable response rather than a result array, stop and report the error to the user — do not treat it as zero results. Do not wait for a response — proceed immediately to the next step.
 
+## Step 0.4 — Establish `$PIPE` (Notion-fetch mode only)
+
+**Skip this step in Inline mode** — a single ad hoc role processed conversationally has no batch-size pressure; pass its JD content directly to the coach as before, no `$PIPE` apparatus needed.
+
+**Notion-fetch mode:** before Step 0.5 writes anything, create the run's own scratch directory for intermediate artifacts — `$PIPE/queue.md` (Step 0.5), `$PIPE/coach-output.md` (Step 0.8), gatekeeper violation files (Step 0.8.5), and `$PIPE/writeback-status.md` (Step 0.9a). Unlike the New Application pipeline, where `$PIPE` is one directory per role/company (`<output_dir>/<company_dir>/_pipeline/`), intake processes a **batch** of up to 5 roles in a single run, so `$PIPE` here is run-scoped, not per-company:
+
+- Resolve `output_folder` from `${CAREER_DATA}/references/pipeline-preferences.json` (same resolution order as every other config key, R-37) — this is the required key every pipeline already depends on, even though intake itself writes no deliverables there.
+- Set `$PIPE` = `<output_folder>/_intake_pipeline/<run-timestamp>/` (e.g. `_intake_pipeline/20260630_151047/`) — timestamped so a concurrent or immediately-prior run never collides.
+- On Path A use `mkdir -p`; on Path B create it through the host file tool (R-30).
+
+`_intake_pipeline/` is intermediate only — like New Application's `_pipeline/`, it is never a deliverable and is never written to Notion. Proceed immediately to Step 0.5.
+
 ## Step 0.5 — Prepare JD content for the coach
 
 Before passing roles to the coach, check each role's Notion row for existing JD content and normalise it inline.
@@ -149,9 +161,27 @@ For each role:
 
 **Cross-version capture for location and First Advertised.** The fallback ladder above stops at the first rung that returns usable JD *content*, but `First Advertised` and location compatibility cannot be set reliably from a single version of a posting (a board's location field is often a forced artifact, and its posting date resets on every re-post). So: whenever the ladder surfaces a second version of the same role — a board mirror, an ATS/careers listing, a LinkedIn posting — capture that version's **location field (verbatim)** and its **posting/"posted X ago" date** even after you already have usable content, and pass every captured version's URL, location field, and date to the coach alongside the JD. Do not fetch full mirrors solely for this where the ladder already succeeded on rung 1 — but record any version that does come into view during the search. The coach corroborates across these versions per `skills/career-coach/coach-research.md` → Location & eligibility deep-scan and → `Date first advertised`.
 
-Pass the full row payload (including `JD Body` content, any fetched URL content, and every captured alternate version's URL/location field/date) to the career coach in Step 0.8. The coach **returns** `JD Body`, `JD Fetch Status`, `Priority`, `Priority Reason`, and the location compatibility result; **intake writes them in Step 0.9a** (the coach does not write Notion).
+**Notion-fetch mode: write the full row payload to `$PIPE/queue.md` as each role's JD prep completes — do not hold it in memory for inline passing (R-41).** A queue of even 5 roles, each carrying full JD text plus captured alternate versions, is large enough to bloat the spawn prompt and the orchestrator's own context if held inline; it must live on disk. `$PIPE` was created in Step 0.4. Append one section per role, in this format:
 
-Hold all structured JD data in memory. Proceed immediately to Step 0.6.
+````markdown
+---
+## ROLE — <Company> — <Position>
+
+**Page ID:** <page_id>
+**Job URL:** <url, or "none">
+**Fetch marker:** <content-exists / url-fetched / url-fetched-via-linkedin-mcp / url-fetched-via-connector / url-fetched-via-extraction / url-fetched-via-search / needs-manual>
+**Existing Notion properties:** <every other property captured in Step 0 — notes, tags, source, existing priority value — verbatim>
+
+### JD content
+<the full JD text — fetched content, existing JD Body, or both if both exist>
+
+### Alternate versions captured (location/date corroboration)
+<for each captured alternate version: source URL, location field verbatim, posting/"posted X ago" date — omit this subsection if none were captured>
+````
+
+On Path A use the `Write` tool (first role) then `Edit`/append for subsequent roles; on Path B use Desktop Commander `write_file` / append, same R-30 pattern as other `$PIPE/` writes. Once a role's section is written, drop its JD text from working memory — the file is now the record. Proceed immediately to Step 0.6 once every role in the queue has been written.
+
+**Inline mode:** no `$PIPE`, no `queue.md` — there is exactly one role and no batch-size pressure, so the JD content prepared above passes directly to the coach in the spawn prompt as it always has.
 
 ## Step 0.6 — Check existing priorities
 
@@ -163,9 +193,11 @@ Record the counts. Proceed immediately to Step 0.7.
 
 ## Step 0.7 — Build the processing queue
 
+**Hard cap: 5 roles reach Step 0.8, never more.** This is not a soft preference — a 25-role batch reaching the coach in one spawn has caused a real production failure: the coach hit the model's hard output-token ceiling mid-generation and crashed, the run never recovered, and hours of completed analysis for the other roles was stranded without ever reaching Notion. Apply the cap here, before Step 0.8, with no exceptions.
+
 **If there are 5 or fewer roles:** process all of them. The cap is not reached, so priority ordering is irrelevant — skip queue selection and proceed immediately to Step 0.8 with all roles.
 
-**If there are more than 5 roles:** select the top 5 using the priority order below. All others are deferred.
+**If there are more than 5 roles:** select the top 5 using the priority order below. All others are deferred — they remain in Hold and are picked up by the next intake run. Never widen the batch to "save a trip" or because the user said "run intake" without a number — 5 is the ceiling regardless of how many Hold roles exist or how the run was triggered.
 
 **Queue selection order (Hold roles):** Unscored roles take priority. The intake pipeline's purpose is to coach and score fresh Hold roles. Already-scored roles have been through intake before and are in Hold only because their Status writeback to Researched failed — they fill any remaining slots and receive a Status cleanup in Step 0.9d.
 
@@ -192,14 +224,16 @@ Partial population (any required field missing) is not coach-complete and the ro
 - **Any role has one or more fields missing:** spawn the coach with every role that is not fully complete. Carry existing values forward for coach-complete roles only.
 - **No roles are `coach-complete`:** spawn the coach with all 5 roles as normal.
 
+**Defensive re-check before spawning — count the roles about to be sent.** If more than 5 roles are queued for the coach at this point, Step 0.7's cap was not applied upstream (or roles were added after it ran). Do not spawn an oversized batch to "keep moving" — stop, re-apply the Step 0.7 selection to bring the queue down to 5, log the correction, and only then spawn.
+
 Spawn `career-coach` with the applicable roles. Pass:
-- Full JD data and the complete Notion row properties for each role — **exclude the `JD proof` property value entirely**, even if populated. The coach must derive a fresh verbatim quote from the JD text. Passing the existing `JD proof` value would undermine the anti-fabrication guardrail.
+- **`$PIPE/queue.md`** — the file path only, not the content (R-41). The coach reads its own role data from this file (written in Step 0.5) — full JD text, fetched content, and captured alternate versions for every queued role. Do not paste any of that content into the spawn prompt; passing it inline defeats the purpose of writing the file and is the exact pattern that bloated past runs. **Exclude the `JD proof` property value entirely from what's in `queue.md`** — even if populated, the coach must derive a fresh verbatim quote from the JD text. Passing the existing `JD proof` value would undermine the anti-fabrication guardrail.
 - `$NOTION_DATABASE_ID` (resolved from career-data config) — for reference only; **intake** performs all Notion writes in Step 0.9a, the coach does not write
 - `${CAREER_DATA}` (the resolved career-data root) — the coach needs this to read references
-- `$PIPE` (the pipeline directory for this run) — the coach writes its full analysis to `$PIPE/coach-output.md` (R-41) and returns a 1-line status; intake reads the file in Step 0.9a
+- `$PIPE` (the pipeline directory for this run) — the coach writes its full analysis to `$PIPE/coach-output.md` (R-41), **writing incrementally — appending each role's section as soon as that role's analysis is complete, rather than composing the full multi-role output in memory and writing it once at the end.** A single large generation covering 5 roles of deep research (Landscape, outreach map, WIWTR questions, etc.) risks the model's output-token ceiling; incremental per-role writes avoid that and leave a usable partial file if the run is interrupted. The coach returns a 1-line status when done; intake reads the file in Step 0.9a.
 - The SQLite schema reference from Step 0a (as a "Notion schema reference" section) — the coach uses it to RETURN Select / multi-select values that exactly match the live option list (intake writes them; every returned value must be an existing option)
 
-After the coach returns its 1-line status, read `$PIPE/coach-output.md` to obtain the full analysis. The file persists through context compression; inline returns bloat context O(roles). The analysis contains — **intake writes ALL of these in Step 0.9a; the coach does not write Notion:**
+After the coach returns its 1-line status, read `$PIPE/coach-output.md` **once** to obtain the full analysis. The file persists through context compression; inline returns bloat context O(roles), and re-reading the same file in repeated chunked passes bloats it just as badly — read it in a single pass and hold the parsed result, not the file. The analysis contains — **intake writes ALL of these in Step 0.9a; the coach does not write Notion:**
 - Priority scores for all roles (Part 0 of the coach's output) — always
 - Batch analysis and per-role writing guidance (Part 1)
 - **Every strategic Notion property (Part 2), each as a named value:** `Priority`, `Priority Reason`, `Role emphasis`, `Role summary`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Culture`, `Landscape`, `Company Stage`, `JD proof`, `JD Body` / `JD Fetch Status` (when fetched), the location-compatibility result (when configured), the job's `Location` (the role's stated location, when the DB has a `Location` property), `First Advertised` / `Date first advertised`, and the research-derived properties (`Hiring Manager's Name`, `Recent news`, `Funding context`, etc.)
@@ -213,15 +247,18 @@ Proceed immediately to Step 0.8.5.
 
 Spawn `gatekeeper` with `option=coach-output`. This gate runs BOTH the fabrication check (traceability) and the **field-fit/format checks** (wrong-field content, length caps, disabled-feature leak) — the latter catch the recurring coach defects the fabrication check structurally cannot. Pass:
 - **`$PIPE/coach-output.md`** — the gatekeeper reads the full coach analysis from this file. All fields (`Role emphasis`, `Role summary`, `Culture`, `Keywords`, `Landscape`, `Strategy`, `Gap handling`, the `Why I Want This Role` coach context block, and the outreach map) are in this file.
+- **`OUTPUT_PATH=$PIPE/gatekeeper-coach-output-<round>.md`** (round starts at 1, increments each pass) — per the gatekeeper's own R-41 protocol, it writes the complete violation list here and returns only `FAIL: <n> violations → <OUTPUT_PATH>` (or `PASS`).
 - **Whether gap handling is disabled this run** (`gap_handling_mode`), so the gatekeeper can run the gap-leak check.
 - `CAREER_DATA=${CAREER_DATA}` — so the gatekeeper reads `01/02/03` from career-data for the fabrication check (rather than relying on its self-locate fallback).
 - `01-writing-rules.md` is already in memory — confirm it is loaded before spawning.
 
 **If PASS:** proceed to Step 0.9.
 
-**If FAIL:** the gatekeeper returns unverifiable claims and/or field/format violations, per role and property. Return them to the career coach with this instruction: "Fix each item below. For unverifiable claims: remove or correct them; do not substitute alternative fabrications. For field/format violations: move the content to the correct field, cut to the cap, or remove the leaked gap framing as stated. Revise only the affected properties." Spawn the coach with only the affected roles and properties.
+**If FAIL:** re-spawn the coach, passing **`OUTPUT_PATH`** (the violation-list file path the gatekeeper just returned) for it to read — never copy the violation text into the coach's spawn prompt yourself. Instruct it: "Read the violations at `<OUTPUT_PATH>`. Fix each item. For unverifiable claims: remove or correct them; do not substitute alternative fabrications. For field/format violations: move the content to the correct field, cut to the cap, or remove the leaked gap framing as stated. Revise only the affected properties and roles named in the file — append your fix directly to `$PIPE/coach-output.md` in place." Increment the round counter for the next gatekeeper pass.
 
-**Cap: 2 revision passes.** If still failing after pass 2: strip unverifiable claims (replace with `[UNVERIFIABLE — removed]`), and for unresolved field/format violations apply the stated fix mechanically (move or trim the content; clear a leaked transfer-note gap inventory). Log everything removed or moved in the run-level revision log under `## Coach Output Check — Unresolved`, flag for the user in final delivery, and proceed to Step 0.9.
+> **⛔ Named anti-pattern: hand-editing `coach-output.md` instead of re-spawning the coach.** A real production run hit a FAIL on pass 1 (36 violations across 25 roles — itself downstream of the Step 0.7 cap not being applied), and instead of re-spawning the coach as instructed above, the orchestrator edited `coach-output.md` directly — 77 raw `Edit` calls across 5 more FAIL/fix rounds, with reasoning recorded in that session as: *"The violations are well-specified and mostly mechanical. I'll fix them directly in the merged file rather than re-running the coach — faster and the gatekeeper was clear about exactly what to change."* This is the same rationalization pattern CLAUDE.md names for `career-data` direct writes (the "June-18 direct-write rationalization" — "faster/safer to do it myself" bypassing the designated owner) — applied here to a `$PIPE` file instead of career-data, but the same failure mode. `coach-output.md` is the coach's content; **only the coach edits it.** The gatekeeper's job is to find violations and name them precisely enough that the coach can fix them — not to hand the orchestrator a punch list to apply itself. If gatekeeper output looks "mechanical enough to just fix directly," that is not authorization to skip the coach — re-spawn it with the violations as instructed, every time, with no exception for how small or obvious the fix looks.
+
+**Cap: 2 revision passes.** If still failing after pass 2: strip unverifiable claims (replace with `[UNVERIFIABLE — removed]`), and for unresolved field/format violations apply the stated fix mechanically (move or trim the content; clear a leaked transfer-note gap inventory). Log everything removed or moved in the run-level revision log under `## Coach Output Check — Unresolved`, flag for the user in final delivery, and proceed to Step 0.9. **This mechanical fallback is the only sanctioned exception to "only the coach edits `coach-output.md`"** — it fires solely after the cap is reached, is scoped to exactly the items the gatekeeper named, and is logged. It is not a license to hand-edit pre-emptively on pass 1 or 2.
 
 ## Step 0.9 — Writeback and briefing
 
@@ -230,6 +267,10 @@ This step is mechanical and runs end-to-end without pausing.
 ### 0.9a — Write coach outputs to Notion (intake is the SOLE writer)
 
 **Intake is the single authoritative writer of every coach-produced property.** The career coach WRITES its analysis to `$PIPE/coach-output.md` (R-41) and does NOT write Notion itself (it has no write tool). Intake reads the coach's analysis from `$PIPE/coach-output.md` (Step 0.8) and writes everything below to Notion — a property the coach produced reaches Notion only here. **This step always runs after the coach** (and after Step 0.8.5); it is never skipped on the assumption the coach already wrote. This is the fix for the past failure where `Role summary` and `Priority Reason` were silently dropped in the gap between two writers.
+
+**Process and confirm one role completely before moving to the next role.** Do not write every role's properties first and only confirm the whole batch at the end — a session interruption between the write phase and the confirmation phase has previously stranded a fully-completed, gatekeeper-passed coach analysis on disk with nothing written to Notion at all (24 of 25 roles lost in one real run). Run this role's writes, run this role's confirmation pass (below), then move to the next role. This makes the run resumable by construction: if interrupted, every role already processed is fully written and confirmed in Notion, the role in progress is whatever the next `notion-fetch` shows (re-confirm it on the next intake run rather than assuming partial writes landed), and every role not yet reached is untouched and still on Hold — exactly the state the next intake run already expects (Step 0b re-fetches Hold roles; a role whose Status write to Researched never landed surfaces again per Step 0.9d). Property writes for a single role may still go out in parallel (per the per-property batching rule below) — the sequencing requirement is role-to-role, not property-to-property within a role.
+
+**Maintain `$PIPE/writeback-status.md` as the run's own progress ledger — do not rely on re-fetching Notion pages to reconstruct what was already written.** Before the first role's writes, write one line per queued role: `- [ ] <Company> — <Position>`. The instant a role's writes and confirmation pass both complete, flip its line to `- [x] <Company> — <Position>` (append-in-place edit, not a rewrite of the whole file). This is cheap — a few bytes per role — and it is the recovery mechanism: if this run is interrupted (compaction, crash, connection drop), the ledger on disk is the authoritative record of exactly which roles are done, with no need to re-fetch Notion pages to infer state by inspection. If this step resumes mid-run (the ledger already exists with some lines checked), skip every checked role and continue from the first unchecked one — do not redo completed roles and do not skip unchecked ones on the assumption they were "probably fine."
 
 **Rule: write only to empty properties** (the two always-writes — `JD proof` and the `Why I Want This Role` coach context block — are the named exceptions below). For every other property, check the current Notion value first. If already populated — skip it. Do not overwrite any existing value. `N/A` counts as populated.
 
@@ -270,7 +311,7 @@ For each role in the processing queue, apply this rule to:
 - `Culture` — write if empty. Skip entirely if already has content.
 - `Landscape` — if empty, write the full section-format content. If already populated, prepend the new content above the existing content separated by a `---` divider (per the career-coach output format).
 
-**Confirmation pass — run after the writes (this closes the past silent-drop).** Re-read each processed role's properties (one `notion-fetch` per role). For every MANDATORY property that the coach produced a value for — `Role emphasis`, `Role summary`, `Priority`, `Priority Reason`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Culture`, `Landscape`, `Gap handling` (unless `gap_handling_mode = disabled`), the location-compatibility property (only when configured), `Location` (only when the DB has a `Location` property), `First Advertised` (only when the coach produced a value), and the `Why I Want This Role` coach context block — that is **still empty** after the write, attempt the write once more from the coach's returned output. The `wiwtr_questions` coaching prompts are write-only-to-empty and are not retried if skipped (the pre-write content took precedence). If it is still empty afterward (or the coach genuinely produced no value), name the property and role in the 0.9b briefing under **"⚠ Unwritten mandatory fields"**. **No mandatory property may end the run silently empty** — every miss is either written on retry or surfaced by name. (Triage-exit roles are confirmed only on their reduced set: `Priority`, `Priority Reason`, `JD Fetch Status`, `Role Type`, `Relationship type`, and location when configured.)
+**Confirmation pass — run immediately after this role's writes, before moving to the next role (this closes the past silent-drop; see the per-role sequencing rule above).** Re-read this role's properties (one `notion-fetch`). For every MANDATORY property that the coach produced a value for — `Role emphasis`, `Role summary`, `Priority`, `Priority Reason`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Culture`, `Landscape`, `Gap handling` (unless `gap_handling_mode = disabled`), the location-compatibility property (only when configured), `Location` (only when the DB has a `Location` property), `First Advertised` (only when the coach produced a value), and the `Why I Want This Role` coach context block — that is **still empty** after the write, attempt the write once more from the coach's returned output. The `wiwtr_questions` coaching prompts are write-only-to-empty and are not retried if skipped (the pre-write content took precedence). If it is still empty afterward (or the coach genuinely produced no value), name the property and role in the 0.9b briefing under **"⚠ Unwritten mandatory fields"**. **No mandatory property may end the run silently empty** — every miss is either written on retry or surfaced by name. (Triage-exit roles are confirmed only on their reduced set: `Priority`, `Priority Reason`, `JD Fetch Status`, `Role Type`, `Relationship type`, and location when configured.)
 
 Confirm in chat: "Writeback complete: K roles updated, M properties skipped (already populated), N flagged unwritten (see briefing)."
 

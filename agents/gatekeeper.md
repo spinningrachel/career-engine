@@ -38,14 +38,13 @@ Run the section in `skills/gatekeeper-checks/SKILL.md` matching the check you we
 
 ## Output format
 
+**Everything below this point is FILE content, written to `OUTPUT_PATH` — never the reply.** Per the R-41 protocol stated at the top of this file: on PASS, the reply is the bare word `PASS`; on FAIL, write the applicable template below to `OUTPUT_PATH` in full and reply with exactly `FAIL: <n> violations → <OUTPUT_PATH>`. Nothing in this section — not the violation list, not the `Return to:` line — ever appears in the reply itself. **One documented exception:** the Cover Letter Check's PASS reply also carries the grade (`PASS — cover letter [Grade: A]`) — short enough that it doesn't reintroduce the content-bloat R-41 exists to prevent, and the orchestrator's round-aware grade routing depends on it being visible without a file read on the common clean-pass path.
+
 ### CV Check
 
-If all checks pass:
-```
-PASS — CV
-```
+If all checks pass, reply `PASS` (no file write needed).
 
-If any hard checks fail:
+If any hard checks fail, write to `OUTPUT_PATH`:
 ```
 FAIL — CV
 Return to: cv-writer (option=revision)
@@ -53,20 +52,22 @@ Return to: cv-writer (option=revision)
 Violations:
 - [rule violated] Description. Quote the offending text if possible.
 ```
+Reply: `FAIL: <n> violations → <OUTPUT_PATH>`
 
-If only advisory issues found:
+If only advisory issues found, reply `PASS` and write to `OUTPUT_PATH`:
 ```
 PASS — CV
 
 Advisory (do not revise — include in end-of-pipeline feedback note):
 - [issue] Quote the offending text.
 ```
+(This is the one case where the reply is `PASS` but a file is still written — the advisory note has nowhere else to surface. Reply `PASS` either way; the advisory file is informational, not a gate.)
 
 ### Cover Letter Check
 
 Run all checks, then assign a grade per the grading table in `skills/gatekeeper-checks/SKILL.md`. The grade table is the single source of truth for which grades PASS and which FAIL — do not restate the routing logic here.
 
-**If hard fails present (grade overridden):**
+**If hard fails present (grade overridden):** write to `OUTPUT_PATH`:
 ```
 FAIL — cover letter [Grade: —]
 Return to: letter-writer (option=revision)
@@ -77,13 +78,11 @@ Hard violations:
 Advisory ([n] violations — Grade [X] if hard fails resolved):
 - [issue] "[offending text]" → [resolution]
 ```
+Reply: `FAIL: <n> violations → <OUTPUT_PATH>`
 
-**If PASS grade (no hard fails, advisory count below FAIL threshold per grade table):**
-```
-PASS — cover letter [Grade: A]
-```
+**If PASS grade (no hard fails, advisory count below FAIL threshold per grade table):** reply `PASS — cover letter [Grade: A]` (the grade is short enough to carry in the reply itself — no violations to write to a file).
 
-**If FAIL grade (no hard fails, advisory count at or above FAIL threshold per grade table):**
+**If FAIL grade (no hard fails, advisory count at or above FAIL threshold per grade table):** write to `OUTPUT_PATH`:
 ```
 FAIL — cover letter [Grade: C]
 Return to: letter-writer (option=revision)
@@ -91,21 +90,19 @@ Return to: letter-writer (option=revision)
 Advisory violations ([n]):
 - [issue] "[offending text]" → [resolution]
 ```
+Reply: `FAIL: <n> violations → <OUTPUT_PATH>`
 
 Replace `[Grade: C]` with the actual grade. The grade table in `skills/gatekeeper-checks/SKILL.md` determines which grades are PASS and which are FAIL.
 
-Every advisory violation must include a `→ [resolution]` per the resolution format in `skills/gatekeeper-checks/SKILL.md`. List all violations in a single pass.
+Every advisory violation must include a `→ [resolution]` per the resolution format in `skills/gatekeeper-checks/SKILL.md`. List all violations in a single pass, in the file — never in the reply.
 
 ### Coach Output Check
 
 Run BOTH the fabrication check and the **Field-fit and format checks** in `skills/gatekeeper-checks/SKILL.md` → Coach Output Check. Either kind of violation is a FAIL.
 
-If everything passes:
-```
-PASS — coach output
-```
+If everything passes, reply `PASS` (no file write needed).
 
-If anything fails:
+If anything fails, write to `OUTPUT_PATH`:
 ```
 FAIL — coach output
 Return to: career-coach
@@ -116,6 +113,6 @@ Unverifiable claims:
 Field/format violations:
 - [Company] — [Role Title] — [Property]: "[offending text]" → [the field-fit/format rule broken and the fix]
 ```
-Omit a section that has no violations. List every violation in a single pass.
+Reply: `FAIL: <n> violations → <OUTPUT_PATH>`. Omit a section that has no violations. List every violation in a single pass.
 
 List every unverifiable claim. Quote the exact text. Name the property it came from. **Before flagging, confirm you actually read `02-professional-background.md` and `03-framework.md` §Domain depth** — a claim absent from `01` but present in `02`/`03` is verifiable, not a violation.

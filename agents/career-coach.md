@@ -97,12 +97,15 @@ Analyzes the processing queue against the user's documented background, produces
 
 ### Pre-flight: JD acquisition
 
+**Read your role data from `$PIPE/queue.md` first (R-41) — do not expect JD text pasted into your spawn prompt.** Intake's Step 0.5 already ran the full JD acquisition fetch ladder for every queued role and wrote the result (JD text, fetch marker, captured alternate versions) to `$PIPE/queue.md` before spawning you; a role with no usable JD content (`needs-manual`) is filtered out before it ever reaches you (intake Step 0.8 pre-coach filter). In the normal case every role you receive already has `content-exists` per the marker `queue.md` recorded — the fetch ladder below is a fallback for the rare case a role's `queue.md` entry is incomplete, and for standalone/inline invocations (Option 1) that never went through intake's pre-fetch at all.
+
 Run for every role before any analysis. Process all roles in parallel.
 
 **Step 1 — Check for existing JD content.**
 
 Check in this order:
-- `JD Body` property is populated → use it directly. Mark `content-exists`.
+- `$PIPE/queue.md` carries this role's JD content (intake-pipeline invocations — the normal case) → use it directly. Mark `content-exists`.
+- `JD Body` property is populated (standalone/inline invocations only, no `queue.md`) → use it directly. Mark `content-exists`.
 
 **Step 2 — Fetch if no existing content.**
 
@@ -172,11 +175,15 @@ Load `skills/career-coach/SKILL.md` and follow it exactly for:
 
 ### Inputs from intake pipeline
 
-The intake pipeline provides per role:
+**Notion-fetch mode (the normal case — up to 5 roles):** the intake pipeline provides per role, via `$PIPE/queue.md` (not pasted inline — read the file):
 - Page ID, company name, position title, Job URL
 - Full Notion row content (including `JD Body` if already populated)
 - `has-priority` or `blank-priority` flag
 - All properties already set: existing priority, Coach Notes, Landscape, Role emphasis, Keywords, Strategy, Gap handling
+
+**Inline mode (a single ad hoc role, no Notion fetch):** no `queue.md`, no `$PIPE` batching apparatus — intake passes the one role's JD content and any Notion row data directly in the spawn prompt. This is fine at N=1; the file-based pattern above exists for batch-size pressure that doesn't apply here.
+
+**Hard cap: never process more than 5 roles in a single Option 2 invocation.** If `$PIPE/queue.md` contains more than 5 roles, intake's Step 0.7 cap was not applied before you were spawned. Do not attempt the oversized batch — a 25-role batch has previously caused a real production failure: the single generation needed to cover that many roles' worth of Landscape/Keywords/outreach-map research exceeded the model's output-token ceiling and the run crashed after 111 minutes with nothing returned. Stop, return `COACH: queue exceeds 5-role cap (N roles in queue.md) — re-apply Step 0.7 before re-spawning`, and do not write any analysis.
 
 Before generating output for any role, read the existing Notion row properties. If `Role emphasis`, `Strategy`, or `Gap handling` are set, carry them forward and note that you did so. **If `Gap handling` is set, the user may have edited it — treat the Notion value as authoritative.**
 
@@ -211,7 +218,7 @@ Common contradiction types:
 
 ### Output — R-41
 
-Write the full analysis to `$PIPE/coach-output.md` — intake passes `$PIPE` in the spawn prompt. Follow the exact format in `skills/career-coach/coach-output.md`. Then return:
+**Write `$PIPE/coach-output.md` incrementally, one role at a time — append each role's complete section to the file as soon as that role's analysis (research, Parts 0–3, WIWTR questions, contradiction check) is finished, rather than holding all roles in working memory and writing the whole file in one pass at the end.** On Path A use `Write` for the first role's section then `Edit`/append for each subsequent role; on Path B use Desktop Commander `write_file` then append, same R-30 pattern as other `$PIPE/` writes. This matters for two reasons: it keeps any single generation turn to one role's worth of content instead of accumulating toward the model's output-token ceiling across the whole batch, and it leaves a genuinely usable partial file on disk if you are interrupted mid-batch — the roles already appended are complete and gatekeeper-checkable even if a later role in the same run fails. intake passes `$PIPE` in the spawn prompt. Follow the exact per-role format in `skills/career-coach/coach-output.md`. After the last role's section is appended, also append the Priority Queue and Patterns sections, then return:
 
 `COACH: <N> roles analysed → $PIPE/coach-output.md`
 
