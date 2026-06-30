@@ -119,7 +119,7 @@ Report the count to the user: "Found N roles in Hold status." If the count is 0,
 
 **Notion-fetch mode:** before Step 0.5 writes anything, create the run's own scratch directory for intermediate artifacts — `$PIPE/queue.md` (Step 0.5), `$PIPE/coach-output.md` (Step 0.8), gatekeeper violation files (Step 0.8.5), and `$PIPE/writeback-status.md` (Step 0.9a). Unlike the New Application pipeline, where `$PIPE` is one directory per role/company (`<output_dir>/<company_dir>/_pipeline/`), intake processes a **batch** of up to 5 roles in a single run, so `$PIPE` here is run-scoped, not per-company:
 
-- Resolve `output_folder` from `${CAREER_DATA}/references/pipeline-preferences.json` (same resolution order as every other config key, R-37) — this is the required key every pipeline already depends on, even though intake itself writes no deliverables there.
+- Resolve `output_folder` from `${CAREER_DATA}/references/pipeline-preferences.json` (same resolution order as every other config key, R-37) — this is the required key every pipeline already depends on, even though intake itself writes no deliverables there. **Stop only if missing or empty:** "Your career-data config has no `output_folder`. Run `/career-engine:setup --phase 5`." (The orchestrator's preflight already guards this for orchestrator-driven runs; this guard exists for standalone intake invocations, which bypass that preflight per Step −0.5.)
 - Set `$PIPE` = `<output_folder>/_intake_pipeline/<run-timestamp>/` (e.g. `_intake_pipeline/20260630_151047/`) — timestamped so a concurrent or immediately-prior run never collides.
 - On Path A use `mkdir -p`; on Path B create it through the host file tool (R-30).
 
