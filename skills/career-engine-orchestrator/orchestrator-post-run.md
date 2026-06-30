@@ -151,7 +151,7 @@ Run after Step 9 (revision log). For every role completed this run that produced
 
 > "New bullets were written for: **[Company A]**, **[Company B]**, **[Company C]**. Which of these should I add to your approved list? Approved bullets will be reused verbatim in future CVs for the same company. Reply with company names, 'all', or 'none'."
 
-**If the user says 'all' or names specific companies:** For each approved company, append the bullets from the delivered CV into `${CAREER_DATA}/references/02-professional-background.md` under that company's role facts entry, under the heading `**Approved CV bullets:**`. If a bullets section already exists for that company, merge — do not duplicate bullets already present. This writes the personal data layer: in Code, write `${CAREER_DATA}` directly; in Cowork, stage the append to the output folder and emit the Appendix-A handoff (write path, §5.3) — never write a divergent copy.
+**If the user says 'all' or names specific companies:** For each approved company, append the bullets from the delivered CV into `${CAREER_DATA}/references/background/background-role-facts-<company>.md` under the heading `**Approved CV bullets:**`. Use the company name slug from the database record to identify the file (e.g. company "Acme Corp" → `background-role-facts-acme-corp.md`). If a bullets section already exists for that company, merge — do not duplicate bullets already present. This writes the personal data layer: in Code, write `${CAREER_DATA}` directly; in Cowork, stage the append to the output folder and emit the Appendix-A handoff (write path, §5.3) — never write a divergent copy.
 
 **If the user says 'none' or does not respond:** Skip. Bullets remain as candidate status and will be rewritten fresh on the next run.
 

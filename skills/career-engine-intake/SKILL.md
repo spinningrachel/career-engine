@@ -196,9 +196,10 @@ Spawn `career-coach` with the applicable roles. Pass:
 - Full JD data and the complete Notion row properties for each role — **exclude the `JD proof` property value entirely**, even if populated. The coach must derive a fresh verbatim quote from the JD text. Passing the existing `JD proof` value would undermine the anti-fabrication guardrail.
 - `$NOTION_DATABASE_ID` (resolved from career-data config) — for reference only; **intake** performs all Notion writes in Step 0.9a, the coach does not write
 - `${CAREER_DATA}` (the resolved career-data root) — the coach needs this to read references
+- `$PIPE` (the pipeline directory for this run) — the coach writes its full analysis to `$PIPE/coach-output.md` (R-41) and returns a 1-line status; intake reads the file in Step 0.9a
 - The SQLite schema reference from Step 0a (as a "Notion schema reference" section) — the coach uses it to RETURN Select / multi-select values that exactly match the live option list (intake writes them; every returned value must be an existing option)
 
-The coach returns — **intake writes ALL of these in Step 0.9a; the coach does not write Notion:**
+After the coach returns its 1-line status, read `$PIPE/coach-output.md` to obtain the full analysis. The file persists through context compression; inline returns bloat context O(roles). The analysis contains — **intake writes ALL of these in Step 0.9a; the coach does not write Notion:**
 - Priority scores for all roles (Part 0 of the coach's output) — always
 - Batch analysis and per-role writing guidance (Part 1)
 - **Every strategic Notion property (Part 2), each as a named value:** `Priority`, `Priority Reason`, `Role emphasis`, `Role summary`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Culture`, `Landscape`, `Company Stage`, `JD proof`, `JD Body` / `JD Fetch Status` (when fetched), the location-compatibility result (when configured), the job's `Location` (the role's stated location, when the DB has a `Location` property), `First Advertised` / `Date first advertised`, and the research-derived properties (`Hiring Manager's Name`, `Recent news`, `Funding context`, etc.)
@@ -206,12 +207,12 @@ The coach returns — **intake writes ALL of these in Step 0.9a; the coach does 
 - The **outreach map** (intake writes it to the page body in Step 0.9e)
 - Patterns and notes for the user (Part 3)
 
-Hold the coach output in memory. Proceed immediately to Step 0.8.5.
+Proceed immediately to Step 0.8.5.
 
 ## Step 0.8.5 — Coach output check (fabrication + field-fit)
 
 Spawn `gatekeeper` with `option=coach-output`. This gate runs BOTH the fabrication check (traceability) and the **field-fit/format checks** (wrong-field content, length caps, disabled-feature leak) — the latter catch the recurring coach defects the fabrication check structurally cannot. Pass:
-- **The full coach output per role** — not just four properties: `Role emphasis`, `Role summary`, `Culture`, `Keywords`, `Landscape`, `Strategy`, `Gap handling`, the `Why I Want This Role` coach context block, AND the outreach map. The field-fit checks need all of them.
+- **`$PIPE/coach-output.md`** — the gatekeeper reads the full coach analysis from this file. All fields (`Role emphasis`, `Role summary`, `Culture`, `Keywords`, `Landscape`, `Strategy`, `Gap handling`, the `Why I Want This Role` coach context block, and the outreach map) are in this file.
 - **Whether gap handling is disabled this run** (`gap_handling_mode`), so the gatekeeper can run the gap-leak check.
 - `CAREER_DATA=${CAREER_DATA}` — so the gatekeeper reads `01/02/03` from career-data for the fabrication check (rather than relying on its self-locate fallback).
 - `01-writing-rules.md` is already in memory — confirm it is loaded before spawning.
@@ -228,7 +229,7 @@ This step is mechanical and runs end-to-end without pausing.
 
 ### 0.9a — Write coach outputs to Notion (intake is the SOLE writer)
 
-**Intake is the single authoritative writer of every coach-produced property.** The career coach RETURNS its analysis in its output and does NOT write Notion itself (it has no write tool). Intake writes everything below from the coach's returned output — a property the coach produced reaches Notion only here. **This step always runs after the coach** (and after Step 0.8.5); it is never skipped on the assumption the coach already wrote. This is the fix for the past failure where `Role summary` and `Priority Reason` were silently dropped in the gap between two writers.
+**Intake is the single authoritative writer of every coach-produced property.** The career coach WRITES its analysis to `$PIPE/coach-output.md` (R-41) and does NOT write Notion itself (it has no write tool). Intake reads the coach's analysis from `$PIPE/coach-output.md` (Step 0.8) and writes everything below to Notion — a property the coach produced reaches Notion only here. **This step always runs after the coach** (and after Step 0.8.5); it is never skipped on the assumption the coach already wrote. This is the fix for the past failure where `Role summary` and `Priority Reason` were silently dropped in the gap between two writers.
 
 **Rule: write only to empty properties** (the two always-writes — `JD proof` and the `Why I Want This Role` coach context block — are the named exceptions below). For every other property, check the current Notion value first. If already populated — skip it. Do not overwrite any existing value. `N/A` counts as populated.
 
@@ -239,7 +240,7 @@ This step is mechanical and runs end-to-end without pausing.
 Write through the database adapter (`skills/database-notion/SKILL.md` → §4 Writeback): where Path A1 (the `ntn` CLI) is active this run, property writes may go through `ntn api /v1/pages/<page_id> -X PATCH` (same write-only-to-empty rule, same parallelism); otherwise use `notion-update-page`. The property list and write-if-empty rules below are intake's contract; the adapter provides the mechanism (including the never-create-a-property guard). **Validate every Select / multi-select value against the live schema option list from Step 0a before writing** — a value that is not an existing option is reported in the briefing, never sent as a write (an invalid select value errors the call and, in a batch, silently drops the other properties — that was a cause of the past data loss). **Write per property (or in small validated batches) so one rejected property can never drop the others.**
 
 For each role in the processing queue, apply this rule to:
-- `Priority` — write the coach's value (`1`–`6`) only if currently empty. If the role was coach-skipped (already coach-complete per Step 0.8), do not write at all — leave unchanged. In a mixed batch, apply per role individually.
+- `Priority` — **Select field** (not a number field; values are the strings `"1"` through `"6"`). Validate the coach's returned value against the live schema option list before writing. Write only if currently empty. If the role was coach-skipped (already coach-complete per Step 0.8), do not write at all — leave unchanged. In a mixed batch, apply per role individually.
 - `Priority Reason` — write the coach's one-sentence reason if currently empty. Written for every role the coach touches (both triage-exit roles and full-research roles).
 - Location compatibility property (name resolved from `location_compatibility.database_property`, legacy `notion_property`, in `pipeline-preferences.json`) — write if empty and if the property name is configured. Skip entirely if not configured.
 - `Location` (the job's stated location, e.g. "Tel Aviv, Israel / Hybrid") — write if empty, **only if a `Location` property exists in the Step 0a schema** (validate the name against the schema). Skip entirely and note in the briefing if no such property exists. This is the literal job location — **distinct from the location-compatibility property above** (the verdict).
@@ -252,7 +253,7 @@ For each role in the processing queue, apply this rule to:
 - `Gap handling` — write if empty. If gap_handling_mode = disabled, skip entirely.
 - `Why I Want This Role` — **two writes, in order:**
 
-  **Write A — coach context block (always-write):** the block (Priority 1/2/3 + Likely KPIs + optional transfer note) that the coach **returned** in its output. **Intake prepends it** to the field above any existing content (existing content is the normal case and is never a reason to skip — this is an always-write, not write-only-to-empty), keeping `---` as the separator: the block on top, then `---`, then the existing content verbatim (or just the block if the field was empty). If the coach returned no block for a full-research role, report it by name in the briefing.
+  **Write A — coach context block (always-write):** the block (Screen 1/2/3 + optional transfer note) that the coach **returned** in its output. **Intake prepends it** to the field above any existing content (existing content is the normal case and is never a reason to skip — this is an always-write, not write-only-to-empty), keeping `---` as the separator: the block on top, then `---`, then the existing content verbatim (or just the block if the field was empty). If the coach returned no block for a full-research role, report it by name in the briefing.
 
   **Write B — coaching prompts (write-only-to-empty):** the `wiwtr_questions` block the coach returned. Check the **pre-write WIWTR value** from the `notion-fetch` in Step 0b (before this run's writes). If that value was **empty** (the field had no content before intake ran): after writing the coach context block (Write A), also append a second `---` separator and the coaching prompts block. If the pre-write value had **any content** (user notes, a prior coach context block, prior coaching prompts, anything at all): do NOT write the prompts. Existing content of any kind means the user has either written their own motivation or coaching prompts were already added on a prior run — both cases are preserved as-is. Do not write coaching prompts for triage-exit roles (Priority 5–6) — the coach returns none for them.
 

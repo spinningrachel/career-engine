@@ -125,7 +125,7 @@ These use the user's documented experience. Every claim in the strong version tr
 | **Outcomes first** | Lead with action verbs; describe what changed, not what the job involved. |
 | **Proof** | At least one metric or named outcome per bullet where reference files support it. |
 | **Third person** | Write "Led," not "I led." |
-| **No tool names** | No tool or technology name of any kind inside experience bullets — not any tool, not even if named in the JD, not even as an illustrative example. There are no named exceptions to this rule. Tool identity lives in the `## TOOLS` section, not in bullets. Approved Section 7 bullets from `02-professional-background.md` are the only exemption — do not alter them. |
+| **No tool names** | No tool or technology name of any kind inside experience bullets — not any tool, not even if named in the JD, not even as an illustrative example. There are no named exceptions to this rule. Tool identity lives in the `## TOOLS` section, not in bullets. Approved bullets from `background-approved-bullets.md` are the only exemption — do not alter them. |
 | **Verb tally** | No opening verb may appear 3 or more times across all bullets. Tally before returning. |
 | **No repetition** | No phrase may appear verbatim in more than one bullet. |
 
@@ -141,7 +141,7 @@ A tailored CV is not the master CV with keywords swapped in. Tailoring to a targ
 - **De-label the summary toward the target.** If the summary or its positioning carries a label that fights the target role — an explicit "B2B" framing for a consumer role, an IC framing for a leadership role, a vertical the target doesn't share — strip the label and re-anchor on what the target needs. The summary stakes the claim *this* hiring manager must believe (see the Summary section); a positioning label from the user's last role is not automatically that claim. Never invent a label the record doesn't support — remove the mismatched one and lead with the genuine, role-relevant strength.
 - **Prioritised cuts to fit length.** When the document runs over its length or character budget, cut in priority order: role-irrelevant bullets first, then duplicated stats, then the weakest of any overlapping pair, then trim wording. Cut the least role-relevant material first — never shorten by trimming the proof the role most needs.
 
-This pass is about fit and density. It never licenses fabrication, and it never removes an approved Section 7 bullet's documented substance — it selects and consolidates among real, documented material.
+This pass is about fit and density. It never licenses fabrication, and it never removes an approved bullet's documented substance — it selects and consolidates among real, documented material.
 
 ---
 

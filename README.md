@@ -81,6 +81,18 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-06-30 — Coach R-41, career-data v1.5.0 router support, pipeline reliability fixes
+
+**New features**
+- **Coach R-41 output protocol.** The career coach now writes its full analysis to `$PIPE/coach-output.md` (R-41) in intake pipeline mode and returns a single status line. Previously the coach returned its analysis inline, which was vulnerable to context compression during 5-role batch runs — the compression event could occur between the coach return and the Step 0.9a Notion writes, destroying the analysis. File-based output survives compression; the intake skill reads the file in Step 0.8.5 and passes it to the gatekeeper. All other coach options continue to return inline.
+- **career-data v1.5.0 router support.** All plugin agents, skills, and reference files now use the v1.5.0 sub-file paths for `02-professional-background.md` (which is now a router to `background/background-*.md` sub-files) and `03-framework.md` (which routes methodology/POV sections to `framework/framework-*.md` sub-files). The plugin's blank template for `02-professional-background.md` has been converted to a router, and `references/background/` now ships seven blank sub-file templates.
+
+**Bug fixes**
+- **Screen 1/2/3 renamed from Priority 1/2/3.** The coach's priority classification labels were renamed to Screen 1/2/3 to avoid colliding with the Notion `Priority` property during intake writeback.
+- **Priority Select value annotation fixed.** The coach context block in the coach skill now correctly annotates select values with their allowed options so intake can validate before writing.
+- **Likely KPIs removed from coach context block.** The coach no longer writes a `Likely KPIs` field to the coach context block written to WIWTR; the field is not part of the Notion schema and caused writeback errors.
+- **Section references updated throughout.** Stale numbered section references (`§5`, `Section 7`, `§9`, `§10`) in agents and skills have been replaced with the correct `background/` sub-file paths, matching the v1.5.0 career-data structure.
+
 ### 2026-06-29 — Motivation Bank and pipeline reliability
 
 This release introduces the Motivation Bank, restructures the cover letter content model, adds Notion fast-paths for all five pipeline views, and fixes two CAREER_DATA propagation gaps in the revision loops.
@@ -134,7 +146,7 @@ Two changes to `career-data` are required before the cover letter pipeline runs 
 - **CV path fixed for `--now` mode.** The fast-track path now passes an explicit no-CV instruction to the gatekeeper instead of referencing a file that does not exist in that mode.
 - **Changelog rules.** Format (`### YYYY-MM-DD — <label>`, newest-first, never-remove) is now documented in CLAUDE.md and checked by the QA agent on every run.
 
-### 2026-06-23
+### 2026-06-23 — Documentation and marketplace install support
 
 - **Documentation moved to the Wiki.** The README is now a quick start; full docs live in the [Wiki](https://github.com/spinningrachel/career-engine/wiki).
 - **Marketplace install support.** The plugin is now installable as a Claude Code marketplace. Add it with `/plugin marketplace add spinningrachel/career-engine`, then `/plugin install career-engine@cheyfitz`. Direct `.plugin` download still works for manual installs.

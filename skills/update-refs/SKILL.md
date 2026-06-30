@@ -44,11 +44,11 @@ Classify every shared item against this map. Multiple items in one document are 
 
 | Content type | Destination | Operation notes |
 |---|---|---|
-| Role facts — companies, dates, titles, teams, metrics, deliverables | `references/02-professional-background.md` §7 (Role Facts) | **Approved CV bullets in §7 are protected** — see Protected Content below |
-| CV summaries | `02-professional-background.md` §6 | Tag with domain and validation status |
-| Testimonials and recommendations | `02-professional-background.md` §9 | Include name, title, company, relationship |
-| Portfolio and work samples | `02-professional-background.md` §10 | Include links |
-| Motivation themes, standing answers, voice phrasings | `02-professional-background.md` §5 (Motivation Bank) | Append-only — same discipline as the Step 7f promotion |
+| Role facts — companies, dates, titles, teams, metrics, deliverables | `background/background-role-facts-<company>.md` (one file per company, loaded via router in `02-professional-background.md`) | **Approved CV bullets are protected** — see Protected Content below |
+| CV summaries | `background/background-cv-summaries.md` | Tag with domain and validation status |
+| Testimonials and recommendations | `background/background-testimonials.md` | Include name, title, company, relationship |
+| Portfolio and work samples | `background/background-portfolio.md` | Include links |
+| Motivation themes, standing answers, voice phrasings | `background/background-motivation-bank.md` | Append-only — same discipline as the Step 7f promotion |
 | Rules, constraints, attribution and framing requirements, contact details | `references/01-writing-rules.md` | Rules changes affect every agent — confirm the intent explicitly |
 | Positioning, voice profile, methodology, messaging, taglines, goals, ICP, career-shift posture, employment status | `references/03-framework.md` | **The primary source of truth about the user — see Framework Updates below.** Changes here alter agent behavior everywhere; every proposal must name the behavioral consequence, not just the text change. |
 | Sent cover letters for voice calibration | `references/delivered-letters/` | **Do not write directly** — route through letter-writer Option 3 (Manage Letter Examples; cap 6) |

@@ -41,7 +41,7 @@ IC vs. team lead, reporting chain if findable, what the key JD phrases mean for 
 **6. Fit/gap for the user**
 Draw ONLY from `02-professional-background.md` (Role Facts) and `03-framework.md` §Domain depth (per-vertical narratives). These are the only authoritative sources. Do not infer, extrapolate, or invent.
 
-- **Strongest credential:** The single most relevant, specific thing the user has done that maps to what this role needs. Must name a real company from Section 7 and a documented outcome. If you cannot find a direct credential in Section 7 or `03-framework.md` §Domain depth, write "No direct credential documented for this requirement" — never invent one.
+- **Strongest credential:** The single most relevant, specific thing the user has done that maps to what this role needs. Must name a real company from the relevant `background-role-facts-*.md` file and a documented outcome. If you cannot find a direct credential in the role-facts files or `03-framework.md` §Domain depth, write "No direct credential documented for this requirement" — never invent one.
 - **Gap to prep:** One honest, specific gap or angle to prepare for, traceable to what the JD requires vs. what is documented. If there is a hard disqualifier (e.g., US residency required, domain not documented in `03-framework.md` §Domain depth), flag it clearly.
 
 **Anti-fabrication rule:** If the strongest credential you can name is not traceable to a named company and documented outcome in `02-professional-background.md` (Role Facts), do not write it. This rule is absolute.

@@ -39,7 +39,7 @@ Load all of these before doing anything else.
 | File | What it contains |
 |---|---|
 | `references/01-writing-rules.md` | Rules and configuration. Section 1: fabrication rule — read first. If this file contradicts anything you believe about the user, the file is correct. |
-| `references/02-professional-background.md` | Approved career content. Role facts and approved CV bullets (Section 7). Approved CV summaries by domain (Section 6). Testimonials — use for fractional/consulting roles (Section 9). Portfolio — use when demonstrated output strengthens the case (Section 10). |
+| `references/02-professional-background.md` | **Router — load first.** Follow its routing table to the `background/` sub-files you need: `background-approved-bullets.md` for approved CV bullets; the relevant `background-role-facts-*.md` file(s) for role facts and "What she built" evidence; `background-cv-summaries.md` for approved CV summaries; `background-testimonials.md` for fractional/consulting roles; `background-portfolio.md` when demonstrated output strengthens the case. |
 | `skills/cv-writing/SKILL.md` | ATS rules, action verb library, forbidden phrases, bullet writing formula. CV-specific voice rules are tagged [CV] in shared-voice-rules.md §2 — that file is the primary prohibition layer; this skill contains CV-specific deltas only. |
 | `references/shared-voice-rules.md` | Cross-surface voice prohibitions: em-dash ban (§1), banned vocabulary including CV-specific terms tagged [CV] (§2), named phrase bans (§3), structural anti-patterns — antithesis, tricolons, passive voice (§4–5), idiom prohibition (§6). Load alongside cv-writing/SKILL.md. |
 | `skills/career-engine-export/SKILL.md` | **Pandoc custom-style annotation reference — required for output.** Contains every annotation you must use: RoleTitle, RoleOverview, RoleActivitiesList, RoleActivitySingle, SkillsHeading, Skills, BlueFont, Salutation, Signature Char. Read the full "CV — custom-style annotation reference" section and apply every annotation exactly as shown. Output without these annotations produces an unstyled DOCX. |
@@ -56,11 +56,11 @@ These rules apply to every mode without exception. Read them before writing anyt
 ### The Fabrication Rule
 
 
-**The fabrication rule** is defined once and authoritatively in `01-writing-rules.md` Section 1. When in doubt: if a claim cannot be traced to documented facts in `02-professional-background.md` (Role Facts), it does not exist.
+**The fabrication rule** is defined once and authoritatively in `01-writing-rules.md` Section 1. When in doubt: if a claim cannot be traced to documented facts in the `background-role-facts-*.md` sub-files (loaded via `02-professional-background.md`), it does not exist.
 
 **Consulting/fractional scope — enforce on every draft.** Consulting or fractional client work listed in `02-professional-background.md` must be described at the correct scope. The correct verb pattern and prohibited overclaim patterns are defined in `01-writing-rules.md` Section 1 — read and apply them. This is the most common fabrication error and must be caught at draft stage.
 
-**Cover letter context blocks are NOT bullet sources.** Some roles in `02-professional-background.md` may contain cover letter context blocks labeled "cover letter context only." Do NOT synthesize, paraphrase, or adapt CV bullets from those blocks. They exist to inform letter framing — not to supply CV content. All CV content for a given role must come from the role facts and approved bullets in `02-professional-background.md` (Role Facts) only.
+**Cover letter context blocks are NOT bullet sources.** Some roles in `02-professional-background.md` may contain cover letter context blocks labeled "cover letter context only." Do NOT synthesize, paraphrase, or adapt CV bullets from those blocks. They exist to inform letter framing — not to supply CV content. All CV content for a given role must come from the role facts and approved bullets in the `background-role-facts-*.md` and `background-approved-bullets.md` sub-files only.
 
 ### Section Scope — what cv-writer produces and does not produce
 
@@ -88,7 +88,7 @@ These sections are already inside the user's Word template and formatted exactly
 
 **Template + guidance**
 - The summary is a positioning statement. A positioning statement **claims a capability**, it does not narrate an instance. Every word earns its place or it doesn't belong.
-- Check `02-professional-background.md` (Approved CV Summaries) for approved summaries by domain before writing from scratch — adapt rather than start cold.
+- Check `background-cv-summaries.md` (from the router in `02-professional-background.md`) for approved summaries by domain before writing from scratch — adapt rather than start cold.
 - Template: `[Seniority + Function label] with [X] years building [Domain/s]. [Capability statement — what she builds or delivers, stated as a pattern]. [Second capability or scope claim]. [Target role or forward-looking close].`
 - Verb in slot 1 and capability statement reflect Role Type: Builder/Leader → "building", "founding"; Scaler → "scaling", "leading"; Specialist → "owning", "delivering"
 
@@ -120,7 +120,7 @@ What moved from the summary to bullets: the specific headcounts as absolutes, th
 
 ### Experience Rules
 
-**Ordering:** `## EXPERIENCE` contains full-time employment only, in strict reverse chronological order. Consulting/fractional practices do not appear here. Correct ordering and dates are in `02-professional-background.md` (Role Facts).
+**Ordering:** `## EXPERIENCE` contains full-time employment only, in strict reverse chronological order. Consulting/fractional practices do not appear here. Correct ordering and dates are in the relevant `background-role-facts-*.md` file (loaded via `02-professional-background.md`).
 
 **Standalone consulting entries must always appear.** Any consulting engagement listed in `02-professional-background.md` (Role Facts) as requiring a standalone entry must appear — either as a standalone entry in `## CONSULTING` (preferred — use the approved standalone entries from `02-professional-background.md`) or folded into the main consulting section entry. Never omit an entry flagged as mandatory in the background file.
 
@@ -132,15 +132,15 @@ What moved from the summary to bullets: the specific headcounts as absolutes, th
 
 For each key requirement the JD emphasizes, ask: "What is the strongest bullet the user has that addresses this?" Then:
 
-**Step 1 — Check approved bullets.** Read the approved bullets in `02-professional-background.md` (Role Facts) for that company. If one maps directly and strongly to the JD requirement, use it — verbatim if it's an excellent match, adapted if it needs tailoring for this specific role.
+**Step 1 — Check approved bullets.** Read `background-approved-bullets.md` for that company. If one maps directly and strongly to the JD requirement, use it — verbatim if it's an excellent match, adapted if it needs tailoring for this specific role.
 
-**Step 2 — Write from Section 7 facts when approved bullets don't fit.** If no approved bullet maps well to a JD requirement, write a fresh bullet from the "What she built" facts and documented outcomes in Section 7. A JD requirement with no approved-bullet match is not something to skip — it's something to address with fresh writing. Approved bullets are the quality floor, not the ceiling.
+**Step 2 — Write from the role-facts file when approved bullets don't fit.** If no approved bullet maps well to a JD requirement, write a fresh bullet from the "What she built" facts and documented outcomes in the relevant `background-role-facts-*.md` file (already loaded via the router). A JD requirement with no approved-bullet match is not something to skip — it's something to address with fresh writing. Approved bullets are the quality floor, not the ceiling.
 
 **Step 3 — Do not pad with irrelevant approved bullets.** Every bullet must earn its place against the specific JD. An approved bullet that doesn't address a JD requirement is a wasted line — do not include it just because it exists.
 
 **Approved bullets are gatekeeper-exempt for content checks.** The gatekeeper skips content checks for bullets matching a `02-professional-background.md` approved bullet exactly. Do not alter approved bullets — doing so defeats the exemption and risks introducing errors into pre-validated content. Freshly written bullets are not exempt and will be checked.
 
-All claims in all bullets — approved or freshly written — must trace to documented facts in `02-professional-background.md` (Role Facts). The fabrication rule is absolute.
+All claims in all bullets — approved or freshly written — must trace to documented facts in the role-facts sub-files (`background-role-facts-*.md`). The fabrication rule is absolute.
 
 See `skills/cv-writing/SKILL.md` for bullet rules (outcomes first, proof, third person, no tool names, verb tally, no repetition).
 

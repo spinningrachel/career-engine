@@ -505,7 +505,7 @@ To find `career-data`: locate the directory containing `career-data-marker.json`
 
 If you are in Claude Code, you can also find it at `~/.claude/skills/career-data/` if a Code-side copy exists. **Important:** if the user runs both Chat and Code (or Cowork), they must apply this update twice — once in Chat and once in Code — because each environment maintains its own copy.
 
-The file to update is: `references/02-professional-background.md`
+The file to update is: `references/background/background-motivation-bank.md`
 
 Read that file in full before making any changes. Make only the additions described below. Do not rewrite, reorganise, or delete anything else in the file.
 
@@ -513,7 +513,7 @@ After updating the file, repackage the `career-data` directory as a `.skill` zip
 
 ## What to add
 
-**Target location:** `Section 5 — Motivation Bank` — the `| Tags | Motivation |` table. Append new rows to it. There is **no** "Promoted from Why I Want This Role" subsection — promoted content is simply new rows in this table.
+**Target location:** The `| Tags | Motivation |` table. Append new rows to it. There is **no** "Promoted from Why I Want This Role" subsection — promoted content is simply new rows in this table.
 
 **Source content** (from Why I Want This Role — [Company], [Role Title], [YYYY-MM-DD]):
 > [INSERT THE USER'S WHY I WANT THIS ROLE CONTENT HERE — VERBATIM, EXACTLY AS SHE WROTE IT. Do NOT correct grammar or spelling, do NOT polish, do NOT paraphrase. Scrappy English is fine and preferred over a cleaned-up version; the user fixes her own wording inside this prompt before sending if she wants.]
@@ -524,26 +524,27 @@ After updating the file, repackage the `career-data` directory as a `.skill` zip
 - **Verbatim, raw.** The Motivation cell is the user's exact words — never paraphrased, polished, or grammar-"fixed" by the agent. Quote what she wrote. The user may correct her own wording in this prompt before sending; the agent never does.
 - **Entry format — append a new table row:** `| [suggested tags] | "[verbatim quote]" *(Why I Want This Role — [Company], [YYYY-MM-DD])* |`. Suggest the **tags** (comma-separated: where/when this applies in a cover letter — persona, theme, vertical, opener-vs-body, audience); the user can adjust them. The Motivation text stays raw verbatim regardless of the tags.
 - Append-only. Never rewrite, merge, reorder, or delete existing rows; never change the table's column layout.
-- If the content contains a new durable career fact (outcome, metric, deliverable, role detail) that belongs in Section 7 (Role Facts), do NOT write it there — Section 7 requires the user's explicit approval. Flag it instead: "New role fact found: '[quote]' — add to §7 if accurate."
+- If the content contains a new durable career fact (outcome, metric, deliverable, role detail) that belongs in the role-facts file for this company, do NOT write it there — it requires the user's explicit approval. Flag it instead: "New role fact found: '[quote]' — add to `background-role-facts-<company>.md` if accurate."
 - If there is nothing new to add, say so explicitly: "No new content to promote from this entry."
 ```
 
-**After the §5 promotion section, append a WIWTR-UNLOGGED section if applicable:** Collect every item the gatekeeper flagged as `[WIWTR-UNLOGGED]` during this run (from Steps 5.2, 5.3, and 5.95 violation reports). For each item, append to the update-prompt file:
+**After the Motivation Bank promotion section, append a WIWTR-UNLOGGED section if applicable:** Collect every item the gatekeeper flagged as `[WIWTR-UNLOGGED]` during this run (from Steps 5.2, 5.3, and 5.95 violation reports). For each item, append to the update-prompt file:
 
 ```
 ## Role facts needing verification (WIWTR-UNLOGGED — from [Company] [Run Date])
 
 The following claims appeared in your Why I Want This Role and were used in the letter,
-but are not yet documented in `02-professional-background.md`. They are NOT fabrications —
+but are not yet documented in your role-facts files. They are NOT fabrications —
 they are your own first-person record. To make them available to future pipeline runs
-without re-triggering this advisory, add them to Section 7 (Role Facts) for the relevant
-role, pending your verification that the facts are accurate.
+without re-triggering this advisory, add them to `background-role-facts-[company].md`
+for the relevant role, pending your verification that the facts are accurate.
 
-For each item below: if accurate, add it as a role fact to §7 under the relevant employer.
-If not accurate, remove it from your Why I Want This Role before the next run.
+For each item below: if accurate, add it as a role fact to the relevant
+`background-role-facts-[company].md` file. If not accurate, remove it from your
+Why I Want This Role before the next run.
 
 [For each WIWTR-UNLOGGED item, one line:]
-- **[Employer]** — "[verbatim claim from WIWTR]" *(flagged in [step] — not in 02-professional-background.md)*
+- **[Employer]** — "[verbatim claim from WIWTR]" *(flagged in [step] — not in background-role-facts-[company].md)*
 ```
 
 If no [WIWTR-UNLOGGED] items were found, omit this section entirely.

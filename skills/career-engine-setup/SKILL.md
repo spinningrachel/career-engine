@@ -347,9 +347,9 @@ Ask about these specifically if they haven't come up naturally:
 
 **Update `03-framework.md`:** Apply all interview answers to the relevant sections. Remove all `[REVIEW]` and `[DRAFT]` markers from sections that are now fully confirmed.
 
-**Populate `02-professional-background.md`:**
+**Populate `02-professional-background.md` sub-files:**
 
-For each role confirmed in the interview, write into Section 7:
+For each role confirmed in the interview, create or update `background/background-role-facts-<company>.md` (copy from the `background-role-facts-COMPANY1.md` template, rename to the company slug):
 ```
 ### [Company] ([dates])
 - Title: [answer]
@@ -364,8 +364,8 @@ Approved CV bullets:
 
 **Important:** Do not populate approved bullets from the user's old CV. Old CV bullet language is raw material, not approved language. The approved bullets section starts empty for every company and fills in as the user runs the pipeline and locks bullets they're happy with.
 
-Populate Section 10 (portfolio) from any portfolio materials submitted.
-Populate Section 9 (testimonials) from LinkedIn recommendations or peer feedback confirmed in the interview.
+Populate `background/background-portfolio.md` from any portfolio materials submitted.
+Populate `background/background-testimonials.md` from LinkedIn recommendations or peer feedback confirmed in the interview.
 
 **Update `01-writing-rules.md`:**
 
@@ -375,7 +375,7 @@ Write attribution rules into Section 1 for any outcomes confirmed as company-lev
 
 ### Phase 4 — Motivation Bank seeding
 
-**Do this after the framework/posture interview, while the user is still in a reflective frame — it is the single highest-leverage thing in all of setup.** The Motivation Bank (`02-professional-background.md` → Section 5) holds the user's standing motivations and reactions in their **own verbatim words**, tagged for retrieval. It is the **letter-writer's primary content and voice source** — the writer loads it first, ahead of any constructed alternative. The richer it is, the better every cover letter, and the *less* per-role `Why I Want This Role` the user has to write over time. A well-seeded bank means future runs reuse standing motivation instead of demanding fresh input each time — eventually the user writes almost no per-role motivation at all.
+**Do this after the framework/posture interview, while the user is still in a reflective frame — it is the single highest-leverage thing in all of setup.** The Motivation Bank (`background/background-motivation-bank.md`) holds the user's standing motivations and reactions in their **own verbatim words**, tagged for retrieval. It is the **letter-writer's primary content and voice source** — the writer loads it first, ahead of any constructed alternative. The richer it is, the better every cover letter, and the *less* per-role `Why I Want This Role` the user has to write over time. A well-seeded bank means future runs reuse standing motivation instead of demanding fresh input each time — eventually the user writes almost no per-role motivation at all.
 
 So setup must actively coach this — not just mention it.
 
@@ -399,12 +399,12 @@ Say: "These are the topics worth seeding first — each one deserves an honest, 
 
 > "Take your time with these. Put real effort in. Write honestly and specifically, in your own voice — scrappy, imperfect English is not just fine, it's *better* than polished. Real beats smooth every time. The quality of these answers directly becomes the quality of your letters: vague entries produce vague letters; specific, felt entries produce letters that sound like you and land. This is not a box to tick fast — it's the highest-leverage writing you'll do in this whole setup."
 
-**4. Hand the user the OPENING of a career-data update prompt.** Generate it now in the canonical update-prompt format (`career-engine/references/career-data-update-prompt-format.md`) — same Chat/Code path as every other career-data edit. It targets `02-professional-background.md` → Section 5 — Motivation Bank and **appends rows** to the `| Tags | Motivation |` table (append-only; never rewrite, reorder, or delete existing rows; never change the two-column layout). Pre-seed one row per suggested tag (and any the user added) with the **Tags** cell filled and the **Motivation** cell left as a fill-in slot. Make clear the user types their verbatim answers into the Motivation cells **before** sending the prompt to Chat (or applying it in Code). Substitute the user's chosen/adapted tags; keep the table's existing seed row intact (append below it).
+**4. Hand the user the OPENING of a career-data update prompt.** Generate it now in the canonical update-prompt format (`career-engine/references/career-data-update-prompt-format.md`) — same Chat/Code path as every other career-data edit. It targets `background/background-motivation-bank.md` and **appends rows** to the `| Tags | Motivation |` table (append-only; never rewrite, reorder, or delete existing rows; never change the two-column layout). Pre-seed one row per suggested tag (and any the user added) with the **Tags** cell filled and the **Motivation** cell left as a fill-in slot. Make clear the user types their verbatim answers into the Motivation cells **before** sending the prompt to Chat (or applying it in Code). Substitute the user's chosen/adapted tags; keep the table's existing seed row intact (append below it).
 
 Present it as one copyable block, led by the four-step Phase 0 visual in Cowork (or written directly in Code):
 
 ```
-career-data update prompt — 02-professional-background.md Section 5 — seed Motivation Bank
+career-data update prompt — background/background-motivation-bank.md — seed Motivation Bank
 Generated: <YYYY-MM-DD> | Apply in: Chat AND Code (if using both)
 
 Context (fixed — do not change this block)
@@ -426,11 +426,11 @@ After making the edit below:
 ⚠️ Do NOT paraphrase the new text. Copy it exactly as written below.
 
 The fix
-File: `references/02-professional-background.md`
-In Section 5 — Motivation Bank, APPEND the rows below to the existing `| Tags | Motivation |`
-table. Do not rewrite, reorder, merge, or delete any existing row, and do not change the
-two-column layout. Each Motivation cell holds my exact words — correct grammar and spelling
-only; never rephrase, paraphrase, summarize, or "clean up."
+File: `references/background/background-motivation-bank.md`
+APPEND the rows below to the existing `| Tags | Motivation |` table. Do not rewrite,
+reorder, merge, or delete any existing row, and do not change the two-column layout.
+Each Motivation cell holds my exact words — correct grammar and spelling only; never
+rephrase, paraphrase, summarize, or "clean up."
 
 Append these rows:
 | core identity, the problem you exist to solve | <I fill this in, in my own words> |
@@ -446,14 +446,14 @@ source — so every future cover letter draws from my own honest, verbatim motiv
 
 Verification
 After applying, confirm:
-* Section 5's table still has exactly two columns: `| Tags | Motivation |`
+* The table still has exactly two columns: `| Tags | Motivation |`
 * The original seed row is untouched and my new rows were appended below it
 * No other files were modified
 ```
 
 Tell the user: "Fill in each Motivation cell in your own words — take your time — then this goes to Chat (or Code) the same way as the rest of your career-data, via the Build & install handoff at the end. You can also append to your Motivation Bank any time later with 'update my references'."
 
-**Format discipline (state it once):** the Motivation Bank is a fixed two-column `| Tags | Motivation |` table, verbatim and append-only — the user's exact words, grammar/spelling corrected only, new rows appended, never the layout changed. This mirrors the Section 5 structure contract in `02-professional-background.md`; do not deviate from it here.
+**Format discipline (state it once):** the Motivation Bank is a fixed two-column `| Tags | Motivation |` table, verbatim and append-only — the user's exact words, grammar/spelling corrected only, new rows appended, never the layout changed. This mirrors the structure contract in `background/background-motivation-bank.md`; do not deviate from it here.
 
 Confirm: "Your positioning framework, career background, candidate rules, and Motivation Bank seed are now configured. Let's set up your job tracking and output folder."
 
@@ -867,7 +867,7 @@ For roles where you already have a CV and/or letter and want targeted revisions.
 
 ### Why I Want This Role and the Motivation Bank — what "good" looks like
 
-`Why I Want This Role` is your **role-specific** motivation for a given role; the **Motivation Bank** (`02-professional-background.md` → `Section 5`, seeded during setup) is your **standing** motivation, reused across roles. Both are the same kind of content — your own words — and the same "good" standard applies to both. The letter-writer's *primary* source is the Motivation Bank; `Why I Want This Role` adds role-specific motivation on top when you provide it. The richer your Motivation Bank, the less often you'll need to write `Why I Want This Role` at all. The opener is the most important paragraph in the letter — it is what makes a letter yours rather than a template. The agent cannot invent your motivation, your specific reaction, or your angle on a company. If it does, that is fabrication.
+`Why I Want This Role` is your **role-specific** motivation for a given role; the **Motivation Bank** (`background/background-motivation-bank.md`, seeded during setup) is your **standing** motivation, reused across roles. Both are the same kind of content — your own words — and the same "good" standard applies to both. The letter-writer's *primary* source is the Motivation Bank; `Why I Want This Role` adds role-specific motivation on top when you provide it. The richer your Motivation Bank, the less often you'll need to write `Why I Want This Role` at all. The opener is the most important paragraph in the letter — it is what makes a letter yours rather than a template. The agent cannot invent your motivation, your specific reaction, or your angle on a company. If it does, that is fabrication.
 
 **Good:** Specific. Your actual reaction when you read the JD. What you noticed, what excited you, what connected to something you've done or want to do. A few sentences is enough. Examples of what works:
 - "The thing that grabbed me was that they're building agentic SecOps — I spent two years marketing exactly this layer and I've been watching this space evolve. I want to be the person building the story for the next platform."

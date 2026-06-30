@@ -434,16 +434,17 @@ Write a file named `update-prompt-<company>-<monYYYY>.md` into the role's compan
 ## Role facts needing verification (WIWTR-UNLOGGED — from [Company] [Run Date])
 
 The following claims appeared in your Why I Want This Role and were used in the letter,
-but are not yet documented in `02-professional-background.md`. They are NOT fabrications —
+but are not yet documented in your role-facts files. They are NOT fabrications —
 they are your own first-person record. To make them available to future pipeline runs
-without re-triggering this advisory, add them to Section 7 (Role Facts) for the relevant
-role, pending your verification that the facts are accurate.
+without re-triggering this advisory, add them to `background-role-facts-[company].md`
+for the relevant role, pending your verification that the facts are accurate.
 
-For each item below: if accurate, add it as a role fact to §7 under the relevant employer.
-If not accurate, remove it from your Why I Want This Role before the next run.
+For each item below: if accurate, add it as a role fact to the relevant
+`background-role-facts-[company].md` file. If not accurate, remove it from your
+Why I Want This Role before the next run.
 
 [For each WIWTR-UNLOGGED item, one line:]
-- **[Employer]** — "[verbatim claim from WIWTR]" *(flagged in [step] — not in 02-professional-background.md)*
+- **[Employer]** — "[verbatim claim from WIWTR]" *(flagged in [step] — not in background-role-facts-[company].md)*
 ```
 
 If no [WIWTR-UNLOGGED] items were found in this run, omit Section 2 entirely.

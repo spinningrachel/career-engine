@@ -17,7 +17,7 @@ If a requested edit would rename, renumber, reorder, or delete any heading or fi
 ## Canonical files (never rename or remove; all integrity-checked in `career-data-marker.json`)
 
 - `references/01-writing-rules.md`
-- `references/02-professional-background.md`
+- `references/02-professional-background.md` (router) + `references/background/background-motivation-bank.md`, `background-cv-summaries.md`, `background-approved-bullets.md`, `background-role-facts-*.md` (one per company), `background-testimonials.md`, `background-portfolio.md`, `background-cross-cutting-skills.md`
 - `references/03-framework.md`
 - `references/linkedin-profile.md`
 - `references/job-preferences.md`
@@ -41,19 +41,23 @@ Add content and subsections within them; never change the headings themselves. S
 - `## Section 5 — Voice and Source Material`
 - `## Section 8 — Reference Details`
 
-**02-professional-background.md**
-- `## Section 6 — Approved CV Summaries`
-- `## Section 7 — Role Facts` (per-company `### Company (dates)` entries — add new roles as new subsections)
-- `## Section 9 — Testimonials`
-- `## Section 10 — Portfolio and Work Samples`
-- `## Section 5 — Motivation Bank` (format spec below — load-bearing)
+**02-professional-background.md** (v1.5.0+: router to `background/` sub-files)
 
-**03-framework.md** (top-level `#` sections)
+This file is now a router — all content lives in `references/background/background-*.md` sub-files. The router contains a routing table; load the sub-file that matches your task. Sub-files are load-bearing by filename — never rename or remove them:
+- `background-motivation-bank.md` — the Motivation Bank (`| Tags | Motivation |` table — format spec below)
+- `background-cv-summaries.md` — approved CV summaries by domain
+- `background-approved-bullets.md` — approved CV bullets
+- `background-role-facts-*.md` — per-company role facts (one file per company/role group)
+- `background-testimonials.md` — testimonials
+- `background-portfolio.md` — portfolio and work samples
+- `background-cross-cutting-skills.md` — cross-cutting skills
+
+**03-framework.md** (top-level `#` sections — inline except where noted)
 - `# Category and market frame`
 - `# Voice and tone` → `## Voice fingerprint (quantitative)` and `## Voice samples` (the letter-writer calibrates voice against these — never rename or drop them)
 - `# Core positioning statement`
 - `# Value pillars`
-- `# Professional methodology and POV`
+- `# Professional methodology and POV` → routes to `references/framework/framework-*.md` sub-files (PLG, GTM, research/docs, growth/B2C, leadership/AI, experience/POV) — never rename or remove them
 - `# Proof points bank`
 - `# Ideal target opportunities (ICP)`
 - `# Career-shift posture`

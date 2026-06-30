@@ -4,6 +4,16 @@ Load this file when you are ready to format and return your analysis. It covers 
 
 ---
 
+## Output Protocol — Intake Pipeline (R-41)
+
+**When spawned by intake (Option 2) with a `$PIPE` path:** write the full analysis to `$PIPE/coach-output.md` and return this single line only:
+
+`COACH: <N> roles analysed → $PIPE/coach-output.md`
+
+Do not return the analysis inline — the file persists through context compression; inline returns do not. For all other options (1, 3, 4, 5, 6) where no `$PIPE` path is provided, return the analysis inline per the Output Format below.
+
+---
+
 ## Output Format
 
 Return findings in this exact structure for every role received.
@@ -152,22 +162,20 @@ Rules:
 Format of the block:
 ```
 **Coach context**
-Priority 1: [what the HM is actually hiring for — direct, specific noun phrase, 20 words max]
-Priority 2: [second screening criterion]
-Priority 3: [third screening criterion]
-Likely KPIs: [the metric set this role is actually measured on — adoption/usage/retention vs. pipeline/ACV/win-rate, etc.; inferred from scope + GTM model when the JD names none; framing input, never a commitment]
-[If function shift, step-down, or operating-model transition: ONE line, ≤25 words, naming only the credibility-of-transfer argument (the target-model KPIs are already on the Likely KPIs line above; do not repeat them). A confirm-first note, if any, is a separate ≤10-word line. **When `GAP_HANDLING = disabled`, this is an affirmative transfer claim only — never a gap inventory or "the X real gaps" cataloging.**]
-[GTM lens answers if material: why you / why them / why now — one tight line each, only if they add something not in the priorities]
+Screen 1: [what the HM is actually hiring for — direct, specific noun phrase, 20 words max]
+Screen 2: [second screening criterion]
+Screen 3: [third screening criterion]
+[If function shift, step-down, or operating-model transition: ONE line, ≤25 words, naming only the credibility-of-transfer argument. A confirm-first note, if any, is a separate ≤10-word line. **When `GAP_HANDLING = disabled`, this is an affirmative transfer claim only — never a gap inventory or "the X real gaps" cataloging.**]
+[GTM lens answers if material: why you / why them / why now — one tight line each, only if they add something not in the criteria]
 
 ---
 ```
 
 Rules:
-- Each priority is a noun phrase, not a sentence. Name the capability or signal precisely. "PLG execution credibility — activation frameworks, PQL design, in-product lifecycle" is correct. "Someone who can drive growth through product-led strategies" is not. **Hard cap: 20 words per priority — enforce it.**
-- **Whole-block cap.** Total: the Letter type line + 3 priorities + the one-line Likely KPIs + at most the one-line transfer note + optional GTM-lens line. If the block runs past ~8 short lines, you have over-written it — cut back to the caps above. The transfer note in particular is ONE line, never a paragraph.
-- No candidate credential names, no company names from her background in the priorities — writers read her background separately.
-- The GTM lens lines (why you / why them / why now) are optional; include only when they add material framing beyond the priorities themselves.
-- The `Likely KPIs` line is always included — one line, even when the JD names no targets (infer from scope + GTM model). It is framing input only; never phrase it as a target the user commits to hit.
+- Each screen criterion is a noun phrase, not a sentence. Name the capability or signal precisely. "PLG execution credibility — activation frameworks, PQL design, in-product lifecycle" is correct. "Someone who can drive growth through product-led strategies" is not. **Hard cap: 20 words per criterion — enforce it.**
+- **Whole-block cap.** Total: 3 screen criteria + at most the one-line transfer note + optional GTM-lens lines. If the block runs past ~6 short lines, you have over-written it — cut back to the caps above. The transfer note in particular is ONE line, never a paragraph.
+- No candidate credential names, no company names from her background in the criteria — writers read her background separately.
+- The GTM lens lines (why you / why them / why now) are optional; include only when they add material framing beyond the criteria themselves.
 - Intake's placement: if the field already has content, the block goes above it with `---` as the separator and the existing content verbatim below; if empty, just the block (no separator). You return the block; intake handles placement.
 - This block is returned for Option 2 (intake pipeline) only. Never produce a `Why I Want This Role` block for Options 1, 3, 4, 5, or 6 (those have no Notion writeback).
 
