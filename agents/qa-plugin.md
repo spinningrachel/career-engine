@@ -378,9 +378,9 @@ grep -c "Path B" <location>/skills/database-notion/SKILL.md
 grep -c "misaligned rendered table" <location>/skills/database-notion/SKILL.md
 # Every consumer delegates to the adapter (each must be >= 1)
 grep -c "database-notion" <location>/skills/career-engine-intake/SKILL.md
-grep -c "database-notion" <location>/skills/career-engine-orchestrator/SKILL.md
+grep -c "database-notion" <location>/skills/career-engine-orchestrator/orchestrator-queue.md
 grep -c "database-notion" <location>/skills/career-engine-edit/SKILL.md
-grep -c "database-notion" <location>/skills/career-coach/SKILL.md
+grep -c "database-notion" <location>/skills/career-coach/coach-analysis.md
 grep -c "database-notion" <location>/skills/source-open-roles/SKILL.md
 grep -c "database-notion" <location>/agents/mind-dump.md
 grep -c "database-notion" <location>/agents/content-orchestrator.md
@@ -394,10 +394,10 @@ grep -c "command -v ntn" <location>/skills/career-engine-orchestrator/SKILL.md
 
 ### Check 21b — Pipeline command authority present in orchestrator (R-24)
 
-In `skills/career-engine-orchestrator/SKILL.md`: verify the Absolute Constraints contain the command-authority rule.
+In `skills/career-engine-orchestrator/orchestrator-queue.md`: verify the Absolute Constraints contain the command-authority rule. (Content moved from root `SKILL.md` to `orchestrator-queue.md` in the 2026-06-30 split refactor.)
 
 ```bash
-grep -c "routing authority" <location>/skills/career-engine-orchestrator/SKILL.md
+grep -c "routing authority" <location>/skills/career-engine-orchestrator/orchestrator-queue.md
 ```
 
 **FAIL condition:** string not found.
@@ -482,10 +482,10 @@ test -f <location>/references/pipeline-preferences.json && echo 1 || echo 0
 The output-path verification must offer Path A (direct filesystem) and Path B (host-bridge MCP) instead of a sandbox-Bash-only hard stop, and the retired no-fallback absolute must not reappear.
 
 ```bash
-grep -c "Path B — host-bridge MCP" <location>/skills/career-engine-orchestrator/SKILL.md   # must be 1
+grep -c "Path B — host-bridge MCP" <location>/skills/career-engine-orchestrator/orchestrator-queue.md   # must be 1 (moved to subfile 2026-06-30)
 grep -c "Path B — host-bridge MCP" <location>/skills/career-engine-edit/SKILL.md           # must be 1
 grep -c "Environment note (R-30)" <location>/skills/career-engine-export/SKILL.md          # must be 1
-grep -c "Do not proceed and do not fall back to any other path" <location>/skills/career-engine-orchestrator/SKILL.md  # must be 0
+grep -c "Do not proceed and do not fall back to any other path" <location>/skills/career-engine-orchestrator/orchestrator-queue.md  # must be 0
 ```
 
 **FAIL condition:** any "must be 1" count differs from 1, or the "must be 0" count is nonzero.
@@ -495,8 +495,8 @@ grep -c "Do not proceed and do not fall back to any other path" <location>/skill
 The framework-primacy doctrine, the LinkedIn profile reference and its consumers, and the career-shift posture rule must all be present.
 
 ```bash
-grep -c "Framework primacy" <location>/skills/career-engine-orchestrator/SKILL.md      # must be >= 1
-grep -c "Step 8-pre" <location>/skills/career-engine-orchestrator/SKILL.md             # must be >= 1
+grep -c "Framework primacy" <location>/skills/career-engine-orchestrator/orchestrator-post-run.md      # must be >= 1 (moved to subfile 2026-06-30)
+grep -c "Step 8-pre" <location>/skills/career-engine-orchestrator/orchestrator-post-run.md             # must be >= 1 (moved to subfile 2026-06-30)
 grep -c "Profile source ladder" <location>/skills/linkedin-coach/SKILL.md              # must be >= 1
 grep -c "FRAMEWORK PRIMACY" <location>/skills/career-coach/SKILL.md                # must be 1
 grep -c "Career-shift posture" <location>/skills/career-coach/SKILL.md             # must be >= 1
@@ -522,9 +522,9 @@ grep -c "Verification Pass" <location>/skills/source-open-roles/SKILL.md        
 grep -c "NEVER excluded for a geographic restriction" <location>/skills/source-open-roles/SKILL.md  # must be >= 1
 grep -c "Step 4.5" <location>/agents/source-open-roles.md                                   # must be >= 1
 grep -c "Careers-page cross-check" <location>/agents/career-coach.md                    # must be >= 1
-grep -c "Location & eligibility deep-scan" <location>/skills/career-coach/SKILL.md      # must be >= 1
-grep -c "Remote-geography weighting" <location>/skills/career-coach/SKILL.md            # must be >= 1
-grep -c "ask-first" <location>/skills/career-coach/SKILL.md                             # must be >= 1
+grep -c "Location & eligibility deep-scan" <location>/skills/career-coach/coach-research.md      # must be >= 1 (moved to subfile 2026-06-30)
+grep -c "Remote-geography weighting" <location>/skills/career-coach/coach-analysis.md            # must be >= 1 (moved to subfile 2026-06-30)
+grep -c "ask-first" <location>/skills/career-coach/coach-research.md                             # must be >= 1 (moved to subfile 2026-06-30)
 ```
 
 **FAIL condition:** any count is 0.
@@ -690,8 +690,8 @@ grep -ci "colon" <build>/skills/cover-letter-humanizer/SKILL.md
 The single-build and `career-data` model must be wired in.
 
 ```bash
-grep -c "career-data discovery" <build>/skills/career-engine-orchestrator/SKILL.md   # must be >= 1
-grep -c "Writing personal data" <build>/skills/career-engine-orchestrator/SKILL.md    # must be >= 1
+grep -c "career-data discovery" <build>/skills/career-engine-orchestrator/orchestrator-queue.md   # must be >= 1 (moved to subfile 2026-06-30)
+grep -c "Writing personal data" <build>/skills/career-engine-orchestrator/orchestrator-queue.md    # must be >= 1 (moved to subfile 2026-06-30)
 grep -rl "data root (R-37)" <build>/agents <build>/skills | wc -l                      # must be >= 20
 grep -c "Placeholder resolution" <build>/CLAUDE.md                                     # must be >= 1
 ```
