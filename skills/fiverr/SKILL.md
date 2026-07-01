@@ -37,12 +37,14 @@ Every gig has five surfaces that must work together:
 
 | Tier | Purpose | Price floor |
 |---|---|---|
-| Basic | One bounded deliverable; no revisions | Read from `freelance-config.md` |
-| Standard | Full project scope; 1 revision | Read from `freelance-config.md` |
-| Premium | Priority + extended scope + 2 revisions | Read from `freelance-config.md` |
+| Basic | One bounded deliverable; no revisions | `pricing_floors.fiverr_basic` |
+| Standard | Full project scope; 1 revision | `pricing_floors.fiverr_standard` |
+| Premium | Priority + extended scope + 2 revisions | `pricing_floors.fiverr_premium` |
+
+Read floors from `${CAREER_DATA}/references/pipeline-preferences.json` → `freelance.pricing_floors`.
 
 **Pricing rules:**
-- Never price below the floors in `freelance-config.md` — they exist for a reason
+- Never price below the floors in `${CAREER_DATA}/references/pipeline-preferences.json` → `freelance.pricing_floors` — they exist for a reason
 - Premium should be 2–2.5x Standard, not 1.1x
 - Each tier must have a clearly distinct scope — if the difference is vague, buyers pick Basic and then ask for more
 - Delivery time: be conservative; Fiverr penalises late deliveries
@@ -102,9 +104,9 @@ Before finalising any gig:
 
 - [ ] Title contains primary search keyword
 - [ ] Each pricing tier has a distinct, unambiguous scope
-- [ ] No tier is priced below the floors in `freelance-config.md`
+- [ ] No tier is priced below the floors in `${CAREER_DATA}/references/pipeline-preferences.json` → `freelance.pricing_floors`
 - [ ] Description opens with who it's for, not a biography
-- [ ] All claimed capabilities are grounded in `freelance-config.md` or `02-professional-background.md`
+- [ ] All claimed capabilities are grounded in `02-professional-background.md` or `03-framework.md`
 - [ ] FAQ answers real questions, not softballs
 - [ ] Thumbnail text is readable at 72px width
 - [ ] No prohibited vocabulary from `shared-voice-rules.md`

@@ -24,7 +24,7 @@ allowed-tools:
 
 You are maintaining the reference files that every career-engine agent writes from. These files are the grounding layer: every CV claim, every letter proof point, and every voice decision traces back to them. A careless write here propagates into every future application. Precision beats speed; asking beats assuming.
 
-> **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
+> **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
 
 **Writing personal data (R-37).** Every reference target in the map below lives in `${CAREER_DATA}/references/...`, not in the plugin. Apply the orchestrator's **Writing personal data** rule: in Claude Code, write the `career-data` files directly; in Cowork, stage the change to the output folder and emit the Appendix-A handoff (`${CLAUDE_PLUGIN_ROOT}/references/career-data-skill-handoff.md`) for the user to apply in Chat — never write a divergent copy. Refresh the `career-data` backup export after a direct write.
 
@@ -44,16 +44,16 @@ Classify every shared item against this map. Multiple items in one document are 
 
 | Content type | Destination | Operation notes |
 |---|---|---|
-| Role facts — companies, dates, titles, teams, metrics, deliverables | `references/02-professional-background.md` §7 (Role Facts) | **Approved CV bullets in §7 are protected** — see Protected Content below |
-| CV summaries | `02-professional-background.md` §6 | Tag with domain and validation status |
-| Testimonials and recommendations | `02-professional-background.md` §9 | Include name, title, company, relationship |
-| Portfolio and work samples | `02-professional-background.md` §10 | Include links |
-| Motivation themes, standing answers, voice phrasings | `02-professional-background.md` §5 (Motivation Bank) | Append-only — same discipline as the Step 7f promotion |
+| Role facts — companies, dates, titles, teams, metrics, deliverables | `background/background-role-facts-<company>.md` (one file per company, loaded via router in `02-professional-background.md`) | **Approved CV bullets are protected** — see Protected Content below |
+| CV summaries | `background/background-cv-summaries.md` | Tag with domain and validation status |
+| Testimonials and recommendations | `background/background-testimonials.md` | Include name, title, company, relationship |
+| Portfolio and work samples | `background/background-portfolio.md` | Include links |
+| Motivation themes, standing answers, voice phrasings | `background/background-motivation-bank.md` | Append-only — same discipline as the Step 7f promotion |
 | Rules, constraints, attribution and framing requirements, contact details | `references/01-writing-rules.md` | Rules changes affect every agent — confirm the intent explicitly |
 | Positioning, voice profile, methodology, messaging, taglines, goals, ICP, career-shift posture, employment status | `references/03-framework.md` | **The primary source of truth about the user — see Framework Updates below.** Changes here alter agent behavior everywhere; every proposal must name the behavioral consequence, not just the text change. |
 | Sent cover letters for voice calibration | `references/delivered-letters/` | **Do not write directly** — route through letter-writer Option 3 (Manage Letter Examples; cap 6) |
 | LinkedIn profile PDF export (new or updated) | `references/linkedin-profile.md` | **Replace, wholesale** — extract the export into the file's structure (headline, About verbatim, skills, experience entries, education), stamp the snapshot date, and supersede the previous snapshot entirely. This is the canonical base for all LinkedIn recommendations; no usage questions needed — the wiring exists. |
-| Word templates (.dotx) | `references/` | Personalized version only |
+| Word templates (.dotx) | `${CAREER_DATA}/references/` | Personalized version only — personal data, never the plugin repo (see line 83 / R-37) |
 | Anything that fits none of the above | **Unknown — ask** | See New Files below |
 
 ## Operations
@@ -117,7 +117,7 @@ An unwired file is a failed add — do not report success until the wiring is in
 
 6. **Data vs code.** Personal data goes only to `career-data`, never to the plugin repo. A genuinely new *reference-file type* and its agent wiring (REFERENCES.md rows, loading-table entries) are code changes and go to the repo with `{{...}}` placeholders. When in doubt whether something is data or code — ask.
 
-7. **Repackage** every `.plugin` zip whose tree changed. Both files are always named `career-engine.plugin`.
+7. **Repackage** `career-engine.plugin` if the tree changed.
 
 8. **Report.** Summarize per item: what was written, where, and which operation. List anything parked at the clarification gate. Remind the user that the live installation picks up the changes only after the updated `career-engine.plugin` is re-uploaded.
 

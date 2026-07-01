@@ -13,7 +13,7 @@ The key difference from the main pipeline: **agents are not starting from scratc
 
 **`Needs editing` always means edit from the Notion entry.** Every role with Status = `Needs editing` uses whatever is already inside its Notion row as the starting point — existing CV text, cover letter, coach properties, reviewer notes. Nothing is discarded. This rule holds regardless of what state.json says. state.json is crash recovery only (see State file section below).
 
-> **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
+> **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
 
 ## Preflight
 
@@ -51,7 +51,7 @@ The edit pipeline is its own entry (no orchestrator), so resolve config yourself
 2. **Config keys — required hard-stop; everything else optional.** Read `pipeline-preferences.json`. **Required (stop if missing or empty):** `output_folder`, `cv_template`, and — when a database backend is configured (`database_backend`; default `notion`) — `database_id`. Stop with: "career-data config is incomplete — run `/career-engine:setup --phase 5` to fill in: [required keys missing]." **All other keys are optional — never stop on them;** collect any absent (older config) or empty into `CONFIG_HEALTH` and emit the same end-of-run `⚙️ Config health` block the orchestrator defines. **Backward compatibility:** accept legacy `notion_database_id` (→ `database_id`), `notion_needs_editing_view_url` (→ `database_edit_view_url`), `location_compatibility.notion_property` (→ `database_property`); prefer the `database_*` names and flag any legacy name in `CONFIG_HEALTH`.
 3. (Code sessions) If `~/.claude/skills/career-data/` is absent or differs from `${CAREER_DATA}`, warn: "career-data may be out of sync with the Desktop app — re-install the .skill file if you recently updated it in Chat. Continuing on the resolved path."
 
-Then read `${CAREER_DATA}/references/pipeline-preferences.json` and set `$NOTION_DATABASE_ID` (← `database_id`, legacy `notion_database_id`), `$NOTION_NEEDS_EDITING_VIEW_URL` (← `database_edit_view_url`, legacy `notion_needs_editing_view_url`), `$OUTPUT_FOLDER`, `$CV_TEMPLATE`, and `$DRAFT_DIR_URL_BASE` (used by the queries and exports below; the `$NOTION_*` var names are the Notion adapter's internal names and are unchanged). Wherever this skill shows `{{NOTION_DATABASE_ID}}` or `{{NOTION_NEEDS_EDITING_VIEW_URL}}`, use the resolved values. Stop if `database_id`, `output_folder`, or `cv_template` is missing: "career-data is missing a required config key — run `/career-engine:setup --phase 5`." Optional: `draft_dir_url_base` absent or `skip` → Draft Directory writeback is skipped (log it in the final delivery as "Draft Directory not written — `draft_dir_url_base` not configured"). The plugin keeps these placeholders literal (single build).
+Then read `${CAREER_DATA}/references/pipeline-preferences.json` and set `$NOTION_DATABASE_ID` (← `database_id`, legacy `notion_database_id`), `$NOTION_NEEDS_EDITING_VIEW_URL` (← `database_edit_view_url`, legacy `notion_needs_editing_view_url`), `$NOTION_INTERESTED_VIEW_URL` (← `database_interested_view_url`), `$NOTION_HOLD_VIEW_URL` (← `database_hold_view_url`), `$NOTION_RESEARCHED_VIEW_URL` (← `database_researched_view_url`), `$NOTION_CV_READY_VIEW_URL` (← `database_cv_ready_view_url`), `$OUTPUT_FOLDER`, `$CV_TEMPLATE`, and `$DRAFT_DIR_URL_BASE` (used by the queries and exports below; the `$NOTION_*` var names are the Notion adapter's internal names and are unchanged). Wherever this skill shows `{{NOTION_DATABASE_ID}}` or `{{NOTION_NEEDS_EDITING_VIEW_URL}}`, use the resolved values. Stop if `database_id`, `output_folder`, or `cv_template` is missing: "career-data is missing a required config key — run `/career-engine:setup --phase 5`." Optional: `draft_dir_url_base` absent or `skip` → Draft Directory writeback is skipped (log it in the final delivery as "Draft Directory not written — `draft_dir_url_base` not configured"). The plugin keeps these placeholders literal (single build).
 
 ## Step E0 — Fetch roles for editing
 
@@ -71,7 +71,7 @@ For each page fetched, capture the full row payload including:
 - `Edit type` — required; options: `CV`, `Letter`, `Both`
 - `Edit notes` — optional; the user's specific instructions about what needs to change. When populated, pass to cv-writer (Step E3) and/or letter-writer (Step E7) so they address the exact issues named before applying general improvements. Do not pass to the coach or gatekeeper.
 - Pipeline (New Applications — from the user's chat command)
-- All existing property values — `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Why I Want This Role`, `CV File Name`, `Letter File Name` (note: these two file-name properties may be absent from the schema — that is not an error; see the run-folder convention below), `Note`, and any other populated fields
+- All existing property values — `JD Body`, `Role summary`, `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`, `Why I Want This Role`, `CV File Name`, `Letter File Name` (note: these two file-name properties may be absent from the schema — that is not an error; see the run-folder convention below), `Note`, and any other populated fields
 - Any reviewer feedback or notes already on the row
 
 **Edit type is mandatory. It controls everything.** After fetching, immediately inspect the `Edit type` value for every role before any other work begins — before spawning the coach, before loading JDs, before any pipeline step.
@@ -84,8 +84,8 @@ Report the count to the user: "Found N roles marked Needs editing (M skipped —
 **Queue cap — maximum 5 roles per run.** If more than 5 roles remain after skipping, select the top 5 by Priority field: First > Second > Third > Fourth > Fifth. Ties at the same Priority level are broken randomly. Report which roles are deferred: "Deferring N roles — re-run edit to process them." Proceed only with the selected 5.
 
 **Routing by Edit type — hard gate, checked again before each subagent spawn:**
-- `CV` — run CV editing steps only (E0.7 content check, E3–E6.5, CV DOCX export). Skip ALL cover letter steps. Do not spawn letter-writer, do not run cover letter gatekeeper.
-- `Letter` — run cover letter editing steps only (E0.7 cover letter check, E7–E7.5, cover letter DOCX export). Skip ALL CV steps. Do not spawn cv-writer, do not run CV gatekeeper.
+- `CV` — run CV editing steps only (E0.7 content check, E3–E5.5, CV DOCX export). Skip ALL cover letter steps. Do not spawn letter-writer, do not run cover letter gatekeeper.
+- `Letter` — run cover letter editing steps only (E0.7 cover letter check, E7–E8.5, cover letter DOCX export). Skip ALL CV steps. Do not spawn cv-writer, do not run CV gatekeeper.
 - `Both` — run all steps.
 
 ## Step E0.5 — Prepare JD content from Notion rows
@@ -102,11 +102,11 @@ Hold all structured JD data in memory. All subsequent steps that reference "the 
 
 Run the gatekeeper on all existing outputs in parallel. The goal is a complete picture of what's already broken before any editing begins. All violation lists travel forward to the coach (E1) and cv-writer (E3) as context.
 
-**Needs-fetch roles — defer this step.** A role marked `needs-fetch` in E0.5 has no JD yet; the fetch in E0.5 attempted retrieval. If E0.5 hard-dropped the role (URL unreachable), no baseline check runs at all. For roles where the JD was successfully fetched in E0.5 (and populated in memory), run the baseline check now.
+**Baseline runs only for roles with a JD.** If E0.5 hard-dropped a role (URL unreachable and `JD Body` empty), no baseline check runs for it at all. For every role whose `JD Body` is populated (from the row or fetched in E0.5), run the baseline check now.
 
-**Content check:** Run only if Edit type is `CV` or `Both`. Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, the existing CV text, the structured JD, and the role's `Keywords` property (from the Notion row — required for the ATS pre-check). Returns either PASS or a content violation list.
+**Content check:** Run only if Edit type is `CV` or `Both`. Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, the existing CV text, `Role summary` (from the Step E0 row payload — the JD proxy the gatekeeper reads), the role's `Keywords` property (from the Notion row — required for the ATS pre-check), and `OUTPUT_PATH=$PIPE/gatekeeper-baseline-cv.md`. Per the gatekeeper's R-41 protocol, it returns either `PASS` or `FAIL: <n> violations → $PIPE/gatekeeper-baseline-cv.md` — read the file for the violation list, never expect it inline.
 
-**Cover letter check:** Run only if Edit type is `Letter` or `Both`. Locate the existing cover letter in this order: `Letter File Name` from the Notion row → state.json `cover_letter_path` → run-folder pattern search (`coverletter-*` / `cv-*` in the company subdirectory) → Draft Directory company subdirectory. If the file cannot be located by any of these methods, skip the cover letter baseline check entirely and log: "Cover letter baseline check skipped for [Company] — file not locatable (no prior pipeline run or file moved)." Otherwise spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the existing cover letter text and the structured JD. Returns either PASS or a cover letter violation list.
+**Cover letter check:** Run only if Edit type is `Letter` or `Both`. Locate the existing cover letter in this order: `Letter File Name` from the Notion row → state.json `cover_letter_path` → run-folder pattern search (`coverletter-*` / `cv-*` in the company subdirectory) → Draft Directory company subdirectory. If the file cannot be located by any of these methods, skip the cover letter baseline check entirely and log: "Cover letter baseline check skipped for [Company] — file not locatable (no prior pipeline run or file moved)." Otherwise spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the existing cover letter text, `Role summary` (from the Step E0 row payload), and `OUTPUT_PATH=$PIPE/gatekeeper-baseline-cl.md`. Returns either `PASS` (or `PASS — cover letter [Grade: X]`) or `FAIL: <n> violations → $PIPE/gatekeeper-baseline-cl.md` — read the file for the violation list, never expect it inline.
 
 Run both in parallel. Collect results. Do not loop or fix anything yet — this step is diagnosis only.
 
@@ -115,11 +115,11 @@ Run both in parallel. Collect results. Do not loop or fix anything yet — this 
 **The career coach is never spawned from the edit pipeline.** Coach properties are set during intake (Hold → Researched) and are expected to be present when the editing pipeline runs.
 
 For each role in the editing queue, verify these **writer-needed fields** are populated (non-empty):
-`Role emphasis`, `Keywords`, `Strategy`.
+`Role summary`, `Role emphasis`, `Keywords`, `Strategy`.
 
-`JD proof` is not checked — it is reference-only. `Gap handling` is not required when `gap_handling_mode = disabled`.
+`Role summary` is the **JD proxy** every downstream agent reads instead of the full JD body (see `skills/career-coach/SKILL.md` → `Role summary`). Steps E7.4 and E8.5 pass it to the gatekeeper and coach review "from the coach properties verified in Step E1" with **no fallback**, so it must be gated here — exactly as the orchestrator's O2 readiness gate does (`skills/career-engine-orchestrator/SKILL.md` Step O2). This list must stay in parity with O2's writer-needed fields. `JD proof` is not checked — it is reference-only. `Gap handling` is not required when `gap_handling_mode = disabled`.
 
-- **All three fields present** → role is ready; carry its existing coach values forward.
+- **All four fields present** → role is ready; carry its existing coach values forward.
 - **Any field missing** → **hard-drop this role from the queue**. Log: "Career coach properties missing for [Company] — [Role Title]: missing `<list>`. Run intake first (`/career-engine --coach-skills`), then re-run edit." Leave Status unchanged.
 
 After the gate, confirm in chat: "Coach properties verified: N roles proceed, M excluded (missing coach properties)."
@@ -156,7 +156,7 @@ Spawn `cv-writer` with `option=revision`. Pass:
 - `CAREER_DATA=${CAREER_DATA}`
 - The existing CV text as the draft (from the saved markdown backup at the output path, or extracted using `pandoc "<cv>.docx" -t markdown` if only the DOCX is available)
 - The coach's verified properties as the strategic anchor
-- The baseline content violation list from Step E0.7 (so the cv-writer addresses pre-existing violations immediately, not after another loop)
+- The baseline content violation file path `$PIPE/gatekeeper-baseline-cv.md` from Step E0.7, if it returned FAIL — the cv-writer reads it directly (so it addresses pre-existing violations immediately, not after another loop). Omit this line entirely if Step E0.7 returned PASS (no file was written).
 - Any recruiter or hiring manager feedback already on the row from the original pipeline run
 - **`Edit notes` content** (from the Step E0 row payload) — if populated, include verbatim with the instruction: "Address these specific edit notes first, before applying general improvements: [content]". Omit if empty.
 
@@ -180,11 +180,11 @@ Assess:
 
 **Step E3.5 — Gatekeeper (content check)**
 
-Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, the revised CV text, the structured JD from Step E0.5, and the role's `Keywords` property (from the coach properties verified in Step E1 — required for the ATS pre-check).
+Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, the revised CV text, `Role summary` (from the coach properties verified in Step E1 — the JD proxy the gatekeeper reads), and the role's `Keywords` property (from the coach properties verified in Step E1 — required for the ATS pre-check).
 
 **If PASS:** proceed to Step E4.
 
-**If FAIL:** spawn `cv-writer` with `option=revision`, passing the revised CV and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL; a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again. Repeat until PASS. Cap: 3 revision passes. After the third FAIL, stop looping, log the unresolved violations, flag the role in the final report, and continue the pipeline. Do not surface this loop to the user. Log all violation rounds internally.
+**If FAIL:** spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, the revised CV and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL; a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again. Repeat until PASS. Cap: 3 revision passes. After the third FAIL, stop looping, log the unresolved violations, flag the role in the final report, and continue the pipeline. Do not surface this loop to the user. Log all violation rounds internally.
 
 **Step E4 — Recruiter review**
 
@@ -196,26 +196,33 @@ Read recruiter feedback from `$PIPE/recruiter-review.md`. Spawn `cv-writer` with
 
 **Step E5.5 — Gatekeeper (content check)**
 
-Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, the final revised CV text, the structured JD, and the role's `Keywords` property.
+Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, the final revised CV text, `Role summary` (from the coach properties verified in Step E1), and the role's `Keywords` property.
 
 **If PASS:** proceed to Step E7.
 
-**If FAIL:** spawn `cv-writer` with `option=revision`, passing the final CV and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL; a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again. Repeat until PASS. Cap: 3 revision passes. After the third FAIL, stop looping, log the unresolved violations, flag the role in the final report, and continue the pipeline. Log all violation rounds internally.
+**If FAIL:** spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, the final CV and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL; a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again. Repeat until PASS. Cap: 3 revision passes. After the third FAIL, stop looping, log the unresolved violations, flag the role in the final report, and continue the pipeline. Log all violation rounds internally.
+
+**Step E6.8 — Voice calibration (pre-compute)**
+
+Spawn `voice-analyst`, passing `CAREER_DATA=${CAREER_DATA}` and `PIPE=${PIPE}`.
+
+- **On `PASS` or `FALLBACK`:** proceed to Step E7. Calibration is written to `$PIPE/voice-calibration.md`.
+- **On any other error:** log the failure. Proceed to Step E7 without `$PIPE/voice-calibration.md`. The letter-writer falls back to its standalone Voice Gate.
 
 **Step E7 — Cover letter (initial revision)**
 
-**Gate — Why I Want This Role is mandatory for the letter track.** Check the `Why I Want This Role` value from the Step E0 row payload before spawning anything. If it is empty: do NOT spawn letter-writer — its Intake Gate refuses to write without this content, and that refusal has no recovery path inside this pipeline. Instead: for Edit type `Both`, skip Steps E7–E8 and continue with the CV track only; for Edit type `Letter`, skip the role entirely. In both cases log and surface: "Letter edit skipped for [Company] — [Role Title]: the Why I Want This Role field in Notion is empty. Fill it in and re-run edit for this role."
+**Gate — always run the letter track for `Letter`/`Both`; the letter-writer decides write-or-skip.** Why I Want This Role is **no longer required** to edit a letter. Spawn the letter-writer whether or not `Why I Want This Role` is populated (pass it if present, empty if not). The letter-writer's **Sufficiency Gate** decides: it revises from the Motivation Bank (its primary source) plus Why I Want This Role when present, or — if there is no Why I Want This Role content **and** no role-relevant Motivation Bank material — returns a skip. **If the letter-writer returns a skip:** for Edit type `Both`, continue with the CV track only; for `Letter`, skip the role. Log and surface the writer's message (it tells the user to add Why I Want This Role or enrich the Motivation Bank). **Do NOT pre-skip on an empty Why I Want This Role** — that decision belongs to the letter-writer now.
 
 **Before spawning letter-writer:** Read the following from the Notion row payload collected in Step E0 (all are part of the full row payload already in memory):
-- **`Why I Want This Role` property** — the user's written motivation for this role; passes the gate above, so it is populated. Include the full content.
+- **`Why I Want This Role` property** — the user's role-specific motivation; include the full content **if populated** (the letter-writer's primary source is the Motivation Bank, loaded from career-data). If empty, pass it empty — the Sufficiency Gate decides.
 
 Spawn `letter-writer` with `option=revision`. Pass:
 - `CAREER_DATA=${CAREER_DATA}`
 - The existing cover letter (from the output run folder using the filename in `Letter File Name`; if the property is absent from the schema or empty, locate the file via the run-folder convention instead: state.json `cover_letter_path`/`cv_path`, or the Draft Directory company subdirectory with filename patterns `coverletter-*`/`cv-*`)
-- The baseline cover letter violation list from Step E0.7
+- The baseline cover letter violation file path `$PIPE/gatekeeper-baseline-cl.md` from Step E0.7, if it returned FAIL — the letter-writer reads it directly. Omit this line entirely if Step E0.7 returned PASS (no file was written).
 - From the coach properties verified in Step E1: `Strategy`, `Keywords`, `Gap handling` — **do NOT pass `Role emphasis`** to the letter-writer
-- **The CV (always required — for context).** If Edit type is `Both`, use the final revised CV from Steps E3–E5. If Edit type is `Letter`, read the existing CV from the output run folder using the filename in `CV File Name` from the Notion row (fallback: state.json `cv_path`, or the Draft Directory company subdirectory with filename pattern `cv-*`). Extract text via `pandoc "<cv-file>.docx" -t plain`. If the file cannot be located, log a warning and proceed — but do not omit this pass silently. The letter-writer uses the CV to check first-person consistency, scope claims, and experience framing. It cannot do that without the CV.
-- **`Why I Want This Role` — pass the verbatim text as a quoted block, never paraphrased or distilled.** The letter-writer's Intake Gate requires this field and its instruction rules require working from the user's exact words, not thematic summaries of them. If the Edit notes reference this field as the content source, that is even more reason to pass it raw — the writer must receive the actual material, not the orchestrator's interpretation of it. (R-44)
+- **The CV (always required — for context).** If Edit type is `Both`, use the final revised CV from Steps E3–E5 (already at `$PIPE/cv-final.md`). If Edit type is `Letter`, read the existing CV from the output run folder using the filename in `CV File Name` from the Notion row (fallback: state.json `cv_path`, or the Draft Directory company subdirectory with filename pattern `cv-*`). Extract text via `pandoc "<cv-file>.docx" -t plain` and **write the extracted markdown to `$PIPE/cv-text.md`** — this file is the CV reference for all subsequent cover letter gatekeeper spawns (Steps E7.3, E7.7, E8.5). If the CV file cannot be located, log a warning and skip the write (the gatekeeper spawns will report the repetition check skipped); proceed — but never omit this attempt silently. The letter-writer uses the CV to check first-person consistency, scope claims, and experience framing.
+- **`Why I Want This Role` — when populated, pass the verbatim text as a quoted block, never paraphrased or distilled.** The letter-writer's instruction rules require working from the user's exact words, not thematic summaries of them. If the Edit notes reference this field as the content source, that is even more reason to pass it raw — the writer must receive the actual material, not the orchestrator's interpretation of it. If empty, pass it empty; the letter-writer falls back to the Motivation Bank (its primary source). (R-44)
 - **`Edit notes` content** (from the Step E0 row payload) — if populated, include verbatim with the instruction: "Address these specific edit notes first, before applying general improvements: [content]". Omit if empty.
 - **Recruiter review** path `$PIPE/recruiter-review.md` to read — includes the "Interview-trigger gaps" section; the letter-writer uses these to proactively address gaps where Why I Want This Role or documented background provides a real answer. **Fabrication rules always trump reviewer input — even when a gap is passed, the letter-writer may only answer it with documented background or Why I Want This Role content. A reviewer flag does not authorise invention.**
 - `LETTER_PATH=$PIPE/letter-draft.md` — the writer writes its output to this file and returns only a 2-line status + path (R-41 protocol).
@@ -241,11 +248,11 @@ Before passing the revised cover letter to the gatekeeper, compare the old and n
 
 **Step E7.3 — Gatekeeper (cover letter check — initial)**
 
-Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter (read from `$PIPE/letter-draft.md`), the structured JD (including the Company self-characterization section), the user's Why I Want This Role content (retrieved in Step E7 from Notion). Also pass the final CV text for this role (required for the CV-repetition check); if no CV exists for this role, state that explicitly so the gatekeeper reports the skipped check by name.
+Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter (read from `$PIPE/letter-draft.md`), `Role summary` (from the coach properties verified in Step E1 — includes the Company self-characterization section), the user's Why I Want This Role content (retrieved in Step E7 from Notion), and the CV path to read: `$PIPE/cv-final.md` for Edit type `Both`; `$PIPE/cv-text.md` for Edit type `Letter` (written from the pandoc extraction in Step E7). If the CV file does not exist (CV could not be located in Step E7), state that explicitly so the gatekeeper reports the skipped check by name — do not pass a path that doesn't exist.
 
 **If PASS:** proceed to Step E7.4.
 
-**If FAIL — round 1:** spawn `letter-writer` with `option=revision`, passing the cover letter and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL; a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again with `option=cover-letter`. Log all violation rounds internally.
+**If FAIL — round 1:** spawn `letter-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL; a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again with `option=cover-letter`. Log all violation rounds internally.
 
 **If FAIL — round 2+ (advisory violations only, no hard fails):** treat as PASS. Log the advisory violations under `## Gatekeeper — Advisory Violations Deferred to Humanizer (Step E7.3)` in the revision log, and proceed to Step E7.4. The humanizer handles residual advisory issues.
 
@@ -259,6 +266,7 @@ Spawn `career-coach` with `option=letter-review`, passing:
 - `CAREER_DATA=${CAREER_DATA}`
 - The cover letter path `$PIPE/letter-draft.md` to read
 - `Role summary`, `Strategy`, `Keywords` (from the coach properties verified in Step E1)
+- `Gap handling` (from the Step E1 coach properties; an **empty** `Gap handling` means gap handling is disabled for this run and there are no gaps — the review must give zero gap feedback)
 - Why I Want This Role content (from the Step E7 Notion payload) — verbatim, not summarized
 - Company name and role title
 - `OUTPUT_PATH=$PIPE/coach-letter-review.md`
@@ -271,27 +279,27 @@ The coach writes its diagnostic review to that file and returns: `COACH-LETTER-R
 
 **Step E7.7 — Gatekeeper (cover letter check — final)**
 
-Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the final cover letter text, the structured JD, the user's Why I Want This Role content, and the final CV text (same as Step E7.3).
+Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DATA}`, the final cover letter text, `Role summary` (from the coach properties verified in Step E1), the user's Why I Want This Role content, and the final CV text (same as Step E7.3).
 
 **If PASS:** proceed to Step E8 (humanizer).
 
 **If FAIL — advisory violations only (no hard fails):** treat as PASS. Log the advisory violations under `## Gatekeeper — Advisory Violations Deferred to Humanizer (Step E7.7)` in the revision log, and proceed to Step E8. The humanizer handles residual advisory issues.
 
-**If FAIL — hard fails present:** spawn `letter-writer` with `option=revision`, passing the final cover letter and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL; a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again with `option=cover-letter`. Cap: 3 revision passes on hard fails. After the third FAIL, stop looping, log the unresolved violations, flag the role in the final report, and continue the pipeline. Log all violation rounds internally.
+**If FAIL — hard fails present:** spawn `letter-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, the final cover letter and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL; a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again with `option=cover-letter`. Cap: 3 revision passes on hard fails. After the third FAIL, stop looping, log the unresolved violations, flag the role in the final report, and continue the pipeline. Log all violation rounds internally.
 
 ---
 
 **Step E8 — Humanizer (cover letter)**
 
-Spawn `cover-letter-humanizer`, passing `CAREER_DATA=${CAREER_DATA}` and the final cover letter markdown path (it edits in place). Do not pass the structured JD, Role summary, strategy, or any role-specific context — the humanizer reads only the letter and calibrates against the delivered-letters archive and voice fingerprint in career-data.
+**Before spawning, snapshot the revert target:** copy `$PIPE/letter-draft.md` (the E7.7-passing text) to a sibling `$PIPE/letter-draft.prehumanizer.md` — the revert target for E8.5. The humanizer edits in place, so this snapshot must be taken first.
 
-The humanizer removes AI writing patterns sentence by sentence. It does not change structure, strategy, or content — only language. Wait for it to return the corrected letter and its change log.
+Spawn `cover-letter-humanizer`, passing `CAREER_DATA=${CAREER_DATA}`, `LETTER_PATH=$PIPE/letter-draft.md` (it edits in place), and `$PIPE/voice-calibration.md` (the pre-computed voice calibration from Step E6.8; the humanizer uses it instead of reading the archive directly). Do not pass the structured JD, Role summary, strategy, or any role-specific context — the humanizer's only inputs are the letter, the career-data path, and the voice-calibration file.
 
-Before overwriting, copy the current (E7.7-passing) markdown to a sibling file with the suffix `.prehumanizer.md` — this is the revert target for E8.5. Then save the humanizer's output, overwriting the previous cover letter markdown. The change log goes into the revision log under `## Humanizer changes`. If the humanizer fails, proceed with the pre-humanizer version (which already passed E7.7).
+The humanizer removes AI writing patterns sentence by sentence. It does not change structure, strategy, or content — only language. Wait for it to finish editing `$PIPE/letter-draft.md` in place and writing its change log before proceeding. The change log goes into the revision log under `## Humanizer changes`. If the humanizer fails, proceed with the pre-humanizer version `$PIPE/letter-draft.prehumanizer.md` (which already passed E7.7) — restore it over `$PIPE/letter-draft.md`.
 
 **Step E8.5 — Final verification on the exported bytes**
 
-The humanizer changed the text after the last PASS, so that PASS is no longer valid. On the exact saved markdown that E9 will convert: (1) run the mechanical pre-export checklist — company name in first body paragraph (stealth roles: JD descriptor suffices), role title in body, zero em dashes and zero colons in body text (ignoring pandoc `:::` fences and `{custom-style=...}` attributes), zero hits for "I know this", "that's where", "that's what", "that's the kind", "that exact", "exactly that", "this same", "serves as", "stands as", "acts as"; also grep "the same" — a hit fails only when it points at an agent-coined abstraction ("the same engine"), not in benign uses ("the same week"); (2) spawn `gatekeeper` with `option=cover-letter` on this exact text, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter path, `Role summary`, the user's Why I Want This Role content, and the final CV path (same as Step E7.3). If either fails: re-spawn the humanizer (language issues) or letter-writer with `option=revision` (content issues) and re-run this step. Cap: 2 rounds; after the cap, revert to the `.prehumanizer.md` file saved in E8 (the last E7.7-passing text) and flag for manual review. Never export text that has not passed this step.
+The humanizer changed the text after the last PASS, so that PASS is no longer valid. Run both checks below on the exact saved markdown `$PIPE/letter-draft.md` that E9 will convert: (1) run the mechanical pre-export checklist — company name in first body paragraph (stealth roles: JD descriptor suffices), role title in body, zero em dashes and zero colons in body text (ignoring pandoc `:::` fences and `{custom-style=...}` attributes), zero hits for "I know this", "that's where", "that's what", "that's the kind", "that exact", "exactly that", "this same", "serves as", "stands as", "acts as"; also grep "the same" — a hit fails only when it points at an agent-coined abstraction ("the same engine"), not in benign uses ("the same week"); (2) spawn `gatekeeper` with `option=cover-letter` on this exact text, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter path `$PIPE/letter-draft.md` to read, `Role summary`, the user's Why I Want This Role content, and the final CV path (same as Step E7.3). If either fails: re-spawn the humanizer (language issues — same `LETTER_PATH=$PIPE/letter-draft.md`, same `$PIPE/voice-calibration.md`) or letter-writer with `option=revision` (content issues) and re-run this step. Cap: 2 rounds; after the cap, revert to the `$PIPE/letter-draft.prehumanizer.md` file saved in E8 (the last E7.7-passing text) by restoring it over `$PIPE/letter-draft.md`, and flag for manual review. Never export text that has not passed this step.
 
 ---
 
@@ -299,7 +307,7 @@ The humanizer changed the text after the last PASS, so that PASS is no longer va
 
 Follow the same pandoc production protocol as the main pipeline. See `career-engine-export` for the full protocol.
 
-Derive `<company_dir>` from the Company name using the naming convention in `career-engine-export`. Convert using the original run folder as the temporary landing pad: write the final CV markdown and cover letter markdown to `/tmp/`, convert with pandoc using the `.dotx` reference templates, update the CV Subtitle, and copy both files to `<output_dir>/<company_dir>/`. If a file with the same name already exists, overwrite it — this is an edit, not a new file.
+Derive `<company_dir>` from the Company name using the naming convention in `career-engine-export`. Convert using the original run folder as the temporary landing pad: write the final CV markdown and the final cover letter markdown (the E8.5-verified `$PIPE/letter-draft.md`) to `/tmp/`, convert with pandoc using the `.dotx` reference templates, update the CV Subtitle, and copy both files to `<output_dir>/<company_dir>/`. If a file with the same name already exists, overwrite it — this is an edit, not a new file.
 
 Verify the produced file(s) exist and are nonzero before proceeding to Step E9.5. (Only the file(s) for the active Edit type are produced here — the unedited companion file is handled in E9.5.)
 
@@ -426,16 +434,17 @@ Write a file named `update-prompt-<company>-<monYYYY>.md` into the role's compan
 ## Role facts needing verification (WIWTR-UNLOGGED — from [Company] [Run Date])
 
 The following claims appeared in your Why I Want This Role and were used in the letter,
-but are not yet documented in `02-professional-background.md`. They are NOT fabrications —
+but are not yet documented in your role-facts files. They are NOT fabrications —
 they are your own first-person record. To make them available to future pipeline runs
-without re-triggering this advisory, add them to Section 7 (Role Facts) for the relevant
-role, pending your verification that the facts are accurate.
+without re-triggering this advisory, add them to `background-role-facts-[company].md`
+for the relevant role, pending your verification that the facts are accurate.
 
-For each item below: if accurate, add it as a role fact to §7 under the relevant employer.
-If not accurate, remove it from your Why I Want This Role before the next run.
+For each item below: if accurate, add it as a role fact to the relevant
+`background-role-facts-[company].md` file. If not accurate, remove it from your
+Why I Want This Role before the next run.
 
 [For each WIWTR-UNLOGGED item, one line:]
-- **[Employer]** — "[verbatim claim from WIWTR]" *(flagged in [step] — not in 02-professional-background.md)*
+- **[Employer]** — "[verbatim claim from WIWTR]" *(flagged in [step] — not in background-role-facts-[company].md)*
 ```
 
 If no [WIWTR-UNLOGGED] items were found in this run, omit Section 2 entirely.

@@ -61,7 +61,7 @@ All named proof must come from `02-professional-background.md`. Do not invent ou
 2. **The problem / tension** (100–150w) — what breaks down and why; must be specific to the domain
 3. **The framework** (400–500w) — 3–5 distinct components, each with: name, what it is, why it matters, one real example
 4. **The synthesis** (100–150w) — what holds the framework together; what changes when you apply it
-5. **Close** (1–2 lines) — direct, no call-to-action that asks for engagement
+5. **Close** (1–2 lines) — direct. Engagement-bait CTAs are banned ("Agree? Comment below", "What do you think?", "share if this resonates"). A specific, substantive implementation question tied to the framework IS permitted and expected — per `shared-voice-rules.md §8` Format A "Implementation CTA": a concrete question about applying or adapting the framework that invites substantive responses, never a rhetorical or performative ask.
 
 ### Format B — Insight / Analysis (400–600w)
 

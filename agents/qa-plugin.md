@@ -15,7 +15,7 @@ The numbered checks below are necessary but **not sufficient**. On **every** run
 For each agent/skill in scope:
 1. **Follow every reference OUT.** Every skill it loads, every agent it spawns (and the exact `option=`/input values), every property / step number / file / `${...}` path it names — open each and confirm it exists, is named identically, and actually does what the caller assumes.
 2. **Follow every reference IN.** Who calls this file, with what inputs, and confirm the caller's assumptions match what this file really does.
-3. **Walk each value end-to-end.** When something is produced in one place and consumed in another (a property the coach writes and a writer reads; a config key setup writes and the orchestrator reads; a step number cross-referenced between two skills), confirm producer and consumer agree on **name, format, and meaning** the whole way through.
+3. **Walk each value end-to-end.** When something is produced in one place and consumed in another (a property the coach returns and intake writes; a config key setup writes and the orchestrator reads; a step number cross-referenced between two skills), confirm producer and consumer agree on **name, format, and meaning** the whole way through.
 4. **Report any misalignment with both endpoints** (file:line on each side). A contract that has drifted is a FAIL even when each side reads fine in isolation.
 
 The Cross-file contracts table in CLAUDE.md is the *known* set — verify those AND surface the ones not yet written down.
@@ -110,10 +110,10 @@ grep -rn "cv-campaign-intake\|cv-campaign-setup\|cv-campaign-steps\|cv-campaign-
 
 ### Check 4b — No "campaign" branding terminology in runtime prose
 
-The plugin is the career engine; "CV campaign" / "campaign" branding is retired (R-26). Marketing-English uses of the word (consumer campaigns, ABM campaigns, drumbeat campaigns, ActiveCampaign) in `references/` personal content and worked examples are fine — the check therefore covers `skills/`, `agents/`, `README.md`, and `CLAUDE.md` only, and excludes the legacy folder pattern and the two known marketing-English example lines.
+The plugin is the career engine; "CV campaign" / "campaign" branding is retired (R-26). Marketing-English uses of the word (consumer campaigns, ABM campaigns, drumbeat campaigns, ActiveCampaign) in `references/` personal content and worked examples are fine — the check therefore covers `skills/`, `agents/`, `README.md`, and `CLAUDE.md` only, and excludes the legacy folder pattern and the known marketing-English example lines.
 
 ```bash
-grep -rni "campaign" <location>/skills <location>/agents <location>/README.md <location>/CLAUDE.md --include="*.md" | grep -v "agents/qa-plugin.md" | grep -vi "cv-campaign-YYYY\|cv-campaign-<YYYY\|consumer campaigns\|ActiveCampaign"
+grep -rni "campaign" <location>/skills <location>/agents <location>/README.md <location>/CLAUDE.md --include="*.md" | grep -v "agents/qa-plugin.md" | grep -vi "cv-campaign-YYYY\|cv-campaign-<YYYY\|consumer campaigns\|ActiveCampaign\|drumbeat campaigns"
 ```
 
 **FAIL condition:** any occurrence found.
@@ -243,13 +243,13 @@ Read `CLAUDE.md`. Verify it contains "Single-build architecture" and "career-dat
 
 **Source of truth is the live filesystem, not this list.** First run `ls -d <location>/skills/*/` and use that actual set as the count and membership. Then reconcile it against the enumeration below: every directory on disk should be categorizable here, and every name below should exist on disk. Do not report a count from memory — derive it from `ls`. (The list below is a categorized reference; new skills are added over time, so a directory on disk that isn't listed here is a "categorize and note," not a fail.)
 
-These skill directories must exist in `skills/` (27 as of this writing):
+These skill directories must exist in `skills/` (28 as of this writing):
 - Core pipeline: `career-engine`, `career-engine-orchestrator`, `career-engine-intake`, `career-engine-new-application`, `career-engine-edit`, `career-engine-export`, `career-engine-setup`
 - Writing & quality: `cv-writing`, `cover-letter`, `cover-letter-humanizer`, `gatekeeper-checks`, `career-coach`, `localization`
 - Standalone career: `source-open-roles`, `linkedin-coach`, `personal-brand`, `update-refs`
 - Content & freelance: `content-orchestrator`, `mind-dump`, `linkedin-post-writer`, `linkedin-post-reviewer`, `fiverr`, `upwork`, `freelance-shared`
 - Meta: `plugin-builder`, `technical-writing`
-- Database adapters: `database-notion`
+- Database adapters: `database-notion`, `database`
 
 **FAIL condition:** any directory missing.
 
@@ -356,15 +356,15 @@ grep -c "Fetched-alternative" <location>/agents/career-coach.md
 
 **FAIL condition:** either of the first two counts is 0. The third grep must return exactly 1 (the parenthetical explaining the option does not exist) — more than 1 means the invalid option is being written again.
 
-### Check 20 — Notion view creation prohibition present in intake skill
+### Check 20 — Notion view creation prohibition present (Notion adapter)
 
-In `skills/career-engine-intake/SKILL.md`: verify the file contains "create-database-view".
+The view-creation prohibition lives in the Notion adapter (relocated from the intake skill during the DB-mechanics extraction, commit 13895ca); pipeline skills delegate to the adapter rather than restating it. Verify it is present in the adapter.
 
 ```bash
-grep -c "create-database-view" <location>/skills/career-engine-intake/SKILL.md
+grep -c "create-database-view" <location>/skills/database-notion/SKILL.md
 ```
 
-**FAIL condition:** string not found.
+**FAIL condition:** string not found in `skills/database-notion/SKILL.md`.
 
 ### Check 21 — Tiered Notion query ladder present in intake skill (R-1, R-25, R-35)
 
@@ -378,9 +378,9 @@ grep -c "Path B" <location>/skills/database-notion/SKILL.md
 grep -c "misaligned rendered table" <location>/skills/database-notion/SKILL.md
 # Every consumer delegates to the adapter (each must be >= 1)
 grep -c "database-notion" <location>/skills/career-engine-intake/SKILL.md
-grep -c "database-notion" <location>/skills/career-engine-orchestrator/SKILL.md
+grep -c "database-notion" <location>/skills/career-engine-orchestrator/orchestrator-queue.md
 grep -c "database-notion" <location>/skills/career-engine-edit/SKILL.md
-grep -c "database-notion" <location>/skills/career-coach/SKILL.md
+grep -c "database-notion" <location>/skills/career-coach/coach-analysis.md
 grep -c "database-notion" <location>/skills/source-open-roles/SKILL.md
 grep -c "database-notion" <location>/agents/mind-dump.md
 grep -c "database-notion" <location>/agents/content-orchestrator.md
@@ -394,10 +394,10 @@ grep -c "command -v ntn" <location>/skills/career-engine-orchestrator/SKILL.md
 
 ### Check 21b — Pipeline command authority present in orchestrator (R-24)
 
-In `skills/career-engine-orchestrator/SKILL.md`: verify the Absolute Constraints contain the command-authority rule.
+In `skills/career-engine-orchestrator/orchestrator-queue.md`: verify the Absolute Constraints contain the command-authority rule. (Content moved from root `SKILL.md` to `orchestrator-queue.md` in the 2026-06-30 split refactor.)
 
 ```bash
-grep -c "routing authority" <location>/skills/career-engine-orchestrator/SKILL.md
+grep -c "routing authority" <location>/skills/career-engine-orchestrator/orchestrator-queue.md
 ```
 
 **FAIL condition:** string not found.
@@ -482,10 +482,10 @@ test -f <location>/references/pipeline-preferences.json && echo 1 || echo 0
 The output-path verification must offer Path A (direct filesystem) and Path B (host-bridge MCP) instead of a sandbox-Bash-only hard stop, and the retired no-fallback absolute must not reappear.
 
 ```bash
-grep -c "Path B — host-bridge MCP" <location>/skills/career-engine-orchestrator/SKILL.md   # must be 1
+grep -c "Path B — host-bridge MCP" <location>/skills/career-engine-orchestrator/orchestrator-queue.md   # must be 1 (moved to subfile 2026-06-30)
 grep -c "Path B — host-bridge MCP" <location>/skills/career-engine-edit/SKILL.md           # must be 1
 grep -c "Environment note (R-30)" <location>/skills/career-engine-export/SKILL.md          # must be 1
-grep -c "Do not proceed and do not fall back to any other path" <location>/skills/career-engine-orchestrator/SKILL.md  # must be 0
+grep -c "Do not proceed and do not fall back to any other path" <location>/skills/career-engine-orchestrator/orchestrator-queue.md  # must be 0
 ```
 
 **FAIL condition:** any "must be 1" count differs from 1, or the "must be 0" count is nonzero.
@@ -495,11 +495,11 @@ grep -c "Do not proceed and do not fall back to any other path" <location>/skill
 The framework-primacy doctrine, the LinkedIn profile reference and its consumers, and the career-shift posture rule must all be present.
 
 ```bash
-grep -c "Framework primacy" <location>/skills/career-engine-orchestrator/SKILL.md      # must be >= 1
-grep -c "Step 8-pre" <location>/skills/career-engine-orchestrator/SKILL.md             # must be >= 1
+grep -c "Framework primacy" <location>/skills/career-engine-orchestrator/orchestrator-post-run.md      # must be >= 1 (moved to subfile 2026-06-30)
+grep -c "Step 8-pre" <location>/skills/career-engine-orchestrator/orchestrator-post-run.md             # must be >= 1 (moved to subfile 2026-06-30)
 grep -c "Profile source ladder" <location>/skills/linkedin-coach/SKILL.md              # must be >= 1
 grep -c "FRAMEWORK PRIMACY" <location>/skills/career-coach/SKILL.md                # must be 1
-grep -c "Career-shift posture" <location>/skills/career-coach/SKILL.md             # must be 1
+grep -c "Career-shift posture" <location>/skills/career-coach/SKILL.md             # must be >= 1
 test -f <location>/references/linkedin-profile.md && echo 1 || echo 0                  # must be 1
 ```
 
@@ -522,9 +522,9 @@ grep -c "Verification Pass" <location>/skills/source-open-roles/SKILL.md        
 grep -c "NEVER excluded for a geographic restriction" <location>/skills/source-open-roles/SKILL.md  # must be >= 1
 grep -c "Step 4.5" <location>/agents/source-open-roles.md                                   # must be >= 1
 grep -c "Careers-page cross-check" <location>/agents/career-coach.md                    # must be >= 1
-grep -c "Location & eligibility deep-scan" <location>/skills/career-coach/SKILL.md      # must be >= 1
-grep -c "Remote-geography weighting" <location>/skills/career-coach/SKILL.md            # must be >= 1
-grep -c "ask-first" <location>/skills/career-coach/SKILL.md                             # must be >= 1
+grep -c "Location & eligibility deep-scan" <location>/skills/career-coach/coach-research.md      # must be >= 1 (moved to subfile 2026-06-30)
+grep -c "Remote-geography weighting" <location>/skills/career-coach/coach-analysis.md            # must be >= 1 (moved to subfile 2026-06-30)
+grep -c "ask-first" <location>/skills/career-coach/coach-research.md                             # must be >= 1 (moved to subfile 2026-06-30)
 ```
 
 **FAIL condition:** any count is 0.
@@ -690,13 +690,31 @@ grep -ci "colon" <build>/skills/cover-letter-humanizer/SKILL.md
 The single-build and `career-data` model must be wired in.
 
 ```bash
-grep -c "career-data discovery" <build>/skills/career-engine-orchestrator/SKILL.md   # must be >= 1
-grep -c "Writing personal data" <build>/skills/career-engine-orchestrator/SKILL.md    # must be >= 1
+grep -c "career-data discovery" <build>/skills/career-engine-orchestrator/orchestrator-queue.md   # must be >= 1 (moved to subfile 2026-06-30)
+grep -c "Writing personal data" <build>/skills/career-engine-orchestrator/orchestrator-queue.md    # must be >= 1 (moved to subfile 2026-06-30)
 grep -rl "data root (R-37)" <build>/agents <build>/skills | wc -l                      # must be >= 20
 grep -c "Placeholder resolution" <build>/CLAUDE.md                                     # must be >= 1
 ```
 
 **FAIL condition:** any count below its stated requirement.
+
+### Check 30 — Changelog rules present in CLAUDE.md; README.md changelog is well-formed
+
+CLAUDE.md must document the changelog rules (newest-first, never-remove, date format). README.md's Changelog section must follow them.
+
+```bash
+grep -c "Changelog rules" <build>/CLAUDE.md                        # must be >= 1
+grep -c "Newest at the top" <build>/CLAUDE.md                      # must be >= 1
+grep -c "never removed" <build>/CLAUDE.md                          # must be >= 1
+grep -c "## Changelog" <build>/README.md                           # must be >= 1
+```
+
+Then read the `## Changelog` section of README.md. Verify:
+1. Each entry uses a `### YYYY-MM-DD` heading.
+2. Entries are in reverse-chronological order (newest date first).
+3. No entry is missing its `### YYYY-MM-DD` date heading.
+
+**FAIL condition:** any grep count is 0; README.md has no Changelog section; entries are in wrong chronological order; or any entry is missing a `### YYYY-MM-DD` heading.
 
 ---
 

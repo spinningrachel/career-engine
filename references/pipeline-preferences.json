@@ -1,7 +1,11 @@
 {
-  "_about": "Config for the career-engine pipeline. 'database_backend' names your tracker (default 'notion'). REQUIRED keys (a run stops without them): output_folder, cv_template, and database_id (only when a database backend is configured). EVERY other key is OPTIONAL — pipelines run without it and a config-health notice lists what is empty or missing, so an older config never breaks. Legacy names (notion_database_id, notion_needs_editing_view_url, notion_property, idea_bank.notion_database_id, idea_bank.notion_page_url) are still read for backward compatibility; prefer the database_* names.",
+  "_about": "Config for the career-engine pipeline. 'database_backend' names your tracker (default 'notion'). REQUIRED keys (a run stops without them): output_folder, cv_template, and database_id (only when a database backend is configured). EVERY other key is OPTIONAL — pipelines run without it and a config-health notice lists what is empty or missing, so an older config never breaks. View URL keys (database_*_view_url) are optional fast-paths: when present, the pipeline skips the 59KB Notion database discovery fetch and queries the view directly. Legacy names (notion_database_id, notion_needs_editing_view_url, notion_property, idea_bank.notion_database_id, idea_bank.notion_page_url) are still read for backward compatibility; prefer the database_* names. This file is the single source of truth for job-search preferences: target_titles through screening_answers below replace the retired references/job-preferences.md and source-open-roles' own ~/.career-engine-job-prefs.json — there is no other preferences store.",
   "database_backend": "notion",
   "database_id": "",
+  "database_interested_view_url": "",
+  "database_hold_view_url": "",
+  "database_researched_view_url": "",
+  "database_cv_ready_view_url": "",
   "database_edit_view_url": "",
   "output_folder": "",
   "cv_template": "",
@@ -17,13 +21,41 @@
   "favorite_brands": [],
   "preferred_job_sites": [],
   "local_job_sites": [],
+  "target_titles": [],
+  "title_variants": {
+    "description": "Search variant sets per target title, ~6-8 each (seniority variants like Lead/Manager/Director/Head/VP, phrasing variants like PMM/Product Marketing Manager, adjacent-function variants). Keys are your target titles; values are arrays of variant strings searched at sourcing time. Example: {\"Head of Marketing\": [\"VP Marketing\", \"Marketing Director\", \"Head of Growth\", \"GTM Lead\"]}. Seeded on first sourcing run if empty; human-editable any time."
+  },
+  "remote_preference": "",
+  "exclusion_patterns": [],
+  "default_search_time_range": "last week",
+  "seniority_floor": "",
+  "target_function": "",
+  "industry_fit": {
+    "high": [],
+    "medium": [],
+    "low": [],
+    "description": "Domains to prioritize (high), consider (medium), or deprioritize (low) when sourcing and scoring roles. All optional; nothing currently enforces these as hard filters — the coach reads them as context."
+  },
+  "company_stage_fit": {
+    "preferred": [],
+    "viable": [],
+    "low_priority": [],
+    "description": "Company stages (e.g. Seed, Series A/B/C, Public, PE-backed) to prioritize, consider, or deprioritize. Advisory context for the coach, not a hard filter."
+  },
+  "employment_type_preference": {
+    "preferred": ["Full-time, permanent"],
+    "acceptable": [],
+    "excluded": [],
+    "description": "Employment types to seek, accept, or exclude by default (e.g. contract-to-hire acceptable; pure contract, freelance, part-time, fractional excluded unless requested in a session)."
+  },
+  "coaching_prioritization": "",
   "screening_answers": {
     "travel": "",
     "relocation": "",
     "security_clearance": "",
     "compensation_floor": "",
     "availability": "",
-    "description": "Your standing answers to common screening questions. Intake flags a conflict OR confirms a match in Patterns; sourcing down-ranks a conflicting role with a visible label. Free text; leave any field blank to skip it (e.g. travel: 'open to frequent travel' or 'prefer minimal travel')."
+    "description": "Your standing answers to common screening questions. Intake flags a conflict OR confirms a match in Patterns; sourcing down-ranks a conflicting role with a visible label. Free text; leave any field blank to skip it (e.g. travel: 'open to frequent travel' or 'prefer minimal travel'). compensation_floor also serves as the sourcing scoring rubric's salary floor — there is no separate min-salary field."
   },
   "idea_bank": {
     "database_id": "",
@@ -39,5 +71,18 @@
     "default_batch_size": 3,
     "dedup_lookback_days": 30,
     "description": "Content calendar orchestrator config. default_batch_size is the number of posts per orchestrator run."
+  },
+  "freelance": {
+    "fiverr_username": "",
+    "upwork_profile_url": "",
+    "brand_name": "",
+    "pricing_floors": {
+      "fiverr_basic": "",
+      "fiverr_standard": "",
+      "fiverr_premium": "",
+      "upwork_hourly": "",
+      "description": "Your minimum prices (the agent never quotes below these in copy). fiverr_basic/standard/premium are the three Fiverr gig-tier floors; upwork_hourly is your Upwork hourly-rate floor (net — list rate is this divided by 0.8 to absorb Upwork's 20% cut). Leave any field blank to skip it."
+    },
+    "description": "Freelance-manager config (Fiverr + Upwork). fiverr_username, upwork_profile_url, and brand_name are platform handles; pricing_floors holds your minimum prices. All optional — the freelance-manager asks inline for anything blank."
   }
 }

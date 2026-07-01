@@ -35,7 +35,9 @@ File: `references/[FILENAME]`
 Current contents: [read the file first and paste current contents, or describe what
 is there if the whole file is being replaced]
 Replace with:
-[FULL NEW CONTENT — never truncated, never paraphrased]
+[FULL NEW CONTENT — never truncated, never paraphrased. Where this carries the user's
+own words (e.g. a Motivation Bank row promoted from Why I Want This Role), quote them
+verbatim — scrappy English included — per the raw-verbatim rule below.]
 
 Why: [one or two sentences explaining what changed and why]
 
@@ -58,7 +60,7 @@ After applying, confirm:
 
 **Current contents:** always instruct Chat to read the file first, or paste the current state if you have it. This prevents accidental overwrites of content the agent did not intend to change.
 
-**Replace with:** the complete new file contents, untruncated. Never use ellipsis or "rest stays the same" — Chat will fill in the gaps incorrectly.
+**Replace with:** the complete new file contents, untruncated. Never use ellipsis or "rest stays the same" — Chat will fill in the gaps incorrectly. When the content is the user's own words (especially a Motivation Bank promotion from `Why I Want This Role`), it is quoted **verbatim** — see the raw-verbatim rule in the Rules section.
 
 **Why:** required. Explains intent so the user can sanity-check the change before applying.
 
@@ -70,5 +72,6 @@ After applying, confirm:
 
 - This format is mandatory for all career-data update prompts — no bare "please change X to Y" prompts.
 - The context block is fixed boilerplate. Copy it exactly; do not summarize.
+- **Raw-verbatim rule (the user's own words).** When an update prompt carries the user's own words — especially **Motivation Bank promotions** sourced from the `Why I Want This Role` field — the agent quotes them **exactly as written, scrappy/imperfect English included.** Never correct grammar, polish, paraphrase, summarize, or synthesize a cleaner version; never "improve" the phrasing. The exact wording is the asset. The user may fix their own wording inside the prompt before sending — the agent never does it for them. This preserves the Motivation Bank verbatim rule end-to-end, from the prompt through to the installed skill.
 - Personal data (real values, paths, IDs) must never appear in the plugin repo. Update prompts with real values are generated at runtime and saved outside the repo (gitignored).
 - If the prompt is too long to fit in one chat message, split at a natural boundary and note "Part 1 of 2 — continue with next message before repackaging."

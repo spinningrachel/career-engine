@@ -44,7 +44,7 @@ The Upwork MCP (`upwork_search_freelancers`) is available for **competitive rese
 
 ### Hourly Rate
 
-Set from `freelance-config.md` floors. Upwork takes 20% on the first $500 with a client, then 10% up to $10k. Factor this into the floor: if your net floor is $X, your listed rate must be $X / 0.8.
+Set from the `upwork_hourly` floor in `${CAREER_DATA}/references/pipeline-preferences.json` → `freelance.pricing_floors`. Upwork takes 20% on the first $500 with a client, then 10% up to $10k. Factor this into the floor: if your net floor is $X, your listed rate must be $X / 0.8.
 
 ## Proposals
 
@@ -70,7 +70,7 @@ Set from `freelance-config.md` floors. Upwork takes 20% on the first $500 with a
 Before submitting any proposal:
 
 - [ ] Opening line references something specific from the job post
-- [ ] Rate is at or above the floor in `freelance-config.md` (accounting for Upwork's 20% cut)
+- [ ] Rate is at or above the `upwork_hourly` floor in `${CAREER_DATA}/references/pipeline-preferences.json` → `freelance.pricing_floors` (accounting for Upwork's 20% cut)
 - [ ] All claimed credentials are in `02-professional-background.md`
 - [ ] No prohibited vocabulary from `shared-voice-rules.md`
 - [ ] Word count is 200–350
@@ -91,7 +91,7 @@ Upwork's equivalent of Fiverr gigs — fixed-scope, fixed-price service listings
 Structure follows the same logic as Fiverr gig descriptions:
 - Lead with the deliverable, not the process
 - Three tiers with distinct, unambiguous scopes
-- All pricing at or above `freelance-config.md` floors (adjusted for Upwork's fee)
+- All pricing at or above the `freelance.pricing_floors` in `${CAREER_DATA}/references/pipeline-preferences.json` (adjusted for Upwork's fee)
 - Apply `skills/fiverr/SKILL.md` description structure — it applies equally here
 
 ## Competitive Research

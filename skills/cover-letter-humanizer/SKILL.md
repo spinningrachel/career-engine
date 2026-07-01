@@ -13,9 +13,30 @@ This is the complete and only rule list. Every rule lives here. Nothing is elsew
 
 **Shared rules source:** This skill enforces rules from `references/shared-voice-rules.md` (annotated below with §N) plus cover-letter-specific rules from `skills/cover-letter/SKILL.md`. Source annotations in the step tables are for audit only — the checklist is the authority.
 
-**Before running any step:** Read the delivered letters AND the voice fingerprint. Go to `${CAREER_DATA}/references/delivered-letters/`, read `INDEX.md`, and read ALL letters in the archive — every file listed, not 2–3. Read `${CAREER_DATA}/references/03-framework.md` §Voice fingerprint for the quantitative targets. These are your positive calibration — what you are rewriting *toward*, not just what you are rewriting away from.
+**Before running any step — load voice calibration:**
+
+**Pipeline mode:** Read `$PIPE/voice-calibration.md` (pre-computed by the voice-analyst from all delivered letters). Calibration is complete — no archive read needed.
+
+**Standalone mode:** Go to `${CAREER_DATA}/references/delivered-letters/`, read `INDEX.md`, and read ALL letters in the archive — every file listed, not 2–3.
+
+Then read `${CAREER_DATA}/references/03-framework.md` §Voice fingerprint for the user's documented voice targets. These are your positive calibration — what you are rewriting *toward*, not just what you are rewriting away from.
+
+Also load `${CLAUDE_PLUGIN_ROOT}/references/humanizer-target-metrics.md` before starting the steps — the burstiness thresholds, passive density target, and hedging ceiling are the measurable standard you verify in the Final Gate.
 
 Then work through every step in order. Do not skip steps. Do not run steps in parallel. Do not return output until Step 5 is complete and no violations remain.
+
+---
+
+## Step 0 — MANDATORY: Native, idiomatic English (run first)
+
+Read every sentence one by one. Before any AI-pattern work, each sentence must read as natural, native, idiomatic English — the way a fluent executive writes, judged against the delivered letters. AI-pattern fixes cannot be applied to a sentence that does not parse, so this runs first.
+
+For each sentence, two checks:
+
+1. **Non-idiomatic / translated-feeling → REWRITE.** A sentence whose meaning is clear but whose English is unnatural — a literal calque from another language, a wrong preposition or missing/extra article, unnatural word order, a literally-translated idiom, a construction no native writer would use — gets rewritten to convey **the same meaning** in natural English in her register. Use the delivered letters as the bar for "natural." Change only the wording — never add, drop, or alter the meaning.
+2. **Meaning unrecoverable → FLAG, do not invent.** If a sentence is so garbled you cannot tell what it was meant to say, do **NOT** guess or invent a meaning — you have no role context to reconstruct it (you receive only the letter and her voice files). Leave the sentence in place and name it in your change log (`humanizer-changes.md`) under **"⚠ Unrecoverable sentence(s) — writer must fix"**, quoting it. The pipeline surfaces it for the writer/user; inventing content here is a violation of "I do not add content."
+
+**Guard — never "correct" her voice.** This step fixes broken or translated-feeling English, NOT informality, directness, sentence fragments, or intentional stylistic choices. A construction that appears in her delivered letters, or that reads as a deliberate, confident choice, is her voice — leave it. The target is comprehensible native idiom, never added formality or blandness. **When unsure whether a sentence is broken English or her intentional voice, treat it as her voice and leave it.**
 
 ---
 
@@ -61,6 +82,7 @@ Read every sentence in the letter one by one. For each sentence, compare it agai
 | **"Serves as" / "stands as" / "acts as" — use "is."** *(shared-voice-rules §5 [CL])* | These phrases in any context. | "This serves as a foundation for..." | "This is a foundation for..." |
 | **Approach-announcement via label — banned.** *(shared-voice-rules §4)* Announcing the methodology as a named label before demonstrating it. | Any sentence that names an approach or philosophy instead of showing it. | "My approach is deliberately slow-is-the-winner..." / "I treat team building as a core strategic capability, not an HR function." | "At [Company], I spent the first three weeks interviewing buyers before writing a line of copy." Show; don't label. |
 | **Expert-claim — banned anywhere in the letter.** Agent-constructed claims about the candidate's insight, recognition, or perspective not from Why I Want This Role. | Any claim anywhere in the letter that came from agent analysis, not the candidate's own words. | "I know this buyer." / "This is the kind of mandate I'm looking for." / "I see the adoption problem from the inside." / "I recognized the core ask right away." | Use only content the candidate wrote. If nothing exists: `[CANDIDATE TO FILL IN]`. |
+| **Scope volunteering — banned.** The humanizer must not introduce qualification framing when rewriting. Different domains and verticals are never a gap or limitation; the candidate's background is never framed as narrower, smaller, or less than the role warrants. | Any sentence that qualifies the candidate's scope, domain breadth, or seniority as insufficient — including phrases constructed in the process of "humanizing." | "one product, not a portfolio" / "narrower than full-time" / "smaller than the rest of my CV" / "this is a step down from what I've been doing" | Make the positive claim and stop. If the sentence requires a qualification to work, cut the whole sentence. |
 | **Appended negating contrast — absolute ban.** The construction "[claim], not [X]" or "[claim], not as [X]" appended to a sentence. No carve-outs. | Any sentence with a trailing ", not..." or ", not as..." clause. | "I've done both of those things together, not as separate jobs." / "I can execute quickly, not just strategize." | Make the positive claim and stop. Cut everything from the comma forward. |
 | **Antithesis/pivot formula — absolute ban.** *(shared-voice-rules §4)* "Not X — Y." / "It's not about X, it's about Y." / "This isn't just A, it's B." / "Not X. [Subject] Y." The negation half is AI-drafted rhetorical scaffolding. Test: if removing the negating half makes the sentence clearer, cut the negating half. | Any sentence structured as a pivot from a negated claim to a positive one — leading or trailing. | "Feature adoption is won on rhythm, not launch day." / "This isn't just a PMM role — it's a builder role." / "Not execution. Strategy." | Make the positive claim directly. "I build launch rhythms that drive feature adoption." / "This role needs a builder." |
 | **Agent-invented methodology — banned anywhere in the letter.** HOW the candidate works, their process, or their approach must come from their own words in Why I Want This Role or `02-professional-background.md`. The agent may not construct methodology from JD inference. | Any methodology claim the candidate did not write. | "I run discovery interviews before touching positioning." (if unsourced) | Trace to candidate's words or cut. Never infer HOW from the JD. |
@@ -109,10 +131,12 @@ Before returning the letter, do all four of the following:
 
 Before returning anything, run this checklist in order. If any item fails, fix it before continuing.
 
+- [ ] Step 0: Every sentence reads as natural, native English — no translated-feeling or non-idiomatic constructions. Any sentence whose meaning is unrecoverable is flagged in the change log under "⚠ Unrecoverable sentence(s) — writer must fix", not invented. Her intentional voice and archive-consistent constructions are left untouched.
 - [ ] Step 1: No em dashes or colons (no carve-out). No contrived agent-drafted rhetorical tricolons; no same-opening monotone runs (the user's real parallel lists pass). No more than three -ing appendages, each carrying real content. Sentence openings: no expletives ("There was/is/are") and no abstract label noun-phrase subjects — these two carry no carve-out; archive-consistent dependent-clause and prepositional ramps are the user's register and pass.
 - [ ] Step 2: No dangling participles. No long noun phrase subjects. No deeply embedded relative clauses in objects. No wh-clause stacking. No inanimate subjects performing human actions. Parallel structure intact. No "and...and...and..." stacking. Long and short sentences balanced — no paragraph that reads monotone, judged against the delivered letters rather than by counting.
 - [ ] Step 3: No AI vocabulary. Active voice throughout. No "serves/stands/acts as." No approach-announcement labels. No demonstrative declarations. No demonstrative determiners pointing at agent-coined abstractions ("that exact [noun]" / "exactly that [noun]" / "this same [noun]"). No synonym cycling. No appended negating contrast (", not [X]" / ", not as [X]"). No antithesis/pivot formula ("Not X — Y" / "It's not about X, it's about Y" / "This isn't just A, it's B"). No expert-claims anywhere in the letter. No agent-invented methodology. No filler phrases. No false ranges. No word-stem echoes. No prohibited vocabulary phrases.
 - [ ] Step 4: Company name in paragraph 1. Role title named in the first sentence. No example, proof point, or number repeated. No distinctive multi-word phrase repeated anywhere in the letter. Every pronoun and demonstrative still has a live antecedent after all cuts. No company product problems mentioned or implied. No rhetorical questions in opener. No manufactured opener. No strategy analysis opener. Close is its own paragraph. Greeting format correct.
 - [ ] Step 5: Every sentence sounds like it belongs in the delivered letters. Nothing sounds assembled.
+- [ ] **Metric check** (`references/humanizer-target-metrics.md` §7): Run the six ordered checks — sentence burstiness ≥20 word range, paragraph burstiness no adjacent pair within 20 words, passive density ≤25%, hedging density = 0, transition density ≤1 paragraph opener, no repeated compound phrases. Any FAIL means the letter is not done.
 
 **If any box cannot be checked: fix the violation and rerun the checklist from the top. You are not done until every box passes.**

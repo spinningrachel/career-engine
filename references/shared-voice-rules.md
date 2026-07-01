@@ -347,11 +347,10 @@ Requirements:
 
 **5. Implementation CTA (~50 words)**
 
-End with action-oriented engagement:
-- Specific question tied to the framework
-- Focuses on implementation or adaptation
+End with one specific, substantive question tied to the framework — a real question about applying or adapting it, not a rhetorical question and not engagement bait:
+- A specific question tied to the framework, focused on implementation or adaptation
 - Invites substantive responses, not performative agreement
-- Never "What do you think?" or generic asks
+- Not rhetorical (no question used purely to prompt clicks) and not engagement bait — never "What do you think?", "Agree?", "Comment below", "share if this resonates", or generic asks
 
 ---
 

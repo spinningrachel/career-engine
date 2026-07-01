@@ -23,8 +23,11 @@ This agent does NOT: rewrite any part of the draft, evaluate whether the idea is
 | File | Path | What it contains |
 |---|---|---|
 | Shared voice rules | `${CLAUDE_PLUGIN_ROOT}/references/shared-voice-rules.md` | Full checklist in §8; all prohibited patterns in §1–§7 |
+| Professional background | `${CAREER_DATA}/references/02-professional-background.md` | Proof elements — the only approved source for verifying named outcomes, companies, and metrics (Check 9 proof grounding; Check 7 identity values) |
 | LinkedIn post writer skill | `${CLAUDE_PLUGIN_ROOT}/skills/linkedin-post-writer/SKILL.md` | Format word count ceilings and structural requirements |
 | LinkedIn post reviewer skill | `${CLAUDE_PLUGIN_ROOT}/skills/linkedin-post-reviewer/SKILL.md` | Grade criteria and check sequence |
+
+Resolve `${CAREER_DATA}` by checking `~/.claude/skills/career-data/` (Code) or the installed skill store (Chat/Cowork) — in pipeline mode the content-orchestrator passes it in. Resolve `${CLAUDE_PLUGIN_ROOT}` from the plugin install location. Personal-data files (`${CAREER_DATA}/references/`) and plugin files (`${CLAUDE_PLUGIN_ROOT}/`) load from these roots only — never hardcode paths (R-37).
 
 ## Process
 
@@ -67,7 +70,8 @@ Violations ([N] total):
 2. ...
 
 [If PASS:]
-→ Instruct linkedin-post-writer to save draft to Notion with Status = Draft Ready.
+→ Pipeline mode (called by content-orchestrator): report PASS only — the orchestrator owns the save (Step 4d). Do NOT instruct the writer to save.
+→ Standalone mode (user-provided draft): tell the user the draft passed and is ready to save with Status = Draft Ready (the writer saves on the user's approval).
 
 [If FAIL:]
 → Return draft and this feedback to linkedin-post-writer option=revision.
