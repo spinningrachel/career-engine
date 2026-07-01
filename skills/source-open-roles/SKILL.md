@@ -28,12 +28,25 @@ Preferences are stored in `~/.career-engine-job-prefs.json`. The full schema:
     "excludePatterns": ["junior", "intern", "contract"],
     "defaultTimeRange": "last week",
     "location": "City, Country",
-    "notionDatabaseId": "<your-notion-database-id>"
+    "notionDatabaseId": "<legacy — optional; the database id is read from pipeline-preferences.json database_id>"
   }
 }
 ```
 
-`notionDatabaseId` is set during setup. If absent, deduplication against Notion is skipped and the agent notes this.
+**Database id is no longer configured here.** The dedup database id is read from the main config — `${CAREER_DATA}/references/pipeline-preferences.json` → `database_id` (legacy `notion_database_id`) — the same single source the rest of the plugin uses, so you configure it once. The `notionDatabaseId` field above is a legacy fallback only, kept for older local prefs files. If neither resolves, dedup is skipped and the agent notes it.
+
+---
+
+## Keyword Expansion
+
+Target titles are searched as a **variant set**, not verbatim. The same role surfaces under many titles — "Product Marketing Manager," "Technical PMM Director," "Senior PMM," "GTM Enablement Lead," "Head of Marketing" — so a verbatim search for one misses the rest. Expanding at *search* time (not only fuzzy-matching at scoring time) is the single highest-payoff widener.
+
+**The variant set:**
+- **Source of truth:** the user's stored set in `${CAREER_DATA}/references/job-preferences.md` → "Title variants / search keywords." Seeded once (setup, or the agent's existing-user fallback), human-editable, auto-used every run, shown in the run header.
+- **If no stored set exists:** derive on the fly from the target titles in `job-preferences.md` plus `USER_PROFESSION` and `USER_FUNCTION_SENIORITY_HIERARCHY` (`01-writing-rules.md` §8) — seniority variants (Lead / Manager / Director / Head / VP), phrasing variants (Product Marketing ↔ PMM, Go-to-Market ↔ GTM), and any adjacent-function variants the user flagged — then trigger the agent's existing-user seed so the set is stored for next time.
+- **Cap: ~6–8 variants per target title.** Stop there; search volume and noise stay manageable, and dedup + scoring absorb the overlap.
+
+**Global search rule:** wherever a Site Catalog pattern below shows `[title]`, run it **once per variant** in the set (the LinkedIn `search_jobs` keywords and every `site:... "[title]"` WebSearch). Deduplication collapses the repeats; scoring ranks them.
 
 ---
 
@@ -83,6 +96,14 @@ a16z · First Round · Sequoia · Bessemer · NFX · Accel · Lightspeed · Inde
 
 Read `USER_PROFESSION` and `USER_FUNCTION_SENIORITY_HIERARCHY` from `career-data` `01-writing-rules.md` §8 before selecting. Include all sites relevant to the user's function; include startup-focused sites when the user's target companies are predominantly early-stage.
 
+### Tier 5 — Locale boards (the user's country)
+
+The default catalog is US/global-remote-centric, which misses the boards that dominate a given country (e.g. Israel: Comeet ATS, Israeli VC portfolio boards). Source locale boards in this order:
+1. **The user's configured boards first** — `preferred_job_sites` / `local_job_sites` from `pipeline-preferences.json` (already searched first per the top of Search Selection Logic).
+2. **The locale starter catalog** — read `${CLAUDE_PLUGIN_ROOT}/references/locale-job-boards.md`, find the row for the user's country (from `location` / `my_location`), and search the boards listed there that aren't already in the user's configured set. If no country row matches, use the generic/default row.
+
+Locale boards run with the same Keyword Expansion (each variant) and feed the same dedup + scoring as every other tier.
+
 ### Explicit mode overrides
 
 If the user specifies a mode keyword, apply it as an override on top of the tiers:
@@ -113,6 +134,8 @@ search_jobs(
 ```
 Collect all `job_ids`. Deduplicate across title searches. Fetch up to 30 job details via `get_job_details(job_id)`. A result is usable only if it contains role requirements or responsibilities — metadata-only responses (applicant stats only) are not usable.
 
+**LinkedIn hiring posts (when the MCP is connected).** Recruiters and founders announce roles in the feed, not only the jobs board. Surface them: scan `get_feed` and `get_company_posts` for target companies, and run a `site:linkedin.com/posts "[title]" hiring` WebSearch per variant. Treat a hiring post as a lead — capture the company, the role, and the poster (a likely hiring-manager/recruiter contact) — and verify it against the company careers page before offering it for a database add. Skip this sub-source if the LinkedIn MCP is not connected and the WebSearch returns nothing usable.
+
 ---
 
 ### Remote-focused sites
@@ -126,6 +149,7 @@ All fetched via `WebSearch` using the pattern: `site:<domain> "[title]" [time si
 | Remote.co | `WebFetch("https://remote.co/remote-jobs/")` — filter by title. If sparse: `WebSearch("site:remote.co [title] remote job")` |
 | We Work Remotely | `WebSearch("site:weworkremotely.com [title]")` — blocks direct fetch reliably; use WebSearch. |
 | Remote OK | `WebSearch("site:remoteok.com [title]")` or `WebFetch("https://remoteok.com/remote-[title-slug]-jobs")` |
+| Remotive | `WebFetch("https://remotive.com/remote-jobs/[category]")` — filter by title; fallback `WebSearch("site:remotive.com [title]")`. Curated remote board with strong coverage. |
 
 **Additional remote boards:**
 
@@ -164,12 +188,15 @@ All fetched via `WebSearch` using the pattern: `site:<domain> "[title]" [time si
 | BeBee | `WebSearch("site:bebee.com [title]")` |
 | Workable Jobs | `WebSearch("site:jobs.workable.com [title]")` |
 | Hacker News Who's Hiring | WebSearch for `"Ask HN: Who is hiring?" site:news.ycombinator.com [current month] [current year]`. Fetch thread via `https://hacker-news.firebaseio.com/v0/item/{THREAD_ID}.json`. Fetch up to 100 comment items. Parse `text` field of each. Filter by title fuzzy-match. |
+| Reddit hiring threads | WebSearch `site:reddit.com ("hiring" OR "who's hiring") "[title]"` and target the high-signal subreddits: `r/forhire`, `r/jobbit`, `r/remotejs`, plus the function/locale subreddits for the user's profession and country. Fetch a thread JSON via `https://www.reddit.com/<permalink>.json` and parse comments for company + role + apply link. Filter by variant fuzzy-match; verify against the company careers page before offering for a database add. |
 
 ---
 
 ### ATS / company career pages
 
 Use these to surface roles posted directly on company career pages via their ATS. These often appear earlier than aggregators and are not always indexed on general boards.
+
+**Native careers as a discovery source (not only verification).** For known target companies — `favorite_brands` from `pipeline-preferences.json`, and any companies surfaced during the run — fetch their own careers page directly (the rendering-capable extractor, or `site:<company-domain> "[title]"`) as a *discovery* step, per variant, not just to cross-check a board hit. A role can live on a company's careers page weeks before it reaches any aggregator.
 
 | Site | Fetch method |
 |---|---|
@@ -251,11 +278,13 @@ These surfaces list roles at funded/tracked companies not always indexed on gene
 
 ## Deduplication
 
-Before scoring and displaying results, filter out any role that already exists in the Notion database.
+Before scoring and displaying results, filter out any role that already exists in the database.
 
-**How to check:** If the `ntn` CLI gate passes (`command -v ntn >/dev/null 2>&1 && ntn whoami >/dev/null 2>&1`), query the database with `ntn datasources query <data-source-id> --limit 100 --json` (resolve the data source ID once via `ntn api /v1/databases/<notionDatabaseId>` → `data_sources[0].id`; paginate with `--start-cursor` until `has_more` is false) and extract the `Company` + `Position` pairs in the shell. Otherwise query the Notion database using `notionApi` `API-query-data-source` with `notionDatabaseId` from preferences. If the `notionApi` server is not connected or returns an Enterprise-gated response, fall through and use `notion-query-database-view` — but note its two constraints (R-39): it takes no ad-hoc `filter` argument and requires a real **view URL** (`...?v=<VIEW_ID>`), never the bare database URL. Resolve a view by name using a two-step fetch: (1) call `notion-fetch id="<notionDatabaseId>"` to get the `collection://` URL from the `<data-sources>` block; (2) call `notion-fetch id="<collection_url>"` to list views, find one named "All Active Applications" (or any broad view), take its UUID from the `view://UUID-with-dashes` format, **remove all dashes**, and construct `https://www.notion.so/<DB_ID_NO_DASHES>?v=<VIEW_ID_NO_DASHES>`; call `notion-query-database-view` with that `view_url` and extract the same pairs — but if the returned table is misaligned (row/column counts don't match, cells empty where neighbours are not), do not parse it: log a warning, skip dedup for this run, and note in the results that duplicates were not filtered. A skipped dedup is recoverable; a mispaired Company/Position exclusion silently hides a real role. Extract all `Company` + `Position` pairs. For each search result: if `(company name, role title)` matches any existing pair (case-insensitive, substring match on title), exclude it from results. Log the count of excluded duplicates.
+**Resolve the database id from the main config first — one place to configure it.** Use `database_id` (legacy `notion_database_id`) from `${CAREER_DATA}/references/pipeline-preferences.json` — the same source every other pipeline reads. Only if the config has no value there, fall back to `notionDatabaseId` in the sourcing-local `~/.career-engine-job-prefs.json` (a legacy store). Everywhere below, the database id written `<notionDatabaseId>` means this resolved value.
 
-If `notionDatabaseId` is not set, skip dedup and display a warning: "Notion deduplication skipped — no database ID configured. Run /career-engine:setup to configure."
+**How to check:** Query the active applications via the **Notion adapter** (`${CLAUDE_PLUGIN_ROOT}/skills/database-notion/SKILL.md` → §2 read ladder, loaded when `database_backend` is `notion`; on Path B use the adapter's §3 view discovery to resolve a broad view such as "All Active Applications"). Extract the `Company` + `Position` pairs from the result — but if the returned table is misaligned (row/column counts don't match, cells empty where neighbours are not), do not parse it: log a warning, skip dedup for this run, and note in the results that duplicates were not filtered. A skipped dedup is recoverable; a mispaired Company/Position exclusion silently hides a real role. Extract all `Company` + `Position` pairs. For each search result: if `(company name, role title)` matches any existing pair (case-insensitive, substring match on title), exclude it from results. Log the count of excluded duplicates.
+
+If no database id resolves (neither `database_id` in the config nor the legacy `notionDatabaseId`), skip dedup and display a warning: "Deduplication skipped — no database ID configured. Run /career-engine:setup to configure."
 
 ---
 
@@ -276,8 +305,11 @@ Score every result (0–100) after deduplication.
 | Hiring manager identified (LinkedIn only) | 15 |
 | Easy Apply available (LinkedIn only) | 4 |
 | Apply URL present (non-LinkedIn sources) | 6 |
+| Screening conflict — a populated `screening_answers` field contradicts a stated JD requirement | −15 (down-rank, never exclude; attach a visible label) |
 
 Cap at 100. Sort descending. Roles without a title match should not appear unless no matches exist.
+
+**Standing screening answers (`screening_answers` from `${CAREER_DATA}/references/pipeline-preferences.json`).** If present, compare each *populated* field (travel / relocation / security_clearance / compensation_floor / availability) against the JD. A hard conflict (e.g. role explicitly requires relocation while `relocation` = "no") applies the −15 down-rank above **and** attaches a visible reason label to the row (`⚠ screening: relocation required vs your "no"`) so the user sees exactly why it ranked lower. **Never silently exclude on a screening conflict** — down-rank + label only, and log it in the run output. `compensation_floor` feeds the existing `minSalary` signal: when `minSalary` is not otherwise configured, use `screening_answers.compensation_floor` as `minSalary`. If `screening_answers` is absent or empty, skip this entirely (no labels, no down-ranks).
 
 ---
 
@@ -301,10 +333,14 @@ While there, capture staleness signals: original posting date and re-post indica
 
 **Geography is never an exclusion for remote roles.** A geographic restriction in a remote-advertised role's text is handled by the Verification Pass remote-geography rule above — noted, never excluded.
 
+**A screening conflict is never an exclusion either.** A populated `screening_answers` field contradicting the JD is handled by the Scoring Rubric — down-ranked and labeled, never dropped. The user decides.
+
 Exclude any result where:
 - The title contains any `excludePatterns` value (case-insensitive substring match)
-- The role is already in the Notion database (see Deduplication)
+- The role is already in the database (see Deduplication)
 - The role was already surfaced in a previous search session saved to `{{OUTPUT_FOLDER}}/sourcing/` (check saved search files from the last 14 days — skip roles that appeared with the same company + title)
+
+**Sources deliberately not searched (echo aggregators).** Do **not** add Lensa, Metaintro, Work Whisper, or Remote Rocketship to the catalog. They re-publish roles already surfaced by the boards and ATS sources above, so they add deduplication load, not new openings. Skip them by default; do not reintroduce them as "more coverage."
 
 ---
 

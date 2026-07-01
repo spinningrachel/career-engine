@@ -23,7 +23,7 @@ These rules exist because ATS systems parse CVs mechanically before a human sees
 
 ### Keyword coverage target
 
-The career coach provides 8–15 Keywords in three tiers (format: `Critical: ... | Important: ... | Nice-to-have: ...`). Parse each tier separately and apply the thresholds below. Count coverage explicitly before returning any draft.
+The career coach provides up to 9 Keywords in three tiers (Critical ≤4 / Important ≤3 / Nice-to-have ≤2; format: `Critical: ... | Important: ... | Nice-to-have: ...`). Parse each tier separately and apply the thresholds below. Count coverage explicitly before returning any draft.
 
 | Tier | Required | Placement priority |
 |---|---|---|
@@ -128,6 +128,20 @@ These use the user's documented experience. Every claim in the strong version tr
 | **No tool names** | No tool or technology name of any kind inside experience bullets — not any tool, not even if named in the JD, not even as an illustrative example. There are no named exceptions to this rule. Tool identity lives in the `## TOOLS` section, not in bullets. Approved Section 7 bullets from `02-professional-background.md` are the only exemption — do not alter them. |
 | **Verb tally** | No opening verb may appear 3 or more times across all bullets. Tally before returning. |
 | **No repetition** | No phrase may appear verbatim in more than one bullet. |
+
+---
+
+## Tailoring & dedupe discipline
+
+A tailored CV is not the master CV with keywords swapped in. Tailoring to a target means cutting and consolidating as much as it means including. Run this pass after drafting bullets and before the SKILLS section.
+
+- **Dedupe stats across bullets.** A metric earns its place once. If the same number, percentage, or named outcome appears in two bullets, keep it in the bullet where it lands hardest and cut it from the other — repeating a stat reads as padding and wastes scarce CV space. (This is broader than the verbatim-phrase ban: the *same proof* counted twice is the problem, even when the wording differs.)
+- **Combine overlapping bullets.** When two bullets describe the same initiative or make the same point from slightly different angles, merge them into one stronger bullet. Two thin overlapping bullets are weaker than one dense one.
+- **Cut role-irrelevant bullets.** A bullet that is impressive but does not serve *this* role's mandate is a liability, not a bonus — it dilutes the skim and pushes the relevant proof down the page. Cut it for this target even if it is excellent in the abstract. Relevance is judged against `Role emphasis` and the JD, not against how good the bullet is on its own.
+- **De-label the summary toward the target.** If the summary or its positioning carries a label that fights the target role — an explicit "B2B" framing for a consumer role, an IC framing for a leadership role, a vertical the target doesn't share — strip the label and re-anchor on what the target needs. The summary stakes the claim *this* hiring manager must believe (see the Summary section); a positioning label from the user's last role is not automatically that claim. Never invent a label the record doesn't support — remove the mismatched one and lead with the genuine, role-relevant strength.
+- **Prioritised cuts to fit length.** When the document runs over its length or character budget, cut in priority order: role-irrelevant bullets first, then duplicated stats, then the weakest of any overlapping pair, then trim wording. Cut the least role-relevant material first — never shorten by trimming the proof the role most needs.
+
+This pass is about fit and density. It never licenses fabrication, and it never removes an approved Section 7 bullet's documented substance — it selects and consolidates among real, documented material.
 
 ---
 

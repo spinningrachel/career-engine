@@ -42,6 +42,18 @@ This check is mandatory before scoring priority. "Remote" does not mean the same
 
 **Function:** {{TARGET_FUNCTION}}. Roles outside this function are low priority unless there is a clear match.
 
+### Title variants / search keywords
+
+The canonical, human-editable variant set `source-open-roles` searches (see its Keyword Expansion section — each variant is searched, not just the verbatim target titles). One line per target title, with the variants it should also be searched under. Seeded once at setup (or the agent's existing-user fallback) and editable any time. Cap ~6–8 variants per title.
+
+{{TITLE_VARIANTS}}
+
+> Example shape (replace with your own):
+> - **Product Marketing lead** → Product Marketing Manager · PMM · Senior PMM · Technical PMM · Director of Product Marketing · Head of Product Marketing · GTM Lead
+> - **Head of Marketing** → VP Marketing · Marketing Director · Head of Growth · GTM Lead
+
+If this section is empty/unseeded, `source-open-roles` derives variants on the fly from the target titles above plus `USER_PROFESSION` / `USER_FUNCTION_SENIORITY_HIERARCHY`, then triggers the seed so they're stored here.
+
 ---
 
 ## Industry and Domain Preferences
@@ -84,6 +96,8 @@ This check is mandatory before scoring priority. "Remote" does not mean the same
 **Acceptable:** Contract-to-hire if the role is substantive and could become permanent.
 
 **Excluded by default:** Pure contract, freelance, part-time, fractional (unless explicitly requested in a given session).
+
+> **Standing screening answers live elsewhere.** Travel willingness, relocation, security clearance, compensation floor, and availability/notice are held as structured fields in `screening_answers` in `pipeline-preferences.json` — not here. The coach reads both (this file plus `screening_answers`) for a complete fit picture. Keep them there to avoid duplication; this file owns role-type, seniority, domain, stage, remote eligibility, and employment-type preferences.
 
 ---
 

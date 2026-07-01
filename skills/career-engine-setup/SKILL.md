@@ -412,7 +412,7 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 
    Say: "**One Notion responsibility:** The MCP connection uses your personal OAuth token — it expires or can be revoked. If the pipeline ever fails to read Notion mid-run, reconnect by repeating the step above."
 
-4. Write the database ID as `notion_database_id` in the career-data config (`${CAREER_DATA}/references/pipeline-preferences.json`). If the user gave a Needs-Editing view URL, write it as `notion_needs_editing_view_url`. Do NOT substitute `{{NOTION_DATABASE_ID}}` into plugin files — every skill resolves it from the config at runtime (R-38).
+4. Write `database_backend` = `notion` and the database ID as `database_id` in the career-data config (`${CAREER_DATA}/references/pipeline-preferences.json`). If the user gave a Needs-Editing view URL, write it as `database_edit_view_url`. (Notion is the current backend; the `database_*` names are backend-neutral so a future tracker can reuse them. Older configs may still carry the legacy `notion_database_id`/`notion_needs_editing_view_url` names — the pipeline reads both, but write the `database_*` names on a fresh setup.) Do NOT substitute `{{NOTION_DATABASE_ID}}` into plugin files — every skill resolves it from the config at runtime (R-38).
 5. Write the view ID to every `{{NOTION_VIEW_ID}}` placeholder (or leave placeholder if not provided).
 
 6. Say: "**Important:** Do not rename the columns in your Notion database. The pipeline writes to them by exact name — renaming breaks the integration silently."
@@ -528,28 +528,28 @@ Ask: "Do you want the coach to track whether each role is compatible with your l
 
 If you don't have this property in your database or don't need it, skip this — the coach will simply not check location compatibility."
 
-- If the user provides both values: write `location_compatibility: {"my_location": "<value>", "notion_property": "<value>"}` to the config.
-- If the user skips: write `location_compatibility: {"my_location": "", "notion_property": ""}` (the default from the plugin template — both empty means the check is skipped at runtime).
+- If the user provides both values: write `location_compatibility: {"my_location": "<value>", "database_property": "<value>"}` to the config.
+- If the user skips: write `location_compatibility: {"my_location": "", "database_property": ""}` (the default from the plugin template — both empty means the check is skipped at runtime).
 
 **Favorite brands (optional).** Ask: "Do you have any companies you'd like to always prioritize one tier higher than the coach would normally score? If yes, list them. You can update this list at any time." Write the list to `favorite_brands` as a JSON array of strings. Empty array = no boost applied.
+
+**Screening answers (optional).** Ask: "A few standing answers help the coach flag fit and help sourcing rank roles — answer any that apply, skip the rest (free text):
+- Travel — how much are you up for? (e.g. 'open to frequent travel', 'prefer minimal', 'up to ~25%')
+- Relocation — willing to relocate, and where?
+- Security clearance — eligibility or status (matters for defense roles)
+- Compensation floor — minimum base you'd consider
+- Availability — when you could start / notice period"
+Write the answers into `screening_answers` (object with `travel`, `relocation`, `security_clearance`, `compensation_floor`, `availability` — each a free-text string, blank to skip). All optional: a blank field is simply not checked. Intake flags a match or conflict in Patterns (advisory, never a gate); sourcing down-ranks a conflicting role with a visible label (never excludes it).
 
 **Job site preferences (optional).** Ask in two parts:
 
 1. "Are there specific job sites you always want searched? List up to 5 (e.g. Wellfound, Greenhouse, a specific industry board). These will be searched on every sourcing run, in addition to standard boards."
 
-2. "Based on your location, here are common local job boards — pick up to 2 to prioritize:
-   1. LinkedIn Jobs (global, but local postings)
-   2. Glassdoor
-   3. Indeed (local version for your country)
-   4. Wellfound / AngelList Talent
-   5. Otta
-   6. Relocate.me
-   7. Remote OK
-   8. We Work Remotely
-   9. EuropeRemotely
-   10. Are there local boards specific to your location I should know about? Name them."
+2. Read `${CLAUDE_PLUGIN_ROOT}/references/locale-job-boards.md`, find the row for the user's country (from the location they gave), and propose that row's boards as the local shortlist: "Based on your location, these local boards are worth prioritizing: [list the country row's ATS / VC / aggregator / localized-major entries]. Pick up to 2, and name any others specific to your location I should know about." If no country row matches, propose the generic/default row.
 
 Write the answers into `preferred_job_sites` (up to 5 entries) and `local_job_sites` (up to 2 entries) in the career-data config. Empty arrays if the user skips or has no preferences.
+
+**Title variants / search keywords (recommended).** Sourcing searches each target title under several variants, not verbatim. Propose a set (~6–8 per target title) derived from the user's target titles + `USER_PROFESSION` / `USER_FUNCTION_SENIORITY_HIERARCHY`: "Here are the title variants I'd search for you — edit, add, or remove any:" then list one line per target title with its variants (e.g. *Product Marketing lead → PMM · Senior PMM · Technical PMM · Director of Product Marketing · Head of Product Marketing · GTM Lead*). Write the confirmed set into `${CAREER_DATA}/references/job-preferences.md` → the "Title variants / search keywords" section (replacing the `{{TITLE_VARIANTS}}` placeholder). This is what `source-open-roles` reads every run.
 
 **Rule: user-specified sites in `preferred_job_sites` and `local_job_sites` always take priority over plugin defaults. The plugin's built-in site list is a fallback, not a directive.**
 
@@ -559,22 +559,30 @@ Write the answers into `preferred_job_sites` (up to 5 entries) and `local_job_si
     "gap_handling": "enabled",
     "output_folder": "<the absolute path the user gave>",
     "cv_template": "references/<their-dotx-or-cv-template-default.dotx>",
-    "notion_database_id": "<32-char DB id, or empty for non-Notion trackers>",
+    "database_backend": "notion",
+    "database_id": "<32-char DB id, or empty for non-database trackers>",
     "draft_dir_url_base": "<cloud-share base URL, or skip>",
     "output_dir_prefix": "applications",
     "default_language": "English",
     "word_templates_path": "<Hebrew .dotx templates dir, or empty>",
-    "notion_needs_editing_view_url": "<Needs-Editing view URL, or empty>",
+    "database_edit_view_url": "<Needs-Editing view URL, or empty>",
     "location_compatibility": {
       "my_location": "<city/country/region, or empty to skip>",
-      "notion_property": "<Notion property name, or empty to skip>"
+      "database_property": "<property/field name in your tracker, or empty to skip>"
     },
     "favorite_brands": [],
     "preferred_job_sites": [],
-    "local_job_sites": []
+    "local_job_sites": [],
+    "screening_answers": {
+      "travel": "<e.g. 'open to frequent travel', or empty>",
+      "relocation": "<willing + where, or empty>",
+      "security_clearance": "<eligibility/status, or empty>",
+      "compensation_floor": "<minimum base, or empty>",
+      "availability": "<start date / notice, or empty>"
+    }
   }
   ```
-  (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted; `location_compatibility` both keys empty = check skipped; `favorite_brands` empty array = no boost.) **Required for any run:** `output_folder`, `cv_template`; **also required for Notion trackers:** `notion_database_id`. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop if a required key is missing. Never substitute any of these into plugin files.
+  (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted; `location_compatibility` both keys empty = check skipped; `favorite_brands` empty array = no boost.) **Required for any run:** `output_folder`, `cv_template`; **also required when a database backend is configured:** `database_id`. **Every other key is optional** — a run completes without it and the config-health notice lists what is empty/missing. Write the `database_*` names on a fresh setup; the pipeline still reads the legacy `notion_database_id`/`notion_needs_editing_view_url`/`notion_property` names for older configs. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop only if a *required* key is missing. Never substitute any of these into plugin files.
   (or `"disabled"`, matching the user's choice). Preserve any other keys already present in the file.
 - Apply the **Writing personal data** rule: in Claude Code write `career-data` directly; in Cowork stage the change and emit the Appendix-A handoff (`references/career-data-skill-handoff.md`). Refresh the `career-data` backup export after a direct write.
 - Do NOT write this preference to `~/.claude/settings.json` — that location is reachable only from the user's own machine and silently falls back to the default everywhere else. The pipeline still reads it as a legacy fallback, but `career-data` is the authority.

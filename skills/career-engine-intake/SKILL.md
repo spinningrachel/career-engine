@@ -64,9 +64,9 @@ Do not ask the user about this. The preference was set during setup (Phase 5). I
 
 ## Step 0 — Fetch Notion schema and roles
 
-**Guard — resolve the database ID from the career-data config (R-38).** The plugin keeps `{{NOTION_DATABASE_ID}}` literal by design (single build); the literal placeholder is **not** a sign of incomplete setup — do not abort on it. Resolve `$NOTION_DATABASE_ID` from `${CAREER_DATA}/references/pipeline-preferences.json` (`notion_database_id`) — read it yourself at intake start. **Stop only if that config value is missing or empty**, and tell the user:
+**Guard — resolve the database ID from the career-data config (R-38).** The plugin keeps `{{NOTION_DATABASE_ID}}` literal by design (single build); the literal placeholder is **not** a sign of incomplete setup — do not abort on it. Resolve `$NOTION_DATABASE_ID` from `${CAREER_DATA}/references/pipeline-preferences.json` — read the `database_id` key (or legacy `notion_database_id`) yourself at intake start (the `$NOTION_DATABASE_ID` var is the Notion adapter's internal name). **Stop only if that config value is missing or empty**, and tell the user:
 
-> "Your career-data config has no `notion_database_id`. Run `/career-engine:setup --phase 5` to add your Notion database ID to career-data."
+> "Your career-data config has no `database_id` (or legacy `notion_database_id`). Run `/career-engine:setup --phase 5` to add your database ID to career-data."
 
 Otherwise proceed with the resolved `$NOTION_DATABASE_ID`.
 
@@ -74,93 +74,11 @@ The database ID for this run: `$NOTION_DATABASE_ID` (resolved from the career-da
 
 ---
 
-**Step 0a — Fetch the database schema.** Run `notion-fetch` on the configured database ID:
-
-```
-notion-fetch id="{{NOTION_DATABASE_ID}}"
-```
-
-If the schema fetch fails (tool error, empty response) or the response contains no `CREATE TABLE` block, stop immediately and report the error to the user — do not proceed without a schema reference and do not improvise one.
-
-Extract the SQLite `CREATE TABLE` block from the response. This is your **schema reference** for the entire run — the authoritative list of property names and valid select option values. Keep it in context.
-
-**Use the schema reference for every Notion write in this run.** When writing a select field, look up the valid options in the SQLite comment for that column (e.g., `-- one of ["Yes", "Remote-only", "No"]`) and write the exact string from the schema. Never hardcode select option values. If any agent returns a value that does not match a schema option, map it to the closest matching option using the schema as the authority.
-
-**Pass the SQLite block to the career coach** in its prompt as a "Notion schema reference" section so it can write select values that exactly match the live Notion options.
+**Step 0a — Read the schema reference (via the database adapter).** This is a database operation. **Load `${CLAUDE_PLUGIN_ROOT}/skills/database-notion/SKILL.md`** — the Notion adapter, mandatory whenever `database_backend` is `notion` (the default) — and follow its **§1 Schema read**: fetch the schema, extract the SQLite `CREATE TABLE` block as the run's authoritative schema reference (property names + valid select-option values), keep it in context, and pass it to the career coach as a "Notion schema reference" section so it writes select values that match the live options. If the schema fetch fails, stop and report. (If `database_backend` is ever not `notion`, load that backend's adapter instead — the operation is the same.)
 
 ---
 
-**Step 0b — Fetch Hold roles using a direct Status filter.**
-
-Target status: `Hold`.
-
-Two query paths exist, and Path A has two rungs. Use **Path A1** (the `ntn` CLI) whenever its gate check passes; fall to **Path A2** (the `notionApi` server) when A1 is unavailable; use **Path B** when both A rungs are absent or unusable (e.g. a Cowork session with no CLI in its sandbox and no `notionApi` server — only the standard Notion connector). Falling down the ladder is sanctioned routing, never a reportable failure. Both intake modes use the same paths.
-
-**Path A1 — `ntn` CLI structured query (preferred where available).** The official Notion CLI returns the same structured JSON as the API, but through Bash — so the result is trimmed in the shell and only the fields the pipeline needs ever enter context. The gate, not the environment label, decides: any runtime whose shell passes the gate — including a sandboxed session where the CLI is installed and a token is configured — uses A1; where the gate fails, the ladder falls to A2 without comment. The gate never installs the CLI and never prompts for credentials mid-run. Keychain auth requires an interactive login session; in headless or sandboxed shells auth comes from the `NOTION_API_TOKEN` environment variable (or `NOTION_KEYRING=0` file-based auth) — if neither is present, `ntn whoami` fails, and that is the gate working as designed.
-
-Gate check (both conditions must pass):
-```bash
-command -v ntn >/dev/null 2>&1 && ntn whoami >/dev/null 2>&1 && echo "Path A1 available"
-```
-
-Resolve the data source ID once per run from the database ID, then query:
-
-```bash
-ntn api /v1/databases/{{NOTION_DATABASE_ID}}   # read data_sources[0].id from the response
-ntn datasources query <data-source-id> \
-  --filter '{"property":"Status","status":{"equals":"Hold"}}' \
-  --limit 100 --json
-```
-
-Trim the JSON in the shell (`python3` or `jq`) down to each row's page `id` plus the named properties this step needs — always read by property name, never by column position. If `has_more` is true, continue with `--start-cursor` until exhausted. For a full single-row read, `ntn pages get <page_id>` returns every property plus the page body as markdown in one call.
-
-Better still, project at the source so bulk payloads never arrive at all: repeat the httpie-style query param `filter_properties==<property_id>` on a direct query call —
-
-```bash
-ntn api /v1/data_sources/<data-source-id>/query 'filter_properties==title' 'filter_properties==<property_id>' \
-  -X POST -d '{"filter": {...}, "page_size": 100}'
-```
-
-— which returns only the named properties (verified: ~3KB for a projected batch vs ~120KB unprojected). `filter_properties` takes property IDs read from the data source schema, not property names.
-
-Syntax notes for direct API calls: `ntn api` is httpie-style — the path is given directly with no get/post verb words (`ntn api /v1/pages/<page_id>`; method is inferred, override with `-X PATCH -d '{...}'`); query params are `name==value` inline inputs. When unsure of syntax, verify instead of guessing: `ntn api ls` lists supported endpoints, `ntn api <path> --docs` prints the official endpoint docs, and `--spec` prints the request/response schema.
-
-If any A1 call errors after the gate passed (auth revoked mid-run, network failure), fall to Path A2 for the remainder of the run.
-
-**Path A2 — `notionApi` structured query.** `notionApi` returns structured JSON keyed by property name. There is no column alignment to get wrong, no table to parse, no off-by-one risk.
-
-The `notionApi` tools are deferred and their schemas are not pre-loaded. Before calling, run a ToolSearch to load the schema:
-```
-ToolSearch query="select:notionApi__API-query-data-source"
-```
-If ToolSearch returns a schema, proceed with Path A2. If it returns nothing, try the full tool name `mcp__notionApi__API-query-data-source` directly — deferred tools are still callable by their full name even if ToolSearch doesn't surface them. If the direct call returns a tool-not-found error, the `notionApi` server is not connected in this session — **execute Path B immediately: go directly to the numbered steps under "Path B" below and call `notion-fetch` then `notion-query-database-view`.** If the Path A2 call returns any other error (auth failure such as a 401, Enterprise-gated response, malformed response, timeout), treat the `notionApi` server as unusable in this session — **execute Path B immediately: go directly to the numbered steps under "Path B" below and call `notion-fetch` then `notion-query-database-view`.** In neither case report this as a failure; Path B is a sanctioned route, not a workaround. Do NOT attempt `notion-search`, `notion-fetch` on the view URL directly, or any other improvised route — the next action is always `notion-fetch id="$NOTION_DATABASE_ID"` (Path B step 1). If Path B then also fails, apply the all-paths-fail rule at the end of this step.
-
-Call `notionApi` `API-query-data-source` (full tool name: `mcp__notionApi__API-query-data-source`) with:
-- database ID: `$NOTION_DATABASE_ID` (resolved from career-data config)
-- filter: `{"property": "Status", "status": {"equals": "Hold"}}`
-- page_size: 100
-
-This returns a JSON array of page objects. Each object has an `id` field and a `properties` object with named fields — read property values by name, not by column position.
-
-**Path B — standard connector view query for discovery, per-page fetch for properties (only when the `notionApi` server is absent or unusable).** **Start here with step 1 below — call `notion-fetch id="$NOTION_DATABASE_ID"` first.** Do not call `notion-fetch` on any other URL, do not call `notion-search`, and do not attempt any other tool before completing steps 1–4 in order. `notion-query-database-view` (used in step 2) executes a *view's own saved filter and sort* and returns a *rendered table*. Two hard constraints on this tool (R-39): it does **not** accept an ad-hoc `filter` argument — any filter you pass is silently ignored — and it requires a real **view URL** (`https://www.notion.so/<DB_ID>?v=<VIEW_ID>`), never the bare database URL. The rendered table is also susceptible to column misalignment (the R-1 failure: 17 companies, 16 status tags) and shows only the view's visible columns, so it is used **only to discover candidate pages**; property values are always read per page. The rule that survives from R-1: **a misaligned rendered table must never be parsed** — and in Path B no rendered table is ever parsed for property values, aligned or not.
-
-1. **Resolve the view URL by name — do not hardcode it and do not pass a filter.** The database's views are not directly on the page — they live in its data-source (collection). Two fetches are needed:
-   - **Fetch 1:** Call `notion-fetch id="$NOTION_DATABASE_ID"`. The response contains a `<data-sources>` block with one or more `<data-source url="{{collection://...}}">` entries. Copy that `collection://` URL.
-   - **Fetch 2:** Call `notion-fetch id="<collection_url>"` (e.g. `notion-fetch id="collection://aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"`). This response contains `<view url="{{view://UUID-with-dashes}}">` blocks. Find the one whose JSON content includes `"name":"Hold"`.
-   - **Build the URL:** Take the view's UUID (e.g. `11112222-3333-4444-5555-666677778888`), **remove all dashes**, and construct: `https://www.notion.so/<DB_ID_NO_DASHES>?v=<VIEW_ID_NO_DASHES>`. Example: `https://www.notion.so/aaaaaaaabbbbccccddddeeeeeeeeeeee?v=11112222333344445555666677778888`. The DB ID is already known (no-dash form); only the view UUID needs dash removal. View IDs change when views are reorganised, so the by-name lookup is always the source of truth.
-2. Call `notion-query-database-view` with `view_url` = that URL and **no other arguments**. The view already restricts to the target status; do not construct your own filter.
-3. **Use the result for discovery only.** Extract the page IDs/links from the result — these are unambiguous even in a misaligned table. Do not read any property value out of the rendered table.
-4. **Fetch full properties per page:** call `notion-fetch id="<page_id>"` on each candidate page and read its complete property set from the structured page response. Discard pages whose Status does not match the target. Every downstream read in this run — Step 0.6 priorities, the Step 0.8 coach-complete check, the Step 0.9a write-only-to-empty rule — uses these per-page property sets, never the rendered table.
-
-**Rules for all paths:**
-
-**Never create, update, or modify Notion database views.** Do not call `create-database-view`, `update-database-view`, or any equivalent tool under any circumstance — not as a workaround, not to filter results, not to resolve misalignment.
-
-**On Paths A2 and B, do not use Bash or Grep on the query result.** Process it directly from the tool response in context. On Path A1 the result arrives through the shell, and trimming it there (`python3`/`jq`) is the sanctioned mechanism — that is the point of the rung, not a violation of this rule.
-
-The result should contain only rows matching the target status. If unfiltered rows appear, discard non-matching ones in memory and log a warning. Do not process any row whose Status does not match the target.
-
-If all paths fail with tool errors or unparseable responses, stop immediately and report the error to the user — do not treat it as zero results and do not improvise a query route outside the ladder. In particular, **never fall back to `notion-search` (or any semantic/keyword search) to discover queue rows** (R-39): it is relevance-ranked and capped, cannot enumerate the queue, and will silently miss roles — producing a false "no roles" when roles exist.
+**Step 0b — Fetch the Hold queue (via the database adapter).** Target status: `Hold`. Following `skills/database-notion/SKILL.md` (loaded in Step 0a) → **§2 Read ladder**, query the queue for `Status = Hold` (A1 → A2 → B; falling down the ladder is sanctioned routing, never a reportable failure). **Both intake modes use the same ladder.** On Path B the rendered view is **discovery-only** → per-page `notion-fetch`; **every downstream read in this run** — Step 0.6 priorities, the Step 0.8 coach-complete check, the Step 0.9a write-only-to-empty rule — uses those per-page property sets, never a rendered table. If every rung fails, stop and report — never treat it as zero results, and never improvise `notion-search` to enumerate the queue (R-39). The adapter also carries the all-paths rules (no view creation, no Bash/Grep on A2/B results, target-status filtering).
 
 Skip any entry where neither a Job URL nor job description details in the RTF body of the record are populated.
 
@@ -215,7 +133,9 @@ For each role:
 
 3. **No Job URL and no JD content anywhere** — mark `needs-fetch`. Log to the run-level revision log. Drop from this run.
 
-Pass the full row payload (including `JD Body` content and any fetched URL content) to the career coach in Step 0.8. The coach writes `JD Body`, `JD Fetch Status`, `Priority`, `Priority Reason`, and the location compatibility property (if configured).
+**Cross-version capture for location and First Advertised.** The fallback ladder above stops at the first rung that returns usable JD *content*, but `First Advertised` and location compatibility cannot be set reliably from a single version of a posting (a board's location field is often a forced artifact, and its posting date resets on every re-post). So: whenever the ladder surfaces a second version of the same role — a board mirror, an ATS/careers listing, a LinkedIn posting — capture that version's **location field (verbatim)** and its **posting/"posted X ago" date** even after you already have usable content, and pass every captured version's URL, location field, and date to the coach alongside the JD. Do not fetch full mirrors solely for this where the ladder already succeeded on rung 1 — but record any version that does come into view during the search. The coach corroborates across these versions per `skills/career-coach/SKILL.md` → Location & eligibility deep-scan and → `Date first advertised`.
+
+Pass the full row payload (including `JD Body` content, any fetched URL content, and every captured alternate version's URL/location field/date) to the career coach in Step 0.8. The coach writes `JD Body`, `JD Fetch Status`, `Priority`, `Priority Reason`, and the location compatibility property (if configured).
 
 Hold all structured JD data in memory. Proceed immediately to Step 0.6.
 
@@ -292,19 +212,23 @@ This step is mechanical and runs end-to-end without pausing.
 
 **Rule: write only to empty properties.** For every property below, check the current Notion value first. If already populated — skip it. Do not overwrite any existing value. `N/A` counts as populated.
 
-Where Path A1 (the `ntn` CLI, Step 0b gate) is active in this run, property writes may equivalently go through `ntn api /v1/pages/<page_id> -X PATCH -d '{"properties": {...}}'` — same write-only-to-empty rule, same parallelism. Otherwise use the connector tools as written below.
+**Write to the EXISTING property of that exact name — never create a property or a numbered variant** (the "Strategy 1" bug came from an agent that couldn't write `Strategy` cleanly and made a duplicate). If a property is missing or rejects the write, report it in the briefing — do not invent a field. **Write to properties only, never to the page body** (the sole sanctioned body write is the outreach map in Step 0.9e).
+
+**Most-skipped, treat as mandatory:** the **location-compatibility property** and **`First Advertised`** are the two writes agents most often drop. When the coach produced a value (including a `[LOW]`/range/`Unknown`), these MUST be written — do not finish a role with either left empty. Same for `Role emphasis` (with its Mandate + Likely KPIs lines) and `Landscape` (sectioned format).
+
+Write through the database adapter (`skills/database-notion/SKILL.md` → §4 Writeback): where Path A1 (the `ntn` CLI) is active this run, property writes may go through `ntn api /v1/pages/<page_id> -X PATCH` (same write-only-to-empty rule, same parallelism); otherwise use `notion-update-page`. The property list and write-if-empty rules below are intake's contract; the adapter provides the mechanism (including the never-create-a-property guard).
 
 For each role in the processing queue, apply this rule to:
 - `Priority` — write the coach's value (`1`–`6`) only if currently empty. If the role was coach-skipped (already coach-complete per Step 0.8), do not write at all — leave unchanged. In a mixed batch, apply per role individually.
 - `Priority Reason` — write the coach's one-sentence reason if currently empty. Written for every role the coach touches (both triage-exit roles and full-research roles).
-- Location compatibility property (name resolved from `location_compatibility.notion_property` in `pipeline-preferences.json`) — write if empty and if the property name is configured. Skip entirely if not configured.
+- Location compatibility property (name resolved from `location_compatibility.database_property`, legacy `notion_property`, in `pipeline-preferences.json`) — write if empty and if the property name is configured. Skip entirely if not configured.
 - `Role emphasis`, `Keywords`, `Strategy`, `Relationship type`, `Role summary`, `Person who Advertised Role (if not Hiring Manager)` — write if empty. (Triage-exit roles skip these — only full-research roles write them.)
 - `JD proof` — **always overwrite**, even if already populated. The coach's fresh verbatim quote from the current JD text supersedes any prior value (anti-fabrication guardrail). (Full-research roles only.)
 - `Hiring manager's role`, `Manager role confirmed`, `No incumbents in this function` — write if empty. (Full-research roles only.)
-- `First Advertised` — write if empty. Look for the original posting date on the job board page (often shown as "Posted X days ago", "Date posted:", or a visible timestamp). If the URL fetch returned a page with a posting date, parse and write it (format: YYYY-MM-DD). If no date is findable, leave empty — do not guess or approximate.
+- `First Advertised` — write if empty. **Use the coach's corroborated `Date first advertised` value, not a single page scan.** This is a Date property, so it always holds a clean `YYYY-MM-DD` and never appended text. A posting date from one site is low-confidence: boards reset the displayed date on re-post and syndication, so the same role shows different ages on different sites. Always write the **earliest** corroborated date seen across sources (re-posts only ever move the date later), formatted `YYYY-MM-DD`. When the coach marked it `[HIGH]` (primary source, or ≥2 independent sources agree), write it as the confident value. When the coach's value is `[LOW]` (one source only, or sources disagree), still write the earliest date as the best estimate, but carry the uncertainty in the Step 0.9b briefing — list it as "First Advertised: <date> — unconfirmed, earliest of N sources / sources disagreed." If no date was findable on any source, leave the property empty and note "First Advertised: unknown" in the briefing. Never guess or approximate a date from one page.
 - `JD Body` — write if empty AND the role was marked `url-fetched` in Step 0.5 (i.e., a live fetch succeeded and returned usable JD content). Copy the fetched JD text verbatim into this property. Do NOT overwrite an existing `JD Body` value. Do NOT write if the role was marked `content-exists` (already has JD Body) or `needs-manual` (no usable JD available). Purpose: persisting the fetched JD avoids re-fetching on every subsequent edit run; if the job listing expires, the edit pipeline has the content it needs without re-fetching.
 - `Gap handling` — write if empty. If gap_handling_mode = disabled, skip entirely.
-- `Why I Want This Role` — Letter Type prefix (written by the coach per its Notion Writeback Rules; intake confirms it was written and does not re-write). The coach prepends `**Letter type: [IC | Strategic | Hybrid]**` followed by a blank line. If the field was already populated, the Letter Type appears as a prefix above the existing content. If the field was empty, only the bold Letter Type line is written. Do not overwrite if the coach already completed this write.
+- `Why I Want This Role` — the **coach context block** (Letter type line + Priority 1/2/3 + the one-line Likely KPIs + optional one-line transfer note), written by the coach per its Notion Writeback Rules; intake confirms it was written and does not re-write. The coach **prepends** this block above any existing content (existing content is never a reason to skip — it is the normal case), keeping `---` as the separator. Do not overwrite if the coach already completed this write.
 - `Company Stage` — write if empty. Exact option values: `Seed`, `Series A`, `Series B`, `Series C`, `Public`, `PE-backed`, `Stealth`, or `N/A`.
 - `Role Type` — write if empty. Multi-select exact values: `Builder`, `Scaler`, `Specialist`, `Leader`, or `N/A`.
 - `Culture` — write if empty. Skip entirely if already has content.
@@ -328,15 +252,15 @@ For every role in the processing queue, write `Status = Researched` using `notio
 
 After all writes complete, confirm in chat: "Status updated to Researched for N roles."
 
-### 0.9e — Outreach map (LinkedIn MCP, runs in main intake context)
+### 0.9e — Outreach map (runs in main intake context)
 
-**Gate:** Only run if the LinkedIn MCP is connected — check by attempting `search_people` with a trivial query. If not connected, skip this step entirely and note in final delivery: "Outreach map skipped — LinkedIn MCP not available in this session."
+**This step always runs for full-research roles — the LinkedIn MCP is not a gate.** This was the bug: the outreach map was being skipped whenever the LinkedIn MCP was absent, so networking insights never reached Notion. The coach produces an outreach map either way (research dimension 12): with the LinkedIn MCP, contacts carry verified degree/reachability; **without it, the coach builds the same map from web OSINT** (HM via the non-LinkedIn ladder, one advocate from the company Team/About page or a Google search), every row tagged `[LOW]` with the action "Find on LinkedIn and connect." **Write whichever map the coach produced.** Only genuinely skip a role when it is a triage exit (Priority 5–6) or was flagged `ROLE MAY BE CLOSED` — never skip solely because the MCP is absent. If the LinkedIn MCP is connected, attempt `search_people` and use the verified path; otherwise proceed with the web-OSINT map.
 
 For each role in the processing queue that completed **full research** (Priority 1–4, not a triage exit), run the outreach contact research and write the result to the Notion page body.
 
 **Follow the research procedure and output format defined in `skills/career-coach/SKILL.md` → Research Phase dimension 12 and → Outreach map format exactly.** Key rules repeated for clarity:
 
-- Priority ladder: HM candidate first (already identified by the coach in dimension 10; use the value from `Hiring Manager's Name` if populated, otherwise search) → one internal advocate → skip everything else.
+- Priority ladder: HM candidate first (already identified by the coach in dimension 10; use the value from `Hiring Manager's Name` if populated, otherwise search / web-OSINT) → one internal advocate → skip everything else.
 - Maximum 3 rows in the table. Note angles only for actionable rows. Email / WhatsApp section always present.
 - Confidence: `[HIGH]` named and confirmed; `[MEDIUM]` inferred from org/title; `[LOW]` hypothesis only.
 - Skip roles where `ROLE MAY BE CLOSED` was flagged in Step 0.5 or 0.9b.
@@ -346,6 +270,6 @@ For each role in the processing queue that completed **full research** (Priority
 - If the page already has content, prepend above it separated by a `---` divider. Never delete existing content.
 - If no actionable contacts were found after the full search, write: `## Outreach — <Company>\n\nNo reachable contacts identified.`
 
-Run all roles in parallel. After all writes complete, confirm in chat: "Outreach maps written for N roles." (or "0 roles — LinkedIn MCP not available" if the gate failed).
+Run all roles in parallel. After all writes complete, confirm in chat: "Outreach maps written for N roles." (If N is 0, it means every full-research role was a triage exit or flagged `ROLE MAY BE CLOSED` — never because the LinkedIn MCP was absent; without the MCP the maps are built from web OSINT and still written.)
 
 Intake is complete.

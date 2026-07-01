@@ -24,13 +24,13 @@ This agent does NOT: write post copy directly, schedule or publish posts (Postiz
 
 | File | Path | What it contains |
 |---|---|---|
-| Pipeline preferences | `${CAREER_DATA}/references/pipeline-preferences.json` | `idea_bank.notion_database_id`, `content_calendar.default_batch_size`, `content_calendar.dedup_lookback_days`, `linkedin_post.default_format_mix`, `linkedin_post.revision_loop_max` |
+| Pipeline preferences | `${CAREER_DATA}/references/pipeline-preferences.json` | `idea_bank.database_id` (legacy `idea_bank.notion_database_id`), `content_calendar.default_batch_size`, `content_calendar.dedup_lookback_days`, `linkedin_post.default_format_mix`, `linkedin_post.revision_loop_max` |
 | Content orchestrator skill | `${CLAUDE_PLUGIN_ROOT}/skills/content-orchestrator/SKILL.md` | Format-mix rules, dedup logic, batch selection criteria |
 
 ## Preflight (Step 0)
 
 1. Load `pipeline-preferences.json`. Extract:
-   - `idea_bank.notion_database_id` — required; stop if missing
+   - `idea_bank.database_id` (or legacy `idea_bank.notion_database_id`) — required; stop if missing
    - `content_calendar.default_batch_size` — default to 3 if absent
    - `content_calendar.dedup_lookback_days` — default to 30 if absent
    - `linkedin_post.default_format_mix` — default to "50% A / 30% B / 20% C" if absent
@@ -42,10 +42,7 @@ This agent does NOT: write post copy directly, schedule or publish posts (Postiz
 
 Query the idea bank for ideas with `Status = Idea` (not yet drafted).
 
-**Notion read ladder:**
-- A1: `notionApi` `API-query-data-source` with database ID and filter `Status = Idea` — preferred
-- A2: `notion-query-database-view` with the view URL from `idea_bank.notion_page_url` — fallback; filter by Status after retrieval
-- If both fail: stop and report
+**Read ladder (via the database adapter).** When `database_backend` is `notion` (the default), follow `${CLAUDE_PLUGIN_ROOT}/skills/database-notion/SKILL.md` → §2 read ladder, querying the idea-bank database (`idea_bank.database_id`) for `Status = Idea`. Path B uses `idea_bank.database_view_url` (legacy `idea_bank.notion_page_url`) as the view (filter by Status after retrieval), or §3 view discovery to resolve it by name. If every rung fails, stop and report.
 
 Retrieve: Title, Category, Summary, Status, and (if present) any date fields.
 

@@ -257,14 +257,19 @@ The third form ("delete unless from WIWTR") applies to any sentence that express
 
 ## Coach Output Check
 
-For each role in the coach's output, identify every specific factual claim about the user's background, experience, skills, or accomplishments. Find the supporting line in `01-writing-rules.md`.
+For each role in the coach's output, identify every specific factual claim about the user's background, experience, skills, or accomplishments. Find the supporting line across the **full background set** — not the rules file alone:
+- `01-writing-rules.md` — fabrication rule, framing rules, identity values
+- `02-professional-background.md` — Role Facts, approved CV bullets, approved summaries, testimonials, portfolio (**this is where most proof actually lives** — named companies, metrics, outcomes, events, responsibilities)
+- `03-framework.md` §Domain depth — per-vertical narratives (this is where domain/vertical credibility lives, e.g. defense, healthcare, developer audiences)
 
-**Verifiable:** directly traceable to a named section, sentence, or bullet in `01-writing-rules.md`.
+A claim is verifiable if it traces to **any** of these three files. Checking against `01` alone produces false positives on real, documented claims (a defense event documented in `02`, a vertical narrative in `03` §Domain depth) — that is a check failure, not a fabrication. Read `02` and `03` §Domain depth before flagging anything as unverifiable.
+
+**Verifiable:** directly traceable to a named section, sentence, or bullet in `01-writing-rules.md`, `02-professional-background.md`, or `03-framework.md` §Domain depth.
 
 **Unverifiable:**
-- Names a company, client, product, or tool the user worked with that does not appear in the reference file
-- Attributes a metric, outcome, or responsibility not found in the reference file
-- Describes a skill or domain depth that is not documented
+- Names a company, client, product, or tool the user worked with that does not appear in **any** of the three background files
+- Attributes a metric, outcome, or responsibility not found in **any** of the three background files
+- Describes a skill or domain depth that is not documented in `02` Role Facts or `03` §Domain depth
 
 **Do not flag:**
 - Claims about the role or company (from the JD, not the user's background)

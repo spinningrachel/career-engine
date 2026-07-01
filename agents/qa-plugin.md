@@ -8,6 +8,20 @@ You are invoked by Claude after any significant change to the plugin. You report
 
 ---
 
+## Standing mandate — trace every process to all connected processes and files (not spot-checks)
+
+The numbered checks below are necessary but **not sufficient**. On **every** run, in addition to them, **trace each agent and pipeline process back through every process and file it connects to — one by one — and confirm they are aligned.** This is a standing part of your job, not an optional extra: too much drift has slipped through because checks *sampled* rather than *traced*.
+
+For each agent/skill in scope:
+1. **Follow every reference OUT.** Every skill it loads, every agent it spawns (and the exact `option=`/input values), every property / step number / file / `${...}` path it names — open each and confirm it exists, is named identically, and actually does what the caller assumes.
+2. **Follow every reference IN.** Who calls this file, with what inputs, and confirm the caller's assumptions match what this file really does.
+3. **Walk each value end-to-end.** When something is produced in one place and consumed in another (a property the coach writes and a writer reads; a config key setup writes and the orchestrator reads; a step number cross-referenced between two skills), confirm producer and consumer agree on **name, format, and meaning** the whole way through.
+4. **Report any misalignment with both endpoints** (file:line on each side). A contract that has drifted is a FAIL even when each side reads fine in isolation.
+
+The Cross-file contracts table in CLAUDE.md is the *known* set — verify those AND surface the ones not yet written down.
+
+---
+
 ## When Invoked
 
 Claude invokes you after completing any of the following:
@@ -227,12 +241,15 @@ Read `CLAUDE.md`. Verify it contains "Single-build architecture" and "career-dat
 
 ### Check 11 — Skill directories present in the build
 
-These skill directories must exist in `skills/` (26 total):
+**Source of truth is the live filesystem, not this list.** First run `ls -d <location>/skills/*/` and use that actual set as the count and membership. Then reconcile it against the enumeration below: every directory on disk should be categorizable here, and every name below should exist on disk. Do not report a count from memory — derive it from `ls`. (The list below is a categorized reference; new skills are added over time, so a directory on disk that isn't listed here is a "categorize and note," not a fail.)
+
+These skill directories must exist in `skills/` (27 as of this writing):
 - Core pipeline: `career-engine`, `career-engine-orchestrator`, `career-engine-intake`, `career-engine-new-application`, `career-engine-edit`, `career-engine-export`, `career-engine-setup`
 - Writing & quality: `cv-writing`, `cover-letter`, `cover-letter-humanizer`, `gatekeeper-checks`, `career-coach`, `localization`
 - Standalone career: `source-open-roles`, `linkedin-coach`, `personal-brand`, `update-refs`
 - Content & freelance: `content-orchestrator`, `mind-dump`, `linkedin-post-writer`, `linkedin-post-reviewer`, `fiverr`, `upwork`, `freelance-shared`
 - Meta: `plugin-builder`, `technical-writing`
+- Database adapters: `database-notion`
 
 **FAIL condition:** any directory missing.
 
@@ -351,21 +368,29 @@ grep -c "create-database-view" <location>/skills/career-engine-intake/SKILL.md
 
 ### Check 21 — Tiered Notion query ladder present in intake skill (R-1, R-25, R-35)
 
-In `skills/career-engine-intake/SKILL.md`: verify Step 0b contains all three ladder rungs and the misalignment invariant — "command -v ntn" (Path A1 gate, R-35), "API-query-data-source" (Path A2), "Path B" (the sanctioned view-query fallback), and "misaligned rendered table" (the never-parse invariant). Also verify the A1 gate appears at the other query sites that gained a CLI rung.
+The Notion mechanics live in **one** adapter skill (`skills/database-notion/SKILL.md`); consumers delegate. Verify the adapter holds the full ladder, and that every consumer delegates rather than re-inlining the mechanics (the anti-drift contract — CLAUDE.md cross-file table).
 
 ```bash
-grep -c "command -v ntn" <location>/skills/career-engine-intake/SKILL.md
-grep -c "API-query-data-source" <location>/skills/career-engine-intake/SKILL.md
-grep -c "Path B" <location>/skills/career-engine-intake/SKILL.md
-grep -c "misaligned rendered table" <location>/skills/career-engine-intake/SKILL.md
+# The adapter holds all three rungs + the never-parse invariant
+grep -c "command -v ntn" <location>/skills/database-notion/SKILL.md
+grep -c "API-query-data-source" <location>/skills/database-notion/SKILL.md
+grep -c "Path B" <location>/skills/database-notion/SKILL.md
+grep -c "misaligned rendered table" <location>/skills/database-notion/SKILL.md
+# Every consumer delegates to the adapter (each must be >= 1)
+grep -c "database-notion" <location>/skills/career-engine-intake/SKILL.md
+grep -c "database-notion" <location>/skills/career-engine-orchestrator/SKILL.md
+grep -c "database-notion" <location>/skills/career-engine-edit/SKILL.md
+grep -c "database-notion" <location>/skills/career-coach/SKILL.md
+grep -c "database-notion" <location>/skills/source-open-roles/SKILL.md
+grep -c "database-notion" <location>/agents/mind-dump.md
+grep -c "database-notion" <location>/agents/content-orchestrator.md
+# No consumer re-inlines the A1 gate (mechanics must NOT drift back) — each must be 0
 grep -c "command -v ntn" <location>/skills/career-coach/SKILL.md
 grep -c "command -v ntn" <location>/skills/career-engine-edit/SKILL.md
-grep -c "command -v ntn" <location>/skills/source-open-roles/SKILL.md
-grep -c "API-query-data-source" <location>/skills/career-coach/SKILL.md
-grep -c "API-query-data-source" <location>/skills/career-engine-edit/SKILL.md
+grep -c "command -v ntn" <location>/skills/career-engine-orchestrator/SKILL.md
 ```
 
-**FAIL condition:** any string not found. (The last two assert the A2 rung is now present at the coach and edit query sites, so all four sites share the same A1→A2→B ladder — R-39.)
+**FAIL condition:** the adapter is missing any rung/invariant; any consumer does not delegate (`database-notion` count 0); OR a consumer re-inlines the A1 gate (`command -v ntn` count > 0 outside the adapter) — that is exactly the multi-file drift this refactor removed.
 
 ### Check 21b — Pipeline command authority present in orchestrator (R-24)
 
@@ -379,36 +404,33 @@ grep -c "routing authority" <location>/skills/career-engine-orchestrator/SKILL.m
 
 ### Check 21c — View-result discovery-only rule present at all three query sites (R-1, R-25)
 
-Rendered view tables are never parsed for property values; they are used only to discover candidate pages, with properties read per page via `notion-fetch`.
+Rendered view tables are never parsed for property values — discovery only, with properties read per page via `notion-fetch`. The rule lives in the adapter (§2/§3); consumers reference it in their delegation pointers.
 
 ```bash
-grep -c "discovery only" <location>/skills/career-engine-intake/SKILL.md
-grep -c "discovery only (R-1)" <location>/skills/career-engine-edit/SKILL.md
-grep -c "discovery only (R-1)" <location>/skills/career-coach/SKILL.md
+grep -c "discovery" <location>/skills/database-notion/SKILL.md
+# the corrected single-fetch view discovery (the collection:// two-step is the bug we removed)
+grep -c "Do NOT fetch the .collection" <location>/skills/database-notion/SKILL.md
 ```
 
-**FAIL condition:** any count is zero.
+**FAIL condition:** either count is zero.
 
-### Check 21d — Intake Step 0a schema-fetch error path present
+### Check 21d — Schema-fetch error path present in the adapter
 
 ```bash
-grep -c "If the schema fetch fails" <location>/skills/career-engine-intake/SKILL.md
+grep -c "stop and report" <location>/skills/database-notion/SKILL.md
 ```
 
-**FAIL condition:** string not found.
+**FAIL condition:** string not found (the adapter §1 schema read must fail-stop, not improvise).
 
 ### Check 21k — Canonical Path B shape + no notion-search improvisation (R-39)
 
 `notion-query-database-view` takes no ad-hoc filter and needs a real view URL, so every Path B site must say so and resolve the view by name; the bare-database-URL form and the `notion-search` discovery fallback must not exist.
 
 ```bash
-# Each connector query site states the constraint (no bare DB URL / view URL required)
-grep -c "never the bare database URL" <location>/skills/career-engine-intake/SKILL.md
-grep -c "never the bare database URL" <location>/skills/career-coach/SKILL.md
-grep -c "never the bare database URL" <location>/skills/career-engine-edit/SKILL.md
-grep -c "never the bare database URL" <location>/skills/source-open-roles/SKILL.md
-# Intake all-paths-fail forbids notion-search for discovery
-grep -c "cannot enumerate the queue" <location>/skills/career-engine-intake/SKILL.md
+# The adapter states the Path B constraints (no bare DB URL / real view URL required)
+grep -c "never the bare database URL" <location>/skills/database-notion/SKILL.md
+# The adapter all-paths-fail rule forbids notion-search for discovery
+grep -c "cannot enumerate the queue" <location>/skills/database-notion/SKILL.md
 # notion-search must NOT be an allowlist entry in the entry skill (a comment may mention it)
 grep -c "^  - mcp__5cd94b8e-1498-421b-bc5d-1bbb07682cf7__notion-search" <location>/skills/career-engine/SKILL.md
 ```
@@ -523,20 +545,20 @@ grep -ci "stealth" <location>/skills/gatekeeper-checks/SKILL.md                 
 
 **FAIL condition:** any count is 0 or off its stated requirement.
 
-### Check 21m — Two-step view discovery present at all Path B sites (R-45)
+### Check 21m — Single-fetch view discovery (corrected) lives only in the adapter
 
-Path B view discovery requires two fetches (DB page → collection → views), not one. The instructions at all four query sites must describe fetching the collection URL and stripping dashes from the view UUID.
+View discovery is **one** `notion-fetch` on the DB id (views come from the `<views>` block of that response); the old "fetch the `collection://` URL to list views" was a bug (a `collection://` fetch returns schema only, no views) and was removed everywhere. The corrected mechanic lives once, in the adapter; **no consumer may re-describe the two-step.**
 
 ```bash
-grep -c "collection://" <location>/skills/career-engine-intake/SKILL.md      # must be >= 1
-grep -c "collection://" <location>/skills/career-coach/SKILL.md               # must be >= 1
-grep -c "collection://" <location>/skills/career-engine-edit/SKILL.md        # must be >= 1
-grep -c "collection://" <location>/skills/source-open-roles/SKILL.md         # must be >= 1
-grep -c "remove all dashes" <location>/skills/career-engine-intake/SKILL.md  # must be >= 1
-grep -c "remove all dashes" <location>/skills/career-coach/SKILL.md          # must be >= 1
+# Adapter holds the corrected discovery: the view UUID dash-removal AND the explicit anti-bug warning
+grep -c "remove all dashes" <location>/skills/database-notion/SKILL.md                 # must be >= 1
+grep -c "Do NOT fetch the .collection" <location>/skills/database-notion/SKILL.md      # must be >= 1
+# The two-step bug must NOT have crept back into any consumer (each must be 0)
+grep -rc "to get the .collection" <location>/skills/career-engine-intake/SKILL.md <location>/skills/career-coach/SKILL.md <location>/skills/career-engine-edit/SKILL.md <location>/skills/career-engine-orchestrator/SKILL.md <location>/skills/source-open-roles/SKILL.md
+grep -rc "to list views" <location>/skills/career-engine-orchestrator/SKILL.md
 ```
 
-**FAIL condition:** any count is 0.
+**FAIL condition:** the adapter is missing the corrected discovery (`remove all dashes` or the anti-bug warning), OR any consumer re-describes the `collection://` two-step (a count > 0 in a consumer is the bug returning).
 
 ### Check 21n — Job site preferences present (R-48 feature)
 

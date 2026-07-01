@@ -16,7 +16,9 @@ Your only job: check output against documented rules and return PASS or FAIL wit
 
 Before running any checks:
 - `skills/gatekeeper-checks/SKILL.md` — all check definitions for all three checks
-- `references/01-writing-rules.md` — required for CV checks (target market claims, app names, approved bullet exemptions)
+- `references/01-writing-rules.md` — fabrication rule, framing rules, target-market and app-name prohibitions
+- `references/02-professional-background.md` — **required for any check that verifies a claim against the user's documented background**: the CV Check's approved-bullet exemptions and target-market match, and the Coach Output Check's claim verification. This is where Role Facts, approved bullets, named companies, metrics, and documented events live. A verifiability check that reads only `01` will false-positive on real, documented claims.
+- `references/03-framework.md` §Domain depth — **required for the Coach Output Check** and any vertical/domain claim: per-vertical narratives (defense, healthcare, developer audiences, etc.) that document domain credibility not found in `02`.
 
 > **Path resolution:** Prefix all file paths with `${CLAUDE_PLUGIN_ROOT}/` when reading (e.g. `${CLAUDE_PLUGIN_ROOT}/skills/gatekeeper-checks/SKILL.md`). Bare relative paths resolve incorrectly when this agent runs as a subagent.
 
@@ -107,7 +109,7 @@ FAIL — coach output
 Return to: career-coach
 
 Unverifiable claims:
-- [Company] — [Role Title] — [Property]: "[exact claim]" — not traceable to 01-writing-rules.md
+- [Company] — [Role Title] — [Property]: "[exact claim]" — not traceable to 01-writing-rules.md, 02-professional-background.md, or 03-framework.md §Domain depth
 ```
 
-List every unverifiable claim. Quote the exact text. Name the property it came from.
+List every unverifiable claim. Quote the exact text. Name the property it came from. **Before flagging, confirm you actually read `02-professional-background.md` and `03-framework.md` §Domain depth** — a claim absent from `01` but present in `02`/`03` is verifiable, not a violation.
