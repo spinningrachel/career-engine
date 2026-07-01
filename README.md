@@ -1,5 +1,7 @@
 # career-engine
 
+> ⚠️ **This release changes `pipeline-preferences.json` significantly.** Job-search preferences (target titles, remote preference, exclusion patterns, and more) moved into it from the retired `job-preferences.md`. If you already have `career-data` installed, ask Claude (in Chat, Cowork, or Code) to check it against the current schema and generate an update prompt for you before your next pipeline run. See the [Changelog](#changelog) below for exactly what changed and the full upgrade steps.
+
 ![Career Engine Pipeline](assets/career-engine-pipeline-v2.png)
 
 A Claude Code (and Cowork) plugin for senior technology professionals who want their career to work for them — landing the right next role, building a credible professional presence, and maintaining the materials and positioning that make both possible on short notice.
