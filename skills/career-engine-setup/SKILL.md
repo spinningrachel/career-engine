@@ -29,7 +29,7 @@ This skill sets up the plugin for a new user. It builds the three reference file
 - `02-professional-background.md` — role facts, approved content, portfolio
 - `03-framework.md` — positioning, voice, methodology, domain narratives
 
-**Output target — the `career-data` skill, not in-plugin references (R-37).** Setup builds these files into the user's external `career-data` skill, not into the plugin's `references/`. Author the data files (`01/02/03`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx`) into a working `career-data/` skill directory as you go. **Installing that directory as a real skill is environment-specific and is the single step that most often goes wrong** — follow [`references/career-data-skill-handoff.md`](../../references/career-data-skill-handoff.md) (a.k.a. "Appendix A"): in **Cowork**, you cannot save a skill directly, so you emit a `/skill-creator` handoff prompt the user pastes into **Chat** (skills are shared between Chat and Cowork, so it lands in both); in **Claude Code**, you write `~/.claude/skills/career-data/` directly. The dedicated **Build & install** step at the end of this skill runs that handoff. Write the first backup export of `career-data` to the output folder. The plugin's in-plugin `references/` stay as blank `{{...}}` templates — never personalized.
+**Output target — the `career-data` skill, not in-plugin references (R-37).** Setup builds these files into the user's external `career-data` skill, not into the plugin's `references/`. Author the data files (`01/02/03`, `linkedin-profile.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx`) into a working `career-data/` skill directory as you go. **Installing that directory as a real skill is environment-specific and is the single step that most often goes wrong** — follow [`references/career-data-skill-handoff.md`](../../references/career-data-skill-handoff.md) (a.k.a. "Appendix A"): in **Cowork**, you cannot save a skill directly, so you emit a `/skill-creator` handoff prompt the user pastes into **Chat** (skills are shared between Chat and Cowork, so it lands in both); in **Claude Code**, you write `~/.claude/skills/career-data/` directly. The dedicated **Build & install** step at the end of this skill runs that handoff. Write the first backup export of `career-data` to the output folder. The plugin's in-plugin `references/` stay as blank `{{...}}` templates — never personalized.
 
 **Placeholder resolution (single-build).** Identity and config values are NOT substituted into the plugin's agent/skill/reference files — that would personalize the shared build. They live in `career-data` and agents resolve them at runtime: identity from `career-data` `01-writing-rules.md` §8, output folder and CV template from the `career-data` config (see CLAUDE.md → *Placeholder resolution*). Every step below writes these values into `career-data`, never into plugin files.
 
@@ -653,11 +653,18 @@ Write the answers into `screening_answers` (object with `travel`, `relocation`, 
 
 Write the answers into `preferred_job_sites` (up to 5 entries) and `local_job_sites` (up to 2 entries) in the career-data config. Empty arrays if the user skips or has no preferences.
 
-**Title variants / search keywords (recommended).** Sourcing searches each target title under several variants, not verbatim. Propose a set (~6–8 per target title) derived from the user's target titles + `USER_PROFESSION` / `USER_FUNCTION_SENIORITY_HIERARCHY`: "Here are the title variants I'd search for you — edit, add, or remove any:" then list one line per target title with its variants (e.g. *Product Marketing lead → PMM · Senior PMM · Technical PMM · Director of Product Marketing · Head of Product Marketing · GTM Lead*). Write the confirmed set into `${CAREER_DATA}/references/job-preferences.md` → the "Title variants / search keywords" section (replacing the `{{TITLE_VARIANTS}}` placeholder). This is what `source-open-roles` reads every run.
+**Sourcing preferences (optional — recommended).** Ask: "A few questions help sourcing find and rank the right roles — answer any that apply, skip the rest:
+1. Target titles — what job titles are you targeting? List them in priority order.
+2. Remote preference — remote only, hybrid, or open to all?
+3. Exclude patterns — any words that should auto-exclude a role? (e.g. 'junior', 'intern')
+4. Default search time range — how far back should a sourcing run look by default? (e.g. 'last week', '2 weeks', 'month')"
+Write the answers into `target_titles` (array, priority order), `remote_preference`, `exclusion_patterns` (array), and `default_search_time_range` in the career-data config. If skipped, `source-open-roles`' own Gate 1 asks on first run instead — this is not a hard blocker.
+
+**Title variants / search keywords (recommended, only if `target_titles` was just set above).** Sourcing searches each target title under several variants, not verbatim. Propose a set (~6–8 per target title) derived from the target titles just given + `USER_PROFESSION` / `USER_FUNCTION_SENIORITY_HIERARCHY`: "Here are the title variants I'd search for you — edit, add, or remove any:" then list one line per target title with its variants (e.g. *Product Marketing lead → PMM · Senior PMM · Technical PMM · Director of Product Marketing · Head of Product Marketing · GTM Lead*). Write the confirmed set into `title_variants` in the career-data config (an object keyed by target title, each value an array of variant strings) — replacing the placeholder description text. This is what `source-open-roles` reads every run.
 
 **Rule: user-specified sites in `preferred_job_sites` and `local_job_sites` always take priority over plugin defaults. The plugin's built-in site list is a fallback, not a directive.**
 
-- Write the gap-handling choice, location compatibility, favorite brands, and job site preferences **alongside** every other key set in this phase — one career-data config file (readable everywhere, survives upgrades). The complete file (R-38):
+- Write the gap-handling choice, location compatibility, favorite brands, job site preferences, and sourcing preferences **alongside** every other key set in this phase — one career-data config file (readable everywhere, survives upgrades). The complete file (R-38):
   ```json
   {
     "gap_handling": "enabled",
@@ -681,6 +688,11 @@ Write the answers into `preferred_job_sites` (up to 5 entries) and `local_job_si
     "favorite_brands": [],
     "preferred_job_sites": [],
     "local_job_sites": [],
+    "target_titles": [],
+    "title_variants": {},
+    "remote_preference": "<remote only / hybrid / open to all, or empty>",
+    "exclusion_patterns": [],
+    "default_search_time_range": "last week",
     "screening_answers": {
       "travel": "<e.g. 'open to frequent travel', or empty>",
       "relocation": "<willing + where, or empty>",

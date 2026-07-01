@@ -47,7 +47,7 @@ The mandate type governs everything downstream: what the letter leads with, what
 
 Load before doing anything.
 
-> **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight and passes into this spawn. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` was not provided (direct or standalone invocation), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
+> **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight and passes into this spawn. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` was not provided (direct or standalone invocation), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
 
 **Mandatory for every invocation:**
 
@@ -56,7 +56,7 @@ Load before doing anything.
 | `${CAREER_DATA}/references/01-writing-rules.md` | Fabrication rule + framing rules (read first). Supersedes anything you believe about the user from prior context. |
 | `${CAREER_DATA}/references/02-professional-background.md` | **Router — load first**, then follow its sub-file table to load what you need: `background-approved-bullets.md` and company `background-role-facts-*.md` files for credential verification; `background-testimonials.md` and `background-portfolio.md` if needed. |
 | `${CAREER_DATA}/references/03-framework.md` | Professional philosophy, voice, POV, domain narratives, proof points, and messaging. §Professional methodology and POV routes to `framework/framework-*.md` sub-files — load the relevant sub-file when the role's emphasis maps to a specific methodology (PLG → `framework-plg.md`, GTM → `framework-gtm.md`, etc.). §Domain depth for per-vertical narratives is inline. |
-| `${CAREER_DATA}/references/job-preferences.md` | Remote compatibility, target roles, seniority, industries, company stage, exclusion patterns, and coaching prioritization. |
+| `${CAREER_DATA}/references/pipeline-preferences.json` | Target roles (`target_titles`), `seniority_floor`, `target_function`, `industry_fit`, `company_stage_fit`, `exclusion_patterns`, `employment_type_preference`, and `coaching_prioritization` — all optional context for fit assessment; none are hard rules. |
 | `${CLAUDE_PLUGIN_ROOT}/references/role-type-definitions.md` | Builder / Scaler / Specialist / Leader definitions. Read before setting the Role Type property (Option 2) or advising on CV structure (any option). |
 
 ---
@@ -143,7 +143,7 @@ For all other unscored roles:
 
 1. **JD text scan** — read the full JD text (not just the location field) for: location and timezone requirements, work-authorization language, and the stated REASON for any restriction. A restriction whose reason the user's location satisfies (e.g., "EST hours for European overlap with our team") scores differently than a structural blocker (e.g., "must hold US work authorization").
 
-2. **Basic fit signals** — assess from JD text and `job-preferences.md`:
+2. **Basic fit signals** — assess from JD text and `pipeline-preferences.json`:
    - Role type / function match vs. target roles and exclusion patterns
    - Seniority level (from years required, direct reports, reporting line, whether role owns strategy vs. executes it)
    - Relationship type (Full time / Part time / Contract)

@@ -311,7 +311,13 @@ If the specific AI category (e.g., conversational AI, NLP, voice agents) is not 
 3. Confidence: `[HIGH]` only when a primary source (the company's own ATS/careers page) gives the date, OR when ≥2 independent sources agree. `[LOW]` when only one source was reachable, or sources disagree and none is primary — in that case record a range (`earliest seen – latest seen`) rather than a single date, and note which sources gave which.
 4. If the role has been open >60 days (measured from the earliest date), flag it prominently. If no date is findable on any source, write `Unknown [LOW]` — never guess or approximate a single date.
 
-**`Remote compatibility`** — Apply the Remote Compatibility section from `references/job-preferences.md`. Options: `Confirmed worldwide` | `Confirmed region-restricted ([region])` | `Ambiguous — [reason and what was checked]`.
+**`Remote compatibility`** — "Remote" does not mean the same thing everywhere, and misreading it wastes significant effort. Classify against `USER_LOCATION_COUNTRY` (`01-writing-rules.md` §8):
+
+- **NOT compatible:** `Remote(<country abbr>)`, `Remote – <country>`, `Remote (<country abbr> only)`, "Must be authorized to work in <country>" when that country isn't `USER_LOCATION_COUNTRY`; remote with a specific country qualifier that excludes it; any role requiring work authorization in a country the user isn't authorized to work in.
+- **Confirmed worldwide:** "Remote (Worldwide)", "Work from anywhere", "Open to candidates globally", "No timezone restrictions"; remote with no country qualifier AND the company's other open roles consistently show no country qualifier either; "Remote + [region that includes `USER_LOCATION_COUNTRY`]"; a company About page that explicitly states a distributed global team.
+- **Ambiguous — requires research:** remote with no qualifier on this role but other roles at the same company carry country-specific qualifiers (treat as NOT compatible unless confirmed otherwise); remote with no qualifier and an unclear company hiring pattern (flag ambiguous, state what was checked); hybrid or remote-first language with no geographic scope stated (research the company's hiring page).
+
+**When in doubt, classify `Ambiguous` rather than worldwide-compatible** — a false positive here wastes more effort than a false negative. Output: `Confirmed worldwide` | `Confirmed region-restricted ([region])` | `Ambiguous — [reason and what was checked]`.
 
 **`Hiring Manager's Name`** — Name + title [HIGH], or hypothesis [LOW], or "Not identifiable."
 

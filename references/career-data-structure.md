@@ -20,8 +20,7 @@ If a requested edit would rename, renumber, reorder, or delete any heading or fi
 - `references/02-professional-background.md` (router) + `references/background/background-motivation-bank.md`, `background-cv-summaries.md`, `background-approved-bullets.md`, `background-role-facts-*.md` (one per company), `background-testimonials.md`, `background-portfolio.md`, `background-cross-cutting-skills.md`
 - `references/03-framework.md`
 - `references/linkedin-profile.md`
-- `references/job-preferences.md`
-- `references/pipeline-preferences.json`
+- `references/pipeline-preferences.json` (also the single source of truth for job-search/sourcing preferences — target titles, title variants, remote preference, exclusion patterns, industry fit, company stage fit, employment type, coaching prioritization, screening answers — retired `job-preferences.md` folded in here)
 - the user's CV `.dotx` template (filename varies per user)
 - `references/delivered-letters/INDEX.md` (+ the `example-letter-NN-*.md` files; cap 6, managed via the letter-writer "Manage Letter Examples" option)
 

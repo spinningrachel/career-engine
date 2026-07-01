@@ -24,7 +24,7 @@ This file has two jobs: (1) route you to the right sub-file for your current pha
 
 ## R-37 — Data Root (applies to every invocation)
 
-**`career-data` data root (R-37).** Personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its career-data discovery preflight. Every other file stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (standalone invocation), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never fall back to blank templates.
+**`career-data` data root (R-37).** Personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its career-data discovery preflight. Every other file stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (standalone invocation), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never fall back to blank templates.
 
 ---
 

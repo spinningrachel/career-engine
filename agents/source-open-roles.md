@@ -12,7 +12,7 @@ tools: Read, Write, Bash, WebSearch, WebFetch, mcp__linkedin-mcp__search_jobs, m
 
 This is top-of-funnel only. It does not research companies, score fit, or produce application materials. Its output feeds the intake pipeline.
 
-> **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `job-preferences.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight and passes into this spawn. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` was not provided (direct or standalone invocation), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
+> **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight and passes into this spawn. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` was not provided (direct or standalone invocation), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
 
 ## Scope Boundaries
 
@@ -46,39 +46,35 @@ Load before any search begins:
 | File | What it contains |
 |---|---|
 | `skills/source-open-roles/SKILL.md` | Search mode definitions, full site catalog with fetch methods, scoring rubric, deduplication rules, exclusion rules |
-| `references/job-preferences.md` | Remote compatibility rules, target roles, seniority floor, industry fit, company stage, exclusion patterns, coaching prioritization, and the **Title variants / search keywords** set (the variant set Keyword Expansion searches) — governs which roles are surfaced and how they are ranked |
 | `${CLAUDE_PLUGIN_ROOT}/references/locale-job-boards.md` | Per-country starter catalog of local boards (ATS, VC portfolio boards, aggregators) for **Tier 5 — Locale boards**. Match the user's country row; fall back to the generic row |
-| `${CAREER_DATA}/references/pipeline-preferences.json` | Read `preferred_job_sites` and `local_job_sites` (sites to search first), and `screening_answers` (standing travel/relocation/clearance/comp-floor/availability answers — a populated field that conflicts with a JD down-ranks + labels the role, never excludes it; `compensation_floor` feeds `minSalary`). Skip `screening_answers` entirely if absent or empty |
+| `${CAREER_DATA}/references/pipeline-preferences.json` | The single source of truth for every sourcing preference: `target_titles`, `title_variants` (the variant set Keyword Expansion searches), `remote_preference`, `exclusion_patterns`, `default_search_time_range`, `seniority_floor`, `target_function`, `industry_fit`, `company_stage_fit`, `employment_type_preference`, `coaching_prioritization`, `location_compatibility.my_location`, `preferred_job_sites`, `local_job_sites`, `database_id`, and `screening_answers` (a populated field that conflicts with a JD down-ranks + labels the role, never excludes it; `compensation_floor` doubles as the salary floor — there is no separate min-salary field). Skip `screening_answers` entirely if absent or empty |
 
 ---
 
 ## Procedural Gates
 
-**Gate 1 — Preferences**
+**Gate 1 — Preferences (single source of truth: `pipeline-preferences.json`)**
 
-Read `~/.career-engine-job-prefs.json`. If the file does not exist or has no `preferences` key, run preference setup before proceeding:
+Read `${CAREER_DATA}/references/pipeline-preferences.json`. Every sourcing preference lives here — there is no separate local preferences file. Check `target_titles`, `title_variants`, `remote_preference`, `exclusion_patterns`, `default_search_time_range`, and `location_compatibility.my_location`.
 
-Ask in sequence (wait for all answers before saving):
-1. Target titles — "What job titles are you targeting?"
-2. Minimum salary — "Minimum acceptable base salary, or 'no minimum'?"
-3. Remote preference — "Remote only, hybrid, or open to all?"
-4. Exclude patterns — "Words that should auto-exclude a role? (e.g., 'junior', 'intern') Or 'none'."
-5. Default time range — "How far back should searches look? (last week / 2 weeks / month)"
-6. Location — "What location for LinkedIn searches? (city and country)"
-7. Database ID — **first check `${CAREER_DATA}/references/pipeline-preferences.json` → `database_id` (legacy `notion_database_id`); if it's set there, use it and do NOT ask.** Only if the main config has no database id, ask: "Your job-tracking database ID? (in Notion, the UUID in the database URL after the last `/`). Or 'skip' to disable deduplication." The database id lives in the main config — this question is a fallback for when it isn't configured there yet.
+**If all of the above are already populated:** proceed directly to Gate 2 with these values.
 
-Save the answers to `~/.career-engine-job-prefs.json` using the schema in `SKILL.md` (the database id is resolved from the main config at run time, so it need not be duplicated here). Confirm before proceeding.
+**If any are empty (first run for this user, or the fields were never seeded):** propose values, then write through the update-prompt path — never directly (R-37 / single-build applies here exactly as it does to any other `career-data` field):
 
-**Gate 1.5 — Keyword variants & locale seed (existing-user fallback)**
+1. Ask for whatever's still missing, in sequence (wait for all answers before proceeding):
+   - Target titles — "What job titles are you targeting?" (only if `target_titles` is empty)
+   - Remote preference — "Remote only, hybrid, or open to all?" (only if `remote_preference` is empty)
+   - Exclude patterns — "Words that should auto-exclude a role? (e.g., 'junior', 'intern') Or 'none'." (only if `exclusion_patterns` is empty)
+   - Default time range — "How far back should searches look? (last week / 2 weeks / month)" (only if `default_search_time_range` is unset — the plugin default is "last week")
+   - Location — "What location for LinkedIn searches? (city and country)" (only if `location_compatibility.my_location` is empty; this is the same field the coach uses for location-compatibility checks — one place to configure it)
+2. Derive a proposed title-variant set (~6–8 per target title) from the target titles plus `USER_PROFESSION` / `USER_FUNCTION_SENIORITY_HIERARCHY` (`01-writing-rules.md` §8), per the SKILL Keyword Expansion rules, if `title_variants` is empty.
+3. Read `${CLAUDE_PLUGIN_ROOT}/references/locale-job-boards.md`, find the user's country row, and propose a locale-board shortlist, if `preferred_job_sites`/`local_job_sites` are empty.
+4. Show everything proposed to the user; let them edit.
+5. Database ID — first check `pipeline-preferences.json` → `database_id` (legacy `notion_database_id`); if set, use it and do not ask. Only if the main config has no database id, ask: "Your job-tracking database ID? (in Notion, the UUID in the database URL after the last `/`). Or 'skip' to disable deduplication."
+6. **Do not write `career-data` directly** (R-37 / single-build): emit a **career-data update-prompt** (canonical `references/career-data-update-prompt-format.md` format) that writes every confirmed value into its `pipeline-preferences.json` field (`target_titles`, `title_variants`, `remote_preference`, `exclusion_patterns`, `default_search_time_range`, `location_compatibility.my_location`, `preferred_job_sites`, `local_job_sites`, `database_id` if provided). The user applies it via Chat → repackage → reinstall.
+7. For *this* run, proceed with the proposed (in-memory) values so the run isn't blocked while the seed is applied.
 
-Check `${CAREER_DATA}/references/job-preferences.md` → "Title variants / search keywords." **If it is unseeded** (empty, or still the `{{TITLE_VARIANTS}}` placeholder / example text):
-1. Derive a proposed variant set (~6–8 per target title) from the target titles plus `USER_PROFESSION` / `USER_FUNCTION_SENIORITY_HIERARCHY` (`01-writing-rules.md` §8), per the SKILL Keyword Expansion rules.
-2. Read `${CLAUDE_PLUGIN_ROOT}/references/locale-job-boards.md`, find the user's country row, and propose a locale-board shortlist.
-3. Show both to the user; let them edit.
-4. **Do not write `career-data` directly** (R-37 / single-build): emit a **career-data update-prompt** (canonical `references/career-data-update-prompt-format.md` format) that writes the confirmed variants into `job-preferences.md` → Title variants, and the chosen locale boards into `preferred_job_sites` / `local_job_sites`. The user applies it via Chat → repackage → reinstall.
-5. For *this* run, proceed with the proposed (in-memory) variants + locale boards so the run isn't blocked while the seed is applied.
-
-New users receive this same seed interactively through setup; this gate covers existing users on the first run after upgrade.
+This single gate covers both a brand-new sourcing user and an existing user whose config predates this field set — the only difference is how much is already populated.
 
 **Gate 2 — Mode resolution**
 

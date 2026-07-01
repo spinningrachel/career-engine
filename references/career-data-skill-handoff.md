@@ -79,7 +79,6 @@ career-data/
     ├── 02-professional-background.md
     ├── 03-framework.md
     ├── linkedin-profile.md
-    ├── job-preferences.md
     ├── pipeline-preferences.json
     ├── <cv-template>.dotx        ← I will attach this file
     └── delivered-letters/        ← I will attach these files, if any
@@ -111,9 +110,6 @@ references/03-framework.md contents:
 [FULL CONTENT, untruncated]
 
 references/linkedin-profile.md contents:
-[FULL CONTENT, untruncated]
-
-references/job-preferences.md contents:
 [FULL CONTENT, untruncated]
 
 references/pipeline-preferences.json contents:
