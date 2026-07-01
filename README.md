@@ -81,113 +81,61 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
-### 2026-06-30 — Intake pipeline R-41: file-based queue, hard role cap, crash-resumable writeback
+### 2026-06-30 — Consolidated overhaul: database abstraction, smarter sourcing, Motivation Bank, and file-based pipeline reliability
 
-A 25-role intake run hit a chain of failures traced from a real session export: the documented 5-role cap on the career coach spawn was bypassed, the coach hit the model's hard output-token ceiling mid-generation and crashed, the orchestrator then hand-edited the coach's output file directly across 5 gatekeeper fail/fix rounds instead of re-invoking the coach, and the run crashed again mid-writeback with no way to tell what had already reached Notion — losing 24 of 25 roles' completed, gatekeeper-passed analysis. This release closes every link in that chain.
-
-**Changes in this release**
-
-- **`$PIPE/queue.md` formalizes file-based JD/row passing into the coach.** Step 0.5 now writes each role's fetched JD content and Notion row payload to disk as soon as it's ready, instead of holding it in memory for inline passing into the coach spawn prompt. The coach reads its own input from the file (R-41 applied to inputs, not just outputs).
-- **The 5-role cap is now a hard gate, defended at three points.** Step 0.7 states the cap as non-negotiable with the failure it prevents named explicitly; Step 0.8 re-checks defensively right before spawning in case the cap wasn't applied upstream; the coach itself now refuses (and reports back) a `queue.md` with more than 5 roles rather than attempting an oversized batch.
-- **The coach writes `coach-output.md` incrementally, one role at a time.** Appending each role's section as it completes — rather than composing the full multi-role output in memory and writing it once — keeps any single generation turn to one role's worth of content and leaves a usable partial file if the run is interrupted.
-- **Named anti-pattern: hand-editing `coach-output.md` instead of re-spawning the coach.** The gatekeeper's coach-output check now passes its violation list as a file path (`OUTPUT_PATH`), and a gatekeeper FAIL always re-spawns the coach to apply its own fixes — the orchestrator is explicitly prohibited from hand-editing the coach's output file itself, the same failure mode CLAUDE.md already names for direct `career-data` writes.
-- **`$PIPE/writeback-status.md` makes Step 0.9a writeback resumable.** Intake now writes a per-role checklist before writeback begins and checks off each role only once its writes and confirmation pass both complete. A future interruption leaves an authoritative on-disk record of exactly which roles are done — no more re-fetching Notion pages to guess at partial progress, and no more silently losing completed work.
-- **New Step 0.4 establishes intake's own `$PIPE`, with a stop condition on missing config.** Intake previously referenced `$PIPE` without ever creating it — a latent gap that this release's `queue.md`/`writeback-status.md` writes made load-bearing. Step 0.4 now creates a run-scoped scratch directory (distinct from New Application's per-role/per-company `$PIPE`) before any other step writes to it, scoped to Notion-fetch mode only — Inline mode's single ad hoc role still passes its content directly in the spawn prompt, no file needed. It stops cleanly if `output_folder` is missing from career-data config (the same guard pattern Step 0 already applies to `database_id`), since a standalone intake invocation bypasses the orchestrator's preflight where that's normally caught.
-- **Fixed a pre-existing gatekeeper documentation contradiction — and the two real callers it had silently broken.** `agents/gatekeeper.md`'s top-of-file R-41 protocol has always required violations to be written to `OUTPUT_PATH` with a short status-line reply, but its own "Output format" section for all three checks (CV, Cover Letter, Coach Output) showed the violation list printed inline in the reply, with no mention of `OUTPUT_PATH` at all. This was already live drift for the CV and Cover Letter checks before this release; this release's new `OUTPUT_PATH` wiring for the Coach Output Check exposed it. All three sections now correctly describe file-based output, with the Cover Letter Check's grade-carrying PASS reply kept as a documented, deliberate exception (short enough not to reintroduce content bloat). Tracing the corrected contract against every real spawn site found two genuine breaks in the edit pipeline: Step E0.7's baseline CV and cover-letter checks never supplied `OUTPUT_PATH`, even though their violation lists are read back downstream at Steps E3 and E7 as if from a file. Both spawns now pass `OUTPUT_PATH`, and the downstream reads are updated to match.
-- **Clarified that Inline mode never reaches the `$PIPE`-dependent steps.** Steps 0.8 and 0.8.5 (the batch coach spawn and its Coach Output Check) referenced `$PIPE` unconditionally with no carve-out for Inline mode, which Step 0.4 had explicitly excluded from `$PIPE` creation — a gap that would have left `$PIPE` undefined partway through an Inline-mode run. The skill now states plainly, at the top, that Steps 0 through 0.9 are Notion-fetch mode's procedure only: Inline mode is a separate, shorter flow that spawns the career coach's **Option 1 — Inline** for its single ad hoc role (not Option 2, which is exclusively the batch path) and ends after a conversational reply, never touching the queue, the batch coach spawn, the Coach Output Check, or Notion writeback.
-- **Closed a coach-complete/confirmation-pass field mismatch.** Step 0.8's `coach-complete` check (which determines whether the coach spawn is skipped for a role) was missing `Role summary`, `Priority`, and `Priority Reason` from its required-fields list, even though Step 0.9a's confirmation pass treats all three as mandatory. A role could be marked coach-complete with those three fields silently empty and never have them checked, since coach-complete roles never reach Step 0.9a. The two lists are now in parity.
-
-### 2026-06-30 — Coach R-41, career-data v1.5.0 router support, pipeline reliability fixes
-
-This release restructures the `career-data` content bank into sub-files, fixes the Motivation Bank read path and role-facts read path, and adds two pipeline reliability improvements.
+This release covers six days of continuous work across four layers of the plugin: a backend-neutral config model for the job-tracking database, two new sourcing capabilities (screening answers and expanded job discovery), a Motivation Bank that gives the letter-writer a standing verbatim voice source, a restructured `career-data` content bank that scales past a single flat file, and a file-based read/write pattern (R-41) applied across the intake, application, and edit pipelines to stop large batches from overflowing the model's context window. It also folds in roughly forty smaller correctness fixes found through systematic adversarial QA audits run throughout development: dual-writeback bugs, `CAREER_DATA` propagation gaps, stale file paths, and contract mismatches between an agent's stated output format and what its callers actually read.
 
 #### Upgrading from a previous version
 
 **Required**
 
-1. **Reinstall the plugin.** Download `career-engine.plugin` and reinstall it via **Customize → Connectors → Personal plugins**.
+1. **Reinstall the plugin.** Download `career-engine.plugin` from the Releases page and reinstall it via **Customize → Connectors → Personal plugins**. The previous installation must be replaced; updating in place is not supported.
 
-2. **Migrate `career-data` to the v1.5.0 structure.** `02-professional-background.md` is now a router — all content has moved to dedicated sub-files in `background/`. The plugin reads the Motivation Bank from `background/background-motivation-bank.md`; if your `career-data` still has the flat structure (Motivation Bank at §5), the pipeline will not find it.
+2. **Migrate `career-data` to the v1.5.0 structure.** `02-professional-background.md` is now a router: it holds a routing table and a career-history summary. Everything else (role facts, approved CV summaries and bullets, testimonials, portfolio, cross-cutting skills, and the Motivation Bank) lives in dedicated sub-files under `background/`. A `career-data` skill on the prior flat structure produces an empty read where the pipeline expects role facts and the Motivation Bank.
 
-   The updated blank router and seven sub-file templates ship with the plugin at `references/02-professional-background.md` and `references/background/`. To migrate:
+   The plugin ships the router template and seven blank sub-file templates at `references/02-professional-background.md` and `references/background/`. Migrate as follows:
 
-   - Replace `02-professional-background.md` with the router template. Add a row to the Career History Table for each role in your history.
-   - Move your Motivation Bank table to `background/background-motivation-bank.md`.
-   - Move role facts for each company to `background/background-role-facts-<company>.md` (one file per company, slugified name).
-   - Move any other content to its matching sub-file (`background-cv-summaries.md`, `background-approved-bullets.md`, `background-testimonials.md`, `background-portfolio.md`, `background-cross-cutting-skills.md`).
+   - Replace `02-professional-background.md` with the router template. Add one row to the Career History Table for each role in your history.
+   - Create `background/background-motivation-bank.md` and move your Motivation Bank table into it: a `| Tags | Motivation |` table holding your standing motivations in your own words. State why you do this work, what draws you to the roles you pursue, and what you want to contribute. If you have not built a Motivation Bank yet, start it here; the pipeline appends new rows automatically after each run.
+   - Create one `background/background-role-facts-<company>.md` per company in your work history (slugified name: lowercase, spaces and punctuation converted to hyphens).
+   - Move any other content you have (approved CV summaries, approved bullets, testimonials, portfolio, cross-cutting skills) into its matching sub-file (`background-cv-summaries.md`, `background-approved-bullets.md`, `background-testimonials.md`, `background-portfolio.md`, `background-cross-cutting-skills.md`).
 
-   Apply these changes via the update-prompt path. See [Updating career-data](https://github.com/spinningrachel/career-engine/wiki/Updating-career-data) for the procedure.
-
-   > **Minimum migration if you just installed June 29:** if you only added the Motivation Bank at §5 and haven't filled in role facts or other sections yet, the minimum required change is to replace `02-professional-background.md` with the router template and create `background/background-motivation-bank.md` with your Motivation Bank table.
+   Generate an update-prompt and apply it via Chat, then repackage and reinstall `career-data` through the Desktop app. See [Updating career-data](https://github.com/spinningrachel/career-engine/wiki/Updating-career-data) for the procedure.
 
 **Optional**
 
-Nothing additional is required. WIWTR instruction parsing, role properties on disk, and the pipeline reliability fixes are purely plugin-side.
+None of the following block a pipeline run. An older config with none of these fields set still works, and a per-run config-health notice lists what's empty or missing.
+
+- **Screening answers.** Add a `screening_answers` block to `pipeline-preferences.json` with your standing answers to common gating questions (travel, relocation, security clearance, compensation floor, availability). Intake flags a match or conflict against the JD in Patterns (advisory only, never a gate), and sourcing down-ranks a conflicting role with a visible label rather than excluding it. Leave any field blank to skip it.
+- **Sourcing keyword variants and locale boards.** Add title variant sets and locale-specific job boards to `job-preferences.md` to widen what `source-open-roles` searches. A new `references/locale-job-boards.md` ships as a starting reference, keyed by country.
+- **Database config keys.** `pipeline-preferences.json` now names your tracker backend explicitly (`database_backend`, default `notion`) and reads `database_id` and five `database_*_view_url` fast-path keys in place of the old `notion_*` names. Every legacy `notion_*` key is still read, so an existing config keeps working untouched; migrate to the new names at your own pace.
 
 **Changes in this release**
 
-- **Coach R-41 output protocol.** The career coach now writes its full analysis to `$PIPE/coach-output.md` (R-41) in intake pipeline mode and returns a single status line. Previously the coach returned its analysis inline, which was vulnerable to context compression during 5-role batch runs — the compression event could occur between the coach return and the Step 0.9a Notion writes, destroying the analysis. File-based output survives compression; the intake skill reads the file in Step 0.8.5 and passes it to the gatekeeper. All other coach options continue to return inline.
-- **career-data v1.5.0 router support.** All plugin agents, skills, and reference files now use the v1.5.0 sub-file paths for `02-professional-background.md`, which has been converted from a flat file to a router pointing to `background/background-*.md` sub-files. The plugin's blank template for `02-professional-background.md` has been updated accordingly, and `references/background/` now ships seven blank sub-file templates.
-- **WIWTR instruction parsing.** The letter-writer now classifies Why I Want This Role content before building the coverage checklist. Instruction directives ("Find in motivation bank...", "Refer to professional background...") are executed as sourcing instructions rather than quoted as letter content. Mixed items are split: the directive is executed, the genuine motivation is kept verbatim. This prevents instructions written in the WIWTR field from appearing in the letter body.
-- **Role properties on disk at pipeline start.** A new Step 0.data writes all role metadata (company, role title, Strategy, Keywords, Gap handling, Role summary) to `$PIPE/role-properties.md` immediately after the pipeline directory is created. The file survives context compression and gives all subagents a lightweight on-disk reference to role metadata.
-- **Screen 1/2/3 renamed from Priority 1/2/3.** The coach's priority classification labels were renamed to Screen 1/2/3 to avoid colliding with the Notion `Priority` property during intake writeback.
-- **Priority Select value annotation fixed.** The coach context block in the coach skill now correctly annotates select values with their allowed options so intake can validate before writing.
-- **Likely KPIs removed from coach context block.** The coach no longer writes a `Likely KPIs` field to the coach context block written to WIWTR; the field is not part of the Notion schema and caused writeback errors.
-- **Section references updated throughout.** Stale numbered section references (`§5`, `Section 7`, `§9`, `§10`) in agents and skills have been replaced with the correct `background/` sub-file paths, matching the v1.5.0 career-data structure.
-- **Role facts file read fixed.** The cover letter pre-step that reads background context for the letter-writer was pointing at `02-professional-background.md` (now a router with no content). It now reads `background/background-role-facts-<company>.md` directly, with company slug derivation and a fallback message when no file exists for the company. The letter-writer was previously receiving a routing table as "role facts."
+**New features**
+- **Database backend abstraction.** Config keys are now backend-neutral (`database_backend`, `database_id`, `database_edit_view_url`, `database_property`, and four sibling view-URL keys), with full backward compatibility for the legacy `notion_*` names. The read/write mechanics live in one adapter skill, `database-notion`, that every pipeline delegates to. A future backend is a sibling adapter with the same generic operations.
+- **Config-health notice.** Only `output_folder`, `cv_template`, and `database_id` (when a database backend is configured) stop a run if missing. Every other key is optional. A notice printed each run lists exactly what's empty or missing against the current template, so an older config never silently breaks and a new config key never goes unnoticed.
+- **Screening answers.** See the Optional upgrade step above.
+- **Smarter sourcing.** `source-open-roles` now searches keyword variant sets per title (stored in `job-preferences.md`), a new tier of locale-specific job boards, and net-widening sources (Remotive, Reddit hiring threads, LinkedIn hiring posts, and native company careers pages as a discovery channel), while explicitly skipping echo aggregators that mirror other boards.
+- **Motivation Bank.** A `| Tags | Motivation |` table (now living in `background/background-motivation-bank.md` per the v1.5.0 structure above) is the letter-writer's primary content and voice source, read ahead of any constructed alternative. Why I Want This Role is supplementary: its distinct points must still appear in the letter when present, but the Bank alone can carry a letter when it's empty. A Sufficiency Gate skips a role rather than writing from fabricated motivation when both sources are empty. Durable Why I Want This Role content is promoted into the Bank as new rows after each run.
+- **Coach worldview upgrade.** The career coach now classifies every role by mandate type (Builder, Fixer, or Maintainer, based on the JD's verb signals) and generates bespoke WIWTR coaching questions for the user to answer before the letter pipeline runs.
+- **`career-data` v1.5.0 router structure.** See the Required upgrade step above.
+- **File-based (R-41) pipeline I/O.** Large content passed between pipeline steps and subagents (JD text, row payloads, a subagent's full output) now travels by file path, not inline in a spawn prompt, everywhere the pattern was previously missing: `$PIPE/role-properties.md` at the start of every application-pipeline run, and `$PIPE/queue.md`, incremental per-role writes to `$PIPE/coach-output.md`, and `$PIPE/writeback-status.md` in the intake pipeline. This was root-caused from a real 25-role intake run. The documented 5-role batch cap was bypassed, the coach hit the model's output-token ceiling mid-generation and crashed, the run's own logic then hand-edited the coach's output file directly across five gatekeeper fail/fix rounds instead of re-invoking the coach, and a second crash mid-writeback lost 24 of 25 roles' completed, gatekeeper-passed analysis with no way to tell what had already reached Notion. The 5-role cap is now enforced at three points (queue selection, a defensive pre-spawn check, and a refusal built into the coach itself). A named anti-pattern now prohibits hand-editing a subagent's output file and requires a re-spawn instead, and the writeback ledger makes an interrupted run resumable instead of silently losing finished work.
 
-### 2026-06-29 — Motivation Bank and pipeline reliability
+**Improvements**
+- **Gatekeeper Coach Output Check verifies against the full background, not the rules file alone.** Previously it checked claims only against `01-writing-rules.md`, producing false positives on real, documented claims that lived in `02-professional-background.md` or `03-framework.md`.
+- **Orchestrator and coach split into phase-based sub-files.** Both monolithic skill files are now lazy-loaded by phase, reducing the context every run has to hold.
+- **WIWTR instruction parsing.** The letter-writer classifies Why I Want This Role content before building its coverage checklist, executing sourcing directives ("Find in motivation bank...") instead of quoting them as letter content.
+- Coach output brevity and calibration fixes: hard-capped keywords, Strategy calibration, gap-handling seam closed, filler-quality checks moved to the gatekeeper so the coach stays strategic.
 
-This release introduces the Motivation Bank, restructures the cover letter content model, adds Notion fast-paths for all five pipeline views, and fixes two CAREER_DATA propagation gaps in the revision loops.
-
-#### Upgrading from a previous version
-
-Two changes to `career-data` are required before the cover letter pipeline runs correctly. The rest are optional enhancements.
-
-**Required**
-
-1. **Reinstall the plugin.** Download `career-engine.plugin` from the Releases page and reinstall it via **Customize → Connectors → Personal plugins**. The previous installation must be replaced. Updating in place is not supported.
-
-2. **Add the Motivation Bank to `02-professional-background.md`.** The cover letter pipeline reads from this table as its primary content and voice source. Without it, the letter-writer has no standing motivation content and skips roles where Why I Want This Role is also empty.
-
-   Add this section to `02-professional-background.md` at §5:
-
-   ```markdown
-   ## Section 5 — Motivation Bank
-
-   | Tags | Motivation |
-   |---|---|
-   ```
-
-   Populate the table with your standing motivations in your own words: why you do this work, what draws you to the roles you pursue, what you want to contribute. The pipeline appends rows automatically after each run when Why I Want This Role content is worth preserving.
-
-   Apply this change via the update-prompt path: generate an update-prompt, paste it into Chat, then repackage and reinstall `career-data` via the Desktop app. See [Updating career-data](https://github.com/spinningrachel/career-engine/wiki/Updating-career-data) for the update-prompt procedure.
-
-**Optional**
-
-- **Notion view URL fast-paths.** Five optional keys in `pipeline-preferences.json` skip the Notion database discovery fetch when populated. The adapter falls back to view-by-name discovery when any key is absent.
-
-  ```json
-  "database_interested_view_url": "",
-  "database_hold_view_url": "",
-  "database_researched_view_url": "",
-  "database_cv_ready_view_url": "",
-  "database_edit_view_url": ""
-  ```
-
-- **Screening answers.** A `screening_answers` section in `career-data` holds standing answers to common gating questions. Intake applies them automatically when the field is present.
-
-**Changes in this release**
-
-- **Motivation Bank.** A `| Tags | Motivation |` table in `02-professional-background.md` §5 is now the letter-writer's mandatory primary content and voice source. Each row holds your own words; the pipeline reads from it ahead of any constructed alternative. Why I Want This Role is now supplementary: when both are present, WIWTR's distinct points must appear in the letter; when WIWTR is absent, the Bank alone drives the opener.
-- **Sufficiency Gate.** When both the Motivation Bank and WIWTR are empty for a role, the letter-writer skips that role rather than writing with fabricated or constructed motivation.
-- **WIWTR promotion.** Durable Why I Want This Role content is appended to the Motivation Bank as new tagged rows after each run, keeping the Bank current without manual edits.
-- **Gatekeeper: Bank-derived content exempted.** Sentences drawn from Motivation Bank entries pass the personal-content check and are not flagged as fabricated even when they don't appear verbatim in the CV.
-- **Notion view URL fast-paths.** Five new optional config keys skip the Notion database discovery fetch when populated. View-by-name discovery remains the fallback when any key is absent.
-- **CAREER_DATA pass-through fixed.** All eight revision-branch spawns in the new-application and edit pipelines now pass `CAREER_DATA=${CAREER_DATA}` explicitly. Previously, gatekeeper-fail loops and re-spawn branches lost access to personal data at runtime.
-- **CV path fixed for edit-mode Letter-type.** The edit pipeline now writes the pandoc-extracted CV text to `$PIPE/cv-text.md` before spawning the gatekeeper, giving the repetition check a concrete file to read.
-- **CV path fixed for `--now` mode.** The fast-track path now passes an explicit no-CV instruction to the gatekeeper instead of referencing a file that does not exist in that mode.
-- **Changelog rules.** Format (`### YYYY-MM-DD — <label>`, newest-first, never-remove) is now documented in CLAUDE.md and checked by the QA agent on every run.
+**Bug fixes**
+- **Dual-writeback bug.** The career coach no longer writes to Notion in any pipeline mode; intake's Step 0.9a is now the sole writer of coach-produced properties, closing a gap where two writers each assumed the other had written and `Role summary`/`Priority Reason` were silently dropped.
+- **`CAREER_DATA` propagation.** Eight revision-branch spawns across the new-application and edit pipelines, plus a further set found by a full spawn-parameter audit, now pass `CAREER_DATA=${CAREER_DATA}` explicitly. Previously, gatekeeper-fail loops and re-spawn branches lost access to personal data at runtime.
+- **CV path fixes** for edit-mode Letter-type (writes `$PIPE/cv-text.md` before the gatekeeper's repetition check) and `--now` mode (passes an explicit no-CV instruction instead of a path that doesn't exist).
+- **Cover-letter filename slug drift** between the new-application and export pipelines.
+- **Gatekeeper output-format contract fixed.** The gatekeeper's documented protocol has always required violations to be written to a file (`OUTPUT_PATH`) with a short status-line reply, but its own format section for all three checks showed the violation list printed inline instead. This was live drift for two of the three checks, and the cause of two real breaks in the edit pipeline's baseline checks, whose violation lists are read back downstream as if from a file that was never written. All three checks and both callers are now correct.
+- **Freelance-manager config reference fixed.** It pointed at a `freelance-config.md` file that never existed; pricing floors now live in `pipeline-preferences.json` with everything else.
+- Roughly a dozen defects found in a deep adversarial audit of under-traced pipeline surfaces, and fourteen pipeline-logic findings from a systematic QA trace of the intake, new-application, and orchestrator skills: stale file paths, missing stop conditions, and field-list mismatches between a gate and the check that enforces it.
 
 ### 2026-06-23 — Documentation and marketplace install support
 
