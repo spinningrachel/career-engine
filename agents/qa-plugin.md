@@ -142,7 +142,7 @@ grep -rn "option=interview-questions\|interview-questions\|interview questions\|
 
 For each agent `.md` file, scan for skill names that are loaded or referenced (look for patterns like skill name strings, `Load`, `read skill`, etc.). For each skill name found, verify the corresponding directory exists in `skills/`.
 
-Common skill names to expect: `career-engine-intake`, `career-engine-new-application`, `career-engine-export`, `career-engine-orchestrator`, `career-engine-edit`, `career-engine-setup`, `coach`, `writer-craft`, `career-coach`, `gatekeeper-checks`, `career-engine`, `update-refs`.
+Common skill names to expect: `career-engine-intake`, `career-engine-new-application`, `career-engine-export`, `career-engine-orchestrator`, `career-engine-edit`, `career-engine-setup`, `coach`, `writer-craft`, `humanizer`, `career-coach`, `gatekeeper-checks`, `career-engine`, `update-refs`.
 
 **FAIL condition:** a referenced skill name has no matching directory.
 
@@ -243,10 +243,10 @@ Read `CLAUDE.md`. Verify it contains "Single-build architecture" and "career-dat
 
 **Source of truth is the live filesystem, not this list.** First run `ls -d <location>/skills/*/` and use that actual set as the count and membership. Then reconcile it against the enumeration below: every directory on disk should be categorizable here, and every name below should exist on disk. Do not report a count from memory — derive it from `ls`. (The list below is a categorized reference; new skills are added over time, so a directory on disk that isn't listed here is a "categorize and note," not a fail.)
 
-These skill directories must exist in `skills/` (26 as of this writing):
+These skill directories must exist in `skills/` (28 as of this writing):
 - Core pipeline: `career-engine`, `career-engine-orchestrator`, `career-engine-intake`, `career-engine-new-application`, `career-engine-edit`, `career-engine-export`, `career-engine-setup`
-- Writing & quality: `writer-craft`, `gatekeeper-checks`, `career-coach`, `localization`
-- Standalone career: `source-open-roles`, `linkedin-coach`, `personal-brand`, `update-refs`
+- Writing & quality: `writer-craft`, `humanizer`, `gatekeeper-checks`, `career-coach`, `localization`
+- Standalone career: `source-open-roles`, `linkedin-coach`, `personal-brand`, `update-refs`, `role-prioritizer`
 - Content & freelance: `content-orchestrator`, `mind-dump`, `linkedin-post-writer`, `linkedin-post-reviewer`, `fiverr`, `upwork`, `freelance-shared`
 - Meta: `plugin-builder`, `technical-writing`
 - Database adapters: `database-notion`, `database`
@@ -281,21 +281,22 @@ These checks verify that key rules confirmed in live runs are actually present i
 
 ### Check 16 — Humanizer Final Gate is explicit in agent procedure
 
-In `agents/cover-letter-humanizer.md`: verify the file contains "Final Gate".
+In `skills/humanizer/SKILL.md`: verify the file contains "Final Gate" (relocated from `agents/cover-letter-humanizer.md` / writer-craft §12 when the humanizer got its own dedicated skill).
 
 ```bash
-grep -c "Final Gate" <location>/agents/cover-letter-humanizer.md
+grep -c "Final Gate" <location>/skills/humanizer/SKILL.md
 ```
 
 **FAIL condition:** string not found (count = 0).
 
 ### Check 16b — Sentence-balance rule and preference-intake guards present
 
-The humanizer's sentence-length monotony rule (with Final Gate parity) and the voice-preference rule-protection guards must all be present. (Sentence-balance rule relocated to `skills/writer-craft/SKILL.md` §4 during the writer-craft consolidation.)
+The humanizer's sentence-length monotony rule (with Final Gate parity) and the voice-preference rule-protection guards must all be present. (Sentence-balance rule lives in `skills/writer-craft/SKILL.md` §4 since the writer-craft consolidation; the humanizer's own Final Gate parity copy lives in `skills/humanizer/SKILL.md` since the humanizer skill split.)
 
 ```bash
 grep -c "Sentence-length variation" <location>/skills/writer-craft/SKILL.md                                # must be >= 1
-grep -c "reads monotone" <location>/skills/writer-craft/SKILL.md                                           # must be 2 (§4 rule + §12 Step 2 parity)
+grep -c "reads monotone" <location>/skills/writer-craft/SKILL.md                                           # must be 1 (§4 rule)
+grep -c "reads monotone" <location>/skills/humanizer/SKILL.md                                              # must be 1 (Step 2 parity)
 grep -c "Documented writing rules and prohibitions are protected" <location>/skills/update-refs/SKILL.md   # must be 1
 grep -c "never silently modify documented rules" <location>/skills/career-engine-setup/SKILL.md            # must be 1
 ```
@@ -443,9 +444,9 @@ Per-role subagents write output to disk and return pointers; new-application thr
 
 ```bash
 # Each per-role subagent carries the R-41 output protocol
-for a in cv-writer letter-writer recruiter-reviewer gatekeeper cover-letter-humanizer; do grep -c "Output protocol (R-41)" <location>/agents/$a.md; done
+for a in cv-writer letter-writer recruiter-reviewer gatekeeper humanizer; do grep -c "Output protocol (R-41)" <location>/agents/$a.md; done
 # Reviewers/gatekeeper/humanizer can write (were read-only / no-write before)
-for a in recruiter-reviewer gatekeeper cover-letter-humanizer; do grep -c "^tools:.*Write" <location>/agents/$a.md; done
+for a in recruiter-reviewer gatekeeper humanizer; do grep -c "^tools:.*Write" <location>/agents/$a.md; done
 # new-application threads _pipeline files and reads the feedback file from disk
 grep -c "_pipeline" <location>/skills/career-engine-new-application/SKILL.md
 grep -c 'PIPE/cv-final.md\|PIPE/recruiter-cv.md' <location>/skills/career-engine-new-application/SKILL.md
@@ -509,8 +510,7 @@ test -f <location>/references/linkedin-profile.md && echo 1 || echo 0           
 
 ```bash
 grep -c "Voice fingerprint" <location>/references/03-framework.md                      # must be >= 1
-grep -c "Voice fingerprint" <location>/agents/cover-letter-humanizer.md                # must be >= 1
-grep -c "Voice fingerprint" <location>/skills/writer-craft/SKILL.md                    # must be >= 1 (relocated from skills/cover-letter/SKILL.md)
+grep -c "Voice fingerprint" <location>/skills/humanizer/SKILL.md                       # must be >= 1 (relocated from agents/cover-letter-humanizer.md)
 ```
 
 **FAIL condition:** any count is 0 or below its stated requirement.
@@ -675,7 +675,7 @@ grep -ci "em dash" <build>/skills/writer-craft/SKILL.md
 
 **FAIL condition:** the `skills/writer-craft/SKILL.md` count is 0. The `agents/letter-writer.md` count is advisory — note it but do not fail solely on it, since the letter-writer may reference the ban only by pointing at the skill.
 
-**colon ban present:** grep `agents/letter-writer.md` and `skills/writer-craft/SKILL.md` (relocated from `skills/cover-letter-humanizer/SKILL.md`) for "colon" in the context of a writing ban — must appear in at least one.
+**colon ban present:** grep `agents/letter-writer.md` and `skills/writer-craft/SKILL.md` for "colon" in the context of a writing ban — must appear in at least one.
 
 ```bash
 grep -ci "colon" <build>/agents/letter-writer.md
@@ -770,6 +770,87 @@ grep -c "held up in practice better than the equivalent instruction" <build>/ski
 
 **FAIL condition:** count is 0.
 
+### Check 35 — Prioritization pipeline wired end-to-end (2026-07-02 new feature)
+
+The Prioritization pipeline needs an agent, a skill, a Pipeline Registry row, a `New` Status value, and a Notion adapter that recognizes the target status. Verify the wiring, not just file existence.
+
+```bash
+test -f <build>/agents/role-prioritizer.md && echo 1 || echo 0                              # must be 1
+test -f <build>/skills/role-prioritizer/SKILL.md && echo 1 || echo 0                        # must be 1
+grep -c "^model: haiku" <build>/agents/role-prioritizer.md                                  # must be 1
+grep -c "^model: opus\|effort:" <build>/agents/role-prioritizer.md                           # must be 0 (no opus, no effort field per spec)
+grep -c "role-prioritizer" <build>/skills/career-engine/SKILL.md                             # must be >= 1 (Pipeline Registry row)
+grep -c "| \`New\` |" <build>/skills/database/SKILL.md                                       # must be >= 1 (Status Values table)
+grep -c "| \`Needs Research\` |" <build>/skills/database/SKILL.md                             # must be >= 1 (Status Values table)
+```
+
+**FAIL condition:** any count differs from its stated requirement.
+
+### Check 35b — Prioritization → intake always-overwrite fix present (2026-07-02 fix)
+
+`Role Summary`, `Location`, and `Priority` must be always-overwrite (not write-only-to-empty) in intake's Step 0.9a, matching the `JD proof` pattern. The coach-complete field list must still require enough fields that a Prioritization-only role can never pass as coach-complete.
+
+```bash
+grep -c "Role summary\`, \`Location\`, and \`Priority\` are always-overwrite" <build>/skills/career-engine-intake/SKILL.md   # must be >= 1
+grep -ci "\*\*always overwrite\*\*" <build>/skills/career-engine-intake/SKILL.md             # must be >= 3 (Priority, Location, Role summary bullets)
+grep -c "Prioritization" <build>/CLAUDE.md                                                   # must be >= 1 (cross-file-contract row)
+```
+
+**FAIL condition:** any count is 0 or below its stated requirement.
+
+### Check 35c — Two bundled intake bug fixes present (2026-07-02 fix)
+
+(1) Step 0.7 must have an explicit "do not ask the user" guard for the 5-role selection. (2) The Notion adapter's Path B view-query call (steps 2-3) must be delegated, not run directly in the caller's context.
+
+```bash
+grep -c "Do not ask the user about this. The selection above is deterministic" <build>/skills/career-engine-intake/SKILL.md   # must be >= 1
+grep -c "Steps 2–3 (the view-query call itself) must be delegated" <build>/skills/database-notion/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** either count is 0.
+
+### Check 35d — Prioritization resolves its own `New`-status view, not the `Needs Research` view (2026-07-02 fix)
+
+A confirmed production failure: `role-prioritizer.md` was resolving `database_hold_view_url` (whose saved filter is `Status = Needs Research`) as its fast-path for a `New`-status query, which always returned zero results since a Notion view only ever returns its own saved filter's rows. Fixed with a dedicated `database_new_view_url` key. Verify the fix is present and the agent no longer treats the two views as interchangeable.
+
+```bash
+grep -c "database_new_view_url" <build>/agents/role-prioritizer.md                       # must be >= 2 (File Loading table + Step 0)
+grep -c "database_new_view_url" <build>/references/pipeline-preferences.json             # must be >= 1
+grep -c "database_new_view_url" <build>/skills/career-engine-setup/SKILL.md              # must be >= 1
+grep -c "database_new_view_url" <build>/skills/database-notion/SKILL.md                  # must be >= 1
+grep -c "database_new_view_url" <build>/CLAUDE.md                                        # must be >= 1
+# The agent must not claim the same view serves both New and Needs Research queries
+grep -c "the underlying property values are what you filter on, not the view name" <build>/agents/role-prioritizer.md   # must be 0 (the disproven doctrine comment must not reappear)
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement, or the disproven-doctrine grep is nonzero.
+
+### Check 36 — Humanizer enforcement mechanisms present (2026-07-02 fix)
+
+Four enforcement-strengthening additions closing rule-exists-but-applied-inconsistently gaps diagnosed from real letters: an exhaustiveness re-scan, a generalized inanimate-subject test (not a fixed 3-verb list), an explicit metaphor/simile naming in Step 3, and a mandatory subject-change trigger for the pronoun-antecedent check.
+
+```bash
+grep -c "Exhaustiveness pass" <build>/skills/humanizer/SKILL.md                          # must be >= 1
+grep -c "could only a person actually do this" <build>/skills/humanizer/SKILL.md         # must be >= 1
+grep -c "only people build, craft, drive" <build>/skills/humanizer/SKILL.md              # must be 0 (superseded fixed-list phrasing must not reappear)
+grep -c "hollow spatial/abstract metaphors" <build>/skills/humanizer/SKILL.md            # must be >= 1
+grep -c "Mandatory trigger, not just a general reminder" <build>/skills/humanizer/SKILL.md  # must be >= 1
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement, or the "must be 0" count is nonzero.
+
+### Check 37 — Intake queue selection driven by Prioritization's scores (2026-07-02 fix)
+
+Step 0.7's `scored`/`unscored` buckets must select `scored` roles first (ordered by Priority), regardless of coach-complete status, so the Prioritization pipeline's output actually informs full intake's 5-role selection. The stale "unscored roles first" framing must not remain anywhere in the file.
+
+```bash
+grep -c "scored. roles take priority, ordered by their existing Priority value" <build>/skills/career-engine-intake/SKILL.md   # must be >= 1
+grep -c "unscored roles first, random tie-break among unscored, then scored roles by Priority" <build>/skills/career-engine-intake/SKILL.md   # must be 0 (superseded summary phrasing must not reappear)
+grep -c "Prioritization → full-intake queue selection" <build>/CLAUDE.md                 # must be >= 1 (cross-file-contract row)
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement, or the "must be 0" count is nonzero.
+
 ### Check 30 — Changelog rules present in CLAUDE.md; README.md changelog is well-formed
 
 CLAUDE.md must document the changelog rules (newest-first, never-remove, date format). README.md's Changelog section must follow them.
@@ -826,6 +907,7 @@ These names have been retired over the plugin's history and must not appear as a
 grep -rn "employment-coach\|career-engine-coach\b" <location>/agents <location>/skills <location>/references --include="*.md" | grep -v "qa-plugin.md"
 grep -rn "cv-campaign-intake\|cv-campaign-setup\|cv-campaign-steps\|cv-campaign-edit\|cv-campaign-orchestrator\|cv-campaign-export" <location> --include="*.md" | grep -v "qa-plugin.md"
 grep -rn "application-intake\|application-edit\|new-application-steps\|applications-orchestrator\|application-files-export" <location> --include="*.md" | grep -v "qa-plugin.md"
+grep -rn "cover-letter-humanizer\|voice-analyst" <location>/agents <location>/skills --include="*.md" | grep -v "qa-plugin.md"
 ```
 
 **FAIL condition (Step 0A–0C):** any reference to a name not in the current inventory, or any hit on the retired-name list.
@@ -941,7 +1023,7 @@ This is the closest achievable equivalent to a sandboxed execution. You cannot c
 - Position: Head of Marketing
 - Job URL: `https://il.indeed.com/viewjob?jk=abc123redirect`
 - JD Body: empty
-- Status: Hold
+- Status: Needs Research
 - Edit type: (not set)
 - All coach properties: empty
 

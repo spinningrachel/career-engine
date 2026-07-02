@@ -121,7 +121,7 @@ Remote roles carrying a geographic restriction with exception-path evidence are 
 If any results scored 75+, ask at the end:
 > **[N] roles scored 75 or above. Add them to your intake queue?** (yes / no / select)
 >
-> If yes: list the roles with their Job URLs. Tell the user to add them to their Notion database with Status = `Hold`, then run `/career-engine:intake`.
+> If yes: list the roles with their Job URLs. Tell the user to add them to their Notion database with Status = `Needs Research`, then run `/career-engine:intake`.
 
 Save full results to `{{OUTPUT_FOLDER}}/sourcing/sourcing-[YYYY-MM-DD].md` using the save format below. Create the directory if it does not exist.
 

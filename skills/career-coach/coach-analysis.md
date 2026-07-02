@@ -6,7 +6,7 @@ Load this file after `coach-research.md` is complete and you are ready to analyz
 
 ## Notion invocation context
 
-The career-coach is always invoked by the intake pipeline after intake has queried the Notion database to build the Hold queue. The coach does not query Notion for its input list — that is intake's responsibility. This section documents the query protocol intake uses so the coach understands what state the database was in and what the ladder guarantees.
+The career-coach is always invoked by the intake pipeline after intake has queried the Notion database to build the Needs Research queue. The coach does not query Notion for its input list — that is intake's responsibility. This section documents the query protocol intake uses so the coach understands what state the database was in and what the ladder guarantees.
 
 **How intake surfaces roles for the coach:** intake queries the database through the **Notion adapter** (`skills/database-notion/SKILL.md` → §2 read ladder, A1 → A2 → B, when `database_backend` is `notion`) and passes the coach fully-resolved rows. The coach does not need the mechanics — only the guarantees: rows arrive filtered to the target status with full per-page properties (Path B is discovery-only → per-page `notion-fetch`, never a parsed rendered table — R-1); and if every rung fails intake stops and reports rather than treating it as an empty queue or improvising `notion-search` (R-39).
 

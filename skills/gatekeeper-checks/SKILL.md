@@ -7,27 +7,29 @@ description: 'Check definitions for the gatekeeper agent. Three checks: CV Check
 
 > **Letter pipeline file.** Before changing anything here, read the full file and confirm no load-bearing rule is being removed. Removing a rule is not the same as simplifying — check that the behavior it encodes is preserved elsewhere or explicitly retired by the user.
 
+**Why this file is shaped the way it is.** Aggressively trimmed to gates with demonstrated evidence, using the same evidence base and methodology as `skills/writer-craft/SKILL.md` (the writer-facing doctrine this file enforces): (a) real production violations traced from actual pipeline sessions, and (b) gaps found via condensed-prompt gatekeeper experiments this session. Every gate below either fired as a real traced violation, defines document correctness (not style), or closes a gap the writer doctrine states but no check previously enforced. **Coherence rule:** every gate here checks something `writer-craft/SKILL.md` actually tells the writer to do — no gate exists here for a rule the writer skill doesn't state. Structured as numbered gates, hard-fail vs advisory labeled per item, mirroring the condensed-prompt structure that tested well this session.
+
 ---
 
 ## CV Check
 
-Run the ATS pre-check first, then the content checks in order.
+Run Gate 0 (ATS pre-check) first, then Gates 1-4 in order.
 
-### ATS Pre-Check
+### Gate 0 — ATS Pre-Check (hard fail)
 
 ATS failures mean the document may never reach a human reader regardless of quality.
 
-**Keyword coverage:** Parse the Keywords property into three tiers (`Critical: ... | Important: ... | Nice-to-have: ...`). Search for each term (case-insensitive) in the full CV body — summary, experience bullets, and skills section.
+**Keyword coverage.** Parse the Keywords property into three tiers (`Critical: ... | Important: ... | Nice-to-have: ...`). Search each term (case-insensitive) across the full CV body — summary, experience bullets, skills section.
 
 | Tier | Requirement | Action if below threshold |
 |---|---|---|
-| **Critical** | ≥80% must appear | FAIL — list the missing terms by name |
-| **Important** | ≥60% must appear | FAIL — list the missing terms by name |
-| **Nice-to-have** | No threshold | Advisory only — include in end-of-pipeline feedback note, do not return as a violation |
+| **Critical** | ≥80% must appear | FAIL — list missing terms by name |
+| **Important** | ≥60% must appear | FAIL — list missing terms by name |
+| **Nice-to-have** | No threshold | Advisory only — end-of-pipeline feedback note, not a violation |
 
-**Gap handling exception:** If a missing Critical or Important term is explicitly listed as a gap in the role's Gap handling property, do not fail on it — add it to the advisory note instead.
+**Gap handling exception:** a missing Critical/Important term explicitly listed as a gap in the role's Gap handling property does not FAIL — add it to the advisory note instead.
 
-**Standard section headings:** Search the full document text (case-insensitive) for "SUMMARY", "EXPERIENCE", "SKILLS". Quote the line where found, or state explicitly it is absent. Headings may appear anywhere in the document.
+**Standard section headings.** Search the full document (case-insensitive) for "SUMMARY", "EXPERIENCE", "SKILLS" — quote the line where found, or state explicitly it is absent. Headings may appear anywhere in the document.
 
 | Required | Not acceptable |
 |---|---|
@@ -37,186 +39,181 @@ ATS failures mean the document may never reach a human reader regardless of qual
 
 FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
 
-**Macro-injected sections — FAIL if present, never fail on their absence:** `EDUCATION`, `LANGUAGES`, and `ADDITIONAL` are injected automatically by the user's Word template. They must NOT appear in cv-writer's markdown output — they are already formatted in the template and will be duplicated if written here. FAIL immediately if any of `## EDUCATION`, `## LANGUAGES`, or `## ADDITIONAL` appear anywhere in the CV text, with the message: "[SECTION] section must not be written — it is part of the Word template and will duplicate." Never fail on their absence.
+**Macro-injected sections — FAIL if present, never FAIL on absence.** `## EDUCATION`, `## LANGUAGES`, `## ADDITIONAL` are injected automatically by the Word template — they must NOT appear in cv-writer's markdown output (duplication risk). FAIL immediately on any hit: "[SECTION] section must not be written — it is part of the Word template and will duplicate." Never FAIL on their absence.
 
-**`TOOLS` is optional.** Do not fail if absent. If present, confirm it uses the correct `## TOOLS` heading — no other form is acceptable. FAIL if present but not using `## TOOLS` — flag as: "TOOLS section uses non-standard heading [heading] — rename to `## TOOLS`."
+**`## TOOLS` — optional, not a FAIL on absence.** If present, must use the literal `## TOOLS` heading — FAIL if present under any other heading name: "TOOLS section uses non-standard heading [heading] — rename to `## TOOLS`."
 
-**BlueFont annotation check — FAIL if triggered:** Scan the full CV markdown for any occurrence of the pattern `[^]]{custom-style="BlueFont"}` — i.e., `{custom-style="BlueFont"}` not immediately preceded by `]`. This indicates an unbracketed span. Pandoc will render the literal annotation string `{custom-style="BlueFont"}` as body text in the DOCX. Flag every unbracketed occurrence as: "Unbracketed BlueFont span: `[text here]` — wrap text in square brackets: `[text here]{custom-style=\"BlueFont\"}`." FAIL if any are found.
+**BlueFont annotation check.** Scan for the pattern `[^]]{custom-style="BlueFont"}` — i.e. `{custom-style="BlueFont"}` not immediately preceded by `]` (an unbracketed span; pandoc renders the literal annotation string as body text). FAIL every hit: "Unbracketed BlueFont span: `[text here]` — wrap: `[text here]{custom-style=\"BlueFont\"}`."
 
 ---
 
-### Content Checks
+### Gate 1 — Summary (hard fail unless marked advisory)
 
-**Summary**
-- No company, client, or conference names — descriptors only (prohibited list in `01-writing-rules.md` Section 1)
-- The summary should open with language most relevant to the hiring manager and the role being applied for. No specific role is required to appear — the summary's job is to lead with the user's strongest, most relevant credentials for this opening. Do not fail on the absence of any particular role, including the most recent one.
-- ≤120 words, 1 paragraph, ≤4 sentences
-- No tool/platform names, consulting client names, or metrics not documented as summary-appropriate
-- None of these phrases: "comfortable operating across", "proven track record", "passionate about", "results-driven", "dynamic", "extensive experience" — **advisory only if found; do not fail or loop**
-- **Single-instance trap — FAIL if triggered:** The summary claims a pattern. For every concrete claim or named activity in the summary, count how many times the CV body actually demonstrates it across different roles. If a sentence implies "she repeatedly does X" but the CV shows only one instance of X, that sentence is a bullet wearing a summary's clothes. FAIL with: "Summary sentence '[sentence]' implies a repeated pattern but the CV shows only one instance — move the specific detail to a bullet under [role], replace with the breadth claim." A summary that is dense, em-dash-stuffed, or reads structurally like a bullet point is a signal to check this rule.
-- **Absolute-peak numbers in the summary — FAIL if triggered:** A single absolute number for a team size or growth metric (e.g., "a 13-person team", "300% YoY growth") implies that was the sustained state. If the number reflects a peak or a single point in time, it must use range language ("up to 13-person teams", "up to 300% YoY growth"). FAIL with: "Summary uses absolute number '[number]' for a peak value — rewrite as 'up to [number]'."
-- **Roster-level detail in the summary — FAIL if triggered:** Listing the specific functions that made up a team or initiative (e.g., "spanning editorial, technical writing, social, product marketing, and field") is bullet-level detail. The summary carries the scope and the unified outcome, not the org chart. FAIL with: "Summary lists specific team functions — abstract to 'multiple competencies' or equivalent scope language; move the roster to a bullet."
+- No company, client, or conference names — descriptors only (`01-writing-rules.md` §1). **Hard fail.**
+- ≤120 words, 1 paragraph, ≤4 sentences. No tool/platform names, consulting client names, or undocumented metrics. **Hard fail.**
+- No motivation language — the summary states capability, not why she wants the job. **Hard fail.**
+- Leads with language most relevant to the hiring manager and role; no specific role required to appear, including the most recent one. Do not FAIL on the absence of any particular role.
+- **Single-instance trap.** For every concrete claim in the summary, count how many times the CV body demonstrates it across different roles. One instance → FAIL: "Summary sentence '[sentence]' implies a repeated pattern but the CV shows only one instance — move the specific detail to a bullet under [role], replace with the breadth claim." A dense, em-dash-stuffed, or bullet-shaped summary sentence is the signal to run this test. **Hard fail.**
+- **Absolute-peak numbers.** A single absolute team-size or growth number (e.g. "a 13-person team," "300% YoY growth") implies sustained state — FAIL unless phrased as a range ("up to 13-person teams"). **Hard fail.**
+- **Roster-level detail.** Listing the specific sub-functions of a team (e.g. "spanning editorial, technical writing, social, product marketing, field") is bullet-level detail — FAIL: "Summary lists specific team functions — abstract to 'multiple competencies' or equivalent scope language; move the roster to a bullet." **Hard fail.**
+- Cliché filler ("comfortable operating across", "proven track record", "passionate about", "results-driven", "dynamic", "extensive experience") — **advisory only; do not FAIL or loop.**
 
-**Experience**
-- `## EXPERIENCE` contains full-time employment only, in reverse-chronological order by end date
-- Any consulting/fractional practice appears in `## CONSULTING`, not `## EXPERIENCE` — flag if found in the Experience section
-- Any consulting entry flagged as mandatory in `02-professional-background.md` appears somewhere in the CV — either as a standalone entry in `## CONSULTING` or as a bullet within the main consulting section — FAIL if absent entirely
-- The "Earlier:" line appears as the final entry inside `## EXPERIENCE`, before the `## CONSULTING` section header — FAIL if Earlier appears after CONSULTING
-- Claims about target market match `02-professional-background.md` (Role Facts)
-- No tool or technology name of any kind inside experience bullets — not any tool, not even if named in the JD, not even as an example. Blanket ban. Approved bullets from `02-professional-background.md` are the only exemption.
-- Every named role has a RoleOverview immediately below its RoleTitle — count must match (Earlier: exempt)
+### Gate 2 — Experience (hard fail)
 
-**Structure**
-- No years on the Earlier line (Education/Languages are script-injected — skip them)
-- No header or label between the SUMMARY banner and the summary text
-- No opening verb appears 3+ times — common offenders: Built, Led, Developed, Created, Managed, Drove, Owned
-- No 4+ word verbatim JD phrases in new bullets; standard terms like "go-to-market" are fine; approved bullets from `02-professional-background.md` exempt; quote both phrases when flagging
+- `## EXPERIENCE` = full-time employment only, reverse-chronological by end date.
+- Consulting/fractional work belongs in `## CONSULTING`, never `## EXPERIENCE` — FAIL if found in Experience.
+- Any consulting entry flagged mandatory in `02-professional-background.md` must appear (standalone entry in `## CONSULTING` or a bullet within it) — FAIL if absent entirely.
+- "Earlier:" line is the final entry inside `## EXPERIENCE`, before `## CONSULTING` — FAIL if Earlier appears after CONSULTING.
+- Claims about target market match `02-professional-background.md` (Role Facts).
+- No tool or technology name of any kind inside experience bullets — blanket ban, even a tool named in the JD, even as an example. Approved bullets from `02-professional-background.md` are the only exemption.
+- Every named role has a RoleOverview immediately below its RoleTitle — count must match (Earlier: exempt).
+
+### Gate 3 — Structure (hard fail)
+
+- No years on the Earlier line (Education/Languages are script-injected — skip them).
+- No header or label between the SUMMARY banner and the summary text.
+- **No opening verb 3+ times** — common offenders: Built, Led, Developed, Created, Managed, Drove, Owned.
+- **No 4+ word verbatim JD phrases in new bullets** (standard terms like "go-to-market" are fine; approved bullets exempt); quote both phrases when flagging.
+- **No em dash (—) anywhere** — zero exceptions, no carve-outs (not as a list separator, not for asides, not as a colon substitute — the full-width ban per `writer-craft/SKILL.md` §1). **Hard fail.**
+- **No colon (:) anywhere in body copy** — not for role labeling, introducing explanations, before lists, or as an em-dash substitute (`writer-craft/SKILL.md` §1). **Hard fail.**
+- **Soft-skill filler banned as a standalone claim:** "works independently," "self-starter," "takes initiative," "manages own workload," "team player" — FAIL if present without bullet-level substantiation. **Hard fail.**
+- **AI-tell vocabulary** (`writer-craft/SKILL.md` §2): crucial, pivotal, vibrant, showcase/showcasing, tapestry, underscore (verb), landscape (abstract noun), testament, enduring, foster/fostering, garner, interplay, intricate/intricacies, foundational, transformative, robust, seamless, comprehensive, leverage (verb), synergy, spearhead, paradigm, "know what it takes," land (verb). CV-only additions: think outside the box, value add, go-to person, bottom line, big picture, cutting-edge, game-changer, guru, ninja, rockstar, world-class, paradigm shift, scalable, disruptive, innovative, holistic approach, agile. **Advisory — scored, does not independently block.**
+- **Named phrase bans** (`writer-craft/SKILL.md` §2): "that made it land," "behind the [noun]," "at an inflection point," "quietly [verb]ing," "rare" as self-descriptor, "up close," "specialism." **Advisory.**
+
+### Gate 4 — Sentence Mechanics (advisory, scored — flag but do not independently block)
+
+Cross-referenced from `writer-craft/SKILL.md` §3-4; these are style-quality checks, not the hard-fail document-correctness checks above.
+
+- **False range** ("everything from X to Y" where X/Y are filler, not real endpoints).
+- **Approach-announcement via label** (naming a methodology before demonstrating it — e.g. "My approach is deliberately research-first:").
+- **Contrived tricolon** built to sound impressive (real parallel lists of 4-5 real things pass) — also flag the same sentence opening used 3+ times in a row.
+- **Passive voice** where an active rewrite is available.
+- **Synonym cycling** — rotating synonyms for the same concept instead of repeating the right word.
+- **Filler phrases** left uncut: "in order to," "at this point in time," "it is important to note that," "due to the fact that," "has the ability to," "in the event that."
 
 ---
 
 ## Cover Letter Check
 
-**Calibration authority:** The humanizer holds calibration authority over voice register and word-count decisions around the 320-word target. The 320-word body limit is a round-aware advisory, not a hard fail (see Format and Grading). The gatekeeper enforces the mandatory structure checks and flags word overage as an advisory only — it does not apply voice register judgments that conflict with the humanizer's calibration output.
+**Calibration authority:** the humanizer holds calibration authority over voice register and word-count decisions around the 320-word target. The 320-word body limit is a round-aware advisory, not a hard fail (see Grading). The gatekeeper enforces the mandatory structure gates below and flags word overage as advisory only — it does not apply voice register judgments that conflict with the humanizer's calibration output.
 
-**Format**
-- Greeting: `Hi to the [Company name] team!` or `Hi to [Name]!` — for stealth roles (no public company name), `Hi to the team!` or `Hi to the [JD descriptor] team!` is accepted
-- Role named in the first sentence of the body — it does not have to lead the sentence, but it must be explicit (Tier 2; FAIL if absent)
-- Sign-off: a brief forward-looking close (default: "Looking forward to next steps,"), then "{{USER_FULL_NAME}}" on its own line. **The gatekeeper does not judge the sign-off's voice/register against the delivered-letters archive — it cannot see the archive (that is the humanizer's calibration authority, per *Calibration authority* above). Accept any reasonable forward-looking sign-off; do NOT flag a non-default variation as a violation.** Structural flags only: a missing sign-off, the name not on its own line, or a P.S. containing company-positioning commentary (a P.S. for logistics or warmth is fine).
-- Body: maximum 320 words (excluding greeting and sign-off; no minimum — canonical rule per `skills/writer-craft/SKILL.md`; the 270–320 band is the typical delivered-letter register). **Word overage is an advisory violation, not a hard fail:** it counts as one advisory and follows the same round logic as banned items (see Grading) — block-and-trim on round 1, deferred to the humanizer on round 2+. Never block past round 1 on word count alone.
-- **Language skills — FAIL if present:** Language proficiency statements ("Fluent in Hebrew and English," "native speaker of [language]," any language-as-credential statement) belong in the CV only — never in the cover letter body. FAIL with: "Language skills must not appear in the cover letter — this belongs in the CV."
+### Gate 1 — Format (hard fail unless noted advisory)
 
-**Personal-content exemption — read before running any content check**
+- **Greeting:** `Hi to the [Company name] team!` or `Hi to [Name]!` — stealth roles (no public company name): `Hi to the team!` or `Hi to the [JD descriptor] team!`. **Hard fail.**
+- **Role named in the first sentence of the body** — need not lead the sentence, but must be explicit. **Hard fail.**
+- **Sign-off:** a brief forward-looking close (default "Looking forward to next steps,"), then `{{USER_FULL_NAME}}` on its own line. The gatekeeper does not judge sign-off voice/register against the delivered-letters archive (humanizer's calibration authority — see Calibration authority above); accept any reasonable forward-looking sign-off. Flag structurally only: missing sign-off, name not on its own line, or a P.S. containing company-positioning commentary (a P.S. for logistics/warmth is fine). **Hard fail on structural flags only.**
+- **Body: maximum 320 words** (excluding greeting/sign-off; no minimum; 270-320 is the typical delivered-letter register). **Advisory — round-aware** (see Grading): block-and-trim on round 1, deferred to humanizer on round 2+. Never block past round 1 on word count alone.
+- **Language skills — FAIL if present.** Language proficiency statements ("Fluent in Hebrew and English," "native speaker of [language]," any language-as-credential statement) belong in the CV only. FAIL: "Language skills must not appear in the cover letter — this belongs in the CV." **Hard fail.**
 
-If the user's Why I Want This Role content was passed alongside the cover letter — **or the letter draws on the Motivation Bank (`02-professional-background.md` → `Section 5`), which is the letter-writer's primary source and is especially the case when Why I Want This Role is empty** — that is the user's own first-person material, not letter-writer invention. Do not fail on content checks for passages that clearly originate from her Why I Want This Role field **or from a Motivation Bank entry**. The signal: personal-content-derived text sounds like a personal reaction or genuine first-person opinion; copywriting-fabricated content sounds assembled and polished. When a specific personal claim about the company or role matches phrasing that could plausibly be the user speaking in her own voice, treat it as personal-content-derived and exempt it from Pattern C, Pattern H, the company character claims check, the analyst-paragraph body check, the banned words/phrases list, and the Hollow / vague / presumptuous constructions check (a confident value claim in her own voice is hers — only agent-constructed filler fails that check). A hedged inference in her words ("I believe X would demand Y") is an earned inference — exempt when named proof sits within two sentences. The exemption does NOT cover: the CV-repetition prohibition, or fabricated/unevidenced factual claims. Apply the exemption only to plausibly personal statements — not to agent-constructed analytical claims about the company's strategy, market, or positioning. **Seniority step-down sentences derived from the user's own Why I Want This Role content are also exempt from the gap-volunteering check, provided they use affirmative framing (see above).** The exemption does NOT cover negation-form step-down framing, which fails regardless of source. **Verifying provenance:** the gatekeeper already reads `02-professional-background.md` for the fabrication checks — so when a suspected-personal passage is in doubt, check it against the Motivation Bank (`02` → `Section 5`). A passage that matches a Motivation Bank entry is personal-content-derived and exempt. When Why I Want This Role is empty, the letter's motivational and voice content legitimately comes from the Bank — verify there before flagging it as fabricated.
+### Personal-content exemption — read before running any content gate
 
-**Why I Want This Role point coverage — FAIL if triggered**
+If the user's Why I Want This Role content was passed alongside the cover letter — **or the letter draws on the Motivation Bank (`02-professional-background.md` → Section 5), which is the letter-writer's primary source and is especially the case when Why I Want This Role is empty** — that is the user's own first-person material, not letter-writer invention. Do not FAIL content gates for passages that clearly originate from her Why I Want This Role field **or a Motivation Bank entry**. The signal: personal-content-derived text sounds like a personal reaction or genuine first-person opinion; agent-fabricated content sounds assembled and polished. A specific personal claim about the company or role that matches phrasing plausibly the user's own voice is exempt from Gate 3, the company-character-claims gate, the analyst-paragraph gate, the banned words/phrases gate, and the Hollow/vague/presumptuous constructions gate. A hedged inference in her words ("I believe X would demand Y") is an earned inference — exempt when named proof sits within two sentences.
 
-If the numbered [WIWTR-N] point list was passed alongside the letter: verify each point is substantively present in the letter text. A point is present if its actual substance (not just its theme) appears somewhere in the letter. Missing points = FAIL. List each missing point by number and quote it. If no [WIWTR-N] list was passed, skip this check and note "WIWTR point list not provided — coverage check skipped."
+**The exemption does NOT cover:** the CV-repetition prohibition, fabricated/unevidenced factual claims, or **the Opening Paragraph gate's pattern checks (see the non-waivable carve-out below — this exemption never extends there, even when the flagged phrasing traces to her own WIWTR words).** Apply the exemption only to plausibly personal statements — not to agent-constructed analytical claims about the company's strategy, market, or positioning. Seniority step-down sentences derived from WIWTR are also exempt from the gap-volunteering gate when they use affirmative framing (see Gate 3) — the exemption does NOT cover negation-form step-down framing, which FAILs regardless of source.
 
-**CV repetition check — FAIL if triggered**
+**Verifying provenance:** the gatekeeper already reads `02-professional-background.md` for the fabrication checks — when a suspected-personal passage is in doubt, check it against the Motivation Bank (`02` → Section 5). A match is personal-content-derived and exempt. When WIWTR is empty, the letter's motivational and voice content legitimately comes from the Bank — verify there before flagging as fabricated.
 
-This check requires the final revised CV to be in scope. If the CV was not passed alongside the cover letter, report 'CV not provided — repetition check skipped' as a named line in your output — never skip silently. The pipelines are required to pass the CV; a missing CV is itself a finding.
+### Gate 2 — Why I Want This Role point coverage (hard fail if triggered)
 
-Read every substantive claim, metric, credential, and fact in the letter body. For each one, check whether the same information already appears anywhere in the CV — in the summary, in any experience bullet, or in any other section. Flag as: "Letter repeats CV content: '[sentence or phrase]' restates '[location in CV]'." A sentence fails if it makes the same claim in different words — paraphrase is not a loophole. Enhancement is permitted: if the letter sentence contains material the CV bullet does not (context, story, decision logic, or new detail), it passes. Pure restatement fails.
+If the numbered [WIWTR-N] point list was passed alongside the letter: verify each point is substantively present in the letter text (not just its theme — its actual substance). Missing points = FAIL, listed by number with quote. If no [WIWTR-N] list was passed, skip and note "WIWTR point list not provided — coverage check skipped."
 
-**Content**
-- Key proof signals from the most recent role in `02-professional-background.md` are woven naturally into the body (not as a standalone boilerplate sentence)
-- No agent-drafted fit claims: "this role has my name on it", "I was made for this role", "I'm the perfect candidate", "perfect fit", "couldn't be a better fit". A fit or confidence claim verbatim from the user's Why I Want This Role (or her own edits) is personal content — exempt under the personal-content exemption; her delivered letters carry "meant for me"-class claims by choice
-- No gap volunteering or scope qualification framing: "Full disclosure:" + scope claims; "whether that's the fit you need"; any sentence pre-empting a concern the hiring manager hasn't raised. Scope framing is the same violation: phrases like "one product, not a portfolio," "narrower than full-time," "smaller than the rest of my CV," or any sentence that frames a domain, vertical, or engagement type as a limitation or gap — all FAIL. Different domains and verticals are never a weakness in a cover letter; the letter names the work done and lets it stand. **Seniority step-down framing:** negation form ("This isn't a stepping stone for me," "I'm not overqualified") is gap volunteering — FAIL. Affirmative form ("I've been building toward this role," "This is exactly the level I want") is a confidence statement — PASS even without the personal-content exemption.
-- No analyst paragraph in the body: any paragraph describing the company's product, positioning, or market back to them; any market observation from outside ("in a crowded X market", "a genuinely differentiated story"); any capability announcement without named proof ("that translation is where I live", "that's the work I do", "that's where I operate"). The user must be the subject of every paragraph, speaking from named experience. FAIL if any paragraph reads as the user analysing the company rather than demonstrating her own work.
-- Closing is a direct ask — never hedge!!: "at your earliest convenience", "I hope you will consider", "I would welcome the chance to talk", "I hope to hear from you"
-- If JD has a "good fit / you'll thrive here if" section, letter addresses at least one positive signal with named proof
-- No claims about the company's character not traceable to the JD (e.g., "one of the few companies that...", "you get it in a way most don't")
-- No em dash as list separator (e.g., "— email security, endpoint protection, XDR —")
+### Gate 3 — CV repetition (hard fail if triggered)
 
-**Opening paragraph — non-waivable**
+Requires the final revised CV in scope. If not passed alongside the letter, report "CV not provided — repetition check skipped" as a named line — never skip silently; the pipelines are required to pass the CV, and a missing CV is itself a finding.
 
-This check cannot be waived by any upstream input — not coach output, not Strategy, not Gap handling. The first paragraph is always the user's personal reaction to this specific role.
+Read every substantive claim, metric, credential, and fact in the letter body. For each, check whether the same information already appears anywhere in the CV. Flag: "Letter repeats CV content: '[sentence or phrase]' restates '[location in CV]'." A sentence FAILs if it makes the same claim in different words — paraphrase is not a loophole. Enhancement passes: if the letter sentence contains material the CV bullet does not (context, story, decision logic, new detail), it passes. Pure restatement FAILs.
 
-Check for the following failure patterns — any one is a fail:
+### Gate 4 — Content and Claims (hard fail unless noted advisory)
 
-**Pattern A — Generic opener:** "I am writing to apply for...", "I am excited to apply for...", "I am reaching out regarding...", or any generic enthusiasm statement without specific content.
+- **No agent-drafted fit claims:** "this role has my name on it," "I was made for this role," "I'm the perfect candidate," "perfect fit," "couldn't be a better fit." A fit/confidence claim verbatim from WIWTR (or her own edits) is exempt under the personal-content exemption. **Hard fail.**
+- **No gap volunteering or scope qualification framing:** "Full disclosure:" + scope claims; "whether that's the fit you need"; any sentence pre-empting a concern the hiring manager hasn't raised. Scope-as-limitation framing ("one product, not a portfolio," "narrower than full-time," "smaller than the rest of my CV," or any sentence framing a domain/vertical/engagement type as a limitation) is the same violation. **Seniority step-down:** negation form ("This isn't a stepping stone for me") FAILs; affirmative form ("I've been building toward this role") PASSes even without the personal-content exemption. **Hard fail.**
+- **No analyst paragraph anywhere in the letter** — describing the company's product/positioning back to them; a market observation from outside ("in a crowded X market"); a capability announcement without named proof ("that translation is where I live," "that's where I operate"). The user must be the subject of every paragraph, speaking from named experience. **Hard fail.**
+- **Closing is a direct ask — never hedge:** "at your earliest convenience," "I hope you will consider," "I would welcome the chance to talk," "I hope to hear from you." **Hard fail.**
+- If the JD has a "good fit / you'll thrive here if" section, the letter addresses at least one positive signal with named proof.
+- **No claims about the company's character not traceable to the JD** (e.g. "one of the few companies that...," "you get it in a way most don't"). **Hard fail.**
+- **No unsubstantiated company-character claims or overreach** (`writer-craft/SKILL.md` §3): never attribute something documented for only one past role to multiple roles; every scope/attribution/pattern claim must be checkable against the specific role(s) it's grounded in. **Hard fail.**
+- **Temporal motivation hedges — forbidden:** "the seat I want most right now," "at this stage of my career," any phrase implying the motivation is provisional or time-qualified. **Advisory.**
+- **Future-outcome commitments — avoid:** a promised result she'd own before ramping ("I'll lift activation 20% in 90 days"). Documented past outcomes are proof; promised future outcomes are not. **Advisory.**
 
-**Pattern B — Second-person analytical opener:** Opening paragraph dominated by sentences describing the company's product, buyers, or market back to them ("Your buyers are...", "Your product is...", "Your sales motion...", "Building GTM for [X] isn't the same as..."). Consulting-speak; the user is not the subject.
+### Gate 5 — Opening Paragraph (hard fail, non-waivable)
 
-**Pattern C — Company language mirroring:** Opener echoes a JD/website phrase and frames the user's experience as "exactly that problem." Pattern: "[Company phrase] is exactly the problem I spent the last year living." Performs relevance instead of demonstrating it.
+This gate cannot be waived by any upstream input — not coach output, not Strategy, not Gap handling. The first paragraph is always the user's personal reaction to this specific role.
 
-**Pattern D — Career summary dump:** Opening paragraph leads with a career achievement list. Pattern: "At [Company] I built [function] from zero to [X people] during [metric]: [list]." This belongs later, not as the opening move.
+**⛔ Non-waivable carve-out — even when WIWTR echoes JD language.** These pattern checks apply even when the candidate's own WIWTR notes happen to echo similar phrasing to the JD or company's public materials. Tracing an opener sentence back to her own WIWTR words does NOT exempt it from the pattern check below — if her WIWTR phrasing reproduces JD or company-tagline language closely enough to read as mirroring, it still FAILs. "It came from her own words" is never sufficient justification on its own.
 
-**Pattern E — Product or category flattery:** Opener compliments the company's **specific** terminology, product framing, or positioning. Pattern: "'[Company term]' is a genuinely smart framing" · "'Security Operations Resilience' is not just a buzzword" · "Calling it [Company name]" is a refreshingly honest take on [market]." Positions the user as an observer validating the company. **Scope clarification:** Pattern E is about company-specific compliments only — not about general market observations. Do NOT apply Pattern E to sentences about the industry broadly; those are Pattern G or Pattern G2.
+Check for these failure patterns — any one FAILs:
 
-**Pattern F — Availability statement:** Opener leads with the user's current status. Pattern: "I just wrapped up at [Company]..." as the first move. A recent exit belongs integrated into the letter, not as the opening sentence.
+- **Pattern A — Generic opener:** "I am writing to apply for...," "I am excited to apply for...," any generic enthusiasm statement without specific content.
+- **Pattern B — Second-person analytical opener:** dominated by sentences describing the company's product, buyers, or market back to them ("Your buyers are...," "Your product is..."). The user is not the subject.
+- **Pattern C — Company language mirroring:** echoes a JD/website phrase and frames the user's experience as "exactly that problem." Performs relevance instead of demonstrating it.
+- **Pattern D — Career summary dump:** leads with a career achievement list. Belongs later, not as the opening move.
+- **Pattern E — Product or category flattery:** compliments the company's **specific** terminology or positioning, positioning the user as an observer validating the company. Scope: company-specific compliments only, not general market observations (those are Pattern G/G2).
+- **Pattern F — Availability statement:** leads with the user's current status ("I just wrapped up at [Company]...") as the first move.
+- **Pattern G — Generic industry observation:** subject is a market category or company type, not the user.
+- **Pattern G2 — User-as-subject-but-market-as-claim:** user is grammatically the subject of sentence 1, but immediately pivots to a general market/industry claim rather than a personal reaction to THIS role.
+- **Pattern H — Company-specific hook substituting for a reaction:** quotes the company's tagline, names a prior challenge as a credential hook, or names an exact client as domain proof — positions the user as doing due diligence rather than reacting. Belongs in paragraph 2 as proof, not the opener.
+- **Pattern I — Setup opener as first sentence:** frames industry context, role stakes, or market problem before the user appears as a subject reacting to this specific opportunity. Applies even when short and seemingly innocuous. Test: does sentence 1 make a market/role/company claim before the user says what SHE wants or recognises? If yes, FAIL. Overlaps with G2 when the user IS the subject — apply both labels.
 
-**Pattern G — Generic industry observation:** The opening paragraph's subject is a market category, stage, or type of company rather than the user. Pattern: "B2B tech companies hiring at the growth stage usually need someone who can operate at both ends simultaneously." · "The hardest part of selling security is that every vendor says the same thing."
-
-**Pattern G2 — User-as-subject-but-market-as-claim:** The user IS the grammatical subject of the first sentence, but the sentence immediately pivots to a general claim about "the job," "the market," or "the problem" as if the user is explaining the industry to the reader. Pattern: "I've spent six years in [field], and the job — above everything else — is [general market observation]." [Example from your background] · "I've been doing this long enough to know that the real challenge in [space] is [general observation]." The tell: the clause after "and" or the subordinate clause is a market/industry insight, not a personal reaction to THIS role. The user sounds like she's lecturing about the market rather than saying why she wants this specific job.
-
-**Pattern H — Company-specific hook substituting for a reaction:** Opener quotes the company's tagline, names a prior technical challenge as a credential hook, or names an exact client as domain proof. These feel researched but position the user as doing due diligence rather than reacting to the opportunity. Company-specific knowledge belongs in paragraph 2 as proof.
-
-**Pattern I — Setup opener as first sentence:** The very first sentence of the opening paragraph frames the industry context, role stakes, or market problem before the user appears as a subject reacting to this specific opportunity. Pattern: "The hardest part of [industry] is [challenge]." · "In a market where [condition], what companies like [Company] need is someone who [requirement]." · "Finding the right words for [category] is harder than it looks." Applies even when the setup sentence is short and seems innocuous. The test: does the first sentence make a claim about the market, the role, or the company before the user says what SHE wants or what SHE recognises? If yes, flag Pattern I. **Note:** Pattern I overlaps with Pattern G2 when the user IS the subject — apply both labels.
-
-**Sentence structure violations in the opening paragraph — FAIL**
-
-The gatekeeper MUST flag and FAIL the following structural problems when they appear in the opening paragraph:
-
-- **Gerund as subject:** Opening sentence begins with a gerund phrase ("Finding the right words for...", "Building GTM for...", "Having spent [time]..."). The subject must be the user (first person), not a gerund.
-- **Prepositional phrase opener — agent-drafted only:** First sentence begins with a prepositional phrase ("In a market where...", "For companies at this stage...") with no archive precedent. Archive-consistent ramps ("After years in regulated, trust-dependent categories...", "On Fiverr, I write...") are the user's register — pass and note, do not fail.
-- **Dependent clause opener — agent-drafted only:** First sentence leads with a subordinate clause framing the market or industry ("When half the vendors say the same thing...", "Because positioning in security is hard...") with no archive precedent. Archive-consistent ramps where the clause carries HER action or reaction ("When I heard that [Company] is hiring...", "When reading the [Company] posting...") are the user's register — pass and note, do not fail.
-- **Wh-clause stacking:** Multiple "who/which/that" clauses chained within a single sentence, creating a sentence that sounds assembled rather than said.
+**Sentence structure violations in the opening paragraph — FAIL:**
+- **Gerund as subject:** "Finding the right words for...," "Building GTM for...," "Having spent [time]..." — subject must be the user (first person).
+- **Prepositional phrase opener — agent-drafted only:** "In a market where...," "For companies at this stage..." with no archive precedent. Archive-consistent ramps ("After years in regulated, trust-dependent categories...") pass.
+- **Dependent clause opener — agent-drafted only:** "When half the vendors say the same thing..." with no archive precedent. Archive-consistent ramps where the clause carries HER action/reaction ("When I heard that [Company] is hiring...") pass.
+- **Wh-clause stacking:** multiple "who/which/that" clauses chained in one sentence.
 
 These are not advisory. A sentence structure violation in the opening paragraph is a FAIL requiring revision.
 
-**Banned term checking is a literal string search, not a semantic review.** For each banned term: search the letter text for that exact string (or close variants — e.g., "specialism", "Specialism", "SPECIALISM"). Do not rely on memory or a general read-through. Use the Grep tool or scan the letter text character by character for each term. A mental "I reviewed and found nothing" is not a valid completion of this check — the search must be performed for each term individually.
+### Gate 6 — Banned Terms (advisory; scored against the grade threshold)
 
-**Banned words and phrases** — advisory; scored against the grade threshold
+**Banned term checking is a literal string search, not a semantic review.** Use the Grep tool for every banned term search — a mental "I reviewed and found nothing" is not a valid completion of this check.
 
-Each violation counts toward the advisory total. Include a `→ resolution` per the resolution format above.
+Every violation counts toward the advisory total and requires a `→ resolution` per the Resolution format below.
 
-*Cliché and vague filler:*
-- "specialism" — not a word → use "multi-disciplinary" or "[specific] disciplines"
-- "genuinely"
-- "actually" or "real" as emphasis intensifiers ("I actually did X", "real results")
-- "straightforward"
-- "dynamic"
-- "extensive experience"
-- "proven track record"
-- "passionate about"
-- "results-driven"
-- "at the intersection" or "at an intersection"
-- "I have" followed by "on exactly that" in the same sentence
-- "I would welcome the chance to"
-- "significant part of my career"
-- "up close" — filler; cut it
-- "at an inflection point" — generic AI phrase; name the specific moment
-- "rare" as a self-descriptor — never self-apply; demonstrate through specifics
-- "that made it land" — vague AI-assembly phrase; name what it was and what the result was
-- "behind the [noun]" (e.g., "behind the coverage", "behind the strategy") — name the actual work
-- "quietly [verb]ing" (e.g., "quietly building", "quietly scaling") — performative modesty; name the action directly
-- Self-declaration of capability without evidence: "I know how to speak to buyers who [X]", "For a role in [space], that matters:", "where [thing] isn't a nice-to-have, it's [dramatic claim]"
-- Any phrase matching "What puts me closest to what [Company/you] is/are doing:" or "What puts me closest to what you need:"
-- Any sentence matching "X is [something], not [something]" as a positioning claim
+*Cliché and vague filler:* "specialism," "genuinely," "actually"/"real" as emphasis intensifiers, "straightforward," "dynamic," "extensive experience," "proven track record," "passionate about," "results-driven," "at the intersection," "I have ... on exactly that" in one sentence, "I would welcome the chance to," "significant part of my career," "up close," "at an inflection point," "rare" as self-descriptor, "that made it land," "behind the [noun]," "quietly [verb]ing," self-declaration of capability without evidence ("I know how to speak to buyers who [X]"), "What puts me closest to what [Company/you] is/are doing," "X is [something], not [something]" as a positioning claim.
 
-*AI vocabulary — ban every instance:*
-- `crucial`, `pivotal`, `vibrant`, `showcase` / `showcasing`, `tapestry` (figurative), `underscore` (verb), `landscape` (abstract noun), `testament`, `enduring`, `foster` / `fostering`, `garner`, `interplay`, `intricate` / `intricacies`, `foundational`, `transformative`, `robust`, `seamless`, `comprehensive`, 'playbook' (as an abstract concept), `leverage` (verb), `synergy`, `spearhead`, `paradigm`
+*AI vocabulary — ban every instance* (`writer-craft/SKILL.md` §2): crucial, pivotal, vibrant, showcase/showcasing, tapestry (figurative), underscore (verb), landscape (abstract noun), testament, enduring, foster/fostering, garner, interplay, intricate/intricacies, foundational, transformative, robust, seamless, comprehensive, playbook (abstract concept), leverage (verb), synergy, spearhead, paradigm.
 
-*Idioms, clichés, metaphors, similes, self-deprecating humor — flag any instance:*
-Any idiom ("put my thinking cap on", "hit the ground running", "wear many hats"), cliché, metaphor, simile, or self-deprecating joke anywhere in the letter. These undercut the stated proof points. → Delete or rewrite as a direct statement.
+*Idioms, clichés, metaphors, similes, self-deprecating humor* — any instance ("put my thinking cap on," "hit the ground running," "wear many hats," and all similar), UNLESS it appears verbatim in the user's own WIWTR or personal input (her voice, exempt). When in doubt, treat as an idiom and flag it.
 
-**Banned structures** — advisory; scored against the grade threshold
+*Cover-letter-only phrase bans* (`writer-craft/SKILL.md` §2): "I was just doing X" without naming company/role/outcome, "I know how to sell X" without naming company/result, "I knew this was mine" (any variant), "I spent the better part of a decade..." without naming the years.
 
-Each violation counts toward the advisory total. Include a `→ resolution` per the resolution format above.
+### Gate 7 — Banned Structures (advisory; scored against the grade threshold)
 
-- Em dashes anywhere in the letter body — zero permitted. → Replace with a period, comma, or restructure the sentence.
-- "Here's the thing" / "Here's the hard truth"
-- "And honestly?" / "Let's be honest"
-- "Unlock" / "Unleash" / "Harness"
-- "In today's [X] world" / "As we look to the future" / "As we look ahead"
-- "Today's landscape" / "navigating the landscape" / "the landscape"
-- "Broke the mold"
-- "In reality" as a transition
-- "Hit home" / "How we show up" / "You're not imagining it"
-- Any sentence beginning with "Just" + first-person verb
-- Triadic negation: "No X. No Y. Just Z."
-- Negation-then-assertion: "Don't just X. [Subject] Y."
-- Staccato fragments substituting for full sentences
-- "X isn't always about Y" / "X should be Y, not Z"
-- Antithesis/pivot formula: "[Subject] does/has X, but [subject] is Y" where X is unnecessary context. Also: "It's not about X, it's about Y." / "This isn't just A, it's B." / "Not X — Y." Test: if removing the negated half makes the sentence clearer, it should be cut.
-- Temporal motivation hedges: "the seat I want most right now" / "at this stage of my career" / "what I'm looking for right now" / any phrase implying the motivation is provisional or time-qualified.
+Every violation counts toward the advisory total and requires a `→ resolution`.
 
-**Hollow / vague / presumptuous constructions** — advisory; scored. The letter must SHOW with specifics, not TELL with confident-sounding sentences that say nothing. The **personal-content exemption applies**: a sentence verbatim from the user's Why I Want This Role or Motivation Bank is her voice — exempt. These catch *agent-constructed* filler.
-- **Generic aphorism / maxim** — an abstract general truth stated as insight, with an abstract noun (not the user) as the subject. "Specificity is what moves a deal." / "[X] is the difference between [Y] and [Z]." / "[X] is what moves a [Y]." → Cut, or replace with the user's specific experience that demonstrates it.
-- **Presumptuous verdict on the company's business** — flatly telling them what they need, what their situation is, or how their market works. "…and this is the transition [Company] needs." / "What you need is [X]." → Cut. (A confident value claim in the user's own voice — "It sounds like you're looking for me" — is exempt under personal content; a flat agent-constructed verdict on their business is not.)
-- **Vague bare assertion** — a claim with no named object or specifics. "I've made it before." (made *what*?) / "That means taking…" (taking what?) → Name the specific thing, or cut.
-- **Hollow metaphor** — vivid-sounding, carrying no concrete proof. "a story that lived in the founders' heads." → Replace with the named result, or cut.
-- **Generic filler** — a sentence that could appear in any letter for any role. "need to move into the market." → Cut or make it role-specific.
+- **Em dashes anywhere in the letter body — zero permitted.** → Replace with a period, comma, or restructure.
+- **Antithesis/pivot formula — absolute ban:** "[Subject] does/has X, but [subject] is Y." / "It's not about X, it's about Y." / "This isn't just A, it's B." / "Not X — Y." Test: remove the negated half — if what remains is clearer, cut the setup.
+- **Appended negating contrast — no carve-outs:** "[claim], not [X]" or "[claim], not as [X]" appended to a sentence (e.g. "I can execute quickly, not just strategize."). → Make the positive claim and stop.
+- **False range:** "everything from messaging to competitive analysis" — X and Y are filler, not real endpoints. → Name the specific things.
+- **Approach-announcement via label:** naming a methodology before demonstrating it. → Show it in action.
+- **-ing phrases appended after a main clause — max 3 per letter, every one content-bearing.** A decorative tail ("...showcasing expertise") is banned at any count.
+- **Contrived tricolon** built to sound impressive (real 4-5 part parallels of actual things pass). Also: the same sentence opening used 3+ times in a row.
+- **Subject-first violations — hard ban, no carve-out:** expletive constructions ("There was/is/are..."), abstract label noun-phrase subjects ("The founding-marketer part is..."). Archive-consistent dependent-clause/prepositional-opener ramps pass.
+- **Copula avoidance:** "serves as / stands as / acts as" where "is" works.
+- **Synonym cycling:** rotating synonyms to avoid repetition.
+- **Filler phrases left uncut:** "in order to," "at this point in time," "it is important to note that," "due to the fact that," "has the ability to," "in the event that."
+- "Here's the thing" / "Here's the hard truth" / "And honestly?" / "Let's be honest" / "Unlock" / "Unleash" / "Harness" / "In today's [X] world" / "As we look to the future" / "Today's landscape" / "navigating the landscape" / "Broke the mold" / "In reality" as a transition / "Hit home" / "How we show up" / "You're not imagining it."
+- Any sentence beginning with "Just" + first-person verb.
+- Triadic negation ("No X. No Y. Just Z.") and negation-then-assertion ("Don't just X. [Subject] Y.").
+- Staccato fragments substituting for full sentences.
+- "X isn't always about Y" / "X should be Y, not Z."
+
+### Gate 8 — Hollow / Vague / Presumptuous Constructions (advisory; scored)
+
+The letter must SHOW with specifics, not TELL with confident-sounding sentences that say nothing. **Personal-content exemption applies:** a sentence verbatim from WIWTR or the Motivation Bank is her voice — exempt. These catch *agent-constructed* filler.
+
+- **Generic aphorism/maxim** — abstract general truth with an abstract noun (not the user) as subject: "Specificity is what moves a deal." → Cut, or replace with her specific experience demonstrating it.
+- **Presumptuous verdict on the company's business** — flatly telling them what they need: "...and this is the transition [Company] needs." → Cut. (A confident value claim in her own voice — "It sounds like you're looking for me" — is exempt; a flat agent-constructed verdict on their business is not.)
+- **Vague bare assertion** — a claim with no named object: "I've made it before." (made *what*?) → Name the thing, or cut.
+- **Hollow metaphor** — vivid but no concrete proof: "a story that lived in the founders' heads." → Replace with the named result, or cut.
+- **Generic filler** — a sentence that could appear in any letter for any role. → Cut or make role-specific.
 
 ---
 
 ### Cover Letter Check — Grading and Pass Threshold
 
-**Run this after completing all checks on every Cover Letter Check pass.**
+**Run this after completing all gates on every Cover Letter Check pass.**
 
-Count the total number of advisory violations found (banned words, banned structures, banned syntax, and body word overage). Hard fails are counted separately and always block regardless of grade. **Body word overage counts as one advisory violation — it is never a hard fail.**
+Count the total number of advisory violations found (Gates 6-8, plus the two advisory items in Gate 4, and body word overage from Gate 1). Hard fails (Gates 1 structural, 2, 3, 4 hard-fail items, and 5) are counted separately and always block regardless of grade. **Body word overage counts as one advisory violation — it is never a hard fail.**
 
 | Grade | Advisory violations | Round 1 decision | Round 2+ decision |
 |---|---|---|---|

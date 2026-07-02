@@ -1,11 +1,11 @@
 ---
 name: writer-craft
-description: Consolidated writer-facing doctrine for the three writer agents — cv-writer, letter-writer, cover-letter-humanizer. Replaces skills/cv-writing, skills/cover-letter, skills/cover-letter-humanizer, references/cover-letter-self-check.md, references/humanizer-target-metrics.md, and the CV/cover-letter/humanizer-relevant portions of references/shared-voice-rules.md (§1-7, not §8 LinkedIn). Aggressively trimmed to rules with demonstrated evidence from real pipeline runs. Sections are tagged [ALL] / [CV] / [CL] / [HUM] for which surface they govern.
+description: Consolidated writer-facing doctrine for two writer agents — cv-writer and letter-writer. Replaces skills/cv-writing, skills/cover-letter, references/cover-letter-self-check.md, and the CV/cover-letter-relevant portions of references/shared-voice-rules.md (§1-7, not §8 LinkedIn). Aggressively trimmed to rules with demonstrated evidence from real pipeline runs. Sections are tagged [ALL] / [CV] / [CL] for which surface they govern. Humanizer-specific mechanics (formerly §12 Humanizer Mechanics and §13 Voice Calibration Protocol) were relocated to skills/humanizer/SKILL.md and the remaining sections renumbered contiguously — this file no longer has a [HUM] tag or a humanizer reader.
 ---
 
 # Writer Craft — Consolidated Doctrine
 
-One file, three readers: `cv-writer`, `letter-writer`, `cover-letter-humanizer`. Read the sections tagged for your surface plus every `[ALL]` section. This file replaces five prior files — nothing here is optional because it moved.
+One file, two readers: `cv-writer`, `letter-writer`. Read the sections tagged for your surface plus every `[ALL]` section. This file replaces four prior files — nothing here is optional because it moved. (The humanizer reads its own dedicated skill, `skills/humanizer/SKILL.md`, which now carries the humanizer-specific mechanics this file used to hold at former §12 Humanizer Mechanics and §13 Voice Calibration Protocol.)
 
 **Why this file is shaped the way it is.** Real production runs hit 7-round whack-a-mole revision loops. Forensic analysis of those runs plus condensed-prompt experiments found: (1) most violations trace to a small, repeatable set of rules — not the long tail; (2) a narrowly-scoped rule ("no em dash as list separator") gets gamed around the narrow scope — bans here are stated at full width; (3) loading 3-4 large files per writer spawn has a real token cost per revision round. This file is short on purpose. Every rule below either fired in a real traced violation this session or defines document correctness (not style).
 
@@ -281,54 +281,7 @@ Named patterns for the opener paragraph. Fill the bracketed slots with the user'
 
 ---
 
-## [HUM] §12 — Humanizer Mechanics
-
-The humanizer runs after the gatekeeper passes a letter. It does not draft, strategize, evaluate fit, or check fabrication. It does not add content — no new proof points, claims, or sentences. It only fixes existing ones. If fixing a violation would require inventing content, flag it in the change log and leave the sentence as-is.
-
-**Run in order. Do not skip steps. Do not return output until every step and the Final Gate pass.**
-
-**Step 0 — Native, idiomatic English (run first).** Every sentence must read as natural, fluent English judged against the delivered letters. Two checks per sentence: (1) non-idiomatic/translated-feeling → rewrite to the same meaning in natural English; (2) meaning unrecoverable → flag in the change log under "Unrecoverable sentence(s)," never invent a meaning. **Never "correct" her voice** — informality, directness, fragments, and intentional stylistic choices consistent with the archive are not violations here. When unsure whether something is broken English or her intentional voice, treat it as her voice and leave it.
-
-**Step 1 — Top 4 (the highest-yield checks; run these even under time pressure):**
-1. Em dashes AND colons — zero, search explicitly before finishing.
-2. Contrived tricolon / 3+ repeated openings (real parallel lists pass).
-3. -ing appendages — max 3, all content-bearing.
-4. Subject-first — no expletive constructions, no abstract label noun-phrase subjects (archive-consistent ramps pass).
-
-**Step 2 — Sentence structure:** no dangling participles; no long noun-phrase or wh-clause-stacked subjects/objects; no inanimate subject performing a human action (only people build, craft, drive); parallel structure in coordinated clauses; no "and...and...and" stacking; sentence-length balance judged by ear against the archive — a paragraph that reads monotone needs intervention (see §4).
-
-**Step 3 — Voice and vocabulary:** apply §2-§4 of this file (AI vocabulary, banned phrases, antithesis, false range, approach-announcement, idioms) plus: passive voice rewritten active; "serves as/stands as/acts as" → "is"; no expert-claims not from the candidate's own words; no agent-invented methodology; no demonstrative pointing at an agent-coined abstraction ("that exact loop," "this same playbook" — name the actual work instead); filler phrases cut.
-
-**Step 4 — Structure:** company name in paragraph 1; role title in the first sentence; no repeated example, proof point, or number; no repeated distinctive 2-3 word phrase; every pronoun/demonstrative still has a live antecedent after cuts (re-verify after every edit — a cut can orphan a later "that adoption" or "this shift"); zero rhetorical questions in the opener, max 1 in the whole letter; no manufactured opener or strategy-analysis opener; close is its own paragraph; greeting format correct; no company-product-problem references, even subtle ones.
-
-**Step 5 — Instinct check:** re-read the delivered letters, read the revised letter sentence by sentence, ask "does this sound like it belongs in those letters — same register, same directness, same rhythm?" Fix and log anything that sounds assembled even if it passed every named rule.
-
-### Quantitative Final Gate — verify before returning, in order
-
-These are demonstrated as real, load-bearing mechanics — the humanizer used exactly these to fix real issues in separate test runs this session. Not shelf-ware; do not cut.
-
-1. **Sentence burstiness ≥ 20 words.** Range between shortest and longest sentence. Floor, not ceiling — a 30-word range is excellent. Minimum anchor: one sentence ≤8 words, one ≥25 words.
-2. **Paragraph burstiness — no two adjacent paragraphs within 20 words of each other.** At least one paragraph ≤40 words, one ≥90 words. A 3-paragraph letter needs a meaningfully different length at each stage (90/120/40 passes; 95/105/100 fails).
-3. **Passive density ≤25%** (aim ≤20%). Count passive sentences ÷ total sentences. Exception: passive used for intentional rhythm consistent with the archive is not counted against the threshold.
-4. **Hedging density = 0.** Epistemic hedges ("arguably," "perhaps," "I think," "I feel"), modal hedges ("could be," "seem to," "tend to"), soft qualifiers ("to some extent," "somewhat," "fairly"), boilerplate softeners ("I would love to," "I hope to"). Zero tolerance — direct future modals ("I will," "I can") and named conditionals ("If selected, I would lead...") are not hedging.
-5. **Transition density ≤1 paragraph opener** from the prohibited class: "Furthermore," "Moreover," "Additionally," "However" (at paragraph start), "Therefore," "Consequently," "In addition," "That said," "On the other hand." ("And," "but," "so" don't count.)
-6. **No repeated compound phrases** — any 2-3 word compound appearing more than once anywhere in the letter.
-
-**Any FAIL on any of the six = fix and re-run the Final Gate from the top. Not done until every check passes.**
-
----
-
-## [ALL] §13 — Voice Calibration Protocol
-
-**Pipeline mode:** read `$PIPE/voice-calibration.md` (pre-computed by the voice-analyst from all delivered letters). Calibration is complete — no archive read needed.
-
-**Standalone mode:** read `${CAREER_DATA}/references/delivered-letters/INDEX.md`, then read every letter in the archive (not 2-3 — all of them). If the archive is unreachable (path invalid, permission error, career-data absent): hard stop, do not proceed. If it exists but is genuinely empty (count = 0, no files): fall back to `${CAREER_DATA}/references/03-framework.md` §Voice and tone, and note the fallback.
-
-Note six dimensions from the archive: sentence length pattern, word-choice level, paragraph openers, punctuation habits, transitions, verbal tics. Match these — don't just remove AI tells, replace them with the archive's actual patterns. The humanizer additionally reads `${CAREER_DATA}/references/03-framework.md` §Voice fingerprint — the quantitative targets (length, sentence rhythm and spread, vocabulary commonness, person, tense) that anchor the Final Gate metrics in §12.
-
----
-
-## [ALL] §14 — Positive Writing Standards
+## [ALL] §12 — Positive Writing Standards
 
 - Direct statements without hedging; specific details, not abstractions
 - Concrete examples and named outcomes; active voice and clear causality

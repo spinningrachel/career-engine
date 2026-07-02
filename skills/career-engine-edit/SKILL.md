@@ -109,7 +109,7 @@ Run both in parallel. Collect results. Do not loop or fix anything yet — this 
 
 ## Step E1 — Coach properties gate
 
-**The career coach is never spawned from the edit pipeline.** Coach properties are set during intake (Hold → Researched) and are expected to be present when the editing pipeline runs.
+**The career coach is never spawned from the edit pipeline.** Coach properties are set during intake (Needs Research → Researched) and are expected to be present when the editing pipeline runs.
 
 For each role in the editing queue, verify these **writer-needed fields** are populated (non-empty):
 `Role summary`, `Role emphasis`, `Keywords`, `Strategy`.
@@ -199,12 +199,12 @@ Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, the f
 
 **If FAIL:** spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, the final CV and the gatekeeper's full violation list. Pass the accumulated fix log from all prior rounds with the locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL; a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, spawn `gatekeeper` again. Repeat until PASS. Cap: 3 revision passes. After the third FAIL, stop looping, log the unresolved violations, flag the role in the final report, and continue the pipeline. Log all violation rounds internally.
 
-**Step E6.8 — Voice calibration (pre-compute)**
+**Step E6.8 — Voice calibration (resolve)**
 
-Spawn `voice-analyst`, passing `CAREER_DATA=${CAREER_DATA}` and `PIPE=${PIPE}`.
+Read `${CAREER_DATA}/references/voice-calibration-coverletters.md` directly — no agent spawn.
 
-- **On `PASS` or `FALLBACK`:** proceed to Step E7. Calibration is written to `$PIPE/voice-calibration.md`.
-- **On any other error:** log the failure. Proceed to Step E7 without `$PIPE/voice-calibration.md`. The letter-writer falls back to its standalone Voice Gate.
+- **If it exists:** copy its content to `$PIPE/voice-calibration.md`. Proceed to Step E7.
+- **If it does not exist** (new user, or the user has not yet applied the update-prompt that delivers it): this is not an error — do not hard-stop. Proceed to Step E7 without creating `$PIPE/voice-calibration.md`. The letter-writer and humanizer both fall back to their standalone Voice Gate / calibration protocol (read the delivered-letters archive directly, or `03-framework.md` §Voice and tone if the archive is also empty).
 
 **Step E7 — Cover letter (initial revision)**
 
@@ -290,13 +290,13 @@ Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DAT
 
 **Before spawning, snapshot the revert target:** copy `$PIPE/letter-draft.md` (the E7.7-passing text) to a sibling `$PIPE/letter-draft.prehumanizer.md` — the revert target for E8.5. The humanizer edits in place, so this snapshot must be taken first.
 
-Spawn `cover-letter-humanizer`, passing `CAREER_DATA=${CAREER_DATA}`, `LETTER_PATH=$PIPE/letter-draft.md` (it edits in place), and `$PIPE/voice-calibration.md` (the pre-computed voice calibration from Step E6.8; the humanizer uses it instead of reading the archive directly). Do not pass the structured JD, Role summary, strategy, or any role-specific context — the humanizer's only inputs are the letter, the career-data path, and the voice-calibration file.
+Spawn `humanizer`, passing `CAREER_DATA=${CAREER_DATA}`, `LETTER_PATH=$PIPE/letter-draft.md` (it edits in place), and `$PIPE/voice-calibration.md` if it was created in Step E6.8 (the durable voice calibration; the humanizer uses it instead of reading the archive directly). Do not pass the structured JD, Role summary, strategy, or any role-specific context — the humanizer's only inputs are the letter, the career-data path, and the voice-calibration file.
 
 The humanizer removes AI writing patterns sentence by sentence. It does not change structure, strategy, or content — only language. Wait for it to finish editing `$PIPE/letter-draft.md` in place and writing its change log before proceeding. The change log goes into the revision log under `## Humanizer changes`. If the humanizer fails, proceed with the pre-humanizer version `$PIPE/letter-draft.prehumanizer.md` (which already passed E7.7) — restore it over `$PIPE/letter-draft.md`.
 
 **Step E8.5 — Final verification on the exported bytes**
 
-The humanizer changed the text after the last PASS, so that PASS is no longer valid. Run both checks below on the exact saved markdown `$PIPE/letter-draft.md` that E9 will convert: (1) run the mechanical pre-export checklist — company name in first body paragraph (stealth roles: JD descriptor suffices), role title in body, zero em dashes and zero colons in body text (ignoring pandoc `:::` fences and `{custom-style=...}` attributes), zero hits for "I know this", "that's where", "that's what", "that's the kind", "that exact", "exactly that", "this same", "serves as", "stands as", "acts as"; also grep "the same" — a hit fails only when it points at an agent-coined abstraction ("the same engine"), not in benign uses ("the same week"); (2) spawn `gatekeeper` with `option=cover-letter` on this exact text, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter path `$PIPE/letter-draft.md` to read, `Role summary`, the user's Why I Want This Role content, and the final CV path (same as Step E7.3). If either fails: re-spawn the humanizer (language issues — same `LETTER_PATH=$PIPE/letter-draft.md`, same `$PIPE/voice-calibration.md`) or letter-writer with `option=revision` (content issues) and re-run this step. Cap: 2 rounds; after the cap, revert to the `$PIPE/letter-draft.prehumanizer.md` file saved in E8 (the last E7.7-passing text) by restoring it over `$PIPE/letter-draft.md`, and flag for manual review. Never export text that has not passed this step.
+The humanizer changed the text after the last PASS, so that PASS is no longer valid. Run both checks below on the exact saved markdown `$PIPE/letter-draft.md` that E9 will convert: (1) run the mechanical pre-export checklist — company name in first body paragraph (stealth roles: JD descriptor suffices), role title in body, zero em dashes and zero colons in body text (ignoring pandoc `:::` fences and `{custom-style=...}` attributes), zero hits for "I know this", "that's where", "that's what", "that's the kind", "that exact", "exactly that", "this same", "serves as", "stands as", "acts as"; also grep "the same" — a hit fails only when it points at an agent-coined abstraction ("the same engine"), not in benign uses ("the same week"); (2) spawn `gatekeeper` with `option=cover-letter` on this exact text, passing `CAREER_DATA=${CAREER_DATA}`, the cover letter path `$PIPE/letter-draft.md` to read, `Role summary`, the user's Why I Want This Role content, and the final CV path (same as Step E7.3). If either fails: re-spawn `humanizer` (language issues — same `LETTER_PATH=$PIPE/letter-draft.md`, same `$PIPE/voice-calibration.md` if present) or letter-writer with `option=revision` (content issues) and re-run this step. Cap: 2 rounds; after the cap, revert to the `$PIPE/letter-draft.prehumanizer.md` file saved in E8 (the last E7.7-passing text) by restoring it over `$PIPE/letter-draft.md`, and flag for manual review. Never export text that has not passed this step.
 
 ---
 

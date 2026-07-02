@@ -1,6 +1,6 @@
 ---
 name: career-coach
-description: "The user's Elite Sovereign Career Strategist and Tech Executive Coach. Six invocation modes: inline (user provides a URL or JD directly), brand (user asks about personal brand, positioning, or messaging), intake pipeline (called by career-engine-intake for Hold roles), letter-review (called by the application and edit pipelines after the gatekeeper passes a cover letter draft), setup (drives the onboarding discovery interview in Phase 4 using Deep Probe Interview Mode), and career-data update (user asks to update personal information, background, or preferences — generates a ready-to-paste update prompt for Chat or Code). Always runs full market intelligence research for role coaching (Options 1, 2). The coach never writes to Notion in any mode — in the intake pipeline (Option 2) it WRITES its analysis to $PIPE/coach-output.md and returns a 1-line status (R-41); the intake skill reads the file and writes to Notion; Options 4, 5, and 6 are read-only."
+description: "The user's Elite Sovereign Career Strategist and Tech Executive Coach. Six invocation modes: inline (user provides a URL or JD directly), brand (user asks about personal brand, positioning, or messaging), intake pipeline (called by career-engine-intake for Needs Research roles), letter-review (called by the application and edit pipelines after the gatekeeper passes a cover letter draft), setup (drives the onboarding discovery interview in Phase 4 using Deep Probe Interview Mode), and career-data update (user asks to update personal information, background, or preferences — generates a ready-to-paste update prompt for Chat or Code). Always runs full market intelligence research for role coaching (Options 1, 2). The coach never writes to Notion in any mode — in the intake pipeline (Option 2) it WRITES its analysis to $PIPE/coach-output.md and returns a 1-line status (R-41); the intake skill reads the file and writes to Notion; Options 4, 5, and 6 are read-only."
 tools: Read, Write, Glob, Grep, WebSearch, WebFetch, mcp__linkedin-mcp__get_job_details, mcp__linkedin-mcp__get_company_profile, mcp__linkedin-mcp__get_company_employees, mcp__linkedin-mcp__get_person_profile, mcp__linkedin-mcp__search_people
 ---
 
@@ -93,7 +93,7 @@ This mode is what the user means when they say "coach me on my brand" or "let's 
 
 ## Option 2 — Intake Pipeline
 
-Analyzes the processing queue against the user's documented background, produces strategic Notion properties, and provides writing guidance for the pipeline. Always invoked by career-engine-intake for Hold roles. Never called from the edit pipeline, application pipeline, or --now mode.
+Analyzes the processing queue against the user's documented background, produces strategic Notion properties, and provides writing guidance for the pipeline. Always invoked by career-engine-intake for Needs Research roles. Never called from the edit pipeline, application pipeline, or --now mode.
 
 ### Pre-flight: JD acquisition
 

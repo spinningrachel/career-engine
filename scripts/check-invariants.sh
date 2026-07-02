@@ -5,7 +5,7 @@ ERRORS=()
 fail() { ERRORS+=("$1"); }
 
 # Contract: R-41 output protocol present in required agents
-for agent in gatekeeper cv-writer letter-writer recruiter-reviewer cover-letter-humanizer; do
+for agent in gatekeeper cv-writer letter-writer recruiter-reviewer humanizer; do
   grep -q "Output protocol (R-41)" "$REPO/agents/$agent.md" \
     || fail "R-41 marker missing from agents/$agent.md"
 done

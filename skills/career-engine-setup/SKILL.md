@@ -213,6 +213,12 @@ Before reading anything, ask:
 - If yes: store each approved letter in `references/delivered-letters/` using the letter-writer Option 3 entry format (one file per letter, full text exactly as sent, metadata header) and update `INDEX.md`. Respect the cap of 6.
 - If no: read them for context only, do not store
 
+**If at least 3 letters were stored,** ask the user directly — wait for their reply before proceeding:
+
+> "Want me to generate your voice calibration file now? It's a one-time analysis of your delivered letters that the letter-writer and humanizer read at pipeline run time instead of re-reading the archive from scratch each run — saves every future run that step. Optional: the pipeline works fine without it (both agents fall back to reading the archive directly). Say yes and I'll run the methodology in `references/voice-calibration-method.md` and write the result to `references/voice-calibration-coverletters.md`."
+
+If yes: run the methodology now and write the file. If no, or fewer than 3 letters were stored: skip this — the user (or a future session) can generate it later using the same methodology reference.
+
 ### Read all submitted content carefully
 
 Read every file. For each piece of content, note:
@@ -476,8 +482,9 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 2. Once they confirm it's set up, ask:
    - "Paste your database ID." (the 32-character string from the Notion URL — `notion.so/[workspace]/DATABASE_ID?v=...`)
    - Then say: "Now paste the URL for each of these views — open each one in your browser and copy the full URL from the address bar. You can skip any you haven't set up yet (the pipeline will find them automatically, but pasting them now eliminates a large background fetch every run that can cause early context compaction)."
+     - **New** view URL (newly-added roles, before Prioritization has touched them)
      - **Interested** view URL (the pipeline's main queue — roles you've decided to apply for)
-     - **Hold** view URL (roles under research before deciding)
+     - **Needs Research** view URL (roles under research before deciding)
      - **Researched** view URL (roles the coach has analysed; ready for your decision)
      - **CV Ready for Review** view URL (roles with completed pipeline output awaiting your review)
      - **Needs Editing** view URL (roles queued for the edit pipeline)
@@ -511,8 +518,9 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 4. Write to the career-data config (`${CAREER_DATA}/references/pipeline-preferences.json`):
    - `database_backend` = `notion`
    - `database_id` = the database ID the user provided
+   - `database_new_view_url` = the New view URL (or empty string if not provided) — fast-path for the Prioritization pipeline's `New`-status queue
    - `database_interested_view_url` = the Interested view URL (or empty string if not provided)
-   - `database_hold_view_url` = the Hold view URL (or empty string)
+   - `database_hold_view_url` = the Needs Research view URL (or empty string) — key name unchanged for backward compatibility; holds the `Needs Research` view (renamed from `Hold`)
    - `database_researched_view_url` = the Researched view URL (or empty string)
    - `database_cv_ready_view_url` = the CV Ready for Review view URL (or empty string)
    - `database_edit_view_url` = the Needs Editing view URL (or empty string)
@@ -544,7 +552,7 @@ Before giving this prompt to the user, substitute `{{USER_DEFAULT_LANGUAGE}}` an
 ```
 Set up data validation (dropdown lists) on the following columns in my Google Sheet named "career-engine-tracker":
 
-- Column "Status": allow only these exact values: Hold, Interested, CV Ready for Review, Applied, Researched, Needs editing
+- Column "Status": allow only these exact values: New, Needs Research, Interested, CV Ready for Review, Applied, Researched, Needs editing
 - Column "Priority": allow only these exact values: Highest, First, Second, Third, Fourth, Fifth
 - Column "Role Type": allow multiple selections from: Builder, Scaler, Specialist, Leader
 - Column "Relationship type": allow only these exact values: Full time, Part time, Temporary, Fractional/Consulting/Freelance
@@ -576,7 +584,7 @@ Create a database/table with the following columns. Do not rename them — they 
 Columns: Company, Position, Job URL, Status, Priority, JD Body, Why I Want This Role, Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, Gap handling, Role summary, Hiring Manager's Name, Hiring manager's role, Manager role confirmed, Person who Advertised Role (if not Hiring Manager), No incumbents in this function, Landscape, First Advertised, Last Pipeline Run, Link to CV, Draft Directory, CV File Name, Letter File Name, Languages, Edit type, Note
 
 Select column values (must match exactly):
-- Status: Hold | Interested | CV Ready for Review | Applied | Researched | Needs editing
+- Status: New | Needs Research | Interested | CV Ready for Review | Applied | Researched | Needs editing
 - Priority: Highest | First | Second | Third | Fourth | Fifth
 - Role Type (multi-select): Builder | Scaler | Specialist | Leader
 - Relationship type: Full time | Part time | Temporary | Fractional/Consulting/Freelance
@@ -672,8 +680,9 @@ Write the answers into `target_titles` (array, priority order), `remote_preferen
     "cv_template": "references/<their-dotx-or-cv-template-default.dotx>",
     "database_backend": "notion",
     "database_id": "<32-char DB id, or empty for non-database trackers>",
+    "database_new_view_url": "<New view URL, or empty>",
     "database_interested_view_url": "<Interested view URL, or empty>",
-    "database_hold_view_url": "<Hold view URL, or empty>",
+    "database_hold_view_url": "<Needs Research view URL, or empty>",
     "database_researched_view_url": "<Researched view URL, or empty>",
     "database_cv_ready_view_url": "<CV Ready for Review view URL, or empty>",
     "database_edit_view_url": "<Needs Editing view URL, or empty>",

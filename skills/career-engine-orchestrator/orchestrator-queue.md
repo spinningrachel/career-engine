@@ -157,7 +157,7 @@ See `skills/career-engine/SKILL.md` (canonical, always current). This orchestrat
 
 ## Orchestrator Steps
 
-**The orchestrator owns the Interested queue.** It fetches Interested roles directly via the database adapter (Status = `Interested`), runs a readiness check, builds the processing queue, and passes it to `career-engine-new-application`. It does NOT delegate queue-fetching to `career-engine-intake` — intake processes only Hold roles and is never called from here.
+**The orchestrator owns the Interested queue.** It fetches Interested roles directly via the database adapter (Status = `Interested`), runs a readiness check, builds the processing queue, and passes it to `career-engine-new-application`. It does NOT delegate queue-fetching to `career-engine-intake` — intake processes only Needs Research roles and is never called from here.
 
 ### Step O1 — Fetch Interested roles (via the database adapter)
 
@@ -181,7 +181,7 @@ These are database operations. **Load `${CLAUDE_PLUGIN_ROOT}/skills/database-not
 
 Report count: "Found N Interested roles."
 
-**Empty queue (genuine zero):** if the read ladder succeeds but returns **0 `Interested` roles**, this is a clean terminal stop, not a failure and not a scoping question. Report plainly — "No roles with Status = Interested. Move a role from Hold → Interested (or add one as Interested) and re-run." — and stop. Do NOT ask how to scope the run, do NOT fall back to another status, and do NOT improvise a search.
+**Empty queue (genuine zero):** if the read ladder succeeds but returns **0 `Interested` roles**, this is a clean terminal stop, not a failure and not a scoping question. Report plainly — "No roles with Status = Interested. Move a role from Needs Research → Interested (or add one as Interested) and re-run." — and stop. Do NOT ask how to scope the run, do NOT fall back to another status, and do NOT improvise a search.
 
 ### Step O2 — Readiness check
 

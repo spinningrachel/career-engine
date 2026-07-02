@@ -72,7 +72,7 @@ A half-wired agent is worse than no agent — it will silently fail at runtime.
 
 ## Before Editing an Existing Agent or Skill
 
-**Letter pipeline files require special care.** `letter-writer.md`, `cv-writer.md`, `writer-craft/SKILL.md`, `gatekeeper-checks/SKILL.md`, `gatekeeper.md`, and `cover-letter-humanizer.md` require full read-before-edit and explicit rule-removal confirmation from the user before any rule is deleted or weakened.
+**Letter pipeline files require special care.** `letter-writer.md`, `cv-writer.md`, `writer-craft/SKILL.md`, `gatekeeper-checks/SKILL.md`, `gatekeeper.md`, `humanizer.md`, and `humanizer/SKILL.md` require full read-before-edit and explicit rule-removal confirmation from the user before any rule is deleted or weakened.
 
 1. Read the file you are editing in full, not just the section you intend to change.
 2. Check the regression table in `CLAUDE.md` for any row that mentions this file. Read the "Confirmed fix" column — your change must not undo it.

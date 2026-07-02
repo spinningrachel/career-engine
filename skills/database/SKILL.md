@@ -18,17 +18,19 @@ Status is the single property that drives what the pipeline does with a role. Th
 
 | Status | Who sets it | Meaning |
 |---|---|---|
-| `Hold` | user | Being researched before a decision to apply. **NOT handled by the CV-writing pipeline.** Use the intake pipeline (`--coach-skills`) to research Hold roles. That pipeline runs the career coach, writes strategic properties, and promotes Hold roles to Researched. |
-| `Interested` | user | The user has decided to apply. **This is what the New Application pipeline fetches.** Move a role from Hold → Interested (or add directly as Interested) when a CV and cover letter need to be produced. Intake does not process Interested roles — it only processes Hold roles. |
+| `New` | user (manual add, or any future sourcing pipeline) | True entry point — where a role sits immediately after being added, before Prioritization has touched it. Not yet triaged: no JD fetch, no location read, no priority score. **This is what the Prioritization pipeline fetches by default.** |
+| `Needs Research` | user, or Prioritization pipeline (on completion) | Being researched before a decision to apply. **NOT handled by the CV-writing pipeline.** Use the intake pipeline (`--coach-skills`) to research Needs Research roles. That pipeline runs the career coach, writes strategic properties, and promotes Needs Research roles to Researched. (Renamed from `Hold` — same meaning, same trigger, purely a label change.) |
+| `Interested` | user | The user has decided to apply. **This is what the New Application pipeline fetches.** Move a role from Needs Research → Interested (or add directly as Interested) when a CV and cover letter need to be produced. Intake does not process Interested roles — it only processes Needs Research roles. |
 | `Needs editing` | user | Queued for the editing pipeline. Pipeline starts from existing outputs — does not run fresh. |
 | `CV Ready for Review` | pipeline (on completion) | Pipeline finished; the user needs to review before sending. |
 | `Applied` | user | Sent. |
 | `Researched` | intake pipeline (on completion) | Coach has run market intelligence — competitive landscape, priority scoring, strategic properties. Role is ready for the user to decide whether to move to Interested. |
 
-**Pipeline reads:** `Interested` (New Application pipeline) and `Needs editing` (editing pipeline). All other statuses — including `Hold` and `Researched` — are ignored by those pipelines.
+**Pipeline reads:** Prioritization reads `New` (default) or `Needs Research` (on explicit request, e.g. to refresh a stale Priority before running full intake). Intake reads `Needs Research` (renamed from `Hold`). New Application reads `Interested`. Editing reads `Needs editing`. All other statuses — including `Researched` — are ignored by those pipelines.
 
-**The two upstream pipelines are separate:**
-- Intake → researches **Hold** roles → sets Status to **Researched**
+**The upstream pipelines are separate:**
+- Prioritization → cheap triage of **New** roles (optionally **Needs Research** roles on request) → sets Status to **Needs Research**
+- Intake → researches **Needs Research** roles → sets Status to **Researched**
 - New Application → fetches **Interested** roles directly → feeds the CV writing pipeline
 
 ---
@@ -57,6 +59,9 @@ Roles with `Priority` already set are always selected into the queue before unsc
 ## Property Ownership
 
 Each property in the job applications database has a single designated owner. Agents write each piece of information once, to the correct field, and must not duplicate content across properties.
+
+**Role prioritizer owns provisionally, for `New`-status roles only:**
+`Role Summary`, `Location`, `Priority`, `JD Fetch Status`, `JD Body`. These are cheap, JD-only values meant to inform which roles reach full intake next — not a substitute for the career coach's research-informed versions. **The career coach always overwrites `Role Summary`, `Location`, and `Priority` when a role reaches full intake** (write-only-to-empty does not apply to these three at that point — see the cross-file-contract row in `CLAUDE.md`); the coach redoes them from scratch using full research and never treats Prioritization's values as a starting point to confirm or correct. `JD Fetch Status` and `JD Body` stay write-only-to-empty for the coach too, same as any other role's — Prioritization's fetched JD is reused, not re-fetched, when already present.
 
 **Career coach owns exclusively:**
 

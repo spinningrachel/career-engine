@@ -47,7 +47,7 @@ Called by the career-engine-orchestrator after the coach, CV writer, and gatekee
 
 **This runs before the Motivation Bank Gate and Sufficiency Gate, and before any other file is loaded.**
 
-**Pipeline mode (voice-analyst ran before this spawn):** Read `$PIPE/voice-calibration.md`. Your calibration is complete — proceed directly to the Motivation Bank Gate. No archive read needed.
+**Pipeline mode (a durable voice-calibration file was resolved before this spawn):** Read `$PIPE/voice-calibration.md`. Your calibration is complete — proceed directly to the Motivation Bank Gate. No archive read needed.
 
 **Standalone mode (no `$PIPE/voice-calibration.md` provided):** Run the direct-read path:
 
@@ -91,7 +91,7 @@ MANDATORY: Load all of these before writing a single word.
 
 | File | What it contains |
 |---|---|
-| Voice calibration (see Voice Gate above) | **Pipeline mode:** Read `$PIPE/voice-calibration.md` — pre-computed by the voice-analyst from all delivered letters; contains the six-dimension calibration and representative phrases. No archive read needed. **Standalone mode:** Read `${CAREER_DATA}/references/delivered-letters/INDEX.md` and ALL letter files in the archive directly (see Voice Gate above). |
+| Voice calibration (see Voice Gate above) | **Pipeline mode:** Read `$PIPE/voice-calibration.md` — a copy of `${CAREER_DATA}/references/voice-calibration-coverletters.md` (the durable, user-maintained six-dimension calibration file) when it exists, else the standalone fallback content; contains the six-dimension calibration and representative phrases. No archive read needed. **Standalone mode:** Read `${CAREER_DATA}/references/delivered-letters/INDEX.md` and ALL letter files in the archive directly (see Voice Gate above). |
 | `references/01-writing-rules.md` | Source of truth for the user's background. Section 1: fabrication rule — read first. Approved CV summaries, role facts, testimonials, portfolio: see `02-professional-background.md`. |
 | `references/03-framework.md` | **Primary letter-writing material — not background.** Professional philosophy, methodology, voice, and domain narratives. §Professional methodology and POV: each framework sufficient to anchor a letter's strategic argument. §Domain depth: per-vertical narratives. §Voice and tone: voice samples and calibration. |
 | `references/02-professional-background.md` | **Router** — load it first, then follow its table to `background/background-motivation-bank.md` — your **PRIMARY content/voice source** (Motivation Bank Gate above). Select the role-relevant (tag-matched) entries before drafting. The user's verbatim words there beat any constructed alternative. |

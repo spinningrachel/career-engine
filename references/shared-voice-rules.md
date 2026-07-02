@@ -1,6 +1,6 @@
 ---
 name: shared-voice-rules
-description: Canonical cross-surface voice rules for all professional content — CV, cover letters, LinkedIn posts, and LinkedIn coach outputs. Aggregated from cv-writing, cover-letter, cover-letter-humanizer, and linkedin-coach skills. Agents loading this file inherit all shared prohibitions and writing standards. Surface-specific rules are marked [CV], [CL] (cover letter), [LI] (LinkedIn post/profile).
+description: Canonical cross-surface voice rules for all professional content — CV, cover letters, LinkedIn posts, and LinkedIn coach outputs. Originally aggregated from cv-writing, cover-letter, cover-letter-humanizer, and linkedin-coach skills; the CV/cover-letter/humanizer-relevant subset now lives in skills/writer-craft/SKILL.md and skills/humanizer/SKILL.md instead (see the writer-craft consolidation note above §1). Agents loading this file inherit all shared prohibitions and writing standards. Surface-specific rules are marked [CV], [CL] (cover letter), [LI] (LinkedIn post/profile).
 ---
 
 # Shared Voice Rules
