@@ -57,6 +57,7 @@ Return findings in this exact structure for every role received.
 - **Role Type:** <types>
 - **Relationship type:** <type>
 - **Gap handling:** <[Gap]: [handling] — one line per gap, or N/A>
+- **Location:** <verbatim from posting, e.g. "Tel Aviv, Israel / Hybrid" | Remote | Unknown> — the role's stated location. Distinct from the location-compatibility verdict below.
 - **Date first advertised:** <date | estimated range | Unknown> [HIGH/LOW]
 - **Remote compatibility:** <value>
 - **Hiring Manager's Name:** <name + title | hypothesis | Not identifiable> [HIGH/LOW]

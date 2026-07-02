@@ -142,7 +142,7 @@ grep -rn "option=interview-questions\|interview-questions\|interview questions\|
 
 For each agent `.md` file, scan for skill names that are loaded or referenced (look for patterns like skill name strings, `Load`, `read skill`, etc.). For each skill name found, verify the corresponding directory exists in `skills/`.
 
-Common skill names to expect: `career-engine-intake`, `career-engine-new-application`, `career-engine-export`, `career-engine-orchestrator`, `career-engine-edit`, `career-engine-setup`, `coach`, `cover-letter`, `cover-letter-humanizer`, `cv-writing`, `career-coach`, `gatekeeper-checks`, `career-engine`, `update-refs`.
+Common skill names to expect: `career-engine-intake`, `career-engine-new-application`, `career-engine-export`, `career-engine-orchestrator`, `career-engine-edit`, `career-engine-setup`, `coach`, `writer-craft`, `career-coach`, `gatekeeper-checks`, `career-engine`, `update-refs`.
 
 **FAIL condition:** a referenced skill name has no matching directory.
 
@@ -243,9 +243,9 @@ Read `CLAUDE.md`. Verify it contains "Single-build architecture" and "career-dat
 
 **Source of truth is the live filesystem, not this list.** First run `ls -d <location>/skills/*/` and use that actual set as the count and membership. Then reconcile it against the enumeration below: every directory on disk should be categorizable here, and every name below should exist on disk. Do not report a count from memory — derive it from `ls`. (The list below is a categorized reference; new skills are added over time, so a directory on disk that isn't listed here is a "categorize and note," not a fail.)
 
-These skill directories must exist in `skills/` (28 as of this writing):
+These skill directories must exist in `skills/` (26 as of this writing):
 - Core pipeline: `career-engine`, `career-engine-orchestrator`, `career-engine-intake`, `career-engine-new-application`, `career-engine-edit`, `career-engine-export`, `career-engine-setup`
-- Writing & quality: `cv-writing`, `cover-letter`, `cover-letter-humanizer`, `gatekeeper-checks`, `career-coach`, `localization`
+- Writing & quality: `writer-craft`, `gatekeeper-checks`, `career-coach`, `localization`
 - Standalone career: `source-open-roles`, `linkedin-coach`, `personal-brand`, `update-refs`
 - Content & freelance: `content-orchestrator`, `mind-dump`, `linkedin-post-writer`, `linkedin-post-reviewer`, `fiverr`, `upwork`, `freelance-shared`
 - Meta: `plugin-builder`, `technical-writing`
@@ -291,11 +291,11 @@ grep -c "Final Gate" <location>/agents/cover-letter-humanizer.md
 
 ### Check 16b — Sentence-balance rule and preference-intake guards present
 
-The humanizer's sentence-length monotony rule (with Final Gate parity) and the voice-preference rule-protection guards must all be present.
+The humanizer's sentence-length monotony rule (with Final Gate parity) and the voice-preference rule-protection guards must all be present. (Sentence-balance rule relocated to `skills/writer-craft/SKILL.md` §4 during the writer-craft consolidation.)
 
 ```bash
-grep -c "Sentence-length balance" <location>/skills/cover-letter-humanizer/SKILL.md                       # must be 1
-grep -c "reads monotone" <location>/skills/cover-letter-humanizer/SKILL.md                                 # must be 2 (Step 2 rule + Final Gate parity)
+grep -c "Sentence-length variation" <location>/skills/writer-craft/SKILL.md                                # must be >= 1
+grep -c "reads monotone" <location>/skills/writer-craft/SKILL.md                                           # must be 2 (§4 rule + §12 Step 2 parity)
 grep -c "Documented writing rules and prohibitions are protected" <location>/skills/update-refs/SKILL.md   # must be 1
 grep -c "never silently modify documented rules" <location>/skills/career-engine-setup/SKILL.md            # must be 1
 ```
@@ -314,11 +314,11 @@ grep -c "Edit type is mandatory" <location>/skills/career-engine-edit/SKILL.md
 
 ### Check 18 — Why I Want This Role voice-preservation rule present (both failure modes)
 
-In `skills/cover-letter/SKILL.md`: verify the file contains both "Failure mode A" and "Failure mode B".
+In `skills/writer-craft/SKILL.md` (relocated during the writer-craft consolidation): verify the file contains both "Failure mode A" and "Failure mode B".
 
 ```bash
-grep -c "Failure mode A" <location>/skills/cover-letter/SKILL.md
-grep -c "Failure mode B" <location>/skills/cover-letter/SKILL.md
+grep -c "Failure mode A" <location>/skills/writer-craft/SKILL.md
+grep -c "Failure mode B" <location>/skills/writer-craft/SKILL.md
 ```
 
 **FAIL condition:** either string not found.
@@ -510,7 +510,7 @@ test -f <location>/references/linkedin-profile.md && echo 1 || echo 0           
 ```bash
 grep -c "Voice fingerprint" <location>/references/03-framework.md                      # must be >= 1
 grep -c "Voice fingerprint" <location>/agents/cover-letter-humanizer.md                # must be >= 1
-grep -c "Voice fingerprint" <location>/skills/cover-letter/SKILL.md                    # must be >= 1
+grep -c "Voice fingerprint" <location>/skills/writer-craft/SKILL.md                    # must be >= 1 (relocated from skills/cover-letter/SKILL.md)
 ```
 
 **FAIL condition:** any count is 0 or below its stated requirement.
@@ -532,14 +532,14 @@ grep -c "ask-first" <location>/skills/career-coach/coach-research.md            
 ### Check 21i — Shakedown fixes present (R-34)
 
 ```bash
-grep -c "maximum 320" <location>/skills/cover-letter/SKILL.md                               # must be >= 1
+grep -c "maximum 320" <location>/skills/writer-craft/SKILL.md                               # must be >= 1 (relocated from skills/cover-letter/SKILL.md)
 grep -c "maximum 320" <location>/skills/gatekeeper-checks/SKILL.md                          # must be >= 1
 grep -rn "230–275\|230–290\|230–320" <location>/skills <location>/agents <location>/references --include="*.md" | grep -v qa-plugin.md | wc -l   # must be 0
 grep -c "Calibration authority" <location>/skills/gatekeeper-checks/SKILL.md               # must be >= 1
 grep -c "repetition check skipped" <location>/skills/gatekeeper-checks/SKILL.md            # must be >= 1
 grep -c "Role named in the first sentence" <location>/skills/gatekeeper-checks/SKILL.md    # must be >= 1
-grep -c "Proof-point partitioning" <location>/skills/cover-letter/SKILL.md                 # must be >= 1
-grep -c "always surfaced" <location>/skills/cover-letter/SKILL.md                          # must be >= 1
+grep -c "Proof-point partitioning" <location>/skills/writer-craft/SKILL.md                 # must be >= 1 (relocated from skills/cover-letter/SKILL.md)
+grep -c "always surfaced" <location>/skills/writer-craft/SKILL.md                          # must be >= 1 (relocated from skills/cover-letter/SKILL.md)
 grep -ci "stealth" <location>/skills/gatekeeper-checks/SKILL.md                            # must be >= 1
 ```
 
@@ -576,11 +576,11 @@ grep -c "preferred_job_sites" <location>/skills/source-open-roles/SKILL.md      
 
 ### Check 21o — WIWTR mandatory enumeration present (session feature)
 
-The cover letter skill must mandate [WIWTR-N] enumeration, not just a strong preference. The letter-writer must have a pre-draft parse step. The gatekeeper must check each point.
+The letter-writer agent must mandate [WIWTR-N] enumeration, not just a strong preference (this procedural step lives in the agent, not the skill, per content-placement rules — relocated in full from `skills/cover-letter/SKILL.md` to `agents/letter-writer.md` during the writer-craft consolidation). The letter-writer must have a pre-draft parse step. The gatekeeper must check each point.
 
 ```bash
-grep -c "WIWTR-" <location>/skills/cover-letter/SKILL.md                          # must be >= 1
-grep -c "MANDATORY" <location>/skills/cover-letter/SKILL.md                       # must be >= 1
+grep -c "WIWTR-" <location>/agents/letter-writer.md                              # must be >= 1
+grep -c "MANDATORY" <location>/agents/letter-writer.md                           # must be >= 1
 grep -c "Step 0.5" <location>/agents/letter-writer.md                             # must be >= 1
 grep -c "WIWTR-" <location>/agents/gatekeeper.md                                  # must be >= 1
 ```
@@ -657,28 +657,29 @@ grep -ci "MANDATORY STOP" <build>/CLAUDE.md
 
 Four confirmed regression patterns from live runs. Run on the build.
 
-**strategic-builder rule:** grep `skills/gatekeeper-checks/SKILL.md` and `skills/cover-letter/SKILL.md` for the string "strategic builder" — must appear in at least one of them.
+**strategic-builder rule:** grep `skills/gatekeeper-checks/SKILL.md` and `skills/writer-craft/SKILL.md` (relocated from `skills/cover-letter/SKILL.md`) for the string "strategic builder" — must appear in at least one of them.
 
 ```bash
 grep -c "strategic builder" <build>/skills/gatekeeper-checks/SKILL.md
-grep -c "strategic builder" <build>/skills/cover-letter/SKILL.md
+grep -c "strategic builder" <build>/skills/writer-craft/SKILL.md
 ```
 
 **FAIL condition:** both counts are 0 (string absent from both files). PASS if either count is >= 1.
 
-**em dash absolute ban prominent:** grep `agents/letter-writer.md` for "em dash" or "em dashes" — must appear.
+**em dash absolute ban prominent:** grep `agents/letter-writer.md` for "em dash" or "em dashes" — must appear. (The ban itself lives in `skills/writer-craft/SKILL.md` §1; this check verifies the agent still surfaces it prominently too — historically via the Mandatory Revision Pass pointer, now via the writer-craft load instruction.)
 
 ```bash
 grep -ci "em dash" <build>/agents/letter-writer.md
+grep -ci "em dash" <build>/skills/writer-craft/SKILL.md
 ```
 
-**FAIL condition:** count is 0.
+**FAIL condition:** the `skills/writer-craft/SKILL.md` count is 0. The `agents/letter-writer.md` count is advisory — note it but do not fail solely on it, since the letter-writer may reference the ban only by pointing at the skill.
 
-**colon ban present:** grep `agents/letter-writer.md` and `skills/cover-letter-humanizer/SKILL.md` for "colon" in the context of a writing ban — must appear in at least one.
+**colon ban present:** grep `agents/letter-writer.md` and `skills/writer-craft/SKILL.md` (relocated from `skills/cover-letter-humanizer/SKILL.md`) for "colon" in the context of a writing ban — must appear in at least one.
 
 ```bash
 grep -ci "colon" <build>/agents/letter-writer.md
-grep -ci "colon" <build>/skills/cover-letter-humanizer/SKILL.md
+grep -ci "colon" <build>/skills/writer-craft/SKILL.md
 ```
 
 **FAIL condition:** both counts are 0.
@@ -697,6 +698,77 @@ grep -c "Placeholder resolution" <build>/CLAUDE.md                              
 ```
 
 **FAIL condition:** any count below its stated requirement.
+
+### Check 31 — Coach mandatory-field list parity: Location and First Advertised (2026-07-01 fix)
+
+`Location` and `First Advertised` must be present in all three lists that must stay in parity: Step 0.8 coach-complete, Step 0.9a confirmation pass, and the gatekeeper's Coach Output Check presence-check. The coach's output template must have a literal `Location` fill-in slot, not prose-only.
+
+```bash
+grep -c "First Advertised" <build>/skills/career-engine-intake/SKILL.md            # must be >= 2 (Step 0.8 + Step 0.9a)
+grep -c "\*\*Location:\*\*" <build>/skills/career-coach/coach-output.md            # must be >= 1 (literal template slot)
+grep -c "Mandatory-field presence" <build>/skills/gatekeeper-checks/SKILL.md       # must be >= 1
+grep -c "Missing mandatory fields" <build>/agents/gatekeeper.md                    # must be >= 1
+```
+
+**FAIL condition:** any count below its stated requirement.
+
+### Check 32 — Notion fast-path STOP gates present (2026-07-01 fix)
+
+The fast-path view-URL check must be an explicit STOP gate at the top of §1 and §3 in the adapter, not buried mid-paragraph.
+
+```bash
+grep -c "STOP — check this before running the fetch" <build>/skills/database-notion/SKILL.md   # must be >= 1
+grep -c "STOP — is a fast-path URL already non-empty" <build>/skills/database-notion/SKILL.md   # must be >= 1
+grep -c "do NOT \`Read\` or otherwise re-ingest that file in full" <build>/skills/database-notion/SKILL.md   # must be >= 1
+grep -c "page_id.*command.*update_properties\|\"command\": \"update_properties\"" <build>/skills/database-notion/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** any count is 0.
+
+### Check 33 — Orchestrator queue-building has a run-scoped `$PIPE` (2026-07-01 fix)
+
+Step O1 must establish its own run-scoped `$PIPE` and redirect per-page fetch results to a file; Step O2 must read from that file rather than holding fetch results in memory.
+
+```bash
+grep -c "_queue_pipeline" <build>/skills/career-engine-orchestrator/orchestrator-queue.md          # must be >= 1
+grep -c "role-properties.md" <build>/skills/career-engine-orchestrator/orchestrator-queue.md       # must be >= 2 (O1 write + O2 read)
+```
+
+**FAIL condition:** any count below its stated requirement.
+
+### Check 33b — Orchestrator delegates the per-page property fetch to a subagent (2026-07-01 follow-up fix)
+
+The first attempt at Check 33's fix (writing to `$PIPE` "immediately as each result completes") did not hold operationally in a live run — the orchestrator batched several raw `notion-fetch` calls inline before writing any of them. The fix was restructured to delegate the whole per-page fetch loop to a subagent that returns one bounded block, which the orchestrator then writes to `$PIPE/role-properties.md` in a single `Write` call. Verify the delegation, not just the file path.
+
+```bash
+grep -c "Spawn a lightweight subagent" <build>/skills/career-engine-orchestrator/orchestrator-queue.md          # must be >= 1
+grep -c 'does not write `\$PIPE` itself' <build>/skills/career-engine-orchestrator/orchestrator-queue.md        # must be >= 1 (single-quote the pattern — double-quoting mangles the $PIPE literal)
+grep -c "premature context exhaustion in real production runs" <build>/skills/career-engine-orchestrator/orchestrator-queue.md   # must be >= 1 (leads with the consequence, not just the rule)
+grep -c "general-purpose extraction/fetch subagents" <build>/skills/career-engine-orchestrator/orchestrator-queue.md   # must be >= 1 (Absolute Constraints spawn list updated to cover this subagent type)
+grep -c "FAILED" <build>/skills/career-engine-orchestrator/orchestrator-queue.md                                # must be >= 1 (per-page fetch error path defined, not silently assumed to always succeed)
+grep -c "cannot access .notion-fetch." <build>/skills/career-engine-orchestrator/orchestrator-queue.md          # must be >= 1 (tool-unavailable fallback path defined)
+```
+
+**FAIL condition:** any count is 0.
+
+### Check 34 — Coach-output re-read discipline and hand-edit self-check strengthened (2026-07-01 fix)
+
+```bash
+grep -c "exactly once for the entire Step 0.8" <build>/skills/career-engine-intake/SKILL.md   # must be >= 1
+grep -c "self-check: am I about to open an \`Edit\`" <build>/skills/career-engine-intake/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** either count is 0.
+
+### Check 34b — Intake Step 0.5 rung-1 batching risk flagged (2026-07-01 follow-up)
+
+Step 0.5's JD fetch ladder was judged lower-risk than Step O1's per-page fetch (the multi-rung fallback naturally serializes roles), but the rung-1 all-succeed sub-case structurally resembles Step O1's failure and is flagged rather than silently assumed safe.
+
+```bash
+grep -c "held up in practice better than the equivalent instruction" <build>/skills/career-engine-intake/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** count is 0.
 
 ### Check 30 — Changelog rules present in CLAUDE.md; README.md changelog is well-formed
 

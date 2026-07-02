@@ -169,7 +169,7 @@ Spawn `voice-analyst`, passing `CAREER_DATA=${CAREER_DATA}` and `PIPE=${PIPE}`.
 **Priority rule:** the **Motivation Bank** (`background/background-motivation-bank.md`, loaded by the letter-writer from career-data) is the primary content source; **Why I Want This Role** is the role-specific source on top of it **when present**. Strategy provides the letter type only — it does not govern content selection.
 
 **Include this verbatim at the front of the letter-writer prompt:**
-> STRUCTURE IS NON-NEGOTIABLE. Regardless of any reviewer feedback you receive, the letter structure defined in `cover-letter/SKILL.md` must be observed in full — in particular the tone, voice, and content of the opening paragraph. Reviewer feedback informs what proof to include or emphasise; it does not change how the letter is structured or how the opening is written.
+> STRUCTURE IS NON-NEGOTIABLE. Regardless of any reviewer feedback you receive, the letter structure defined in `skills/writer-craft/SKILL.md` must be observed in full — in particular the tone, voice, and content of the opening paragraph. Reviewer feedback informs what proof to include or emphasise; it does not change how the letter is structured or how the opening is written.
 
 Spawn `letter-writer` with `option=cover-letter`, passing:
 - `CAREER_DATA=${CAREER_DATA}`
@@ -228,7 +228,7 @@ cp "$PIPE/letter-draft.md" "<output_dir>/<company_dir>/<cl_filename>.md"
 
 Spawn `cover-letter-humanizer`, passing `CAREER_DATA=${CAREER_DATA}`, the final cover letter markdown path `$PIPE/letter-final.md` (it edits in place), and `$PIPE/voice-calibration.md` (the pre-computed voice calibration from the voice-analyst; the humanizer uses it instead of reading the archive directly). Do not pass Role summary, strategy, JD, or any role-specific context — the humanizer's only inputs are the letter, the career-data path, and the voice-calibration file.
 
-The humanizer is a writing editor and linguistics expert. It loads `skills/cover-letter-humanizer/SKILL.md` and removes AI writing patterns sentence by sentence. It does not change structure, strategy, or content — only language.
+The humanizer is a writing editor and linguistics expert. It loads `skills/writer-craft/SKILL.md` (its `[ALL]` sections and §12 Humanizer Mechanics) and removes AI writing patterns sentence by sentence. It does not change structure, strategy, or content — only language.
 
 **Wait for the humanizer to finish** editing `$PIPE/letter-final.md` in place and writing its change log before proceeding.
 

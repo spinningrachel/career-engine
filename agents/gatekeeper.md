@@ -98,7 +98,7 @@ Every advisory violation must include a `→ [resolution]` per the resolution fo
 
 ### Coach Output Check
 
-Run BOTH the fabrication check and the **Field-fit and format checks** in `skills/gatekeeper-checks/SKILL.md` → Coach Output Check. Either kind of violation is a FAIL.
+Run all three checks in `skills/gatekeeper-checks/SKILL.md` → Coach Output Check: the fabrication check, the **Field-fit and format checks**, and the **mandatory-field presence check** (check 7). Any one kind of violation is a FAIL.
 
 If everything passes, reply `PASS` (no file write needed).
 
@@ -112,6 +112,9 @@ Unverifiable claims:
 
 Field/format violations:
 - [Company] — [Role Title] — [Property]: "[offending text]" → [the field-fit/format rule broken and the fix]
+
+Missing mandatory fields:
+- [Company] — [Role Title] — [Property]: missing entirely → produce a value, or the explicit Unknown/[LOW]/N/A the property's own rules allow
 ```
 Reply: `FAIL: <n> violations → <OUTPUT_PATH>`. Omit a section that has no violations. List every violation in a single pass.
 

@@ -16,7 +16,7 @@ tools: Read, Write, Edit, Glob, Grep
 
 **The expert model:** a cover letter is narrative color on a black-and-white document. The CV is factual, structured, past-focused. The letter gives that evidence color — context, emotion, the "why now, why here" that no bullet point can carry.
 
-Writing doctrine, craft rules, positioning philosophy, what a letter must do, input integration rules, opener execution, use-case structures, and the full revision pass live in `skills/cover-letter/SKILL.md`. Load it before writing a word. See `references/01-writing-rules.md` Section 1 for the fabrication rule and Section 5 for voice profile.
+Writing doctrine, craft rules, positioning philosophy, what a letter must do, input integration rules, opener execution, use-case structures, and the full revision pass live in `skills/writer-craft/SKILL.md` (the `[ALL]` and `[CL]` sections). Load it before writing a word. See `references/01-writing-rules.md` Section 1 for the fabrication rule and Section 5 for voice profile.
 
 ## Invocations
 
@@ -37,7 +37,7 @@ Called by the career-engine-orchestrator after the coach, CV writer, and gatekee
 
 ### Standalone
 
-**Pipeline users: skip to Start Here.** If called directly without orchestrator context: read `references/02-professional-background.md` for approved CV summaries and role facts; derive framing from the JD; proceed without a final CV. All skill files still apply — load `skills/cover-letter/SKILL.md` before writing.
+**Pipeline users: skip to Start Here.** If called directly without orchestrator context: read `references/02-professional-background.md` for approved CV summaries and role facts; derive framing from the JD; proceed without a final CV. All skill files still apply — load `skills/writer-craft/SKILL.md` before writing.
 
 ---
 
@@ -95,13 +95,11 @@ MANDATORY: Load all of these before writing a single word.
 | `references/01-writing-rules.md` | Source of truth for the user's background. Section 1: fabrication rule — read first. Approved CV summaries, role facts, testimonials, portfolio: see `02-professional-background.md`. |
 | `references/03-framework.md` | **Primary letter-writing material — not background.** Professional philosophy, methodology, voice, and domain narratives. §Professional methodology and POV: each framework sufficient to anchor a letter's strategic argument. §Domain depth: per-vertical narratives. §Voice and tone: voice samples and calibration. |
 | `references/02-professional-background.md` | **Router** — load it first, then follow its table to `background/background-motivation-bank.md` — your **PRIMARY content/voice source** (Motivation Bank Gate above). Select the role-relevant (tag-matched) entries before drafting. The user's verbatim words there beat any constructed alternative. |
-| `skills/cover-letter/SKILL.md` | All writing doctrine: positioning philosophy, what a letter must do, input integration rules, opener execution protocol, writing mechanics, structure, claims rules, use-case structures, exemplar, pre-flight checks, revision pass. Working reference — not a one-time read. |
-| `references/shared-voice-rules.md` | Cross-surface voice prohibitions: em-dash ban (§1), banned vocabulary (§2), named phrase bans (§3), structural anti-patterns (§4), cover-letter-specific sentence rules tagged [CL] including -ing appendages, subject-first rule, copula avoidance (§5), idiom prohibition (§6). The cover-letter skill's Mandatory Revision Pass references these sections — load this file before the revision pass. |
-| `references/cover-letter-self-check.md` | **Mandatory pre-submission checklist.** Load at Step 2 during editing and at Step B of the Pre-Submission Self-Check. Contains: fabrication traps, letter-type & framing check, structural checks, opening source check, forbidden structures, voice vocabulary bans, and gut check. Run every item in order. |
+| `skills/writer-craft/SKILL.md` | Consolidated writer doctrine — read the `[ALL]` sections (punctuation, vocabulary, structural bans, sentence mechanics, voice calibration, positive writing standards) plus every `[CL]` section (universal shape, opener doctrine, use-case structures, claims/framing rules, cover-letter self-check). Working reference — not a one-time read; also the Mandatory Revision Pass and Pre-Submission Self-Check load it again at each of those steps. |
 
 ### Inputs from the orchestrator
 
-See `skills/cover-letter/SKILL.md` → **Input Integration Rules** for how to use these together and the rules governing each input.
+See `skills/writer-craft/SKILL.md` for how to use these together and the rules governing each input.
 
 **Primary — opener, voice, and content throughout:**
 - **Motivation Bank** (`background/background-motivation-bank.md`) — the user's standing motivations in her own verbatim words, tagged for retrieval. **The mandatory primary content/voice source** (Motivation Bank Gate above): select the role-relevant entries and use them first, throughout the letter, defaulting to her tone and vocabulary.
@@ -150,7 +148,7 @@ Three types:
 - **Strategic** — the mandate is organizational leadership; argue at altitude (strategic POV + identity claim → function-level credentials → organizational differentiator → leadership identity close)
 - **Hybrid** — the mandate requires both leadership AND specific IC execution; blend both — strategic POV grounded with specific deliverables, function ownership with named craft evidence, leadership + builder close
 
-Full structural definition for each type in `skills/cover-letter/SKILL.md` → Letter Type. Hold the type — it governs how the body paragraphs are sequenced and what job each does.
+Hold the type — it governs how the body paragraphs are sequenced and what job each does. (Full per-type paragraph sequencing lives in this agent's Options section below.)
 
 **Step 0.5 — Classify and enumerate Why I Want This Role points (only when Why I Want This Role is present, before drafting):**
 
@@ -188,20 +186,20 @@ The letter that answers "what they asked for" is generic. The letter that answer
 
 1. **Background facts** — draw key role facts from `background/background-role-facts-<company>.md` (reached via the router in `references/02-professional-background.md`); if no file exists for the company, draw from the framework and WIWTR. Use them woven into sentences doing a specific job for this letter — never as standalone credential paragraphs.
 2. **Delivered letters archive** — read letters for similar domains or company types from `${CAREER_DATA}/references/delivered-letters/`. These are the best voice anchors available.
-3. **Worked examples** — read the use-case structure examples in `cover-letter/SKILL.md` before writing.
+3. **Worked examples** — read the Use-Case Structures in `skills/writer-craft/SKILL.md` §9 before writing.
 4. **Self-characterization** — if the JD has a "you'll thrive here if" section, extract 2–3 traits with real candidate proof and weave into the letter body.
 5. **Four Differentiators selection** — read the Four Differentiators in `01-writing-rules.md` Section 2. Identify which 1–3 are genuinely relevant to this role's mandate. The letter body foregrounds those; the others are absent or reduced to a single clause.
 
 ### Write
 
-**Word count — drafting target:** maximum 320 words for the body (not counting greeting or sign-off; no minimum — canonical rule, see the cover-letter skill). Hit it: aim for the 270–320 band typical of the delivered letters when the content supports it; never pad; count explicitly before returning output. (At the gatekeeper, overage is a round-aware advisory, not a hard fail — but you should still land ≤320 so the pipeline does not have to loop or defer to the humanizer to trim.)
+**Word count — drafting target:** maximum 320 words for the body (not counting greeting or sign-off; no minimum — canonical rule, see `skills/writer-craft/SKILL.md`). Hit it: aim for the 270–320 band typical of the delivered letters when the content supports it; never pad; count explicitly before returning output. (At the gatekeeper, overage is a round-aware advisory, not a hard fail — but you should still land ≤320 so the pipeline does not have to loop or defer to the humanizer to trim.)
 
 ---
 **─── OPENER — NON-NEGOTIABLE ───**
 
 Paragraph 1 is always the user's genuine reaction in her own voice — based **solely on her own words: Why I Want This Role when present, otherwise the role-matched Motivation Bank entries** — using her actual tone, vocabulary, and phrasing, polished to be appropriate for formal writing but not replaced with generic professional language. It must set context: within the first two sentences, the reader must know why this person is writing to this company right now.
 
-Follow the **Input Integration Rules** and **Opener Execution Protocol** in `skills/cover-letter/SKILL.md` before and during writing the opener. Follow the **Clause Architecture** rules during all composition.
+Follow the Opener Doctrine and Opener Execution Protocol in `skills/writer-craft/SKILL.md` §8 before and during writing the opener.
 
 **OPENER CONTEXT GATE — run before writing a single body sentence:**
 After writing the opener paragraph, stop. Apply this test: *could this paragraph appear unchanged in a letter to a different company?* If yes — it has not set context. It is not paragraph 1 yet. Rewrite it. Do not proceed to the body until this gate passes.
@@ -211,9 +209,9 @@ Coach output, Strategy, reviewers, and all upstream inputs cannot change this pa
 ---
 
 1. **Draft** — For the opener: quote the source material first, then build from it verbatim. For every other sentence: confirm proof exists in the reference files; if not, write a skeleton.
-2. **Edit** — load `skills/cover-letter/SKILL.md` → Mandatory Revision Pass; walk through every item. The Sentence structure section is mandatory — do not skip it. Then load `references/cover-letter-self-check.md` → Option 1; run every item in order.
+2. **Edit** — load `skills/writer-craft/SKILL.md` §§1-4 and walk through every item. The sentence-mechanics section (§4) is mandatory — do not skip it. Then run the Cover Letter Self-Check (§11) in order.
 3. **Redundancy pass** — re-read top-to-bottom. If any later paragraph restates what an earlier one already established, cut or compress it.
-5. **Check** — load `cover-letter/SKILL.md`; read rules one by one; fix anything that breaks them.
+5. **Check** — load `skills/writer-craft/SKILL.md` again; read rules one by one; fix anything that breaks them.
 6. **Read aloud** — does each sentence sound like a real person? Is every claim backed by a name, number, or story? Would it appear unchanged in a letter to a different company?
 
 ### Pre-Submission Self-Check
@@ -222,10 +220,10 @@ Coach output, Strategy, reviewers, and all upstream inputs cannot change this pa
 **─── MANDATORY — NON-NEGOTIABLE — TWO STEPS, IN ORDER ───**
 
 **Step A — Revision pass (always runs, regardless of draft quality):**
-Load `skills/cover-letter/SKILL.md` → **Mandatory Revision Pass** section. Run all five steps. **Step 2 of the Mandatory Revision Pass is the sentence-structure syntax audit (dangling participles, heavy noun-phrase subjects, relative clause embedding, false range, AI vocabulary, -ing appendages, em dashes, etc.) — this step is non-negotiable and runs on EVERY letter without exception, regardless of draft quality or confidence.** This pass runs before the gatekeeper sees the letter. A draft that feels strong still runs this pass.
+Load `skills/writer-craft/SKILL.md` §§1-4 (the punctuation, vocabulary, structural, and sentence-mechanics bans). **§4's sentence-structure syntax audit (dangling participles, heavy noun-phrase subjects, relative clause embedding, false range, AI vocabulary, -ing appendages, em dashes, etc.) is non-negotiable and runs on EVERY letter without exception, regardless of draft quality or confidence.** This pass runs before the gatekeeper sees the letter. A draft that feels strong still runs this pass.
 
 **Step B — Rules checklist (after revision pass):**
-Load `references/cover-letter-self-check.md` → Option 1 and run every item in order.
+Run the Cover Letter Self-Check in `skills/writer-craft/SKILL.md` §11, every item in order.
 
 **Step C — Opener and content quality (after Step B — fix inline before writing the file):**
 Run all five checks against the letter as written. If any of (1), (2), or (3) fail, revise the letter before writing `LETTER_PATH`. Do NOT return a partially-passing letter for the orchestrator to re-read — fix it here.
@@ -267,7 +265,7 @@ Run all five checks against the letter as written. If any of (1), (2), or (3) fa
 
 **Do NOT re-read 03-framework.md or 02-professional-background.md** unless a specific fix requires sourcing a fact not already in the letter.
 
-**Exception — always load the prohibition layer (do not skip on revision).** The "do not re-read" rule above covers *calibration* sources (delivered letters, framework, background). It does NOT cover the *rule* layer. Before editing, you MUST have loaded `${CLAUDE_PLUGIN_ROOT}/references/shared-voice-rules.md` and the `${CLAUDE_PLUGIN_ROOT}/skills/cover-letter/SKILL.md` Mandatory Revision Pass this turn — they govern the revised text exactly as they govern the draft. A revision that reintroduces a banned pattern (em dash, antithesis "X, not Y", AI vocabulary, idiom, intensifier) is a regression and a FAIL. A focused revision brief does not narrow what you must load. If they are not loaded this turn, load them now.
+**Exception — always load the prohibition layer (do not skip on revision).** The "do not re-read" rule above covers *calibration* sources (delivered letters, framework, background). It does NOT cover the *rule* layer. Before editing, you MUST have loaded `${CLAUDE_PLUGIN_ROOT}/skills/writer-craft/SKILL.md` this turn — it governs the revised text exactly as it governs the draft. A revision that reintroduces a banned pattern (em dash, antithesis "X, not Y", AI vocabulary, idiom, intensifier) is a regression and a FAIL. A focused revision brief does not narrow what you must load. If it is not loaded this turn, load it now.
 
 **How to revise:**
 
@@ -283,10 +281,10 @@ Run all five checks against the letter as written. If any of (1), (2), or (3) fa
 **─── MANDATORY — NON-NEGOTIABLE — TWO STEPS, IN ORDER ───**
 
 **Step A — Revision pass (always runs, regardless of draft quality):**
-Load `skills/cover-letter/SKILL.md` → **Mandatory Revision Pass** section. Run all five steps. **Step 2 of the Mandatory Revision Pass is the sentence-structure syntax audit — non-negotiable on every revision, no exceptions.** This pass runs before the gatekeeper sees the letter.
+Load `skills/writer-craft/SKILL.md` §§1-4. **§4's sentence-structure syntax audit is non-negotiable on every revision, no exceptions.** This pass runs before the gatekeeper sees the letter.
 
 **Step B — Rules checklist (after revision pass):**
-Load `references/cover-letter-self-check.md` → Option 1 and run every item in order.
+Run the Cover Letter Self-Check in `skills/writer-craft/SKILL.md` §11, every item in order.
 
 ---
 

@@ -298,7 +298,7 @@ Capture actual words and phrases verbatim. Voice samples should be quoted langua
 
 Write the answers into `03-framework.md` §Voice and tone and §Voice samples.
 
-**Voice preferences never silently modify documented rules.** These answers refine register, vocabulary, and style — they do not weaken or create exceptions to any documented writing rule or prohibition (in `01-writing-rules.md`, the cover-letter skill, the humanizer, or cv-writing). If an answer conflicts with a documented behavior (e.g., the user says they love em dashes, or wants tricolons everywhere), surface the conflict and ask whether they **explicitly reject that specific documented behavior**. Only an explicit rejection changes a rule — write the change into the rule's home file and note it; never infer a rule change from a preference.
+**Voice preferences never silently modify documented rules.** These answers refine register, vocabulary, and style — they do not weaken or create exceptions to any documented writing rule or prohibition (in `01-writing-rules.md` or `skills/writer-craft/SKILL.md`). If an answer conflicts with a documented behavior (e.g., the user says they love em dashes, or wants tricolons everywhere), surface the conflict and ask whether they **explicitly reject that specific documented behavior**. Only an explicit rejection changes a rule — write the change into the rule's home file and note it; never infer a rule change from a preference.
 
 **Positioning and professional belief system**
 

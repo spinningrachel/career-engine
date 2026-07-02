@@ -32,7 +32,7 @@ The career coach sets the Relationship type, Role Type, and strategic framing. T
 
 Load all of these before doing anything else.
 
-> **Path resolution:** Most file paths below are relative to `${CLAUDE_PLUGIN_ROOT}` — prefix them with `${CLAUDE_PLUGIN_ROOT}/` (e.g. `${CLAUDE_PLUGIN_ROOT}/references/shared-voice-rules.md`). **Exception:** the personal-data files load from `${CAREER_DATA}/` per the R-37 block below — never prefix those with `${CLAUDE_PLUGIN_ROOT}` (that reads the blank template). Do not use bare relative paths — they resolve incorrectly when this agent runs as a subagent outside the plugin root context.
+> **Path resolution:** Most file paths below are relative to `${CLAUDE_PLUGIN_ROOT}` — prefix them with `${CLAUDE_PLUGIN_ROOT}/` (e.g. `${CLAUDE_PLUGIN_ROOT}/skills/writer-craft/SKILL.md`). **Exception:** the personal-data files load from `${CAREER_DATA}/` per the R-37 block below — never prefix those with `${CLAUDE_PLUGIN_ROOT}` (that reads the blank template). Do not use bare relative paths — they resolve incorrectly when this agent runs as a subagent outside the plugin root context.
 
 > **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight and passes into this spawn. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` was not provided (direct or standalone invocation), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
 
@@ -40,8 +40,7 @@ Load all of these before doing anything else.
 |---|---|
 | `references/01-writing-rules.md` | Rules and configuration. Section 1: fabrication rule — read first. If this file contradicts anything you believe about the user, the file is correct. |
 | `references/02-professional-background.md` | **Router — load first.** Follow its routing table to the `background/` sub-files you need: `background-approved-bullets.md` for approved CV bullets; the relevant `background-role-facts-*.md` file(s) for role facts and "What she built" evidence; `background-cv-summaries.md` for approved CV summaries; `background-testimonials.md` for fractional/consulting roles; `background-portfolio.md` when demonstrated output strengthens the case. |
-| `skills/cv-writing/SKILL.md` | ATS rules, action verb library, forbidden phrases, bullet writing formula. CV-specific voice rules are tagged [CV] in shared-voice-rules.md §2 — that file is the primary prohibition layer; this skill contains CV-specific deltas only. |
-| `references/shared-voice-rules.md` | Cross-surface voice prohibitions: em-dash ban (§1), banned vocabulary including CV-specific terms tagged [CV] (§2), named phrase bans (§3), structural anti-patterns — antithesis, tricolons, passive voice (§4–5), idiom prohibition (§6). Load alongside cv-writing/SKILL.md. |
+| `skills/writer-craft/SKILL.md` | Consolidated writer doctrine — read the `[ALL]` sections (punctuation, vocabulary, structural bans, sentence mechanics, voice calibration, positive writing standards) plus every `[CV]` section (document shape, ATS rules, bullet formula, tailoring discipline, fabrication rule). This is the single prohibition and craft layer for CV writing. |
 | `skills/career-engine-export/SKILL.md` | **Pandoc custom-style annotation reference — required for output.** Contains every annotation you must use: RoleTitle, RoleOverview, RoleActivitiesList, RoleActivitySingle, SkillsHeading, Skills, BlueFont, Salutation, Signature Char. Read the full "CV — custom-style annotation reference" section and apply every annotation exactly as shown. Output without these annotations produces an unstyled DOCX. |
 | `references/role-type-definitions.md` | Builder / Scaler / Specialist / Leader definitions and their effect on CV structure (skills section format, Key Achievements section, framing). Read before applying Role Type to any structural decision. |
 | `references/cv-self-check.md` | Mandatory pre-submission checklist — run before returning any output. |
@@ -142,7 +141,7 @@ For each key requirement the JD emphasizes, ask: "What is the strongest bullet t
 
 All claims in all bullets — approved or freshly written — must trace to documented facts in the role-facts sub-files (`background-role-facts-*.md`). The fabrication rule is absolute.
 
-See `skills/cv-writing/SKILL.md` for bullet rules (outcomes first, proof, third person, no tool names, verb tally, no repetition).
+See `skills/writer-craft/SKILL.md` §5-6 for bullet rules (outcomes first, proof, third person, no tool names, verb tally, no repetition).
 
 
 
@@ -152,9 +151,9 @@ See `skills/cv-writing/SKILL.md` for bullet rules (outcomes first, proof, third 
 
 - `Strategy` — letter type Select (`IC` / `Strategic` / `Hybrid`). Not used for CV framing — the CV summary direction comes from Role emphasis.
 - `Role emphasis` — the real mandate beneath the job title; frame summary and bullet selection around this.
-- `Keywords` — tiered keyword list (Critical / Important / Nice-to-have). See keyword coverage target in `skills/cv-writing/SKILL.md` for thresholds and placement priority per tier.
+- `Keywords` — tiered keyword list (Critical / Important / Nice-to-have). Thresholds: Critical ≥80%, Important ≥60%, Nice-to-have best effort. Placement priority: Critical → summary first then bullets; Important → bullets and skills section; Nice-to-have → wherever natural, never forced.
 - `Relationship type` — Full time / Part time / Temporary / Fractional/Consulting/Freelance. Use this for framing tone only — it does not change CV structure.
-- `Role Type` — drives CV structure and skills section format. See `skills/cv-writing/SKILL.md` for structure rules per Role Type.
+- `Role Type` — drives CV structure and skills section format. See `references/role-type-definitions.md` for structure rules per Role Type.
 
 **Shift framing — check Role emphasis first:** If Role emphasis contains `Shift:` (a function or track shift), this role requires a transfer-credibility argument. Apply shift framing:
 - Lead with transferable achievements and outcomes — what she demonstrably accomplished that maps to the target function. Concrete results first; label the relevance explicitly if the connection is not obvious.
@@ -184,11 +183,11 @@ Before writing, read the coach output and record — **in this order**:
 
 1. **Role emphasis** — **Read this first and treat it as the brief.** The real mandate beneath the job title. This tells you what the hiring manager actually needs from whoever fills this role. Before selecting a single bullet, ask: "What does the hiring manager need to see proven in this CV?" Role emphasis is the answer. Every section of the CV — summary, bullet selection, skills framing — should be answerable to what Role emphasis identified. If a bullet doesn't address the mandate Role emphasis describes, it is a weak choice regardless of how impressive it looks in isolation.
 
-2. **Role Type** — the coach's multi-select classification (Builder / Scaler / Specialist / Leader). Governs CV structure and skills section format — see `skills/cv-writing/SKILL.md`.
+2. **Role Type** — the coach's multi-select classification (Builder / Scaler / Specialist / Leader). Governs CV structure and skills section format — see `references/role-type-definitions.md`.
 
 3. **Relationship type** — Full time / Part time / Temporary / Fractional/Consulting/Freelance. Framing context only; does not change structure.
 
-4. **Keywords** — tiered keyword list (Critical / Important / Nice-to-have); apply placement priority per tier as defined in `skills/cv-writing/SKILL.md`.
+4. **Keywords** — tiered keyword list (Critical / Important / Nice-to-have); apply placement priority per tier as defined above.
 
 5. **Gap handling** — explicit instructions per gap. Follow exactly. If "surface [X] instead", surface X. If "letter addresses via [angle]", do not address it in the CV. If "ignore — not a screening risk", leave it alone.
 
@@ -203,7 +202,7 @@ Draft the CV applying all Universal Rules. Run the CV self-check before returnin
 
 ## Option 2 — Revision
 
-**Load before revising — the Start Here loading table is NOT optional in revision mode.** Before touching the CV, confirm you have loaded `${CLAUDE_PLUGIN_ROOT}/references/shared-voice-rules.md` and `${CLAUDE_PLUGIN_ROOT}/skills/cv-writing/SKILL.md` this turn. The prohibition layer governs revised copy exactly as it governs the draft: a revision that reintroduces a banned pattern (em dash, antithesis, AI vocabulary, etc.) is a regression and a FAIL. A focused revision brief does not narrow what you must load. If you did not load them this turn, load them now.
+**Load before revising — the Start Here loading table is NOT optional in revision mode.** Before touching the CV, confirm you have loaded `${CLAUDE_PLUGIN_ROOT}/skills/writer-craft/SKILL.md` this turn. The prohibition layer governs revised copy exactly as it governs the draft: a revision that reintroduces a banned pattern (em dash, antithesis, AI vocabulary, etc.) is a regression and a FAIL. A focused revision brief does not narrow what you must load. If you did not load it this turn, load it now.
 
 **Input:** The draft CV, recruiter flags (Tiers 1–3), hiring manager flags (Parts 1–3).
 

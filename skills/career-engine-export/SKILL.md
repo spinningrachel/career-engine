@@ -349,11 +349,11 @@ Body paragraphs are regular markdown paragraphs (Normal style — no annotation 
 
 ### Word count and structure
 
-All cover letters are limited to a single page, maximum 320 words with no minimum (not counting greeting or sign-off). This matches the requirement in cover-letter/SKILL.md and the gatekeeper check. Structure and voice are consistent across all letters and follow the framework below.
+All cover letters are limited to a single page, maximum 320 words with no minimum (not counting greeting or sign-off). This matches the requirement in `skills/writer-craft/SKILL.md` and the gatekeeper check. Structure and voice are consistent across all letters and follow the framework below.
 
 ### Voice constraints
 
-**Load `skills/cover-letter/SKILL.md` before writing any cover letter.** It defines writing mechanics, letter structure, and use-case patterns. It defines writing mechanics, letter structure, use-case patterns, forbidden phrases, forbidden structures, and fabrication traps. Non-negotiable.
+**Load `skills/writer-craft/SKILL.md` before writing any cover letter.** It defines writing mechanics, letter structure, use-case patterns, forbidden phrases, forbidden structures, and fabrication traps. Non-negotiable.
 
 Every claim about the company must be traceable to the JD or brief. Do not infer the company's strategy, culture, or operating model from category signals. If a sentence about them cannot be sourced, cut it or rewrite it as an observation about the role.
 
@@ -397,7 +397,7 @@ THE NUMBER ONE GOLDEN RULE: COVER LETTERS ARE THE CANDIDATE'S OPPORTUNITY TO SHI
 
 **5. The closing posture.** A direct ask, not a request for permission. Warm or plain depending on the letter's tone. Never "I look forward to hearing from you at your earliest convenience."
 
-### Prohibited phrasing (in addition to cover-letter skill rules)
+### Prohibited phrasing (in addition to writer-craft skill rules)
 
 - Never open or close with a fit claim: "This role has my name on it," "I'm the perfect candidate," "I was made for this role"
 - Never volunteer a title gap — scope speaks for itself; that conversation is for the interview

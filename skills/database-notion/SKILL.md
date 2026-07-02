@@ -26,6 +26,8 @@ This is the **Notion adapter**. It owns every Notion-specific mechanic in one pl
 
 ## §1 — Schema read (always first)
 
+**⛔ STOP — check this before running the fetch below.** §1's fetch below is needed once per run for the property/select-option schema reference — that use is never skipped. But if the caller's need right now is *only* view discovery (resolving a view URL for §2 Path B or §3), and the caller already has a non-empty, non-stale fast-path view URL from config (`database_edit_view_url`, `database_interested_view_url`, `database_hold_view_url`, `database_researched_view_url`, `database_cv_ready_view_url`), **skip straight to §2 Path B step 2** (`notion-query-database-view` with that URL) — do not run the full schema fetch just to discover a view you already have the URL for. Two independent live runs ran this ~60-65KB fetch anyway despite already holding a populated fast-path URL in context, and both hit context exhaustion shortly after. Only run the fetch below when you actually need the schema reference (property names / select options for a write) or when no fast-path URL is available for the view you need.
+
 Run `notion-fetch` on the configured database ID:
 
 ```
@@ -33,6 +35,8 @@ notion-fetch id="{{NOTION_DATABASE_ID}}"
 ```
 
 If the fetch fails (tool error, empty response) or the response contains no `CREATE TABLE` block, **stop and report** — do not proceed without a schema and do not improvise one.
+
+**If the result is a persisted-output stub, not inline JSON** (the tool reports something like "Output too large (NN KB) — saved to <path>"): **do NOT `Read` or otherwise re-ingest that file in full.** A full re-read of a 60KB+ persisted schema file has been the single largest context injection in multiple live runs and immediately preceded auto-compaction each time — it defeats the entire point of the persist-to-stub mechanism. Instead, extract only what you need via a scoped shell command against the file path (`python3`/`jq`/`grep`) — the `CREATE TABLE` block for the schema reference, and/or the `<views>`/`<data-sources>` blocks if you need view discovery — and discard the rest. This is the same projection discipline Path A1 already uses to avoid bulk payloads (below); apply it here too.
 
 Extract the SQLite `CREATE TABLE` block: this is the **schema reference** for the run — the authoritative list of property names and valid select-option values. Keep it in context.
 
@@ -104,7 +108,9 @@ Only when the `notionApi` server is absent or unusable. **Start with step 1 — 
 
 ## §3 — View discovery (resolve a view by name)
 
-This is Path B step 1 above, also used wherever a skill needs a view URL: one `notion-fetch` on the DB id → read the `<views>` block → match `"name"` → strip `{{...}}` → dash-remove → `?v=` URL. **Fast path (skip the fetch when a URL is already known):** the calling skill passes its pre-resolved view URL (e.g. `$NOTION_INTERESTED_VIEW_URL`, `$NOTION_HOLD_VIEW_URL`, `$NOTION_NEEDS_EDITING_VIEW_URL`, etc., resolved from `pipeline-preferences.json`). When the URL is non-empty and not stale, proceed directly to step 2 (`notion-query-database-view`). When the URL is empty, stale, or the query fails, fall back to this by-name lookup — it is always the fallback because saved URLs break when views are reorganised. **Never fetch the `collection://` URL to find a view.**
+**⛔ STOP — is a fast-path URL already non-empty from config? Check this before anything else in this section.** The calling skill passes its pre-resolved view URL (e.g. `$NOTION_INTERESTED_VIEW_URL`, `$NOTION_HOLD_VIEW_URL`, `$NOTION_NEEDS_EDITING_VIEW_URL`, etc., resolved from `pipeline-preferences.json`). **If that URL is non-empty and not known to be stale: skip straight to §2 Path B step 2** (`notion-query-database-view` with that URL, no filter) — do not run the DB-discovery fetch below at all. This is not a minor optimization; skipping it wastes a ~60-65KB fetch that has caused early context exhaustion in production runs. Only fall through to the by-name lookup below when the fast-path URL is empty, is known to be stale, or the query against it fails.
+
+This is Path B step 1 above, also used wherever a skill needs a view URL: one `notion-fetch` on the DB id → read the `<views>` block → match `"name"` → strip `{{...}}` → dash-remove → `?v=` URL. When the URL is empty, stale, or the query fails, fall back to this by-name lookup — it is always the fallback because saved URLs break when views are reorganised. **Never fetch the `collection://` URL to find a view.**
 
 ---
 
@@ -116,7 +122,17 @@ This is Path B step 1 above, also used wherever a skill needs a view URL: one `n
 
 **Mechanism:**
 - On Path A1 (the `ntn` gate passed), writes may go through `ntn api /v1/pages/<page_id> -X PATCH -d '{"properties": {...}}'` — same write-only-to-empty rule, same parallelism.
-- Otherwise use the connector: `notion-update-page` on the page ID, properties keyed by exact name, select values exactly matching the schema options.
+- Otherwise use the connector: `notion-update-page`, properties keyed by exact name, select values exactly matching the schema options.
+
+  **Exact required call shape — do not guess this.** The tool requires `command` and `page_id` as top-level arguments, NOT the bare `{"id": ..., "properties": {...}}` shape that seems natural by analogy to other Notion tools:
+  ```json
+  {
+    "page_id": "<page_id>",
+    "command": "update_properties",
+    "properties": { "<Property Name>": <value in the shape that property type expects> }
+  }
+  ```
+  A call using `{"id": ...}` instead of `{"page_id": ..., "command": "update_properties", ...}` fails with `MCP error -32602: Invalid arguments` for every property, costing a full failed round-trip. This has been independently discovered by trial in multiple production runs — do not re-derive it by trial again.
 
 **Write to properties, not the page body**, except where a caller explicitly sanctions a page-body block (e.g. the intake outreach map). For a sanctioned page-body write: use `notion-update-page`; prepend above existing content separated by `---`; never delete existing content.
 
