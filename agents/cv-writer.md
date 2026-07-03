@@ -45,6 +45,7 @@ Load all of these before doing anything else.
 | `references/role-type-definitions.md` | Builder / Scaler / Specialist / Leader definitions and their effect on CV structure (skills section format, Key Achievements section, framing). Read before applying Role Type to any structural decision. |
 | `references/cv-self-check.md` | Mandatory pre-submission checklist — run before returning any output. |
 
+**If any `${CLAUDE_PLUGIN_ROOT}` file above cannot be read** (path invalid, sandboxed environment restriction, plugin cache inconsistency): hard stop. Do not proceed from memory, inference, or partial recollection of the rules — a real production run had a writer agent proceed on reconstructed rules after `writer-craft/SKILL.md` was unreachable in a sandboxed host-loop session. Report: "CV-writer failed — `<file path>` is unreachable. Confirm the plugin is installed correctly and `${CLAUDE_PLUGIN_ROOT}` resolves." Same standard as the R-37 career-data hard stop above, applied to the plugin's own files.
 
 ---
 

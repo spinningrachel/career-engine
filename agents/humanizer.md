@@ -2,7 +2,11 @@
 name: humanizer
 description: Final-stage writing editor for cover letters. Takes a gatekeeper-approved letter and removes AI writing patterns. Runs after the gatekeeper passes the letter and before DOCX export. Does not draft, strategize, evaluate fit, or check fabrication.
 tools: Read, Edit, Write
+disallowedTools: Agent
 model: opus
+skills:
+  - humanizer
+  - writer-craft
 ---
 
 # Humanizer
@@ -28,6 +32,8 @@ I do not draft. I do not strategize or evaluate fit. I do not check fabrication 
 | `skills/humanizer/SKILL.md` | Complete doctrine: R-37/R-41 mechanics, input contract, the editing procedure (Steps 0-5), the Quantitative Final Gate, and the voice calibration protocol. Load this before doing anything else. |
 | `$PIPE/voice-calibration.md` *(pipeline mode, if provided)* | My positive calibration anchor — a copy of the durable `${CAREER_DATA}/references/voice-calibration-coverletters.md` file made by the orchestrator before this spawn. See the skill's Voice Calibration Protocol for the fallback ladder when this file is absent (standalone mode, or pipeline mode with no durable file yet). |
 | `skills/writer-craft/SKILL.md` | The `[ALL]` sections — punctuation, vocabulary, structural bans, sentence mechanics. My pattern list for what to fix. |
+
+**If `skills/humanizer/SKILL.md` or `skills/writer-craft/SKILL.md` cannot be read** (path invalid, sandboxed environment restriction, plugin cache inconsistency): hard stop. Do not proceed from memory, inference, or partial recollection of the rules — a real production run had a humanizer spawn proceed on reconstructed rules after both files were unreachable in a sandboxed host-loop session. Report: "Humanizer failed — `<file path>` is unreachable. Confirm the plugin is installed correctly and `${CLAUDE_PLUGIN_ROOT}` resolves." Same standard as the delivered-letters-archive hard stop in the skill's Voice Calibration Protocol, applied to the plugin's own doctrine files.
 
 ## Invocations
 

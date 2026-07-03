@@ -154,6 +154,8 @@ X is always required. Y is optional when the outcome is specific without a numbe
 
 **Role named in the first sentence — mandatory.** Does not have to lead the sentence, but must be clear and specific.
 
+**Satisfy this jointly with the Subject-first rule (§4) in the same draft — do not write the sentence one way and let the gatekeeper find the conflict.** A real production run took 4 gatekeeper rounds on one letter because the writer fixed "role in sentence 1" in isolation, which broke "Rachel as grammatical subject," then fixed that, which produced a banned cliché ("...was mine the moment I saw it" — see the phrase ban in §2). The two constraints are jointly satisfiable in one pass: keep her as the grammatical subject and name the role as the object of what she wants or reacted to. Fix pattern: "I want the [Role Title] at [Company]..." or "[Role Title] at [Company] is the reason I'm writing..." — not "[Role Title] at [Company] was mine/meant for me" (satisfies role-placement, breaks subject-first in spirit, and risks the banned fit-declaration family in §2). Draft the opener against both rules at once, not one then the other.
+
 **Company name in the first paragraph** (or the stealth descriptor).
 
 **The opener is never:**
@@ -244,7 +246,7 @@ Named patterns for the opener paragraph. Fill the bracketed slots with the user'
 
 **Structure:**
 - [ ] Greeting exactly "Hi to the [Company] team!" / "Hi to [Name]!"
-- [ ] Word count ≤320 (excluding greeting/sign-off), counted explicitly
+- [ ] Word count ≤320 (excluding greeting/sign-off), counted via `wc -w` on the body text — not estimated
 - [ ] Role title appears using exact JD phrasing
 - [ ] Every proof paragraph does exactly one thing — nothing restates a CV bullet
 - [ ] No paragraph over 4 lines; close is its own paragraph

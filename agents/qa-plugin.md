@@ -825,6 +825,107 @@ grep -c "the underlying property values are what you filter on, not the view nam
 
 **FAIL condition:** any "must be >= N" count below its stated requirement, or the disproven-doctrine grep is nonzero.
 
+### Check 38 — Mechanical word count enforced, not self-estimated (2026-07-02 fix)
+
+A live production run had every writer self-report a word count 20-40 words under the true figure (measured via `wc -w`); two letters shipped over the 320 cap as a direct result. Fixed by giving letter-writer and gatekeeper Bash access and requiring a mechanical `wc -w` count instead of an LLM estimate.
+
+```bash
+grep -c "^tools:.*Bash" <build>/agents/letter-writer.md            # must be >= 1
+grep -c "^tools:.*Bash" <build>/agents/gatekeeper.md                # must be >= 1
+grep -c "wc -w" <build>/agents/letter-writer.md                     # must be >= 1
+grep -c "wc -w" <build>/skills/gatekeeper-checks/SKILL.md           # must be >= 1
+grep -c "wc -w" <build>/skills/writer-craft/SKILL.md                # must be >= 1
+```
+
+**FAIL condition:** any count is 0.
+
+### Check 39 — Path B view-query delegation present at all three query sites (2026-07-02 fix)
+
+Only intake's Step 0b had the explicit "the view-query call itself is delegated" sentence; edit's Step E0 and the orchestrator's Step O1 were silently missing it despite CLAUDE.md's contract table claiming all three inherit it. A live run confirmed the gap: a raw view-query call landed tens of thousands of characters directly in the edit pipeline's own context. Fixed by adding the same sentence to all three call sites.
+
+```bash
+grep -c "the view-query call itself (§2 Path B steps 2–3) is delegated by the adapter" <build>/skills/career-engine-intake/SKILL.md                 # must be >= 1
+grep -c "the view-query call itself (§2 Path B steps 2–3) is delegated by the adapter" <build>/skills/career-engine-edit/SKILL.md                    # must be >= 1
+grep -c "the view-query call itself (§2 Path B steps 2–3) is delegated by the adapter" <build>/skills/career-engine-orchestrator/orchestrator-queue.md   # must be >= 1
+```
+
+**FAIL condition:** any count is 0.
+
+### Check 40 — Banned-phrase family Grep (not one literal string) present (2026-07-02 fix)
+
+The "I knew this was mine" (any variant) ban was enforced via a literal string Grep that couldn't match variants by construction. A live run shipped "...was mine the moment I saw it" uncaught. Fixed by naming the fragment family explicitly for Grep.
+
+```bash
+grep -c "Grep for the family, not the exact phrase" <build>/skills/gatekeeper-checks/SKILL.md   # must be >= 1
+grep -c "was mine.*meant for me.*meant to be" <build>/skills/gatekeeper-checks/SKILL.md          # must be >= 1
+```
+
+**FAIL condition:** either count is 0.
+
+### Check 41 — Opener joint-constraint guidance present (2026-07-02 fix)
+
+A live run took 4 gatekeeper rounds on one letter because "role in sentence 1" and "subject-first" were fixed sequentially instead of jointly, and the fix for one produced a banned cliché the gates didn't catch. Fixed by adding a combined worked example to writer-craft.md §8.
+
+```bash
+grep -c "Satisfy this jointly with the Subject-first rule" <build>/skills/writer-craft/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** count is 0.
+
+### Check 42 — Plugin-file-unreachable hard stop present for writer/humanizer agents (2026-07-02 fix)
+
+R-37 already hard-stops on an unreachable career-data file; there was no equivalent for the plugin's own doctrine files. A live sandboxed run had letter-writer and humanizer proceed on reconstructed rules after `writer-craft/SKILL.md` was unreachable. Fixed by adding an explicit hard-stop instruction to each writer-facing agent.
+
+```bash
+grep -c "writer-craft/SKILL.md.*cannot be read\|cannot be read.*writer-craft" <build>/agents/letter-writer.md   # must be >= 1
+grep -c "cannot be read" <build>/agents/cv-writer.md                # must be >= 1
+grep -c "cannot be read" <build>/agents/humanizer.md                # must be >= 1
+```
+
+**FAIL condition:** any count is 0.
+
+### Check 43 — E0.7 baseline-skip rationalization closed (2026-07-02 fix)
+
+A live run skipped baseline checks for all 5 roles reasoning "it's being rewritten anyway" — not one of the two doctrine-sanctioned skip reasons (no JD, cover letter file not locatable). Fixed by explicitly naming and closing that rationalization.
+
+```bash
+grep -c "Do not skip this step because the letter or CV will be substantially rewritten anyway" <build>/skills/career-engine-edit/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** count is 0.
+
+### Check 44 — Resume-not-respawn wired for the letter-writer revision loop (2026-07-02 fix)
+
+The letter-writer's own revision loops (new-application Steps 5.2/5.3/5.95; edit's quality-comparison loop, E7.3, coach loop, E7.7, E8.5) previously each spawned a fresh, memoryless writer instance per round — the root cause of a real 4-round gatekeeper ping-pong (fixing one opener rule broke another, and the fresh writer that fixed *that* produced a banned cliché neither rule caught). Fixed by capturing the agent ID at the first spawn and resuming that same instance for every subsequent revision touch on the same letter.
+
+```bash
+grep -c "Capture the returned agent ID" <build>/skills/career-engine-new-application/SKILL.md         # must be >= 1
+grep -c "Capture the returned agent ID" <build>/skills/career-engine-edit/SKILL.md                      # must be >= 1
+grep -c "resume the letter-writer instance\|Resume the letter-writer instance" <build>/skills/career-engine-new-application/SKILL.md   # must be >= 3 (Steps 5.2, 5.3, 5.95)
+grep -c "resume the letter-writer instance\|Resume the letter-writer instance" <build>/skills/career-engine-edit/SKILL.md              # must be >= 5 (quality-comparison loop, E7.3, coach loop, E7.7, E8.5)
+grep -c "letter-writer-agent-id.txt" <build>/skills/career-engine-new-application/SKILL.md              # must be >= 1
+grep -c "letter-writer-agent-id.txt" <build>/skills/career-engine-edit/SKILL.md                         # must be >= 1
+```
+
+**FAIL condition:** any count below its stated requirement.
+
+### Check 45 — Skills preload, memory, and Agent-tool denial wired on writer-pipeline agents (2026-07-02 fix)
+
+`skills:` frontmatter preload removes the unreachable-skill-file failure mode at the root (rather than just catching it, per Check 42). `memory: project` on the gatekeeper lets its banned-phrase-variant catches accumulate across runs. `disallowedTools: Agent` on the three writer-pipeline agents makes nested-subagent spawning structurally impossible for this pipeline.
+
+```bash
+grep -c "^  - writer-craft" <build>/agents/letter-writer.md      # must be >= 1
+grep -c "^  - humanizer" <build>/agents/humanizer.md              # must be >= 1 (self)
+grep -c "^  - writer-craft" <build>/agents/humanizer.md           # must be >= 1
+grep -c "^  - gatekeeper-checks" <build>/agents/gatekeeper.md     # must be >= 1
+grep -c "^memory: project" <build>/agents/gatekeeper.md           # must be >= 1
+grep -c "^disallowedTools: Agent" <build>/agents/letter-writer.md   # must be >= 1
+grep -c "^disallowedTools: Agent" <build>/agents/gatekeeper.md      # must be >= 1
+grep -c "^disallowedTools: Agent" <build>/agents/humanizer.md       # must be >= 1
+```
+
+**FAIL condition:** any count is 0.
+
 ### Check 36 — Humanizer enforcement mechanisms present (2026-07-02 fix)
 
 Four enforcement-strengthening additions closing rule-exists-but-applied-inconsistently gaps diagnosed from real letters: an exhaustiveness re-scan, a generalized inanimate-subject test (not a fixed 3-verb list), an explicit metaphor/simile naming in Step 3, and a mandatory subject-change trigger for the pronoun-antecedent check.
