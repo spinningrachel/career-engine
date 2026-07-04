@@ -323,7 +323,7 @@ cp /tmp/he-<cl_filename>.md "<output_dir>/"
 Convert using the Hebrew DOCX production protocol from `career-engine-export`:
 
 ```bash
-HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
+# $CV_TEMPLATE_HE and $CL_TEMPLATE_HE already resolved (fixed career-data paths, no config key)
 
 # Hebrew CV — concatenate with Hebrew footer, then convert
 cat /tmp/he-<cv_filename>.md \
@@ -331,7 +331,7 @@ cat /tmp/he-<cv_filename>.md \
     > /tmp/he-<cv_filename>-with-footer.md
 
 pandoc /tmp/he-<cv_filename>-with-footer.md \
-  --reference-doc="${HE_TEMPLATES}/cvHe.dotx" \
+  --reference-doc="${CV_TEMPLATE_HE}" \
   -o "<output_dir>/<company_dir>/he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 
 # Hebrew CV subtitle
@@ -341,7 +341,7 @@ python3 "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/update-subtit
 
 # Hebrew cover letter
 pandoc /tmp/he-<cl_filename>.md \
-  --reference-doc="${HE_TEMPLATES}/he-letter.dotx" \
+  --reference-doc="${CL_TEMPLATE_HE}" \
   -o "<output_dir>/<company_dir>/he-coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 ```
 

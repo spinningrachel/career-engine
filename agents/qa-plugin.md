@@ -924,7 +924,65 @@ grep -c "^disallowedTools: Agent" <build>/agents/gatekeeper.md      # must be >=
 grep -c "^disallowedTools: Agent" <build>/agents/humanizer.md       # must be >= 1
 ```
 
+### Check 46 — career-data v1.8.0 restructure wired end-to-end (2026-07-04 fix)
+
+`career-data` v1.8.0 introduced three new directories (`references/templates/`, `references/framework/`, `references/voice-and-identity/`) and moved `linkedin-post-strategy.md`/`personal-brand-context.md` under `voice-and-identity/`. Verify no plugin file still points at the pre-restructure flat paths, and that the new files are actually wired into a consumer.
+
+```bash
+# Stale flat-path references must be gone (each must be 0)
+grep -rc "references/linkedin-post-strategy\.md\|references/personal-brand-context\.md" <build>/agents <build>/skills --include="*.md" | grep -v ":0$" | wc -l   # must be 0
+# New/moved files actually wired into a consumer (each must be >= 1)
+grep -c "voice-and-identity/linkedin-post-strategy.md" <build>/agents/linkedin-post-writer.md          # must be >= 1
+grep -c "voice-and-identity/linkedin-post-strategy.md" <build>/skills/content-orchestrator/SKILL.md     # must be >= 1
+grep -c "voice-and-identity/personal-brand-context.md" <build>/skills/personal-brand/SKILL.md            # must be >= 1
+grep -c "templates/cover_letter_templates.md" <build>/agents/letter-writer.md                            # must be >= 1
+# Canonical structure docs updated to describe the new layout (each must be >= 1)
+grep -c "references/templates/" <build>/references/career-data-structure.md                              # must be >= 1
+grep -c "references/templates/" <build>/skills/update-refs/SKILL.md                                      # must be >= 1
+grep -c "references/templates/" <build>/skills/career-engine-setup/SKILL.md                              # must be >= 1
+```
+
+**FAIL condition:** the stale-flat-path count is nonzero, or any "must be >= 1" count is 0.
+
+### Check 47 — Cover-letter template selection procedure wired (2026-07-04 fix)
+
+`cover_letter_templates.md` (Template A Cold/Scaffold vs. Template B Warm/Woven) is now hand-curated, real career-data — the letter-writer must select between them, treat each template's Dial Sheet as a hard constraint, never copy illustrative variant text verbatim, and use "Attribution-safe proof phrasings" only as a phrasing rule layered on the existing fabrication rule, never as a new proof-point source.
+
+```bash
+grep -c "Step 0.7 — Template selection" <build>/agents/letter-writer.md                                    # must be >= 1
+grep -c "Template A (Cold / Scaffold)" <build>/agents/letter-writer.md                                     # must be >= 1
+grep -c "Dial Sheet is a hard constraint" <build>/agents/letter-writer.md                                   # must be >= 1
+grep -c "Never copy a template's illustrative variant text verbatim" <build>/agents/letter-writer.md        # must be >= 1
+grep -c "governs how a known-true metric is phrased, never whether one may be invented" <build>/agents/letter-writer.md   # must be >= 1
+grep -c "never overrides the Opener non-negotiable rule" <build>/agents/letter-writer.md                    # must be >= 1
+```
+
 **FAIL condition:** any count is 0.
+
+### Check 48 — cv_template/word_templates_path fully retired; new-user templates scaffolding wired (2026-07-04 fix)
+
+`cv_template` and `word_templates_path` are retired config keys — CV/cover-letter/Hebrew templates resolve by fixed filename from `career-data/references/templates/` only, never a config lookup or external OS path. `career-engine-setup/SKILL.md` was the one remaining file still writing these as config keys (with a stale destination-path convention) after the rest of the pipeline had already moved to fixed-filename resolution; the create-prompt handoff template was also still showing the pre-restructure flat career-data tree. Verify both are now consistent, and that the new generic `cover-letter-templates-default.md` ships with zero personal data.
+
+```bash
+# No file writes cv_template/word_templates_path as a config key anymore (each must be 0)
+grep -rc '"cv_template"\|"word_templates_path"' <build>/agents <build>/skills <build>/references --include="*.md" --include="*.json" | grep -v ":0$" | grep -v "qa-plugin.md" | wc -l   # must be 0
+# Setup's document-templates flow uses fixed filenames, no config key (each must be >= 1)
+grep -c "renaming to the fixed filename" <build>/skills/career-engine-setup/SKILL.md                     # must be >= 1
+grep -c "cover-letter-templates-default.md" <build>/skills/career-engine-setup/SKILL.md                  # must be >= 1
+grep -c "keep the style names\|those names don't change" <build>/skills/career-engine-setup/SKILL.md     # must be >= 1
+# Handoff create-prompt scaffolds the full modern structure (each must be >= 1)
+grep -c "background/" <build>/references/career-data-skill-handoff.md                                    # must be >= 1
+grep -c "framework/" <build>/references/career-data-skill-handoff.md                                      # must be >= 1
+grep -c "voice-and-identity/" <build>/references/career-data-skill-handoff.md                             # must be >= 1
+grep -c "templates/" <build>/references/career-data-skill-handoff.md                                      # must be >= 1
+# The new generic templates file carries zero personal data (must be 0)
+grep -ic "rachel\|cheyfitz\|visual layer\|coro\b\|lytx" <build>/references/cover-letter-templates-default.md   # must be 0
+# voice-calibration-method.md documents both formats (each must be >= 1)
+grep -c "Templates-aware format" <build>/references/voice-calibration-method.md                           # must be >= 1
+grep -c "Fallback: six-dimension format" <build>/references/voice-calibration-method.md                    # must be >= 1
+```
+
+**FAIL condition:** the config-key-write count is nonzero, the personal-data count in the new templates file is nonzero, or any "must be >= 1" count is 0.
 
 ### Check 36 — Humanizer enforcement mechanisms present (2026-07-02 fix)
 

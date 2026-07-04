@@ -33,7 +33,7 @@ When selecting which ideas to include in a batch:
 
 1. **Prefer ideas with fuller Raw Notes.** An idea with detailed notes produces a better post than one with a bare title. The Summary and Raw Notes fields are the evidence — if they're thin, flag the idea as "needs development" rather than including it.
 
-2. **Topic variety within a batch.** Avoid two ideas from the same Topic Authority Area in the same batch. Readers see the whole batch over a few days — topic monotony is visible. Refer to `${CAREER_DATA}/references/linkedin-post-strategy.md` for the authority areas.
+2. **Topic variety within a batch.** Avoid two ideas from the same Topic Authority Area in the same batch. Readers see the whole batch over a few days — topic monotony is visible. Refer to `${CAREER_DATA}/references/voice-and-identity/linkedin-post-strategy.md` for the authority areas.
 
 3. **Category distribution.** Don't run a batch of all `LinkedIn Post` category ideas if `Content Framework` or `Personal Experience` ideas are available — different categories produce different post textures.
 

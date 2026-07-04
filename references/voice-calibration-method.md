@@ -1,18 +1,48 @@
 # Voice Calibration Method
 
-A reusable, generic six-dimension methodology for producing a voice calibration file from a corpus of delivered writing. This is not a live pipeline component — it is a reference procedure a human runs manually, or that a future agent can follow on demand, whenever a fresh calibration is needed.
+**Important Note**: If you're looking for the user's calibrated voice, the correct file/s are located in the career-data skill. 
+
+A reusable methodology for producing a voice calibration file from a corpus of delivered writing. This is not a live pipeline component — it is a reference procedure a human runs manually, or that a future agent can follow on demand, whenever a fresh calibration is needed.
+
+**Two report formats, chosen by whether the surface has a structure-templates doc:**
+- **Templates-aware format (below)** — use when a `cover_letter_templates.md`-style structure doc exists for this surface (i.e. cover letters, which have `${CAREER_DATA}/references/templates/cover_letter_templates.md`, or any future surface that gets its own equivalent). The calibration file's job is then to set the *voice/execution* layer on top of a structure the templates doc already owns — it does not re-derive sentence-length/punctuation/opener patterns from scratch, because the templates doc's Dial Sheet and Shared Invariants already specify those quantitatively.
+- **Six-dimension format (Fallback Report Format below)** — use for a surface with no structure-templates doc (e.g. LinkedIn posts, if that surface ever needs this treatment and has no template file of its own), or when the archive is unreachable/empty for a templated surface.
 
 **When to run this:**
 - Generating a user's first calibration file during `career-engine-setup` (after cover letters have been approved and stored in `references/delivered-letters/`)
 - Refreshing an existing calibration file after new delivered letters are added to the archive
-- Producing a calibration file for a new output type that needs its own voice anchor (e.g. LinkedIn posts, if that surface ever needs the same treatment cover letters get)
+- Producing a calibration file for a new output type that needs its own voice anchor
 - Any new user or new writing surface that needs this treatment from scratch
 
 **What it produces:** a single markdown file (e.g. `voice-calibration-coverletters.md`) written to `${CAREER_DATA}/references/`. That file becomes the durable, pre-computed calibration anchor the writing agents read directly — no per-run analysis needed.
 
-This methodology is content-agnostic — it works on any corpus of the user's own delivered writing (cover letters today; potentially other surfaces later). Substitute the relevant archive and index file for whatever corpus is being calibrated.
+---
+
+## Templates-aware format (use when a structure-templates doc exists for this surface)
+
+Write three sections. Keep it short — this file is an execution brief, not an analysis. It should assume the reader has already loaded (or will load) the structure-templates doc; it does not repeat that doc's content, it tells the writing agent how to use it.
+
+```markdown
+# Voice Calibration — [surface, e.g. Cover Letters]
+
+## 1. Role & Intent
+[1-2 sentences: who the agent is writing as, and the one thing the voice must never sound like — e.g. "an authentic, high-ownership, active first-person voice, cutting out corporate theater, fluff, or formal transition words."]
+
+## 2. Structural Execution (Strict Blueprint)
+You must execute the layout, formatting, and structural constraints defined in [name and path of the structure-templates doc, e.g. `references/templates/cover_letter_templates.md`].
+- Parse the [JD/brief/context] first.
+- Select [Template A / Template B / etc.] per the template doc's own selection criteria.
+- Adhere strictly to the Dial Sheet metrics (word counts, sentence ranges, numerals, punctuation caps). Missing a dial constraint or a banned punctuation mark is a total execution failure, not an advisory note.
+
+## 3. Syntax & Generation Guardrails
+[2-4 corpus-derived rules that are genuinely distinctive to this user's writing and NOT already covered by the templates doc's own invariants — e.g. a specific register-shift risk ("when the register goes warm, syntax must stay flawless — no dangling modifiers"), a subject-opener variety rule, or any recurring failure mode found while analyzing the corpus. If the templates doc already fully covers mechanics, this section can be short.]
+```
+
+Extraction procedure for this format: read the corpus (Step 1 below) and the structure-templates doc together, identify what the templates doc does NOT already constrain (voice/register/persona framing, and any corpus-specific syntax risk), and write only that — do not duplicate the templates doc's own dials, invariants, or banned-phrase lists into the calibration file.
 
 ---
+
+## Fallback: six-dimension format (use when no structure-templates doc exists for this surface)
 
 ## Procedure
 

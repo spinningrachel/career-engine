@@ -21,7 +21,7 @@ If a requested edit would rename, renumber, reorder, or delete any heading or fi
 - `references/03-framework.md`
 - `references/linkedin-profile.md`
 - `references/pipeline-preferences.json` (also the single source of truth for job-search/sourcing preferences — target titles, title variants, remote preference, exclusion patterns, industry fit, company stage fit, employment type, coaching prioritization, screening answers — retired `job-preferences.md` folded in here)
-- the user's CV `.dotx` template (filename varies per user)
+- `references/templates/` — CV and cover letter `.dotx`/`.dotm` templates (filenames vary per user), plus `cover_letter_templates.md` (optional — corpus-derived template pair and shared invariants, calibration material never overriding the Motivation Bank)
 - `references/delivered-letters/INDEX.md` (+ the `example-letter-NN-*.md` files; cap 6, managed via the letter-writer "Manage Letter Examples" option)
 
 A user's skill may also contain **additional files** added through `update-refs` (split-out framework narratives, a `voice-and-identity/` directory, `linkedin-post-strategy.md`, etc.). Those are equally load-bearing — do not rename or remove them either. Anything listed in `career-data-marker.json` → `expected_files` is required.

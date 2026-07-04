@@ -48,10 +48,12 @@ Then confirm:
 
 The edit pipeline is its own entry (no orchestrator), so resolve config yourself. After the `career-data` discovery, run the **career-data health check** before proceeding:
 1. Count files in `${CAREER_DATA}/references/delivered-letters/` (excluding `INDEX.md`). If count = 0: **stop** — "career-data has no delivered letters — voice calibration will fail. Add at least one sent letter, then re-run."
-2. **Config keys — required hard-stop; everything else optional.** Read `pipeline-preferences.json`. **Required (stop if missing or empty):** `output_folder`, `cv_template`, and — when a database backend is configured (`database_backend`; default `notion`) — `database_id`. Stop with: "career-data config is incomplete — run `/career-engine:setup --phase 5` to fill in: [required keys missing]." **All other keys are optional — never stop on them;** collect any absent (older config) or empty into `CONFIG_HEALTH` and emit the same end-of-run `⚙️ Config health` block the orchestrator defines. **Backward compatibility:** accept legacy `notion_database_id` (→ `database_id`), `notion_needs_editing_view_url` (→ `database_edit_view_url`), `location_compatibility.notion_property` (→ `database_property`); prefer the `database_*` names and flag any legacy name in `CONFIG_HEALTH`.
+2. **Config keys — required hard-stop; everything else optional.** Read `pipeline-preferences.json`. **Required (stop if missing or empty):** `output_folder`, and — when a database backend is configured (`database_backend`; default `notion`) — `database_id`. Stop with: "career-data config is incomplete — run `/career-engine:setup --phase 5` to fill in: [required keys missing]." **All other keys are optional — never stop on them;** collect any absent (older config) or empty into `CONFIG_HEALTH` and emit the same end-of-run `⚙️ Config health` block the orchestrator defines. **Backward compatibility:** accept legacy `notion_database_id` (→ `database_id`), `notion_needs_editing_view_url` (→ `database_edit_view_url`), `location_compatibility.notion_property` (→ `database_property`); prefer the `database_*` names and flag any legacy name in `CONFIG_HEALTH`.
 3. (Code sessions) If `~/.claude/skills/career-data/` is absent or differs from `${CAREER_DATA}`, warn: "career-data may be out of sync with the Desktop app — re-install the .skill file if you recently updated it in Chat. Continuing on the resolved path."
 
-Then read `${CAREER_DATA}/references/pipeline-preferences.json` and set `$NOTION_DATABASE_ID` (← `database_id`, legacy `notion_database_id`), `$NOTION_NEEDS_EDITING_VIEW_URL` (← `database_edit_view_url`, legacy `notion_needs_editing_view_url`), `$NOTION_INTERESTED_VIEW_URL` (← `database_interested_view_url`), `$NOTION_HOLD_VIEW_URL` (← `database_hold_view_url`), `$NOTION_RESEARCHED_VIEW_URL` (← `database_researched_view_url`), `$NOTION_CV_READY_VIEW_URL` (← `database_cv_ready_view_url`), `$OUTPUT_FOLDER`, `$CV_TEMPLATE`, and `$DRAFT_DIR_URL_BASE` (used by the queries and exports below; the `$NOTION_*` var names are the Notion adapter's internal names and are unchanged). Wherever this skill shows `{{NOTION_DATABASE_ID}}` or `{{NOTION_NEEDS_EDITING_VIEW_URL}}`, use the resolved values. Stop if `database_id`, `output_folder`, or `cv_template` is missing: "career-data is missing a required config key — run `/career-engine:setup --phase 5`." Optional: `draft_dir_url_base` absent or `skip` → Draft Directory writeback is skipped (log it in the final delivery as "Draft Directory not written — `draft_dir_url_base` not configured"). The plugin keeps these placeholders literal (single build).
+Then read `${CAREER_DATA}/references/pipeline-preferences.json` and set `$NOTION_DATABASE_ID` (← `database_id`, legacy `notion_database_id`), `$NOTION_NEEDS_EDITING_VIEW_URL` (← `database_edit_view_url`, legacy `notion_needs_editing_view_url`), `$NOTION_INTERESTED_VIEW_URL` (← `database_interested_view_url`), `$NOTION_HOLD_VIEW_URL` (← `database_hold_view_url`), `$NOTION_RESEARCHED_VIEW_URL` (← `database_researched_view_url`), `$NOTION_CV_READY_VIEW_URL` (← `database_cv_ready_view_url`), `$OUTPUT_FOLDER`, and `$DRAFT_DIR_URL_BASE` (used by the queries and exports below; the `$NOTION_*` var names are the Notion adapter's internal names and are unchanged). Wherever this skill shows `{{NOTION_DATABASE_ID}}` or `{{NOTION_NEEDS_EDITING_VIEW_URL}}`, use the resolved values. Stop if `database_id` or `output_folder` is missing: "career-data is missing a required config key — run `/career-engine:setup --phase 5`." Optional: `draft_dir_url_base` absent or `skip` → Draft Directory writeback is skipped (log it in the final delivery as "Draft Directory not written — `draft_dir_url_base` not configured"). The plugin keeps these placeholders literal (single build).
+
+**Template resolution — fixed filenames, no config key (2026-07-04 fix).** `cv_template` and `word_templates_path` are no longer config keys. Set `$CV_TEMPLATE` = `${CAREER_DATA}/references/templates/cv.dotx`, `$CL_TEMPLATE` = `${CAREER_DATA}/references/templates/cover-letter-template.dotx`, `$CV_TEMPLATE_HE` = `${CAREER_DATA}/references/templates/cvHe.dotm`, `$CL_TEMPLATE_HE` = `${CAREER_DATA}/references/templates/he-letter.dotx` — always these fixed relative paths, never an external OS path, never a config lookup. `$CV_TEMPLATE`/`$CL_TEMPLATE` are required for any export used by this pipeline — if either file doesn't exist, stop with: "career-data is missing `references/templates/<filename>` — run `/career-engine:setup --phase 5` to restore the default templates." `$CV_TEMPLATE_HE`/`$CL_TEMPLATE_HE` are optional — if either is missing, Hebrew export for that document type is unavailable (collect into `CONFIG_HEALTH`).
 
 ## Step E0 — Fetch roles for editing
 
@@ -379,7 +381,7 @@ cat > /tmp/he-<cl_filename>.md << 'MARKDOWN_EOF'
 <Hebrew cover letter markdown from agent>
 MARKDOWN_EOF
 
-HE_TEMPLATES="{{WORD_TEMPLATES_PATH}}"
+# $CV_TEMPLATE_HE and $CL_TEMPLATE_HE already resolved above (fixed career-data paths, no config key)
 
 # Hebrew CV — concatenate with Hebrew footer, then convert
 cat /tmp/he-<cv_filename>.md \
@@ -387,7 +389,7 @@ cat /tmp/he-<cv_filename>.md \
     > /tmp/he-<cv_filename>-with-footer.md
 
 pandoc /tmp/he-<cv_filename>-with-footer.md \
-  --reference-doc="${HE_TEMPLATES}/cvHe.dotx" \
+  --reference-doc="${CV_TEMPLATE_HE}" \
   -o "<output_dir>/<company_dir>/he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 
 python3 "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/update-subtitle.py" \
@@ -396,7 +398,7 @@ python3 "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/update-subtit
 
 # Hebrew cover letter
 pandoc /tmp/he-<cl_filename>.md \
-  --reference-doc="${HE_TEMPLATES}/he-letter.dotx" \
+  --reference-doc="${CL_TEMPLATE_HE}" \
   -o "<output_dir>/<company_dir>/he-coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 
 ls -lh "<output_dir>/<company_dir>/he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
