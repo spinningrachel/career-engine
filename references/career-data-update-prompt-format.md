@@ -13,20 +13,38 @@ career-data update prompt — [TITLE]
 Generated: [DATE] | Apply in: Chat AND Code (if using both)
 
 Context (fixed — do not change this block)
+Load the skill-creator skill now, before doing anything else. You will use its own
+packaging script at the end of this task — not a manual zip — see step 2 below.
+
 You are updating a skill called career-data. This is a packaged `.skill` file installed
 via Customize → Skills in the Claude Desktop app. It contains personal career data —
-writing rules, professional background, and framework files. To find career-data:
+writing rules, professional background, and framework files.
 
+**If you are Claude in Chat or Cowork:** the career-data skill is already loaded and
+available to you directly — skip straight to the edit below, no path-hunting needed.
+
+**If you are Claude Code:** locate career-data on disk first:
 * Look for a directory containing `career-data-marker.json`
 * It will be under your skills path (check `~/.claude/skills/career-data/` or the
   Desktop app's local session skills path)
 * Confirm the marker file exists before editing
 
 After making the edit below:
-1. Verify the change is correct
-2. Repackage the directory as a `.skill` file (zip the contents, rename to `.skill`)
-3. Upload via Customize → Skills → replace the existing career-data skill
-4. If you use both Chat/Cowork AND Claude Code, you must apply this update in both environments
+1. Verify the change is correct.
+2. Package the result using skill-creator's own packaging script (its packaging
+   entry point — e.g. `package_skill`) — never a manual zip/rename of the directory.
+   A manual zip has previously produced a confusing raw file-system path instead of
+   a proper downloadable skill file for the user.
+3. **Self-check before presenting anything:** if your final message is about to show
+   a raw file-system path (anything starting with `/mnt/`, `/tmp/`, or similar)
+   instead of a downloadable skill attachment, stop — that means step 2 wasn't done
+   with skill-creator's script. Redo it before continuing.
+4. Tell the user in one plain sentence that the updated skill is ready to download
+   and upload via Customize → Skills. Do not describe file paths, packaging
+   mechanics, or any other technical detail in that sentence — the user may not be
+   able to act on a raw path or diagnose a packaging problem themselves.
+5. Upload via Customize → Skills → replace the existing career-data skill.
+6. If you use both Chat/Cowork AND Claude Code, you must apply this update in both environments.
 
 ⚠️ Do NOT paraphrase the new text. Copy it exactly as written below.
 
@@ -58,6 +76,8 @@ After applying, confirm:
 
 **Context block:** copy verbatim every time. Do not shorten or rephrase — it provides the location discovery steps Chat needs and the repackaging instructions. The only part that varies is the filename in "The fix".
 
+**Why the packaging steps are this explicit.** A real run showed that a one-line "make sure you've loaded skill-creator" reminder wasn't enough on its own — Chat still zipped the directory manually on the first attempt and surfaced a raw `/mnt/user-data/outputs/...` path, which is meaningless and confusing to a user who doesn't know what to do with a bare file path. It only produced a proper downloadable skill file after the user manually corrected it mid-conversation to use skill-creator's own packaging script. Most users won't know how to give that correction. The template now states the mechanism (skill-creator's packaging script, never a manual zip), gives Chat a concrete self-check to catch the wrong path before it ever reaches the user, and requires the final confirmation to stay in plain language — closing the loop without relying on the user to notice and fix it themselves.
+
 **Current contents:** always instruct Chat to read the file first, or paste the current state if you have it. This prevents accidental overwrites of content the agent did not intend to change.
 
 **Replace with:** the complete new file contents, untruncated. Never use ellipsis or "rest stays the same" — Chat will fill in the gaps incorrectly. When the content is the user's own words (especially a Motivation Bank promotion from `Why I Want This Role`), it is quoted **verbatim** — see the raw-verbatim rule in the Rules section.
@@ -75,3 +95,4 @@ After applying, confirm:
 - **Raw-verbatim rule (the user's own words).** When an update prompt carries the user's own words — especially **Motivation Bank promotions** sourced from the `Why I Want This Role` field — the agent quotes them **exactly as written, scrappy/imperfect English included.** Never correct grammar, polish, paraphrase, summarize, or synthesize a cleaner version; never "improve" the phrasing. The exact wording is the asset. The user may fix their own wording inside the prompt before sending — the agent never does it for them. This preserves the Motivation Bank verbatim rule end-to-end, from the prompt through to the installed skill.
 - Personal data (real values, paths, IDs) must never appear in the plugin repo. Update prompts with real values are generated at runtime and saved outside the repo (gitignored).
 - If the prompt is too long to fit in one chat message, split at a natural boundary and note "Part 1 of 2 — continue with next message before repackaging."
+- **Packaging rule.** Never let the final repackaging step be a manual zip, and never let the final delivered message reference a raw file-system path. Both are confirmed failure modes (see Section guidance above) — the context block's steps 2–4 exist specifically to prevent them.

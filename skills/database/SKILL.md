@@ -69,9 +69,11 @@ Each property in the job applications database has a single designated owner. Ag
 `Priority`, `Priority Reason`, `JD Body`, `JD Fetch Status`, `Role Type`, `Relationship type`, and the location compatibility property (name from `pipeline-preferences.json` → `location_compatibility.database_property`; written only if configured).
 
 *Written for full-research roles only (Priority 1–4, pre-scored, or `--full-research`):*
-`Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Gap handling`, `Role summary`, `Company Stage`, `Culture`, `Landscape`, `Person who Advertised Role (if not Hiring Manager)`, `Hiring Manager's Name`, `Hiring manager's role`, `Manager role confirmed`, `No incumbents in this function`, `First Advertised`, `Recent news`, `Funding context`.
+`Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Gap handling`, `Role summary`, `Company Stage`, `Culture`, `Landscape`, `Person who Advertised Role (if not Hiring Manager)`, `Hiring Manager's Name`, `Hiring manager's role`, `Manager role confirmed`, `No incumbents in this function`, `First Advertised`, `Recent news`, `Funding context`, and conditionally `Job URL`.
 
 No other agent rewrites or second-guesses any of these. **`Gap handling` is the exception to the carry-forward rule — if the user has edited it in the tracker, the pipeline reads her version as authoritative. The write-only-to-empty rule enforces this: if the field is non-empty, the coach skips writing. This exception only applies when `gap_handling_mode` is not `disabled` — see config.**
+
+**`Job URL` is written only when a correction exists, never as a routine write.** The coach never writes Notion directly (same as every other property here) — it returns `Corrected Job URL` only when its own backstop verification (`coach-research.md` → Job URL verification) confirms the original URL is broken and finds a matching working alternate; intake (Step 0.9a) is still the sole writer, and only intake decides whether to apply the correction (preferring the coach's value over Step 0.5's `Working URL` capture when both exist for the same role). A role whose original URL still works never touches this property.
 
 **Mandatory value rule:** Every coach-owned property the coach returns (and intake writes) must receive an explicit value — `N/A` when genuinely inapplicable. A blank field signals agent failure, not inapplicability. This applies to `Company Stage` and `Role Type` in particular. **Prerequisite:** `N/A` must be present as a valid option in the tracker's select fields for `Company Stage` and `Role Type`.
 

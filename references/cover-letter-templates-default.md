@@ -12,7 +12,7 @@ Layer 1 (universal mechanics) and Layer 2 (per-user parameters) embedded. Layer 
 |---|---|
 | Greeting | `Hi to the {COMPANY} team!` Add `and to {REFERRER_NAME}` only for a real referrer. Never "the {NAME}". |
 | Sign-off | `Looking forward to next steps,` or `Excited for what's ahead!` then {YOUR_NAME}. |
-| Length | Max {MAX_WORDS} words (default 320). Aim for {MIN_WORDS}–{MAX_WORDS} (default 270–320). {SENTENCE_COUNT_MIN}–{SENTENCE_COUNT_MAX} sentences (default 12–22). |
+| Length | Max {MAX_WORDS} words (default 320), no minimum. Up to {SENTENCE_COUNT_MAX} sentences (default ≤22), no minimum — a short letter with no padding is not a violation. |
 | Sentence rhythm | Mean {MEAN_SENTENCE_LENGTH} words (default 14–23) with deliberate spread. Every letter carries one 2–5 word sentence and one {LONG_SENTENCE_LENGTH}+ word sentence (default 35–50). |
 | Sentence engine | Subject-first active declarative. No questions unless deliberate (0–5 flex). No expletive openers ("There is/are"). No abstract label noun-phrase subjects. |
 | Punctuation | Zero em dashes. Zero colons in body copy. Zero semicolons. Commas chain clauses and lists. Exclamations {EXCLAMATION_COUNT} per letter (default 1–2). Parenthetical asides for warmth, never hedging. |
@@ -70,7 +70,7 @@ Layer 1 (universal mechanics) and Layer 2 (per-user parameters) embedded. Layer 
 
 **Use when:** No referral, no personal tie, US/neutral-distance company, metrics-driven or developer reader.
 
-**Dials:** {MAX_WORDS} words (default ≤320), {SENTENCE_COUNT_MIN}–{SENTENCE_COUNT_MAX} sentences (default 12–18), contractions light (default 0–1 per 100w), exclamations 0–1 beyond greeting, numerals {NUMERAL_COUNT_MIN}–{NUMERAL_COUNT_MAX} (default 2–8, for metrics readers).
+**Dials (maximums — no minimums; a shorter letter is never a violation):** {MAX_WORDS} words (default ≤320), up to {SENTENCE_COUNT_MAX} sentences (default ≤18), contractions light (default ≤1 per 100w), exclamations 0–1 beyond greeting, numerals up to {NUMERAL_COUNT_MAX} (default ≤8, for metrics readers).
 
 ## Block 1 — Opening (2–3 sentences)
 Within the first two sentences the reader knows why this person, this company, right now. The context must be non-transferable.
@@ -131,7 +131,7 @@ Vision teaser or diligence proof. No commitment vows in cold letters.
 
 **Use when:** Referral, named individual, local market, personal product connection, trust-driven buyer, founding role, or strong culture fit.
 
-**Dials:** {MAX_WORDS} words (default ≤320), {SENTENCE_COUNT_MIN}–{SENTENCE_COUNT_MAX} sentences (default 12–20), contractions on, exclamations 1–2 beyond greeting (never doubled), numerals {NUMERAL_COUNT_MIN}–{NUMERAL_COUNT_MAX} (default 0–2), second person {SECOND_PERSON_COUNT} (default 0–2), one parenthetical aside allowed.
+**Dials (maximums — no minimums; a shorter letter is never a violation):** {MAX_WORDS} words (default ≤320), up to {SENTENCE_COUNT_MAX} sentences (default ≤20), contractions on, exclamations up to 2 beyond greeting (never doubled), numerals up to {NUMERAL_COUNT_MAX} (default ≤2), second person up to {SECOND_PERSON_COUNT} (default ≤2), one parenthetical aside allowed.
 
 **Required phrasing (founding/build-from-scratch roles only):** `{STRATEGIC_LABEL}` (default "strategic builder") appears exactly once in the letter. Once, not twice.
 
@@ -207,21 +207,22 @@ Commitment or desire statement. One exclamation maximum.
 
 ## Dial Sheet (Parameterize Per User)
 
+**All numeric dials below are ceilings only — there is no floor on any of them. A short letter with no padding is not a violation of anything in this table.**
+
 | Dial | Template A (Cold) | Template B (Warm) |
 |---|---|---|
-| Max word count | {MAX_WORDS, default 320} | {MAX_WORDS, default 320} |
-| Target range | {MIN_WORDS}–{MAX_WORDS}, default 270–320 | {MIN_WORDS}–{MAX_WORDS}, default 270–320 |
-| Sentence count | {SENTENCE_COUNT_MIN}–{SENTENCE_COUNT_MAX}, default 12–18 | {SENTENCE_COUNT_MIN}–{SENTENCE_COUNT_MAX}, default 12–20 |
-| Contractions per 100w | {CONTRACTION_RATE, default 0–1} | {CONTRACTION_RATE, default 2–4} |
-| Mean sentence length | {MEAN_LENGTH, default 14–23} words | {MEAN_LENGTH, default 14–23} words |
-| Numerals (metrics tokens) | {NUMERAL_COUNT_MIN}–{NUMERAL_COUNT_MAX}, default 2–8 | {NUMERAL_COUNT_MIN}–{NUMERAL_COUNT_MAX}, default 0–2 |
-| Exclamations beyond greeting | {EXCLAMATION_COUNT, default 0–1} | {EXCLAMATION_COUNT, default 1–2}, never doubled |
-| Second-person usage | {SECOND_PERSON_COUNT, default 0} | {SECOND_PERSON_COUNT, default 0–2} |
+| Max word count | ≤{MAX_WORDS, default 320} | ≤{MAX_WORDS, default 320} |
+| Sentence count | ≤{SENTENCE_COUNT_MAX, default 18} | ≤{SENTENCE_COUNT_MAX, default 20} |
+| Contractions per 100w | ≤{CONTRACTION_RATE, default 1} | ≤{CONTRACTION_RATE, default 4} |
+| Mean sentence length | up to {MEAN_LENGTH, default 23} words | up to {MEAN_LENGTH, default 23} words |
+| Numerals (metrics tokens) | ≤{NUMERAL_COUNT_MAX, default 8} | ≤{NUMERAL_COUNT_MAX, default 2} |
+| Exclamations beyond greeting | ≤{EXCLAMATION_COUNT, default 1} | ≤{EXCLAMATION_COUNT, default 2}, never doubled |
+| Second-person usage | ≤{SECOND_PERSON_COUNT, default 0} | ≤{SECOND_PERSON_COUNT, default 2} |
 | Proof architecture | Scaffold line + 3 bold bullets | Woven chronology, 3–4 locative anchors |
 | Proof currency | Metrics, named artifacts, scale | Credentials, dates, anecdotes, frugality |
 | Objection placement | Mid-letter or P.S. | Last third |
 | Closing move | Vision teaser / diligence proof | Commitment or desire |
-| Parentheticals | {PARENTHETICAL_COUNT, default 0–1} | {PARENTHETICAL_COUNT, default 1–2} |
+| Parentheticals | ≤{PARENTHETICAL_COUNT, default 1} | ≤{PARENTHETICAL_COUNT, default 2} |
 
 ---
 
@@ -236,8 +237,7 @@ Commitment or desire statement. One exclamation maximum.
 - [ ] Philosophy precedes proof; max one triad; one identity idiom
 - [ ] For founding/build-from-scratch: {STRATEGIC_LABEL} appears exactly once
 - [ ] JD culture/About text answered; bonus lines answered where honest; operational bullets skipped
-- [ ] No sentence shares 10+ consecutive words with the JD or any prior letter in the same market
-- [ ] No block above {SIMILARITY_CEILING, default 0.75} BERT similarity with a same-market letter within {TIME_WINDOW, default 90 days}
+- [ ] No sentence shares 10+ consecutive words with the JD itself (reuse from your own prior letters is fine — even encouraged; only echoing the JD's own wording is the violation)
 
 ---
 

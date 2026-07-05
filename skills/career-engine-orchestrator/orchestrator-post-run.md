@@ -1,6 +1,6 @@
 # Orchestrator — Post-Run (Steps 8–9, Final Delivery)
 
-Load this file after all per-role pipeline steps complete. It covers post-run validation, the LinkedIn updates file, revision log, bullet approval, run metrics, and final chat delivery.
+**Load this file after all per-role pipeline steps complete, OR when the per-role loop stops early due to a hard external blocker** (rate/spend limit, connection loss, or any non-retryable error unrelated to letter/CV quality) **— run every step below scoped to whatever roles actually completed, never skip this sequence because the run didn't reach the full queue.** It covers post-run validation, the LinkedIn updates file, revision log, bullet approval, run metrics, and final chat delivery. Every "all roles" reference below means "all roles that completed this run," not the original queue size, whenever the run was interrupted.
 
 ---
 
@@ -183,12 +183,15 @@ cat > "<output_dir>/run-metrics-$(date +%Y-%m-%d).json" << 'JSON_EOF'
     "gatekeeper_cl": <N>,
     "localization": <N>
   },
+  "interrupted": <true|false, present only when the run stopped early — omit this key entirely on a clean run>,
+  "interruption_reason": "<one-line cause, e.g. 'monthly spend limit reached' — omit when interrupted is false or absent>",
+  "roles_not_started": ["<company>", "..."],
   "token_counts": "pending — written by Stop hook at session end"
 }
 JSON_EOF
 ```
 
-Fill all values from the run state. Set each agent count from the actual invocations this run. Leave `token_counts` as the literal string `"pending — written by Stop hook at session end"` — the hook replaces this value when the session closes.
+Fill all values from the run state. Set each agent count from the actual invocations this run. Leave `token_counts` as the literal string `"pending — written by Stop hook at session end"` — the hook replaces this value when the session closes. **`roles_processed` always means roles actually completed this run — never the original queue size on an interrupted run.** Omit `interrupted`, `interruption_reason`, and `roles_not_started` entirely on a clean run rather than writing `false`/empty values — their presence is itself the signal that this run didn't reach the full queue.
 
 ---
 
@@ -202,9 +205,12 @@ Fill all values from the run state. Set each agent count from the actual invocat
 
 After Step 9c completes and Step 8 is confirmed, deliver a single confirmation line in chat:
 
+**Clean run (all queued roles completed):**
 `All N roles completed. Files are in your output folder and Notion rows are updated. LinkedIn updates file: linkedin-updates-<YYYY-MM-DD>.md`
 
-Nothing else. All feedback, validation results, and decisions are in the revision log files in the output folder.
+**Interrupted run (a hard external blocker stopped the loop early):** the confirmation may expand to name what completed, what didn't, and why — but only *after* Steps 8-9c have already run for the completed roles, never as a substitute for them. State plainly: which roles are fully done (files written, Notion updated), which role was mid-chain when the blocker hit (Notion left untouched, nothing half-written), which roles never started, and the concrete unblock step (e.g. "raise or reset the limit at claude.ai/settings/usage, then say 'continue the remaining roles'"). The run-metrics, revision-log, and linkedin-updates files for the completed roles must already exist in the output folder before this message is sent — confirm they do, the same way Step 8's hard gate above already requires.
+
+Nothing else beyond one of these two forms. All feedback, validation results, and decisions are in the revision log files in the output folder.
 
 ---
 

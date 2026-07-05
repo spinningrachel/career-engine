@@ -10,11 +10,11 @@ for agent in gatekeeper cv-writer letter-writer recruiter-reviewer humanizer; do
     || fail "R-41 marker missing from agents/$agent.md"
 done
 
-# Contract: grade table rows exist in gatekeeper-checks skill (source of truth)
-grep -q '\*\*A\*\*' "$REPO/skills/gatekeeper-checks/SKILL.md" \
-  || fail "Grade table row A missing from skills/gatekeeper-checks/SKILL.md"
-grep -q '\*\*B\*\*' "$REPO/skills/gatekeeper-checks/SKILL.md" \
-  || fail "Grade table row B missing from skills/gatekeeper-checks/SKILL.md"
+# Contract: Tier 1 / Tier 2 grading model exists in gatekeeper-checks skill (source of truth; replaced the retired Grade A-D table)
+grep -q 'Tier 1' "$REPO/skills/gatekeeper-checks/SKILL.md" \
+  || fail "Tier 1 grading section missing from skills/gatekeeper-checks/SKILL.md"
+grep -q 'Tier 2' "$REPO/skills/gatekeeper-checks/SKILL.md" \
+  || fail "Tier 2 grading section missing from skills/gatekeeper-checks/SKILL.md"
 
 # Contract: gatekeeper agent has both PASS and FAIL cover letter output templates
 grep -q 'PASS — cover letter' "$REPO/agents/gatekeeper.md" \

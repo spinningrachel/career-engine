@@ -83,6 +83,38 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-05 — Cover-letter Tier 1/Tier 2 grading overhaul, intake page-body purity, and a real-run QA pass
+
+Triggered by an independent review of a real delivered letter (Nova) that passed the gatekeeper despite severe problems — no philosophy-before-proof paragraph, zero identity-idiom instances, zero short sentences, a transferable opener, and several banned-pattern variants a literal-string search couldn't match. Two Explore-agent audits traced every gap to a precise root cause before any fix was designed. A full QA sweep (mechanical checks, Phase 0 cross-reference sweep, pipeline logic review, trace simulation) closed the session, catching a live packaging bug and a dispatch-key mismatch before they shipped.
+
+**New features**
+- **Tier 1 / Tier 2 cover-letter grading** replaces the retired Grade A-D model. Tier 1 (Gates 1-5, Gate 6's curated banned-vocabulary/fit-declaration lists, Gate 9's structural-completeness checks) is 100% required, no exceptions, blocks every round. Tier 2 is a 32-item checklist of named, binary check types requiring an aggregate ≥70%, round-aware (a Tier-1-clean letter with low Tier 2 fails round 1 but defers to the humanizer on round 2+).
+- **Gate 9 — Structural Completeness**: checks all five letter blocks (Opening, Philosophy, Proof, Objection-Preemption, Close) independently, plus an identity-idiom forcing function requiring proof adjacent to any self-descriptive label.
+- **Coach pre-draft outline** (Option 4a): the coach now selects the cover-letter template and writes a bare paragraph-subject outline *before* the letter-writer's first draft, using only generic local/regional criteria — this also removed a hardcoded "Israeli vs. American" classification that had no business being in the shared plugin.
+- **Generic corpus-statistics script** (`skills/humanizer/scripts/corpus-stats.py`, stdlib-only): computes sentence-length distribution, subject-first-opener %, contraction rate, FK grade, and type-token ratio from any delivered-letters archive — an optional real-data source for the humanizer's Final Gate, Gate 9's dial checks, and the letter-writer's self-check.
+- **Job URL auto-correction**: when the original Job URL is inaccessible and a working alternate is found (by the fetch ladder or the coach's own backstop verification), intake now corrects the tracked property — previously the alternate was only ever noted in a log, never written back.
+- **Orchestrator-side Bash mechanical backstop**: a guaranteed word-count and banned-vocabulary check runs directly in the orchestrator's own context at final export, independent of whatever tool access a gatekeeper/humanizer subagent happens to get — closes a real gap where Bash was unavailable to every such subagent in one production environment, and every word count was a wrong hand-estimate as a result.
+
+**Improvements**
+- Gate 7's false-range and approach-announcement bans broadened from literal phrases to fragment families; added a sentence-rhythm floor and a syntax-correctness check type.
+- Gate 8's vague-object rule is now a forcing function: name the object, then confirm it resolves to something concrete or fail.
+- Gate 5 requires naming the single most non-transferable anchor in the opener, or failing outright.
+- A verbatim-preservation principle: reusing the user's own proven words (career-data, WIWTR, prior delivered letters) is explicitly good, not a violation — distinct from a new, narrower check that catches near-verbatim reuse of the *generic default* template's synthetic scaffolding (never a user's own personalized template, whose variants are typically her own real prior sentences).
+- Intake page-body purity: the outreach map is now the only sanctioned page-body content, enforced at three points (the coach's own instructions, a new gatekeeper structural-purity check, and a bounded extraction rule at the write step) after real Notion pages were found carrying leaked WIWTR-style questions and free-text commentary alongside the map.
+- Mandatory coach-field parity restored across all three tracking lists (`Manager role confirmed`, `Hiring manager's role`, `Company Stage`, `JD proof`, `JD Body`).
+- The orchestrator's post-run wrap-up (LinkedIn updates, revision log, bullet approval, run-metrics) now runs even when a run is interrupted early (rate limit, spend limit, etc.), scoped to whichever roles completed — previously its only trigger was "all roles complete," so an interrupted run skipped this entirely, even for roles that had already finished.
+- The humanizer agent's frontmatter now grants it Bash (it never had it, despite its own Final Gate requiring countable checks); both it and the gatekeeper must now explicitly say when Bash is unavailable rather than silently substituting a hand estimate.
+
+**Bug fixes**
+- Packaging script excluded the wrong file set: gitignored personal `update-prompt-*.md` files at repo root were being zipped into the shipped `.plugin` artifact despite never being committed. Fixed in both the canonical build command (this file) and confirmed via a full artifact re-extraction.
+- The coach's new pre-draft-outline step was being spawned with a slug-style `option=pre-draft-outline` value, but `career-coach.md` dispatches by literal heading text — fixed to `Option 4a — Pre-Draft Outline`, matching how every other coach option is already invoked. Same fix applied to a pre-existing `option=letter-review` reference.
+- The coach's outline step wrote its two output files to environment-specific scratch paths instead of the literal `$PIPE/` names the doctrine specifies — tightened with an explicit anti-pattern warning.
+- Gate 6's curated banned-vocabulary lists (previously Tier 2) let a single confirmed banned-word hit ("passionate") slip through on a real letter because Tier 2's percentage-based grading diluted it below the fail threshold — promoted to Tier 1, where a fixed-list match now blocks regardless of aggregate score.
+
+### 2026-07-04 — Retire cv_template/word_templates_path config keys end-to-end
+
+`career-data` restructured its templates around a new `references/templates/` directory (CV/cover-letter/Hebrew `.dotx`/`.dotm` files plus a `cover_letter_templates.md` structure doc) and a fresh voice-calibration format built around it. `career-engine-setup/SKILL.md` was the one remaining file still writing `cv_template`/`word_templates_path` as config keys after the rest of the pipeline (orchestrator, edit, export, convert-cv.sh) had already moved to fixed-filename resolution — rewrote its document-templates flow to fixed filenames only. Also fixed two stragglers still referencing the retired keys: `orchestrator-queue.md`'s required-config-keys list and `update-refs.md`'s Reference Map.
+
 ### 2026-07-02 — Letter pipeline: resume-not-respawn, skill preload, gatekeeper memory
 
 Follow-on to the six bug fixes below, using Claude Code capabilities (subagent resume, `skills:` preload, `memory:`) that weren't in play when this pipeline was first built. No new agents — this is entirely a change to how the existing letter-writer/gatekeeper/humanizer already work together.
