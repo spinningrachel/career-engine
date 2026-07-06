@@ -162,9 +162,9 @@ Based on their answers:
    > ⚠️ **RTL template required.** RTL text in a left-to-right Word template will render incorrectly — characters appear in the wrong order and alignment breaks. You will need a separate `.dotx` template configured for right-to-left layout before running the pipeline for RTL-language roles. See `skills/career-engine-export/SKILL.md` for template setup instructions.
 
    Then ask:
-   > "What is the absolute path to the directory holding your RTL `.dotx` template(s)? (Leave blank if you don't have it ready yet — RTL export will be skipped until you add it via 'update my references'.)"
+   > "Do you have RTL `.dotx`/`.dotm` CV and cover letter templates ready? If so, share them now and I'll install them. If not, that's fine — RTL export will be skipped until you add them later via 'update my references'."
 
-   Write the answer (or empty string if skipped) into `word_templates_path` in the career-data config (Phase 5). Without it, `career-engine-export` silently skips RTL export, so collecting it here is what makes RTL roles produce output.
+   **No config key** (R-38, 2026-07-04 fix — `word_templates_path` is retired). Copy whatever the user provides into `career-data/references/templates/`, renamed to the fixed filenames the pipeline looks for: `cvHe.dotm` (Hebrew CV — note the `.dotm` extension, not `.dotx`) and `he-letter.dotx` (Hebrew cover letter). If skipped, do not create either file — `career-engine-export` treats their absence as "Hebrew export unavailable for now" and skips it, exactly as before. The plugin ships no generic default for either (RTL templates are not meaningfully genericizable the way the CV/cover-letter defaults are), so there is no "use the included template" option here — only bring-your-own or skip.
 
 4. **Database reminder:** Tell the user:
    > "Add all languages you configured to the **Languages** column in your Notion (or tracking) database for each role. The pipeline reads this column to decide whether to run localization. Use the exact values you configured: `{{USER_DEFAULT_LANGUAGE}}`, `{{USER_SECOND_LANGUAGE}}` (or both). A role with Languages = `{{USER_DEFAULT_LANGUAGE}}` only gets one set of outputs. A role with Languages = `{{USER_DEFAULT_LANGUAGE}}, {{USER_SECOND_LANGUAGE}}` gets both."
@@ -212,6 +212,12 @@ Before reading anything, ask:
 
 - If yes: store each approved letter in `references/delivered-letters/` using the letter-writer Option 3 entry format (one file per letter, full text exactly as sent, metadata header) and update `INDEX.md`. Respect the cap of 6.
 - If no: read them for context only, do not store
+
+**If at least 3 letters were stored,** ask the user directly — wait for their reply before proceeding:
+
+> "Want me to generate your voice calibration file now? It's a one-time analysis of your delivered letters that the letter-writer and humanizer read at pipeline run time instead of re-reading the archive from scratch each run — saves every future run that step. Optional: the pipeline works fine without it (both agents fall back to reading the archive directly). Say yes and I'll run the methodology in `references/voice-calibration-method.md` and write the result to `references/voice-calibration-coverletters.md`."
+
+If yes: run the methodology now and write the file. If no, or fewer than 3 letters were stored: skip this — the user (or a future session) can generate it later using the same methodology reference.
 
 ### Read all submitted content carefully
 
@@ -298,7 +304,7 @@ Capture actual words and phrases verbatim. Voice samples should be quoted langua
 
 Write the answers into `03-framework.md` §Voice and tone and §Voice samples.
 
-**Voice preferences never silently modify documented rules.** These answers refine register, vocabulary, and style — they do not weaken or create exceptions to any documented writing rule or prohibition (in `01-writing-rules.md`, the cover-letter skill, the humanizer, or cv-writing). If an answer conflicts with a documented behavior (e.g., the user says they love em dashes, or wants tricolons everywhere), surface the conflict and ask whether they **explicitly reject that specific documented behavior**. Only an explicit rejection changes a rule — write the change into the rule's home file and note it; never infer a rule change from a preference.
+**Voice preferences never silently modify documented rules.** These answers refine register, vocabulary, and style — they do not weaken or create exceptions to any documented writing rule or prohibition (in `01-writing-rules.md` or `skills/writer-craft/SKILL.md`). If an answer conflicts with a documented behavior (e.g., the user says they love em dashes, or wants tricolons everywhere), surface the conflict and ask whether they **explicitly reject that specific documented behavior**. Only an explicit rejection changes a rule — write the change into the rule's home file and note it; never infer a rule change from a preference.
 
 **Positioning and professional belief system**
 
@@ -476,8 +482,9 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 2. Once they confirm it's set up, ask:
    - "Paste your database ID." (the 32-character string from the Notion URL — `notion.so/[workspace]/DATABASE_ID?v=...`)
    - Then say: "Now paste the URL for each of these views — open each one in your browser and copy the full URL from the address bar. You can skip any you haven't set up yet (the pipeline will find them automatically, but pasting them now eliminates a large background fetch every run that can cause early context compaction)."
+     - **New** view URL (newly-added roles, before Prioritization has touched them)
      - **Interested** view URL (the pipeline's main queue — roles you've decided to apply for)
-     - **Hold** view URL (roles under research before deciding)
+     - **Needs Research** view URL (roles under research before deciding)
      - **Researched** view URL (roles the coach has analysed; ready for your decision)
      - **CV Ready for Review** view URL (roles with completed pipeline output awaiting your review)
      - **Needs Editing** view URL (roles queued for the edit pipeline)
@@ -511,8 +518,9 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 4. Write to the career-data config (`${CAREER_DATA}/references/pipeline-preferences.json`):
    - `database_backend` = `notion`
    - `database_id` = the database ID the user provided
+   - `database_new_view_url` = the New view URL (or empty string if not provided) — fast-path for the Prioritization pipeline's `New`-status queue
    - `database_interested_view_url` = the Interested view URL (or empty string if not provided)
-   - `database_hold_view_url` = the Hold view URL (or empty string)
+   - `database_hold_view_url` = the Needs Research view URL (or empty string) — key name unchanged for backward compatibility; holds the `Needs Research` view (renamed from `Hold`)
    - `database_researched_view_url` = the Researched view URL (or empty string)
    - `database_cv_ready_view_url` = the CV Ready for Review view URL (or empty string)
    - `database_edit_view_url` = the Needs Editing view URL (or empty string)
@@ -544,7 +552,7 @@ Before giving this prompt to the user, substitute `{{USER_DEFAULT_LANGUAGE}}` an
 ```
 Set up data validation (dropdown lists) on the following columns in my Google Sheet named "career-engine-tracker":
 
-- Column "Status": allow only these exact values: Hold, Interested, CV Ready for Review, Applied, Researched, Needs editing
+- Column "Status": allow only these exact values: New, Needs Research, Interested, CV Ready for Review, Applied, Researched, Needs editing
 - Column "Priority": allow only these exact values: Highest, First, Second, Third, Fourth, Fifth
 - Column "Role Type": allow multiple selections from: Builder, Scaler, Specialist, Leader
 - Column "Relationship type": allow only these exact values: Full time, Part time, Temporary, Fractional/Consulting/Freelance
@@ -576,7 +584,7 @@ Create a database/table with the following columns. Do not rename them — they 
 Columns: Company, Position, Job URL, Status, Priority, JD Body, Why I Want This Role, Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, Gap handling, Role summary, Hiring Manager's Name, Hiring manager's role, Manager role confirmed, Person who Advertised Role (if not Hiring Manager), No incumbents in this function, Landscape, First Advertised, Last Pipeline Run, Link to CV, Draft Directory, CV File Name, Letter File Name, Languages, Edit type, Note
 
 Select column values (must match exactly):
-- Status: Hold | Interested | CV Ready for Review | Applied | Researched | Needs editing
+- Status: New | Needs Research | Interested | CV Ready for Review | Applied | Researched | Needs editing
 - Priority: Highest | First | Second | Third | Fourth | Fifth
 - Role Type (multi-select): Builder | Scaler | Specialist | Leader
 - Relationship type: Full time | Part time | Temporary | Fractional/Consulting/Freelance
@@ -593,10 +601,17 @@ Ask the user for their output folder path. This is where all pipeline output (CV
 
 Write the path as `output_folder` in `${CAREER_DATA}/references/pipeline-preferences.json` (the career-data config). Do NOT substitute `{{OUTPUT_FOLDER}}` into plugin files — the orchestrator resolves it from the config at runtime (R-38).
 
-**CV template**
-Ask: "Do you want to use the included CV template (`cv-template-default.dotx`) or provide your own `.dotx` file?"
-- If own file: copy it into `career-data/references/` and record it as `cv_template` (a path relative to `career-data`, e.g. `references/<their-dotx>`) in the career-data config (`pipeline-preferences.json`). The orchestrator resolves `{{CV_TEMPLATE_FILE}}` from there at runtime (R-38).
-- If default: record `cv_template` as `references/cv-template-default.dotx` in the career-data config (ship the default template into `career-data/references/` too, or the orchestrator falls back to the plugin's `${CLAUDE_PLUGIN_ROOT}/references/cv-template-default.dotx`). No plugin-file substitution.
+**Document templates**
+Every export reads four possible files from `career-data/references/templates/` by **fixed filename — there is no config key for any of them** (R-38, 2026-07-04 fix): `cv.dotx`, `cover-letter-template.dotx`, and the optional Hebrew pair `cvHe.dotm`/`he-letter.dotx` (collected separately below, only if the user configured a second language). The pipeline looks for these exact names and nothing else — it never reads a config key or an external OS path for any of them.
+
+Ask: "Do you want to use the included CV and cover letter templates, or provide your own `.dotx` files?"
+- If own files: copy each into `career-data/references/templates/`, **renaming to the fixed filename regardless of the file's original name** — the user's file becomes `cv.dotx` / `cover-letter-template.dotx`. The pipeline cannot find a template under any other filename.
+- If default: copy the plugin's own `${CLAUDE_PLUGIN_ROOT}/references/cv-template-default.dotx` and `${CLAUDE_PLUGIN_ROOT}/references/cover-letter-template.dotx` into `career-data/references/templates/` as `cv.dotx` and `cover-letter-template.dotx`.
+
+**Cover letter structure template (`cover_letter_templates.md`).** Also copy `${CLAUDE_PLUGIN_ROOT}/references/cover-letter-templates-default.md` into `career-data/references/templates/cover_letter_templates.md` — the generic, parameterized Template A (Cold/Scaffold) / Template B (Warm/Woven) structure the letter-writer selects between per JD/context (see `agents/letter-writer.md` Step 0.7). It ships with placeholder tokens and universal defaults; it is meant to be personalized over time as the user's own delivered letters accumulate.
+
+**Tell the user, verbatim:**
+> "You can replace any or all of these templates whenever you like — swap the `.dotx`/`.dotm` files for your own from any platform or design tool, and edit `cover_letter_templates.md` directly to match your own preferences and voice. One thing has to stay fixed inside the `.dotx`/`.dotm` files: the named Word styles themselves (RoleTitle, RoleOverview, Salutation, Signature Char, and the rest — see the custom-style annotation reference in `skills/career-engine-export/SKILL.md`). The pipeline finds formatting by style name, so you're free to restyle fonts, colors, and layout however you like as long as those names don't change."
 
 **Draft Directory link base**
 Ask: "Do you use a cloud file-share or file-browser app (e.g. Anchorpoint, Dropbox, Google Drive) that produces a stable folder URL pointing to your output folder? If yes, paste the base URL up to (and including) the separator before the date folder. If not, answer `skip`."
@@ -669,18 +684,17 @@ Write the answers into `target_titles` (array, priority order), `remote_preferen
   {
     "gap_handling": "enabled",
     "output_folder": "<the absolute path the user gave>",
-    "cv_template": "references/<their-dotx-or-cv-template-default.dotx>",
     "database_backend": "notion",
     "database_id": "<32-char DB id, or empty for non-database trackers>",
+    "database_new_view_url": "<New view URL, or empty>",
     "database_interested_view_url": "<Interested view URL, or empty>",
-    "database_hold_view_url": "<Hold view URL, or empty>",
+    "database_hold_view_url": "<Needs Research view URL, or empty>",
     "database_researched_view_url": "<Researched view URL, or empty>",
     "database_cv_ready_view_url": "<CV Ready for Review view URL, or empty>",
     "database_edit_view_url": "<Needs Editing view URL, or empty>",
     "draft_dir_url_base": "<cloud-share base URL, or skip>",
     "output_dir_prefix": "applications",
     "default_language": "English",
-    "word_templates_path": "<Hebrew .dotx templates dir, or empty>",
     "location_compatibility": {
       "my_location": "<city/country/region, or empty to skip>",
       "database_property": "<property/field name in your tracker, or empty to skip>"
@@ -702,7 +716,7 @@ Write the answers into `target_titles` (array, priority order), `remote_preferen
     }
   }
   ```
-  (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted; `location_compatibility` both keys empty = check skipped; `favorite_brands` empty array = no boost.) **Required for any run:** `output_folder`, `cv_template`; **also required when a database backend is configured:** `database_id`. **Every other key is optional** — a run completes without it and the config-health notice lists what is empty/missing. Write the `database_*` names on a fresh setup; the pipeline still reads the legacy `notion_database_id`/`notion_needs_editing_view_url`/`notion_property` names for older configs. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop only if a *required* key is missing. Never substitute any of these into plugin files.
+  (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted; `location_compatibility` both keys empty = check skipped; `favorite_brands` empty array = no boost.) **Required for any run:** `output_folder`; **also required when a database backend is configured:** `database_id`. **Every other key is optional** — a run completes without it and the config-health notice lists what is empty/missing. There is no `cv_template` or `word_templates_path` key (R-38, 2026-07-04 fix) — CV/cover-letter/Hebrew templates resolve by fixed filename from `career-data/references/templates/`, never a config lookup. Write the `database_*` names on a fresh setup; the pipeline still reads the legacy `notion_database_id`/`notion_needs_editing_view_url`/`notion_property` names for older configs. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop only if a *required* key is missing. Never substitute any of these into plugin files.
   (or `"disabled"`, matching the user's choice). Preserve any other keys already present in the file.
 - Apply the **Writing personal data** rule: in Claude Code write `career-data` directly; in Cowork stage the change and emit the Appendix-A handoff (`references/career-data-skill-handoff.md`). Refresh the `career-data` backup export after a direct write.
 - Do NOT write this preference to `~/.claude/settings.json` — that location is reachable only from the user's own machine and silently falls back to the default everywhere else. The pipeline still reads it as a legacy fallback, but `career-data` is the authority.

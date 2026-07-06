@@ -34,7 +34,8 @@ Read this file. Identify the pipeline from the table. Load only the entry skill(
 |---|---|---|
 | **New Application** | *(no flag)* | `career-engine-orchestrator`, `career-engine-new-application`, `career-engine-export` |
 | **Edit** | `--edit` | `career-engine-edit`, `career-engine-export` |
-| **Intake** | `--coach-skills` · "run intake" · "rerun intake" · "process Hold roles" · "CV Ready for Review" | `career-engine-intake` |
+| **Prioritization** | "run prioritization" · "triage new roles" · "prioritize my roles" · "prioritize new roles" | `role-prioritizer` |
+| **Intake** | `--coach-skills` · "run intake" · "rerun intake" · "process Needs Research roles" · "CV Ready for Review" | `career-engine-intake` |
 | **Fast track** | `--now <url or JD>` | `career-engine-orchestrator` (--now section) · `career-engine-new-application` · `career-engine-export` |
 | **Setup** | `/career-engine:setup` · "set up the plugin" | `career-engine-setup` |
 | **Sourcing** | "find open roles" · "source roles" · "find me jobs" | `source-open-roles` |

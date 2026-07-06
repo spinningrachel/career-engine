@@ -57,6 +57,7 @@ Return findings in this exact structure for every role received.
 - **Role Type:** <types>
 - **Relationship type:** <type>
 - **Gap handling:** <[Gap]: [handling] — one line per gap, or N/A>
+- **Location:** <verbatim from posting, e.g. "Tel Aviv, Israel / Hybrid" | Remote | Unknown> — the role's stated location. Distinct from the location-compatibility verdict below.
 - **Date first advertised:** <date | estimated range | Unknown> [HIGH/LOW]
 - **Remote compatibility:** <value>
 - **Hiring Manager's Name:** <name + title | hypothesis | Not identifiable> [HIGH/LOW]
@@ -64,6 +65,7 @@ Return findings in this exact structure for every role received.
 - **Hiring manager's role:** <title + sentence> [HIGH/LOW]
 - **Manager role confirmed:** <Yes | No; this is only a hypothesis>
 - **No incumbents in this function:** <value>
+- **Corrected Job URL:** <omit this line entirely unless the Job URL verification check above found a confirmed working alternate — never guess>
 - **Recent news:** <one sentence, or "None found in last 6 months">
 - **Funding context:** <round, amount, date, investors>
 - **Landscape:** (write only if currently empty in Notion; if already populated, prepend new sections above existing content separated by `---`)
@@ -138,6 +140,8 @@ Rules:
 - The Email / WhatsApp section is always present — either a finding or the "No path identified" line.
 - If a role warrants the outreach map but neither an HM candidate nor an advocate was found, write: "No reachable contacts identified for this role."
 
+**⛔ This is the ONLY page-body content in the entire intake pipeline, and its structure must be identical every run.** Return exactly these four parts, in this order, and nothing else: the `## Outreach —` heading, the table, `**Note angles**`, `**Email / WhatsApp**`. Never add a "Writing Angle," a "Message angle," coaching questions, or any other free-text section to this return — those have no defined format, do not belong in the page body, and must go through their own named property or the WIWTR field instead (see Output Rules below). If you have content that doesn't fit one of these four named parts, it does not belong in your Outreach map return at all — put it in the correct property, or drop it.
+
 ### Reference files loaded
 - <file name>
 [note any expected file that was missing]
@@ -156,6 +160,8 @@ Rules:
 **Select / multi-select values MUST match the schema.** For every Select (`Strategy`, `Relationship type`, `Gap handling`, etc.) and multi-select (`Role Type`, etc.) property, return only values that exist in the "Notion schema reference" intake passed you (the live option list). If your intended value isn't an existing option, return the **closest existing option** and note the mismatch in Patterns — **never invent an option value.** `Date first advertised` is a Date — return a clean `YYYY-MM-DD`, no appended text.
 
 **`JD proof` — return it fresh every run** (intake overwrites it, the one exception to write-only-to-empty): the verbatim quote must be traceable to the JD text this run fetched or found, never a cached Notion value.
+
+**`Corrected Job URL` — optional, never mandatory, and only when confirmed.** Return it only when the Job URL verification check (`coach-research.md`) found the original URL genuinely broken and a confirmed working alternate for the identical role. Intake — never you — writes it to the `Job URL` property, and only intake decides whether to overwrite (see Step 0.9a). Omit this field entirely on every role where you didn't independently confirm a correction — this is a backstop for what Step 0.5's own fetch ladder didn't already catch, not a routine return.
 
 **`Why I Want This Role` — coach context block (intake / Option 2 only).** RETURN a coaching context block in your output; **intake prepends it** to the `Why I Want This Role` Notion field. This block carries the strategic priorities and framing the letter-writer needs; the user may edit or remove it before submitting to the pipeline. Intake prepends it above any existing content (the field already having the user's notes is the normal case and is never a reason to skip — this is the one always-write, not write-only-to-empty), keeping `---` as the separator. Always include this block in your output — a coach that omits it leaves the letter-writer without its framing.
 

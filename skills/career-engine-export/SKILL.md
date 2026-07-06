@@ -17,11 +17,15 @@ This skill governs all DOCX production in the career-engine pipeline. Load it be
 
 cv-writer outputs **styled markdown** using pandoc's `custom-style` div and span syntax. The pipeline converts it to `.docx` at Step 6 using pandoc with the `.dotx` reference templates. A short post-processing script then updates the role-specific Subtitle in the CV document header.
 
-**Templates (in `./references/`):**
-- `{{CV_TEMPLATE_FILE}}` — CV reference template. Contains all custom styles, the user's name and contact info in the document header, and correct formatting throughout. Resolve its path from the career-data config (`cv_template` in `${CAREER_DATA}/references/pipeline-preferences.json`, relative to `${CAREER_DATA}`); the orchestrator passes it as `$CV_TEMPLATE` (R-38). Do not read the literal `{{CV_TEMPLATE_FILE}}` placeholder as a path.
-- `cover-letter-template.dotx` — Cover letter reference template. Contains header and styles.
+**Templates — fixed-path convention, no config key, never an external OS path (2026-07-04 fix).** All four templates resolve by fixed filename inside `${CAREER_DATA}/references/templates/` — there is no `cv_template` or `word_templates_path` config key anymore, and the plugin never reads a template from outside career-data:
+- `$CV_TEMPLATE` = `${CAREER_DATA}/references/templates/cv.dotx` — CV reference template. Contains all custom styles, the user's name and contact info in the document header, and correct formatting throughout.
+- `$CL_TEMPLATE` = `${CAREER_DATA}/references/templates/cover-letter-template.dotx` — Cover letter reference template. Contains header and styles. **This must resolve from career-data, never from the plugin's own `references/` default** — the plugin's copy is the new-user default only (see `career-engine-setup/SKILL.md`), and using it in place of the user's own personalized template was a real production bug (the cover letter export silently ignored the user's actual template every run).
+- `$CV_TEMPLATE_HE` = `${CAREER_DATA}/references/templates/cvHe.dotm` — Hebrew CV reference template (note the `.dotm` extension — this file is macro-enabled, not `.dotx`).
+- `$CL_TEMPLATE_HE` = `${CAREER_DATA}/references/templates/he-letter.dotx` — Hebrew cover letter reference template.
 
-Neither template should be read into context. Use them only as pandoc `--reference-doc` arguments.
+Confirm each file exists before use. `$CV_TEMPLATE` and `$CL_TEMPLATE` are required for any export — if either is missing, stop and report: "career-data is missing `references/templates/<filename>` — run `/career-engine:setup --phase 5` to restore the default templates, or add your own at that path." `$CV_TEMPLATE_HE`/`$CL_TEMPLATE_HE` are optional — if either is missing, Hebrew export for that document type is unavailable; skip it and note it, exactly as the old `word_templates_path`-empty case did.
+
+None of the four templates should be read into context. Use them only as pandoc `--reference-doc` arguments.
 
 ---
 
@@ -78,10 +82,11 @@ bash "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/convert-cv.sh" \
   "/tmp/<cl_filename>.md" \
   "<output_dir>/<company_dir>" \
   "${CLAUDE_PLUGIN_ROOT}" \
-  "$CV_TEMPLATE"
+  "$CV_TEMPLATE" \
+  "$CL_TEMPLATE"
 ```
 
-`$CV_TEMPLATE` (arg 5) is the resolved CV `.dotx` path from the career-data config (`cv_template`, R-38) — the personal template lives in career-data, not the plugin (R-37). The script fails fast if it is missing. (R-42 — the script previously hardcoded a literal `{{USER_DOTX_FILE}}.dotx` and a stale export-skill footer path, which broke every export.)
+`$CV_TEMPLATE` (arg 5) and `$CL_TEMPLATE` (arg 6) are the resolved `.dotx` paths from `${CAREER_DATA}/references/templates/` (fixed filenames `cv.dotx`/`cover-letter-template.dotx` — no config key, see the Templates section above). The personal templates live in career-data, not the plugin (R-37). The script fails fast if either is missing. (R-42 — the script previously hardcoded a literal `{{USER_DOTX_FILE}}.dotx` and a stale export-skill footer path, which broke every export. **2026-07-04 fix:** arg 6 added — the script previously hardcoded the plugin's own default `references/cover-letter-template.dotx` for every cover letter export, silently ignoring the user's actual personalized template every run.)
 
 Pandoc inherits the header/footer from the reference template. The user's name and contacts appear automatically. Only the Subtitle (role tagline) needs updating per role.
 
@@ -161,12 +166,12 @@ Hebrew DOCX files are produced inline in Step 6H (Standard/Edit pipelines). This
 
 **Footer:** Hebrew CVs use `static-cv-footer-he.md` (Hebrew-language Education and Languages sections) instead of `static-cv-footer.md`. The pipeline concatenates this file before calling pandoc.
 
-**Hebrew templates:** Two dedicated templates exist for Hebrew output — both located in the user's Office templates folder:
+**Hebrew templates:** Two dedicated templates exist for Hebrew output — both live in `${CAREER_DATA}/references/templates/`, fixed filenames, no config key and no external OS path (2026-07-04 fix — this used to point at an external, machine-specific Office templates folder via the now-removed `word_templates_path` config key):
 
-- `cvHe.dotx` — Hebrew CV reference template
-- `he-letter.dotx` — Hebrew cover letter reference template
+- `$CV_TEMPLATE_HE` = `${CAREER_DATA}/references/templates/cvHe.dotm` — Hebrew CV reference template. **Note the `.dotm` extension** (macro-enabled) — not `.dotx`.
+- `$CL_TEMPLATE_HE` = `${CAREER_DATA}/references/templates/he-letter.dotx` — Hebrew cover letter reference template.
 
-Full path: `$WORD_TEMPLATES_PATH/` — resolved from the career-data config key `word_templates_path` (R-38). If empty, Hebrew export is unavailable; skip it and note it.
+If either file is missing, Hebrew export for that document type is unavailable; skip it and note it.
 
 Both Hebrew templates support RTL formatting. Use `--reference-doc` with these templates — do not use pandoc's default template for Hebrew output.
 
@@ -182,7 +187,7 @@ lang: he
 **Conversion steps for Hebrew CV:**
 
 ```bash
-HE_TEMPLATES="$WORD_TEMPLATES_PATH"   # resolved from career-data config key word_templates_path (R-38)
+# $CV_TEMPLATE_HE resolved from ${CAREER_DATA}/references/templates/cvHe.dotm (fixed path, no config key)
 
 # 1. Concatenate Hebrew CV markdown with Hebrew footer
 cat /tmp/he-<cv_filename>.md \
@@ -191,7 +196,7 @@ cat /tmp/he-<cv_filename>.md \
 
 # 2. Convert with pandoc using Hebrew CV template
 pandoc /tmp/he-<cv_filename>-with-footer.md \
-  --reference-doc="${HE_TEMPLATES}/cvHe.dotx" \
+  --reference-doc="${CV_TEMPLATE_HE}" \
   -o "<output_dir>/<company_dir>/he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 
 # 3. Update subtitle
@@ -203,10 +208,10 @@ python3 "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/update-subtit
 **Conversion steps for Hebrew cover letter:**
 
 ```bash
-HE_TEMPLATES="$WORD_TEMPLATES_PATH"   # resolved from career-data config key word_templates_path (R-38)
+# $CL_TEMPLATE_HE resolved from ${CAREER_DATA}/references/templates/he-letter.dotx (fixed path, no config key)
 
 pandoc /tmp/he-<cl_filename>.md \
-  --reference-doc="${HE_TEMPLATES}/he-letter.dotx" \
+  --reference-doc="${CL_TEMPLATE_HE}" \
   -o "<output_dir>/<company_dir>/he-coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 ```
 
@@ -349,11 +354,11 @@ Body paragraphs are regular markdown paragraphs (Normal style — no annotation 
 
 ### Word count and structure
 
-All cover letters are limited to a single page, maximum 320 words with no minimum (not counting greeting or sign-off). This matches the requirement in cover-letter/SKILL.md and the gatekeeper check. Structure and voice are consistent across all letters and follow the framework below.
+All cover letters are limited to a single page, maximum 320 words with no minimum (not counting greeting or sign-off). This matches the requirement in `skills/writer-craft/SKILL.md` and the gatekeeper check. Structure and voice are consistent across all letters and follow the framework below.
 
 ### Voice constraints
 
-**Load `skills/cover-letter/SKILL.md` before writing any cover letter.** It defines writing mechanics, letter structure, and use-case patterns. It defines writing mechanics, letter structure, use-case patterns, forbidden phrases, forbidden structures, and fabrication traps. Non-negotiable.
+**Load `skills/writer-craft/SKILL.md` before writing any cover letter.** It defines writing mechanics, letter structure, use-case patterns, forbidden phrases, forbidden structures, and fabrication traps. Non-negotiable.
 
 Every claim about the company must be traceable to the JD or brief. Do not infer the company's strategy, culture, or operating model from category signals. If a sentence about them cannot be sourced, cut it or rewrite it as an observation about the role.
 
@@ -397,7 +402,7 @@ THE NUMBER ONE GOLDEN RULE: COVER LETTERS ARE THE CANDIDATE'S OPPORTUNITY TO SHI
 
 **5. The closing posture.** A direct ask, not a request for permission. Warm or plain depending on the letter's tone. Never "I look forward to hearing from you at your earliest convenience."
 
-### Prohibited phrasing (in addition to cover-letter skill rules)
+### Prohibited phrasing (in addition to writer-craft skill rules)
 
 - Never open or close with a fit claim: "This role has my name on it," "I'm the perfect candidate," "I was made for this role"
 - Never volunteer a title gap — scope speaks for itself; that conversation is for the interview

@@ -142,7 +142,7 @@ grep -rn "option=interview-questions\|interview-questions\|interview questions\|
 
 For each agent `.md` file, scan for skill names that are loaded or referenced (look for patterns like skill name strings, `Load`, `read skill`, etc.). For each skill name found, verify the corresponding directory exists in `skills/`.
 
-Common skill names to expect: `career-engine-intake`, `career-engine-new-application`, `career-engine-export`, `career-engine-orchestrator`, `career-engine-edit`, `career-engine-setup`, `coach`, `cover-letter`, `cover-letter-humanizer`, `cv-writing`, `career-coach`, `gatekeeper-checks`, `career-engine`, `update-refs`.
+Common skill names to expect: `career-engine-intake`, `career-engine-new-application`, `career-engine-export`, `career-engine-orchestrator`, `career-engine-edit`, `career-engine-setup`, `coach`, `writer-craft`, `humanizer`, `career-coach`, `gatekeeper-checks`, `career-engine`, `update-refs`.
 
 **FAIL condition:** a referenced skill name has no matching directory.
 
@@ -245,8 +245,8 @@ Read `CLAUDE.md`. Verify it contains "Single-build architecture" and "career-dat
 
 These skill directories must exist in `skills/` (28 as of this writing):
 - Core pipeline: `career-engine`, `career-engine-orchestrator`, `career-engine-intake`, `career-engine-new-application`, `career-engine-edit`, `career-engine-export`, `career-engine-setup`
-- Writing & quality: `cv-writing`, `cover-letter`, `cover-letter-humanizer`, `gatekeeper-checks`, `career-coach`, `localization`
-- Standalone career: `source-open-roles`, `linkedin-coach`, `personal-brand`, `update-refs`
+- Writing & quality: `writer-craft`, `humanizer`, `gatekeeper-checks`, `career-coach`, `localization`
+- Standalone career: `source-open-roles`, `linkedin-coach`, `personal-brand`, `update-refs`, `role-prioritizer`
 - Content & freelance: `content-orchestrator`, `mind-dump`, `linkedin-post-writer`, `linkedin-post-reviewer`, `fiverr`, `upwork`, `freelance-shared`
 - Meta: `plugin-builder`, `technical-writing`
 - Database adapters: `database-notion`, `database`
@@ -281,21 +281,22 @@ These checks verify that key rules confirmed in live runs are actually present i
 
 ### Check 16 — Humanizer Final Gate is explicit in agent procedure
 
-In `agents/cover-letter-humanizer.md`: verify the file contains "Final Gate".
+In `skills/humanizer/SKILL.md`: verify the file contains "Final Gate" (relocated from `agents/cover-letter-humanizer.md` / writer-craft §12 when the humanizer got its own dedicated skill).
 
 ```bash
-grep -c "Final Gate" <location>/agents/cover-letter-humanizer.md
+grep -c "Final Gate" <location>/skills/humanizer/SKILL.md
 ```
 
 **FAIL condition:** string not found (count = 0).
 
 ### Check 16b — Sentence-balance rule and preference-intake guards present
 
-The humanizer's sentence-length monotony rule (with Final Gate parity) and the voice-preference rule-protection guards must all be present.
+The humanizer's sentence-length monotony rule (with Final Gate parity) and the voice-preference rule-protection guards must all be present. (Sentence-balance rule lives in `skills/writer-craft/SKILL.md` §4 since the writer-craft consolidation; the humanizer's own Final Gate parity copy lives in `skills/humanizer/SKILL.md` since the humanizer skill split.)
 
 ```bash
-grep -c "Sentence-length balance" <location>/skills/cover-letter-humanizer/SKILL.md                       # must be 1
-grep -c "reads monotone" <location>/skills/cover-letter-humanizer/SKILL.md                                 # must be 2 (Step 2 rule + Final Gate parity)
+grep -c "Sentence-length variation" <location>/skills/writer-craft/SKILL.md                                # must be >= 1
+grep -c "reads monotone" <location>/skills/writer-craft/SKILL.md                                           # must be 1 (§4 rule)
+grep -c "reads monotone" <location>/skills/humanizer/SKILL.md                                              # must be 1 (Step 2 parity)
 grep -c "Documented writing rules and prohibitions are protected" <location>/skills/update-refs/SKILL.md   # must be 1
 grep -c "never silently modify documented rules" <location>/skills/career-engine-setup/SKILL.md            # must be 1
 ```
@@ -314,11 +315,11 @@ grep -c "Edit type is mandatory" <location>/skills/career-engine-edit/SKILL.md
 
 ### Check 18 — Why I Want This Role voice-preservation rule present (both failure modes)
 
-In `skills/cover-letter/SKILL.md`: verify the file contains both "Failure mode A" and "Failure mode B".
+In `skills/writer-craft/SKILL.md` (relocated during the writer-craft consolidation): verify the file contains both "Failure mode A" and "Failure mode B".
 
 ```bash
-grep -c "Failure mode A" <location>/skills/cover-letter/SKILL.md
-grep -c "Failure mode B" <location>/skills/cover-letter/SKILL.md
+grep -c "Failure mode A" <location>/skills/writer-craft/SKILL.md
+grep -c "Failure mode B" <location>/skills/writer-craft/SKILL.md
 ```
 
 **FAIL condition:** either string not found.
@@ -443,9 +444,9 @@ Per-role subagents write output to disk and return pointers; new-application thr
 
 ```bash
 # Each per-role subagent carries the R-41 output protocol
-for a in cv-writer letter-writer recruiter-reviewer gatekeeper cover-letter-humanizer; do grep -c "Output protocol (R-41)" <location>/agents/$a.md; done
+for a in cv-writer letter-writer recruiter-reviewer gatekeeper humanizer; do grep -c "Output protocol (R-41)" <location>/agents/$a.md; done
 # Reviewers/gatekeeper/humanizer can write (were read-only / no-write before)
-for a in recruiter-reviewer gatekeeper cover-letter-humanizer; do grep -c "^tools:.*Write" <location>/agents/$a.md; done
+for a in recruiter-reviewer gatekeeper humanizer; do grep -c "^tools:.*Write" <location>/agents/$a.md; done
 # new-application threads _pipeline files and reads the feedback file from disk
 grep -c "_pipeline" <location>/skills/career-engine-new-application/SKILL.md
 grep -c 'PIPE/cv-final.md\|PIPE/recruiter-cv.md' <location>/skills/career-engine-new-application/SKILL.md
@@ -509,8 +510,7 @@ test -f <location>/references/linkedin-profile.md && echo 1 || echo 0           
 
 ```bash
 grep -c "Voice fingerprint" <location>/references/03-framework.md                      # must be >= 1
-grep -c "Voice fingerprint" <location>/agents/cover-letter-humanizer.md                # must be >= 1
-grep -c "Voice fingerprint" <location>/skills/cover-letter/SKILL.md                    # must be >= 1
+grep -c "Voice fingerprint" <location>/skills/humanizer/SKILL.md                       # must be >= 1 (relocated from agents/cover-letter-humanizer.md)
 ```
 
 **FAIL condition:** any count is 0 or below its stated requirement.
@@ -532,14 +532,14 @@ grep -c "ask-first" <location>/skills/career-coach/coach-research.md            
 ### Check 21i — Shakedown fixes present (R-34)
 
 ```bash
-grep -c "maximum 320" <location>/skills/cover-letter/SKILL.md                               # must be >= 1
+grep -c "maximum 320" <location>/skills/writer-craft/SKILL.md                               # must be >= 1 (relocated from skills/cover-letter/SKILL.md)
 grep -c "maximum 320" <location>/skills/gatekeeper-checks/SKILL.md                          # must be >= 1
 grep -rn "230–275\|230–290\|230–320" <location>/skills <location>/agents <location>/references --include="*.md" | grep -v qa-plugin.md | wc -l   # must be 0
 grep -c "Calibration authority" <location>/skills/gatekeeper-checks/SKILL.md               # must be >= 1
 grep -c "repetition check skipped" <location>/skills/gatekeeper-checks/SKILL.md            # must be >= 1
 grep -c "Role named in the first sentence" <location>/skills/gatekeeper-checks/SKILL.md    # must be >= 1
-grep -c "Proof-point partitioning" <location>/skills/cover-letter/SKILL.md                 # must be >= 1
-grep -c "always surfaced" <location>/skills/cover-letter/SKILL.md                          # must be >= 1
+grep -c "Proof-point partitioning" <location>/skills/writer-craft/SKILL.md                 # must be >= 1 (relocated from skills/cover-letter/SKILL.md)
+grep -c "always surfaced" <location>/skills/writer-craft/SKILL.md                          # must be >= 1 (relocated from skills/cover-letter/SKILL.md)
 grep -ci "stealth" <location>/skills/gatekeeper-checks/SKILL.md                            # must be >= 1
 ```
 
@@ -576,11 +576,11 @@ grep -c "preferred_job_sites" <location>/skills/source-open-roles/SKILL.md      
 
 ### Check 21o — WIWTR mandatory enumeration present (session feature)
 
-The cover letter skill must mandate [WIWTR-N] enumeration, not just a strong preference. The letter-writer must have a pre-draft parse step. The gatekeeper must check each point.
+The letter-writer agent must mandate [WIWTR-N] enumeration, not just a strong preference (this procedural step lives in the agent, not the skill, per content-placement rules — relocated in full from `skills/cover-letter/SKILL.md` to `agents/letter-writer.md` during the writer-craft consolidation). The letter-writer must have a pre-draft parse step. The gatekeeper must check each point.
 
 ```bash
-grep -c "WIWTR-" <location>/skills/cover-letter/SKILL.md                          # must be >= 1
-grep -c "MANDATORY" <location>/skills/cover-letter/SKILL.md                       # must be >= 1
+grep -c "WIWTR-" <location>/agents/letter-writer.md                              # must be >= 1
+grep -c "MANDATORY" <location>/agents/letter-writer.md                           # must be >= 1
 grep -c "Step 0.5" <location>/agents/letter-writer.md                             # must be >= 1
 grep -c "WIWTR-" <location>/agents/gatekeeper.md                                  # must be >= 1
 ```
@@ -657,28 +657,29 @@ grep -ci "MANDATORY STOP" <build>/CLAUDE.md
 
 Four confirmed regression patterns from live runs. Run on the build.
 
-**strategic-builder rule:** grep `skills/gatekeeper-checks/SKILL.md` and `skills/cover-letter/SKILL.md` for the string "strategic builder" — must appear in at least one of them.
+**strategic-builder rule:** grep `skills/gatekeeper-checks/SKILL.md` and `skills/writer-craft/SKILL.md` (relocated from `skills/cover-letter/SKILL.md`) for the string "strategic builder" — must appear in at least one of them.
 
 ```bash
 grep -c "strategic builder" <build>/skills/gatekeeper-checks/SKILL.md
-grep -c "strategic builder" <build>/skills/cover-letter/SKILL.md
+grep -c "strategic builder" <build>/skills/writer-craft/SKILL.md
 ```
 
 **FAIL condition:** both counts are 0 (string absent from both files). PASS if either count is >= 1.
 
-**em dash absolute ban prominent:** grep `agents/letter-writer.md` for "em dash" or "em dashes" — must appear.
+**em dash absolute ban prominent:** grep `agents/letter-writer.md` for "em dash" or "em dashes" — must appear. (The ban itself lives in `skills/writer-craft/SKILL.md` §1; this check verifies the agent still surfaces it prominently too — historically via the Mandatory Revision Pass pointer, now via the writer-craft load instruction.)
 
 ```bash
 grep -ci "em dash" <build>/agents/letter-writer.md
+grep -ci "em dash" <build>/skills/writer-craft/SKILL.md
 ```
 
-**FAIL condition:** count is 0.
+**FAIL condition:** the `skills/writer-craft/SKILL.md` count is 0. The `agents/letter-writer.md` count is advisory — note it but do not fail solely on it, since the letter-writer may reference the ban only by pointing at the skill.
 
-**colon ban present:** grep `agents/letter-writer.md` and `skills/cover-letter-humanizer/SKILL.md` for "colon" in the context of a writing ban — must appear in at least one.
+**colon ban present:** grep `agents/letter-writer.md` and `skills/writer-craft/SKILL.md` for "colon" in the context of a writing ban — must appear in at least one.
 
 ```bash
 grep -ci "colon" <build>/agents/letter-writer.md
-grep -ci "colon" <build>/skills/cover-letter-humanizer/SKILL.md
+grep -ci "colon" <build>/skills/writer-craft/SKILL.md
 ```
 
 **FAIL condition:** both counts are 0.
@@ -697,6 +698,477 @@ grep -c "Placeholder resolution" <build>/CLAUDE.md                              
 ```
 
 **FAIL condition:** any count below its stated requirement.
+
+### Check 31 — Coach mandatory-field list parity: Location and First Advertised (2026-07-01 fix)
+
+`Location` and `First Advertised` must be present in all three lists that must stay in parity: Step 0.8 coach-complete, Step 0.9a confirmation pass, and the gatekeeper's Coach Output Check presence-check. The coach's output template must have a literal `Location` fill-in slot, not prose-only.
+
+```bash
+grep -c "First Advertised" <build>/skills/career-engine-intake/SKILL.md            # must be >= 2 (Step 0.8 + Step 0.9a)
+grep -c "\*\*Location:\*\*" <build>/skills/career-coach/coach-output.md            # must be >= 1 (literal template slot)
+grep -c "Mandatory-field presence" <build>/skills/gatekeeper-checks/SKILL.md       # must be >= 1
+grep -c "Missing mandatory fields" <build>/agents/gatekeeper.md                    # must be >= 1
+```
+
+**FAIL condition:** any count below its stated requirement.
+
+### Check 32 — Notion fast-path STOP gates present (2026-07-01 fix)
+
+The fast-path view-URL check must be an explicit STOP gate at the top of §1 and §3 in the adapter, not buried mid-paragraph.
+
+```bash
+grep -c "STOP — check this before running the fetch" <build>/skills/database-notion/SKILL.md   # must be >= 1
+grep -c "STOP — is a fast-path URL already non-empty" <build>/skills/database-notion/SKILL.md   # must be >= 1
+grep -c "do NOT \`Read\` or otherwise re-ingest that file in full" <build>/skills/database-notion/SKILL.md   # must be >= 1
+grep -c "page_id.*command.*update_properties\|\"command\": \"update_properties\"" <build>/skills/database-notion/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** any count is 0.
+
+### Check 33 — Orchestrator queue-building has a run-scoped `$PIPE` (2026-07-01 fix)
+
+Step O1 must establish its own run-scoped `$PIPE` and redirect per-page fetch results to a file; Step O2 must read from that file rather than holding fetch results in memory.
+
+```bash
+grep -c "_queue_pipeline" <build>/skills/career-engine-orchestrator/orchestrator-queue.md          # must be >= 1
+grep -c "role-properties.md" <build>/skills/career-engine-orchestrator/orchestrator-queue.md       # must be >= 2 (O1 write + O2 read)
+```
+
+**FAIL condition:** any count below its stated requirement.
+
+### Check 33b — Orchestrator delegates the per-page property fetch to a subagent (2026-07-01 follow-up fix)
+
+The first attempt at Check 33's fix (writing to `$PIPE` "immediately as each result completes") did not hold operationally in a live run — the orchestrator batched several raw `notion-fetch` calls inline before writing any of them. The fix was restructured to delegate the whole per-page fetch loop to a subagent that returns one bounded block, which the orchestrator then writes to `$PIPE/role-properties.md` in a single `Write` call. Verify the delegation, not just the file path.
+
+```bash
+grep -c "Spawn a lightweight subagent" <build>/skills/career-engine-orchestrator/orchestrator-queue.md          # must be >= 1
+grep -c 'does not write `\$PIPE` itself' <build>/skills/career-engine-orchestrator/orchestrator-queue.md        # must be >= 1 (single-quote the pattern — double-quoting mangles the $PIPE literal)
+grep -c "premature context exhaustion in real production runs" <build>/skills/career-engine-orchestrator/orchestrator-queue.md   # must be >= 1 (leads with the consequence, not just the rule)
+grep -c "general-purpose extraction/fetch subagents" <build>/skills/career-engine-orchestrator/orchestrator-queue.md   # must be >= 1 (Absolute Constraints spawn list updated to cover this subagent type)
+grep -c "FAILED" <build>/skills/career-engine-orchestrator/orchestrator-queue.md                                # must be >= 1 (per-page fetch error path defined, not silently assumed to always succeed)
+grep -c "cannot access .notion-fetch." <build>/skills/career-engine-orchestrator/orchestrator-queue.md          # must be >= 1 (tool-unavailable fallback path defined)
+```
+
+**FAIL condition:** any count is 0.
+
+### Check 34 — Coach-output re-read discipline and hand-edit self-check strengthened (2026-07-01 fix)
+
+```bash
+grep -c "exactly once for the entire Step 0.8" <build>/skills/career-engine-intake/SKILL.md   # must be >= 1
+grep -c "self-check: am I about to open an \`Edit\`" <build>/skills/career-engine-intake/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** either count is 0.
+
+### Check 34b — Intake Step 0.5 rung-1 batching risk flagged (2026-07-01 follow-up)
+
+Step 0.5's JD fetch ladder was judged lower-risk than Step O1's per-page fetch (the multi-rung fallback naturally serializes roles), but the rung-1 all-succeed sub-case structurally resembles Step O1's failure and is flagged rather than silently assumed safe.
+
+```bash
+grep -c "held up in practice better than the equivalent instruction" <build>/skills/career-engine-intake/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** count is 0.
+
+### Check 35 — Prioritization pipeline wired end-to-end (2026-07-02 new feature)
+
+The Prioritization pipeline needs an agent, a skill, a Pipeline Registry row, a `New` Status value, and a Notion adapter that recognizes the target status. Verify the wiring, not just file existence.
+
+```bash
+test -f <build>/agents/role-prioritizer.md && echo 1 || echo 0                              # must be 1
+test -f <build>/skills/role-prioritizer/SKILL.md && echo 1 || echo 0                        # must be 1
+grep -c "^model: haiku" <build>/agents/role-prioritizer.md                                  # must be 1
+grep -c "^model: opus\|effort:" <build>/agents/role-prioritizer.md                           # must be 0 (no opus, no effort field per spec)
+grep -c "role-prioritizer" <build>/skills/career-engine/SKILL.md                             # must be >= 1 (Pipeline Registry row)
+grep -c "| \`New\` |" <build>/skills/database/SKILL.md                                       # must be >= 1 (Status Values table)
+grep -c "| \`Needs Research\` |" <build>/skills/database/SKILL.md                             # must be >= 1 (Status Values table)
+```
+
+**FAIL condition:** any count differs from its stated requirement.
+
+### Check 35b — Prioritization → intake always-overwrite fix present (2026-07-02 fix)
+
+`Role Summary`, `Location`, and `Priority` must be always-overwrite (not write-only-to-empty) in intake's Step 0.9a, matching the `JD proof` pattern. The coach-complete field list must still require enough fields that a Prioritization-only role can never pass as coach-complete.
+
+```bash
+grep -c "Role summary\`, \`Location\`, and \`Priority\` are always-overwrite" <build>/skills/career-engine-intake/SKILL.md   # must be >= 1
+grep -ci "\*\*always overwrite\*\*" <build>/skills/career-engine-intake/SKILL.md             # must be >= 3 (Priority, Location, Role summary bullets)
+grep -c "Prioritization" <build>/CLAUDE.md                                                   # must be >= 1 (cross-file-contract row)
+```
+
+**FAIL condition:** any count is 0 or below its stated requirement.
+
+### Check 35c — Two bundled intake bug fixes present (2026-07-02 fix)
+
+(1) Step 0.7 must have an explicit "do not ask the user" guard for the 5-role selection. (2) The Notion adapter's Path B view-query call (steps 2-3) must be delegated, not run directly in the caller's context.
+
+```bash
+grep -c "Do not ask the user about this. The selection above is deterministic" <build>/skills/career-engine-intake/SKILL.md   # must be >= 1
+grep -c "Steps 2–3 (the view-query call itself) must be delegated" <build>/skills/database-notion/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** either count is 0.
+
+### Check 35d — Prioritization resolves its own `New`-status view, not the `Needs Research` view (2026-07-02 fix)
+
+A confirmed production failure: `role-prioritizer.md` was resolving `database_hold_view_url` (whose saved filter is `Status = Needs Research`) as its fast-path for a `New`-status query, which always returned zero results since a Notion view only ever returns its own saved filter's rows. Fixed with a dedicated `database_new_view_url` key. Verify the fix is present and the agent no longer treats the two views as interchangeable.
+
+```bash
+grep -c "database_new_view_url" <build>/agents/role-prioritizer.md                       # must be >= 2 (File Loading table + Step 0)
+grep -c "database_new_view_url" <build>/references/pipeline-preferences.json             # must be >= 1
+grep -c "database_new_view_url" <build>/skills/career-engine-setup/SKILL.md              # must be >= 1
+grep -c "database_new_view_url" <build>/skills/database-notion/SKILL.md                  # must be >= 1
+grep -c "database_new_view_url" <build>/CLAUDE.md                                        # must be >= 1
+# The agent must not claim the same view serves both New and Needs Research queries
+grep -c "the underlying property values are what you filter on, not the view name" <build>/agents/role-prioritizer.md   # must be 0 (the disproven doctrine comment must not reappear)
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement, or the disproven-doctrine grep is nonzero.
+
+### Check 38 — Mechanical word count enforced, not self-estimated (2026-07-02 fix)
+
+A live production run had every writer self-report a word count 20-40 words under the true figure (measured via `wc -w`); two letters shipped over the 320 cap as a direct result. Fixed by giving letter-writer and gatekeeper Bash access and requiring a mechanical `wc -w` count instead of an LLM estimate.
+
+```bash
+grep -c "^tools:.*Bash" <build>/agents/letter-writer.md            # must be >= 1
+grep -c "^tools:.*Bash" <build>/agents/gatekeeper.md                # must be >= 1
+grep -c "wc -w" <build>/agents/letter-writer.md                     # must be >= 1
+grep -c "wc -w" <build>/skills/gatekeeper-checks/SKILL.md           # must be >= 1
+grep -c "wc -w" <build>/skills/writer-craft/SKILL.md                # must be >= 1
+```
+
+**FAIL condition:** any count is 0.
+
+### Check 39 — Path B view-query delegation present at all three query sites (2026-07-02 fix)
+
+Only intake's Step 0b had the explicit "the view-query call itself is delegated" sentence; edit's Step E0 and the orchestrator's Step O1 were silently missing it despite CLAUDE.md's contract table claiming all three inherit it. A live run confirmed the gap: a raw view-query call landed tens of thousands of characters directly in the edit pipeline's own context. Fixed by adding the same sentence to all three call sites.
+
+```bash
+grep -c "the view-query call itself (§2 Path B steps 2–3) is delegated by the adapter" <build>/skills/career-engine-intake/SKILL.md                 # must be >= 1
+grep -c "the view-query call itself (§2 Path B steps 2–3) is delegated by the adapter" <build>/skills/career-engine-edit/SKILL.md                    # must be >= 1
+grep -c "the view-query call itself (§2 Path B steps 2–3) is delegated by the adapter" <build>/skills/career-engine-orchestrator/orchestrator-queue.md   # must be >= 1
+```
+
+**FAIL condition:** any count is 0.
+
+### Check 40 — Banned-phrase family Grep (not one literal string) present (2026-07-02 fix)
+
+The "I knew this was mine" (any variant) ban was enforced via a literal string Grep that couldn't match variants by construction. A live run shipped "...was mine the moment I saw it" uncaught. Fixed by naming the fragment family explicitly for Grep.
+
+```bash
+grep -c "Grep for the family, not the exact phrase" <build>/skills/gatekeeper-checks/SKILL.md   # must be >= 1
+grep -c "was mine.*meant for me.*meant to be" <build>/skills/gatekeeper-checks/SKILL.md          # must be >= 1
+```
+
+**FAIL condition:** either count is 0.
+
+### Check 41 — Opener joint-constraint guidance present (2026-07-02 fix)
+
+A live run took 4 gatekeeper rounds on one letter because "role in sentence 1" and "subject-first" were fixed sequentially instead of jointly, and the fix for one produced a banned cliché the gates didn't catch. Fixed by adding a combined worked example to writer-craft.md §8.
+
+```bash
+grep -c "Satisfy this jointly with the Subject-first rule" <build>/skills/writer-craft/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** count is 0.
+
+### Check 42 — Plugin-file-unreachable hard stop present for writer/humanizer agents (2026-07-02 fix)
+
+R-37 already hard-stops on an unreachable career-data file; there was no equivalent for the plugin's own doctrine files. A live sandboxed run had letter-writer and humanizer proceed on reconstructed rules after `writer-craft/SKILL.md` was unreachable. Fixed by adding an explicit hard-stop instruction to each writer-facing agent.
+
+```bash
+grep -c "writer-craft/SKILL.md.*cannot be read\|cannot be read.*writer-craft" <build>/agents/letter-writer.md   # must be >= 1
+grep -c "cannot be read" <build>/agents/cv-writer.md                # must be >= 1
+grep -c "cannot be read" <build>/agents/humanizer.md                # must be >= 1
+```
+
+**FAIL condition:** any count is 0.
+
+### Check 43 — E0.7 baseline-skip rationalization closed (2026-07-02 fix)
+
+A live run skipped baseline checks for all 5 roles reasoning "it's being rewritten anyway" — not one of the two doctrine-sanctioned skip reasons (no JD, cover letter file not locatable). Fixed by explicitly naming and closing that rationalization.
+
+```bash
+grep -c "Do not skip this step because the letter or CV will be substantially rewritten anyway" <build>/skills/career-engine-edit/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** count is 0.
+
+### Check 44 — Resume-not-respawn wired for the letter-writer revision loop (2026-07-02 fix)
+
+The letter-writer's own revision loops (new-application Steps 5.2/5.3/5.95; edit's quality-comparison loop, E7.3, coach loop, E7.7, E8.5) previously each spawned a fresh, memoryless writer instance per round — the root cause of a real 4-round gatekeeper ping-pong (fixing one opener rule broke another, and the fresh writer that fixed *that* produced a banned cliché neither rule caught). Fixed by capturing the agent ID at the first spawn and resuming that same instance for every subsequent revision touch on the same letter.
+
+```bash
+grep -c "Capture the returned agent ID" <build>/skills/career-engine-new-application/SKILL.md         # must be >= 1
+grep -c "Capture the returned agent ID" <build>/skills/career-engine-edit/SKILL.md                      # must be >= 1
+grep -c "resume the letter-writer instance\|Resume the letter-writer instance" <build>/skills/career-engine-new-application/SKILL.md   # must be >= 3 (Steps 5.2, 5.3, 5.95)
+grep -c "resume the letter-writer instance\|Resume the letter-writer instance" <build>/skills/career-engine-edit/SKILL.md              # must be >= 5 (quality-comparison loop, E7.3, coach loop, E7.7, E8.5)
+grep -c "letter-writer-agent-id.txt" <build>/skills/career-engine-new-application/SKILL.md              # must be >= 1
+grep -c "letter-writer-agent-id.txt" <build>/skills/career-engine-edit/SKILL.md                         # must be >= 1
+```
+
+**FAIL condition:** any count below its stated requirement.
+
+### Check 45 — Skills preload, memory, and Agent-tool denial wired on writer-pipeline agents (2026-07-02 fix)
+
+`skills:` frontmatter preload removes the unreachable-skill-file failure mode at the root (rather than just catching it, per Check 42). `memory: project` on the gatekeeper lets its banned-phrase-variant catches accumulate across runs. `disallowedTools: Agent` on the three writer-pipeline agents makes nested-subagent spawning structurally impossible for this pipeline.
+
+```bash
+grep -c "^  - writer-craft" <build>/agents/letter-writer.md      # must be >= 1
+grep -c "^  - humanizer" <build>/agents/humanizer.md              # must be >= 1 (self)
+grep -c "^  - writer-craft" <build>/agents/humanizer.md           # must be >= 1
+grep -c "^  - gatekeeper-checks" <build>/agents/gatekeeper.md     # must be >= 1
+grep -c "^memory: project" <build>/agents/gatekeeper.md           # must be >= 1
+grep -c "^disallowedTools: Agent" <build>/agents/letter-writer.md   # must be >= 1
+grep -c "^disallowedTools: Agent" <build>/agents/gatekeeper.md      # must be >= 1
+grep -c "^disallowedTools: Agent" <build>/agents/humanizer.md       # must be >= 1
+```
+
+### Check 46 — career-data v1.8.0 restructure wired end-to-end (2026-07-04 fix)
+
+`career-data` v1.8.0 introduced three new directories (`references/templates/`, `references/framework/`, `references/voice-and-identity/`) and moved `linkedin-post-strategy.md`/`personal-brand-context.md` under `voice-and-identity/`. Verify no plugin file still points at the pre-restructure flat paths, and that the new files are actually wired into a consumer.
+
+```bash
+# Stale flat-path references must be gone (each must be 0)
+grep -rc "references/linkedin-post-strategy\.md\|references/personal-brand-context\.md" <build>/agents <build>/skills --include="*.md" | grep -v ":0$" | wc -l   # must be 0
+# New/moved files actually wired into a consumer (each must be >= 1)
+grep -c "voice-and-identity/linkedin-post-strategy.md" <build>/agents/linkedin-post-writer.md          # must be >= 1
+grep -c "voice-and-identity/linkedin-post-strategy.md" <build>/skills/content-orchestrator/SKILL.md     # must be >= 1
+grep -c "voice-and-identity/personal-brand-context.md" <build>/skills/personal-brand/SKILL.md            # must be >= 1
+grep -c "templates/cover_letter_templates.md" <build>/agents/letter-writer.md                            # must be >= 1
+# Canonical structure docs updated to describe the new layout (each must be >= 1)
+grep -c "references/templates/" <build>/references/career-data-structure.md                              # must be >= 1
+grep -c "references/templates/" <build>/skills/update-refs/SKILL.md                                      # must be >= 1
+grep -c "references/templates/" <build>/skills/career-engine-setup/SKILL.md                              # must be >= 1
+```
+
+**FAIL condition:** the stale-flat-path count is nonzero, or any "must be >= 1" count is 0.
+
+### Check 47 — Cover-letter template usage procedure wired (2026-07-04 fix; ownership moved to the coach 2026-07-05)
+
+`cover_letter_templates.md` (Template A Cold/Scaffold vs. Template B Warm/Woven) is hand-curated, real career-data. As of 2026-07-05, the **coach** selects between the two templates (Option 4a — Pre-Draft Outline), not the letter-writer — the letter-writer only reads the coach's selection and outline. The letter-writer still treats the selected template's Dial Sheet as a hard constraint, never copies illustrative variant text verbatim, and uses "Attribution-safe proof phrasings" only as a phrasing rule layered on the existing fabrication rule, never as a new proof-point source.
+
+```bash
+grep -c "Step 0.7 — Read the coach's template selection and outline" <build>/agents/letter-writer.md        # must be >= 1
+grep -c "You do not choose the template" <build>/agents/letter-writer.md                                   # must be >= 1
+grep -c "Dial Sheet is a hard constraint" <build>/agents/letter-writer.md                                   # must be >= 1
+grep -c "Never copy a template's illustrative variant text verbatim" <build>/agents/letter-writer.md        # must be >= 1
+grep -c "governs how a known-true metric is phrased, never whether one may be invented" <build>/agents/letter-writer.md   # must be >= 1
+grep -c "never overrides the Opener non-negotiable rule" <build>/agents/letter-writer.md                    # must be >= 1
+```
+
+**FAIL condition:** any count is 0.
+
+### Check 48 — cv_template/word_templates_path fully retired; new-user templates scaffolding wired (2026-07-04 fix)
+
+`cv_template` and `word_templates_path` are retired config keys — CV/cover-letter/Hebrew templates resolve by fixed filename from `career-data/references/templates/` only, never a config lookup or external OS path. `career-engine-setup/SKILL.md` was the one remaining file still writing these as config keys (with a stale destination-path convention) after the rest of the pipeline had already moved to fixed-filename resolution; the create-prompt handoff template was also still showing the pre-restructure flat career-data tree. Verify both are now consistent, and that the new generic `cover-letter-templates-default.md` ships with zero personal data.
+
+```bash
+# No file writes cv_template/word_templates_path as a config key anymore (each must be 0)
+grep -rc '"cv_template"\|"word_templates_path"' <build>/agents <build>/skills <build>/references --include="*.md" --include="*.json" | grep -v ":0$" | grep -v "qa-plugin.md" | wc -l   # must be 0
+# Setup's document-templates flow uses fixed filenames, no config key (each must be >= 1)
+grep -c "renaming to the fixed filename" <build>/skills/career-engine-setup/SKILL.md                     # must be >= 1
+grep -c "cover-letter-templates-default.md" <build>/skills/career-engine-setup/SKILL.md                  # must be >= 1
+grep -c "keep the style names\|those names don't change" <build>/skills/career-engine-setup/SKILL.md     # must be >= 1
+# Handoff create-prompt scaffolds the full modern structure (each must be >= 1)
+grep -c "background/" <build>/references/career-data-skill-handoff.md                                    # must be >= 1
+grep -c "framework/" <build>/references/career-data-skill-handoff.md                                      # must be >= 1
+grep -c "voice-and-identity/" <build>/references/career-data-skill-handoff.md                             # must be >= 1
+grep -c "templates/" <build>/references/career-data-skill-handoff.md                                      # must be >= 1
+# The new generic templates file carries zero personal data (must be 0)
+grep -ic "rachel\|cheyfitz\|visual layer\|coro\b\|lytx" <build>/references/cover-letter-templates-default.md   # must be 0
+# voice-calibration-method.md documents both formats (each must be >= 1)
+grep -c "Templates-aware format" <build>/references/voice-calibration-method.md                           # must be >= 1
+grep -c "Fallback: six-dimension format" <build>/references/voice-calibration-method.md                    # must be >= 1
+```
+
+**FAIL condition:** the config-key-write count is nonzero, the personal-data count in the new templates file is nonzero, or any "must be >= 1" count is 0.
+
+### Check 49 — Tier 1/Tier 2 grading model, Gate 9, coach outline, and verbatim-preservation wired end-to-end (2026-07-05 fix)
+
+A real production letter (Nova) passed the gatekeeper with severe problems — no philosophy-before-proof paragraph, zero identity-idiom instances, zero short sentences, a transferable opener, and several banned-pattern variants a literal-string search couldn't match. Fixed by replacing the Grade A-D model with Tier 1 (100%, no exceptions) / Tier 2 (≥70% aggregate, 35 named check types) grading, adding Gate 9 (Structural Completeness), broadening Gate 7's false-range/approach-announcement bans to fragment families, adding a Gate 5 opener forcing function and a Gate 8 vague-object forcing function, moving template selection from the letter-writer to the coach (removing a hardcoded personal/cultural criterion), and adding a positive verbatim-reuse instruction. Verify all of it landed together, not just the gatekeeper-checks half.
+
+```bash
+# Grade A-D fully retired; Tier 1/Tier 2 language present
+grep -rc "Grade A\|Grade: A\|\[Grade:" <build>/agents <build>/skills --include="*.md" | grep -v ":0$" | grep -v "linkedin-post-reviewer" | grep -v "qa-plugin.md" | wc -l   # must be 0
+grep -c "Tier 1" <build>/skills/gatekeeper-checks/SKILL.md          # must be >= 1
+grep -c "Tier 2" <build>/skills/gatekeeper-checks/SKILL.md          # must be >= 1
+grep -c "Tier 1 / Tier 2" <build>/CLAUDE.md                          # must be >= 1 (glossary entry)
+# Gate 9 exists and is Tier 1 (not Tier 2) for Block presence + identity idiom
+grep -c "Gate 9 — Structural Completeness" <build>/skills/gatekeeper-checks/SKILL.md   # must be >= 1
+grep -c "Tier 1 — 100% required, no exceptions" <build>/skills/gatekeeper-checks/SKILL.md   # must be >= 1
+# Dial-sheet / word-count language is max-only, no floor
+grep -c "no floor on any of these" <build>/skills/gatekeeper-checks/SKILL.md          # must be >= 1
+grep -c "no floor on any of these\|no floor\|no minimum" <build>/references/cover-letter-templates-default.md   # must be >= 1
+# Syntax-correctness Tier 2 check type present
+grep -c "Syntax correctness" <build>/skills/gatekeeper-checks/SKILL.md                # must be >= 1
+# Tier 2 checklist present and enumerated (35 base -> 36 same-day template-variant-reuse addition -> 32 after the later same-day Gate 6 Tier 1 promotion; Check 51 verifies the final count precisely, this just confirms the checklist concept exists)
+grep -c "distinct, named check types" <build>/skills/gatekeeper-checks/SKILL.md    # must be >= 1
+# Gate 7 broadened to fragment families, not one literal string
+grep -c "totalizing-claim family" <build>/skills/gatekeeper-checks/SKILL.md           # must be >= 1
+grep -c "method-before-demonstration family" <build>/skills/gatekeeper-checks/SKILL.md   # must be >= 1
+grep -c "totalizing-claim family" <build>/skills/writer-craft/SKILL.md                # must be >= 1
+grep -c "totalizing-claim family" <build>/skills/humanizer/SKILL.md                   # must be >= 1
+# Coach pre-draft outline option present, and it — not the letter-writer — selects the template
+grep -c "Option 4a — Pre-Draft Outline" <build>/agents/career-coach.md                # must be >= 1
+grep -c "coach-outline.md" <build>/agents/career-coach.md                             # must be >= 1
+grep -c "You do not choose the template" <build>/agents/letter-writer.md              # must be >= 1
+# Israeli/Israel hardcoding fully removed from letter-writer.md
+grep -ci "israel" <build>/agents/letter-writer.md                                     # must be 0
+# Gap_handling-conditional coach review output present
+grep -c "I'm convinced\|I'm not convinced because" <build>/agents/career-coach.md     # must be >= 1
+# Verbatim-preservation principle present (writer-craft + letter-writer), with no invented example phrases
+grep -c "Verbatim-preservation principle" <build>/skills/writer-craft/SKILL.md        # must be >= 1
+grep -c "Verbatim-preservation principle" <build>/agents/letter-writer.md             # must be >= 1
+# No reuse/repetition-across-letters policing anywhere (retracted plan item must not have crept in)
+grep -rci "bert similarity\|n-gram.*reuse\|reuse.*across letters.*ban\|shares 10+ consecutive words with.*any prior letter" <build>/agents <build>/skills <build>/references --include="*.md" | grep -v ":0$" | grep -v "qa-plugin.md" | wc -l   # must be 0
+# corpus-stats.py exists, stdlib-only (no third-party imports), and is wired into at least one consumer
+test -f <build>/skills/humanizer/scripts/corpus-stats.py && echo 1 || echo 0          # must be 1
+grep -Ec "^import (docx|requests|numpy|pandas|nltk)" <build>/skills/humanizer/scripts/corpus-stats.py   # must be 0
+grep -c "corpus-stats.py" <build>/skills/humanizer/SKILL.md                           # must be >= 1
+# Pipeline wiring: coach outline spawn + Template selected threading + SendMessage preflight in both pipelines
+grep -c "Coach pre-draft outline" <build>/skills/career-engine-new-application/SKILL.md   # must be >= 1
+grep -c "Coach pre-draft outline" <build>/skills/career-engine-edit/SKILL.md              # must be >= 1
+grep -c "Template selected=" <build>/skills/career-engine-new-application/SKILL.md        # must be >= 2 (Steps 5.2 and 5.95)
+grep -c "Template selected=" <build>/skills/career-engine-edit/SKILL.md                   # must be >= 2 (Steps E7.3 and E7.7)
+grep -c "SENDMESSAGE_AVAILABLE" <build>/skills/career-engine-new-application/SKILL.md     # must be >= 1
+grep -c "SENDMESSAGE_AVAILABLE" <build>/skills/career-engine-edit/SKILL.md                # must be >= 1
+```
+
+**FAIL condition:** any "must be 0" count is nonzero, or any "must be >= N" count is below its stated requirement.
+
+### Check 50 — Intake page-body purity, mandatory-field parity, and Job URL correction wired (2026-07-05 fix)
+
+A live-run audit found Notion page bodies carrying content beyond the sanctioned outreach map (numbered WIWTR-style questions, free-text "Writing Angle"/"Message angle" sections — none authorized anywhere in the plugin), five mandatory coach fields missing from one or more of the three parity lists, and no mechanism to correct a Notion `Job URL` once the pipeline found a working alternate for a broken one. Verify all three fixes landed together.
+
+```bash
+# Outreach map is bounded to exactly four parts — coach-side instruction, gatekeeper check, intake extraction rule
+grep -c "ONLY page-body content in the entire intake pipeline" <build>/skills/career-coach/coach-output.md   # must be >= 1
+grep -c "Outreach map structural purity" <build>/skills/gatekeeper-checks/SKILL.md                            # must be >= 1
+grep -c "Extraction — the ONLY sanctioned page-body write" <build>/skills/career-engine-intake/SKILL.md       # must be >= 1
+grep -c "outreach map structural purity check" <build>/agents/gatekeeper.md                                   # must be >= 1
+# No file anywhere defines Writing Angle / Message angle as an actual heading or labeled section (as opposed to naming it in prose as a banned example, which the ban instructions themselves legitimately do)
+grep -rc "^## Writing Angle\|^\*\*Message [Aa]ngle:\*\*" <build>/agents <build>/skills --include="*.md" | grep -v ":0$" | wc -l   # must be 0
+# Mandatory-field parity — 5 fields added to all 3 lists (Step 0.8, Step 0.9a, gatekeeper presence-check)
+for f in "Manager role confirmed" "Hiring manager's role" "Company Stage" "JD proof" "JD Body"; do
+  grep -c "$f" <build>/skills/career-engine-intake/SKILL.md   # each must be >= 2 (Step 0.8 list + Step 0.9a confirmation-pass list, at minimum)
+done
+grep -c "Company Stage" <build>/skills/gatekeeper-checks/SKILL.md          # must be >= 1 (presence-check list)
+grep -c "Manager role confirmed" <build>/skills/gatekeeper-checks/SKILL.md # must be >= 1
+grep -c "Hiring manager's role" <build>/skills/gatekeeper-checks/SKILL.md  # must be >= 1
+# Job URL correction mandate — capture, coach backstop, write rule, ownership doc
+grep -c "Working URL (if different from Job URL)" <build>/skills/career-engine-intake/SKILL.md   # must be >= 1 (queue.md template field)
+grep -c "Job URL verification (backstop only)" <build>/skills/career-coach/coach-research.md      # must be >= 1
+grep -c "Corrected Job URL" <build>/skills/career-coach/coach-output.md                            # must be >= 2 (template line + Output Rules note)
+grep -c "write only when a correction is available" <build>/skills/career-engine-intake/SKILL.md   # must be >= 1 (Step 0.9a write rule)
+grep -c "Job URL correction" <build>/CLAUDE.md                                                     # must be >= 1 (cross-file-contract row)
+```
+
+**FAIL condition:** any "must be 0" count is nonzero, or any "must be >= N" count is below its stated requirement.
+
+### Check 51 — Generic-default-template reuse check, identity-idiom adjacency fix, and Gate 6 Tier 1 promotion wired (2026-07-05 fix, same-day revision)
+
+Two live letters (Mixmax, Unframe) each reused a template illustrative variant nearly word-for-word in 2-3 structural blocks; the user then confirmed the reused phrases were her own real prior sentences captured in her *personalized* templates file, not the plugin's synthetic scaffolding — narrowing the check to the generic default template only. Separately: an identity-idiom timing ambiguity was fixed, a full production trace showed the literally-banned word "passionate" was correctly detected by the gatekeeper but PASSed anyway because Tier 2's percentage-based grading diluted one banned-word hit into an invisible few percent — fixed by promoting Gate 6's curated literal-string lists (and the fit-declaration family) to Tier 1, dropping Tier 2 from 36 to 32 check types. Verify all of it landed consistently — this count changed twice in one day (35→36→32), so check for the final state and the absence of every intermediate one.
+
+```bash
+# Generic-default-template reuse check present, correctly narrowed to exclude personalized files
+grep -c "Generic-default-template verbatim reuse" <build>/skills/gatekeeper-checks/SKILL.md         # must be >= 1
+grep -c "against a user's own" <build>/skills/gatekeeper-checks/SKILL.md                             # must be >= 1
+grep -c "do not run this check at all" <build>/skills/gatekeeper-checks/SKILL.md                    # must be >= 1 (personalized-file skip)
+# Every check-type count is internally consistent at 32 (35 base -> 36 same-day addition -> 32 after Gate 6 promotion) — no orphaned old count anywhere
+grep -c "32 distinct, named check types" <build>/skills/gatekeeper-checks/SKILL.md   # must be >= 1
+grep -rc "3[456] distinct, named check types" <build>/skills/gatekeeper-checks/SKILL.md | grep -v ":0$" | wc -l   # must be 0
+grep -c "\[n\] of 32" <build>/agents/gatekeeper.md                                    # must be >= 1
+grep -Ec "\[n\] of 3[456]" <build>/agents/gatekeeper.md                               # must be 0
+grep -c "32 named, binary check types" <build>/CLAUDE.md                             # must be >= 1
+grep -c "36-item checklist\|35-item checklist" <build>/CLAUDE.md                     # must be 0
+# Identity-idiom adjacency fix — proof either side of the label now explicitly passes; the "several paragraphs away" failure case is explicit
+grep -c "direction doesn't matter, adjacency does" <build>/skills/gatekeeper-checks/SKILL.md          # must be >= 1
+grep -c "still fails" <build>/skills/gatekeeper-checks/SKILL.md                                       # must be >= 1 (the several-paragraphs-away FAIL case is named explicitly)
+# Gate 6 Tier 1 promotion — curated lists + fit-declaration in Tier 1, only idiom/metaphor stays Tier 2
+grep -c "Gate 6 (Banned Terms) — the curated literal-string lists only" <build>/skills/gatekeeper-checks/SKILL.md   # must be >= 1 (Tier 1 gate list entry)
+grep -c "This is the seat" <build>/skills/gatekeeper-checks/SKILL.md                                  # must be >= 1
+# Personal-voice exemption extended beyond idioms to the whole banned-vocabulary list
+grep -c "Personal-voice exemption — same rule as the idiom exemption" <build>/skills/writer-craft/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** any "must be 0" count is nonzero, or any "must be >= N" count is below its stated requirement. The two "must be 0" checks (old "35" references) are the important ones here — a half-updated count is worse than the original ambiguity, since it makes the checklist internally inconsistent.
+
+### Check 52 — Orchestrator-side Bash mechanical backstop, humanizer Bash grant, and coach-outline literal-path enforcement (2026-07-05 fix)
+
+A full trace of a real production run found Bash unavailable to every gatekeeper and humanizer subagent spawn in that environment — every word count and banned-vocabulary check was a hand estimate, wrong by 10-45 words every round, shipping two letters over the 320-word cap (one also with a literal banned word, "passionate," that a narrower grep pattern missed on the first pass). Separately, the humanizer agent's frontmatter never granted it Bash at all, and the coach's pre-draft-outline step wrote its two output files to environment-specific scratch paths instead of the literal `$PIPE/` names the doctrine specifies. Verify all three fixes.
+
+```bash
+# Orchestrator-level guaranteed Bash backstop at final pre-export verification, both pipelines
+grep -c "guaranteed-mechanical enforcement of the cap" <build>/skills/career-engine-new-application/SKILL.md   # must be >= 1
+grep -c "guaranteed-mechanical enforcement" <build>/skills/career-engine-edit/SKILL.md                          # must be >= 1
+grep -c "Gate 6 Tier 1 banned-vocabulary" <build>/skills/career-engine-new-application/SKILL.md                 # must be >= 1
+grep -c "Gate 6 Tier 1 banned-vocabulary" <build>/skills/career-engine-edit/SKILL.md                            # must be >= 1
+# Gatekeeper must self-report when Bash is unavailable, never silently substitute a hand count
+grep -c "say so explicitly, do not silently substitute a hand count" <build>/agents/gatekeeper.md   # must be >= 1
+# Humanizer granted Bash and told to use it for every countable Final Gate check
+grep -c "^tools:.*Bash" <build>/agents/humanizer.md              # must be >= 1
+grep -c "never hand-tally" <build>/agents/humanizer.md           # must be >= 1
+# Coach must write to the literal $PIPE paths, never invent its own filename
+grep -c "never invent your own filename" <build>/agents/career-coach.md   # must be >= 1
+```
+
+**FAIL condition:** any count is 0.
+
+### Check 53 — Post-run wrap-up (Steps 8-9c) runs on an interrupted queue, not just a completed one (2026-07-05 fix)
+
+A real production run hit a non-retryable spend-limit error two roles into a five-role queue, correctly stopped the per-role loop, but then skipped the entire post-run sequence (LinkedIn updates, run-level revision log, bullet approval, run-metrics) because its only trigger condition was "when all roles complete" — never satisfied on an interrupted run. The two fully-completed roles ended up with none of the three run-level artifact files every prior run in the archive has.
+
+```bash
+grep -c "If the loop stops early instead" <build>/skills/career-engine-orchestrator/orchestrator-queue.md   # must be >= 1
+grep -c "do not skip straight to a chat summary" <build>/skills/career-engine-orchestrator/orchestrator-queue.md   # must be >= 1
+grep -c "OR when the per-role loop stops early" <build>/skills/career-engine-orchestrator/orchestrator-post-run.md   # must be >= 1
+grep -c "Interrupted run (a hard external blocker" <build>/skills/career-engine-orchestrator/orchestrator-post-run.md   # must be >= 1 (Final Chat Delivery's second message form)
+grep -c "\"interrupted\":" <build>/skills/career-engine-orchestrator/orchestrator-post-run.md   # must be >= 1 (run-metrics schema field)
+```
+
+**FAIL condition:** any count is 0.
+
+### Check 54 — Information Sequencing (personal-affinity opener rule) wired end-to-end (2026-07-06 addition)
+
+New craft rule: a cover letter's opener may lead with a personal detail only when that detail is itself the professional credential for the role — affinity/fandom/biographical attachment must wait for the body, after a proof anchor, and must never be explained ("labeling") once placed. Verify the doctrine, its enforcement, and the writer's own self-check all landed together.
+
+```bash
+grep -c "Information Sequencing" <build>/skills/writer-craft/SKILL.md              # must be >= 1 (doctrine)
+grep -c "Pattern J — Personal-affinity opener" <build>/skills/gatekeeper-checks/SKILL.md   # must be >= 1 (enforcement)
+grep -c "Pattern A-J" <build>/skills/gatekeeper-checks/SKILL.md                    # must be >= 1 (range updated from A-I)
+grep -c "Pattern A-I" <build>/skills/gatekeeper-checks/SKILL.md                    # must be 0 (old range must not survive alongside the new one)
+grep -c "Information Sequencing" <build>/agents/letter-writer.md                   # must be >= 1 (round-1 self-check)
+grep -c "Information Sequencing" <build>/references/cover-letter-templates-default.md   # must be >= 1 (pointer)
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement, or the "must be 0" count is nonzero.
+
+### Check 36 — Humanizer enforcement mechanisms present (2026-07-02 fix)
+
+Four enforcement-strengthening additions closing rule-exists-but-applied-inconsistently gaps diagnosed from real letters: an exhaustiveness re-scan, a generalized inanimate-subject test (not a fixed 3-verb list), an explicit metaphor/simile naming in Step 3, and a mandatory subject-change trigger for the pronoun-antecedent check.
+
+```bash
+grep -c "Exhaustiveness pass" <build>/skills/humanizer/SKILL.md                          # must be >= 1
+grep -c "could only a person actually do this" <build>/skills/humanizer/SKILL.md         # must be >= 1
+grep -c "only people build, craft, drive" <build>/skills/humanizer/SKILL.md              # must be 0 (superseded fixed-list phrasing must not reappear)
+grep -c "hollow spatial/abstract metaphors" <build>/skills/humanizer/SKILL.md            # must be >= 1
+grep -c "Mandatory trigger, not just a general reminder" <build>/skills/humanizer/SKILL.md  # must be >= 1
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement, or the "must be 0" count is nonzero.
+
+### Check 37 — Intake queue selection driven by Prioritization's scores (2026-07-02 fix)
+
+Step 0.7's `scored`/`unscored` buckets must select `scored` roles first (ordered by Priority), regardless of coach-complete status, so the Prioritization pipeline's output actually informs full intake's 5-role selection. The stale "unscored roles first" framing must not remain anywhere in the file.
+
+```bash
+grep -c "scored. roles take priority, ordered by their existing Priority value" <build>/skills/career-engine-intake/SKILL.md   # must be >= 1
+grep -c "unscored roles first, random tie-break among unscored, then scored roles by Priority" <build>/skills/career-engine-intake/SKILL.md   # must be 0 (superseded summary phrasing must not reappear)
+grep -c "Prioritization → full-intake queue selection" <build>/CLAUDE.md                 # must be >= 1 (cross-file-contract row)
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement, or the "must be 0" count is nonzero.
 
 ### Check 30 — Changelog rules present in CLAUDE.md; README.md changelog is well-formed
 
@@ -754,6 +1226,7 @@ These names have been retired over the plugin's history and must not appear as a
 grep -rn "employment-coach\|career-engine-coach\b" <location>/agents <location>/skills <location>/references --include="*.md" | grep -v "qa-plugin.md"
 grep -rn "cv-campaign-intake\|cv-campaign-setup\|cv-campaign-steps\|cv-campaign-edit\|cv-campaign-orchestrator\|cv-campaign-export" <location> --include="*.md" | grep -v "qa-plugin.md"
 grep -rn "application-intake\|application-edit\|new-application-steps\|applications-orchestrator\|application-files-export" <location> --include="*.md" | grep -v "qa-plugin.md"
+grep -rn "cover-letter-humanizer\|voice-analyst" <location>/agents <location>/skills --include="*.md" | grep -v "qa-plugin.md"
 ```
 
 **FAIL condition (Step 0A–0C):** any reference to a name not in the current inventory, or any hit on the retired-name list.
@@ -869,7 +1342,7 @@ This is the closest achievable equivalent to a sandboxed execution. You cannot c
 - Position: Head of Marketing
 - Job URL: `https://il.indeed.com/viewjob?jk=abc123redirect`
 - JD Body: empty
-- Status: Hold
+- Status: Needs Research
 - Edit type: (not set)
 - All coach properties: empty
 

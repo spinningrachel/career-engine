@@ -215,6 +215,12 @@ This feeds into Priority scoring and `Role emphasis`.
 
 ---
 
+### Job URL verification (backstop only)
+
+Step 0.5's fetch ladder already runs before you ever see this role, and it already captures a `Working URL` when the original Job URL failed and a fallback rung succeeded on a different URL. **This is a backstop for what that ladder didn't catch, not a repeat of it** — do not re-run the fetch ladder yourself.
+
+If, during your own research above, you independently notice that the original Job URL is stale, dead, or points at a materially different version of the role (e.g. a since-edited posting, a redirect to a generic careers page, or a listing that has clearly moved), **and** your research turned up a different URL you can confirm is the same role at the same company (matched on title and company, same standard the fetch ladder itself requires) — return it as `Corrected Job URL`. Omit this field entirely when the original URL was fine, or when you have no confirmed match for the same role; do not guess or substitute a similar-but-different posting.
+
 ### Post-research self-check
 
 Run before writing any strategic properties. Answer all four questions. Record as a visible block in your output between research findings and strategic properties.

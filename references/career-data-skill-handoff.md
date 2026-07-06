@@ -68,28 +68,54 @@ Create a skill called career-data using /skill-creator.
 
 career-data is a personal data store for the career-engine plugin. It holds my writing
 rules, professional background, positioning framework, and pipeline configuration. Build it
-as a skill with this exact structure, then package and install it via Customize → Skills:
+as a skill with this exact structure, then package and install it via Customize → Skills.
+
+**Some directories below are seeded with only the fixed-name files this setup run
+produced — that is expected and correct, not incomplete.** `background/` and `framework/`
+grow over time: a role-facts file is added per employer, a framework file per methodology or
+POV, as the user's positioning work develops in later sessions (via `update-refs`). Create
+every directory now, even ones that hold only one or two files today.
 
 career-data/
 ├── SKILL.md
 ├── career-data-marker.json
+├── pipeline-preferences.json
 └── references/
-    ├── _STRUCTURE-DO-NOT-CHANGE.md   ← the structure contract; preserve section structure
+    ├── _STRUCTURE-DO-NOT-CHANGE.md      ← the structure contract; preserve section structure
     ├── 01-writing-rules.md
-    ├── 02-professional-background.md
-    ├── 03-framework.md
+    ├── 02-professional-background.md    ← router (see background/ below)
+    ├── 03-framework.md                  ← positioning/voice, +methodology router (see framework/ below)
     ├── linkedin-profile.md
-    ├── pipeline-preferences.json
-    ├── <cv-template>.dotx        ← I will attach this file
-    └── delivered-letters/        ← I will attach these files, if any
+    ├── background/
+    │   ├── background-cv-summaries.md
+    │   ├── background-motivation-bank.md
+    │   ├── background-approved-bullets.md
+    │   ├── background-role-facts-<company-slug>.md   ← one per employer confirmed in the interview; filenames and count vary per user
+    │   ├── background-testimonials.md
+    │   ├── background-portfolio.md
+    │   └── background-cross-cutting-skills.md
+    ├── framework/                        ← one file per methodology/POV topic surfaced in the interview; filenames, count, and topics vary per user — may be thin or absent for a brand-new user and grow via update-refs later
+    │   └── framework-<topic-slug>.md
+    ├── voice-and-identity/
+    │   ├── personal-brand-context.md     ← optional; only if the user did personal-brand work during setup
+    │   └── linkedin-post-strategy.md     ← optional; only if the user set LinkedIn content goals during setup
+    ├── templates/
+    │   ├── cv.dotx                       ← I will attach this file, or use the plugin's own default
+    │   ├── cover-letter-template.dotx    ← I will attach this file, or use the plugin's own default
+    │   ├── cover_letter_templates.md     ← the plugin's generic Template A/B structure doc
+    │   ├── cvHe.dotm                     ← optional, only if I configured a second RTL language and provided one
+    │   └── he-letter.dotx                ← optional, only if I configured a second RTL language and provided one
+    └── delivered-letters/
+        └── INDEX.md                      ← I will attach any delivered-letter files too, if any exist yet
 
 SKILL.md contents:
 [FULL SKILL.md CONTENT — the description must say this is the career-engine personal data
 store, loaded on request, never auto-applied]
 
 career-data-marker.json contents:
-[FULL MARKER JSON — including expected_files list, which MUST list
-references/_STRUCTURE-DO-NOT-CHANGE.md alongside every other file]
+[FULL MARKER JSON — including expected_files list, which MUST list every file actually
+created above (including references/_STRUCTURE-DO-NOT-CHANGE.md) by its real path — do not
+list a file that wasn't created, and do not omit one that was]
 
 references/_STRUCTURE-DO-NOT-CHANGE.md contents:
 [FULL CONTENT, untruncated — a verbatim copy of the plugin's
@@ -104,19 +130,37 @@ references/01-writing-rules.md contents:
 [FULL CONTENT, untruncated]
 
 references/02-professional-background.md contents:
-[FULL CONTENT, untruncated]
+[FULL router content — the routing table pointing at the background/ sub-files above, per
+the structure contract. Do not inline the sub-file content here; it lives in its own file.]
 
 references/03-framework.md contents:
-[FULL CONTENT, untruncated]
+[FULL CONTENT, untruncated — positioning/voice sections inline, plus the methodology router
+table pointing at the framework/ sub-files above, per the structure contract]
 
 references/linkedin-profile.md contents:
 [FULL CONTENT, untruncated]
 
+references/background/background-*.md contents (one block per file actually created above):
+[FULL CONTENT, untruncated, per file]
+
+references/framework/framework-*.md contents (one block per file actually created above,
+omit entirely if none were produced this session):
+[FULL CONTENT, untruncated, per file]
+
+references/voice-and-identity/*.md contents (omit entirely if neither was produced this
+session):
+[FULL CONTENT, untruncated, per file]
+
+references/templates/cover_letter_templates.md contents:
+[FULL CONTENT, untruncated — the plugin's generic default, or the user's own if they
+provided one]
+
 references/pipeline-preferences.json contents:
 [FULL JSON, untruncated]
 
-For the .dotx template and any delivered-letter files: I am attaching them to this message —
-place them in references/ (and references/delivered-letters/ for the letters).
+For the `.dotx`/`.dotm` templates and any delivered-letter files: I am attaching them to this
+message — place the templates in references/templates/ (renamed to the fixed filenames
+above regardless of their original names) and the letters in references/delivered-letters/.
 
 After building:
 1. Confirm career-data-marker.json lists every file above in expected_files —

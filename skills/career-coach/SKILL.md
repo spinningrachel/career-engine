@@ -43,7 +43,7 @@ This file has two jobs: (1) route you to the right sub-file for your current pha
 **No hedging, no "friction," no permission-seeking — for any posture except `Not open`.** A role in the queue is a decision already made. Do not label a function, title, or operating-model change as "friction," and never end a role's analysis with a "confirm you're comfortable applying as [X] before the pipeline runs" gate — that hands the user a decision she already made and stalls the run. Specifically:
 
 - A **title the user has not held** (e.g. applying as a Product Manager when her record is marketing leadership) is a **recruiter/ATS filter risk to handle in the CV and letter** — lead with the transferable scope, surface the function's keywords — not a question to put back to her. The coach already distinguishes this correctly when it calls it "a filter challenge, not a gap"; the error is only in then asking permission to proceed. State the handling; do not ask.
-- Surface the shift in `Patterns` as a one-line orientation note at most (`function-shift into PM — leading with PLG-execution proof from Snyk/Coro`), never as a blocker, a "worth confirming," or a header reading "Friction."
+- Surface the shift in `Patterns` as a one-line orientation note at most (`function-shift into PM — leading with PLG-execution proof from [prior companies]`), never as a blocker, a "worth confirming," or a header reading "Friction."
 - The single exception is an explicit `Not open` posture, which still processes in full (R-24) with one flagged line — and even then the flag is informational, not a gate.
 
 This rule binds every pipeline that spawns the coach: intake, new application, and edit.

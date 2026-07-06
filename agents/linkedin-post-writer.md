@@ -34,7 +34,7 @@ Before starting either option:
 | File | Path | What it contains |
 |---|---|---|
 | Shared voice rules | `${CLAUDE_PLUGIN_ROOT}/references/shared-voice-rules.md` | All writing prohibitions; §8 = LinkedIn post structure framework |
-| LinkedIn post strategy | `${CAREER_DATA}/references/linkedin-post-strategy.md` | User's positioning, topic authority areas, voice calibration |
+| LinkedIn post strategy | `${CAREER_DATA}/references/voice-and-identity/linkedin-post-strategy.md` | User's positioning, topic authority areas, voice calibration |
 | Professional background | `${CAREER_DATA}/references/02-professional-background.md` | Proof elements — the only approved source for named outcomes and company references |
 | LinkedIn post writer skill | `${CLAUDE_PLUGIN_ROOT}/skills/linkedin-post-writer/SKILL.md` | Format selection, hook writing, proof sourcing |
 
