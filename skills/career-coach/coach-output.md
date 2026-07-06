@@ -65,6 +65,8 @@ Return findings in this exact structure for every role received.
 - **Hiring manager's role:** <title + sentence> [HIGH/LOW]
 - **Manager role confirmed:** <Yes | No; this is only a hypothesis>
 - **No incumbents in this function:** <value>
+
+  **These five are five separate lines, not one merged field.** A real production run collapsed `Hiring Manager's Name`, `Hiring manager's role`, and `Manager role confirmed` into a single free-text "Hiring Manager" line — this silently drops two mandatory properties even though the output reads as if the question was answered. Return each on its own labeled line above, every time, even when the answer is short (`Not identifiable`, `N/A`, `No`).
 - **Corrected Job URL:** <omit this line entirely unless the Job URL verification check above found a confirmed working alternate — never guess>
 - **Recent news:** <one sentence, or "None found in last 6 months">
 - **Funding context:** <round, amount, date, investors>

@@ -83,6 +83,16 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-06 — Real-run trace: Prioritization pipeline hardening, intake no-improvise guardrail
+
+Triggered by tracing a real "run intake" session export where both `role-prioritizer` subagent spawns failed and the orchestrating session hand-rolled a substitute for both the Prioritization and Intake pipelines instead of stopping to report the blocker.
+
+**Bug fixes**
+- **Role-prioritizer's Path B delegation was impossible to execute** — its own doctrine said to delegate the oversized `notion-query-database-view` result to a subagent, but the agent has no Task/Agent-tool grant and cannot spawn one. A live run fell through to Path B, received a 425KB single-line payload directly, and burned ~50 tool calls trying to grep-parse it before giving up. Fixed: the agent now prefers Path A1/A2 (bounded, filtered results) and stops-and-reports instead of attempting Path B at all when both fail.
+- **`career-data` self-locate stopped at one or two fixed path guesses** — in a connected-folder sandbox (Cowork-style host-loop sessions), skills mount at a session-specific root that isn't `~`, so a hardcoded absolute-path check can fail even when `career-data` is present and reachable. A live run's role-prioritizer subagent gave up this way while the main session found the same skill seconds later with a broader search. Fixed in `agents/role-prioritizer.md` and `skills/career-engine-intake/SKILL.md` Step −0.5: search a filesystem-listing tool first, then a recursive glob, then the fixed candidates, before concluding not-found.
+- **Intake had no guardrail against hand-rolling a substitute for a missing prerequisite** — finding 0 `Needs Research` roles is now an explicit stop-and-report ("run Prioritization first") rather than license to improvise Prioritization's writes by hand and then bypass intake's own `$PIPE`, Step 0.8.5 gatekeeper gate, and Step 0.9e outreach-map write, which is exactly what the traced run did.
+- **`No incumbents in this function` was a third instance of the mandatory-coach-field-parity drift** — present in `coach-output.md`'s template but absent from all three enforcement lists (Step 0.8 coach-complete, Step 0.9a confirmation-pass, gatekeeper presence-check). Added to all three. Also added an explicit gatekeeper check for the traced run's other field-drop: the coach merging `Hiring Manager's Name`/`Hiring manager's role`/`Manager role confirmed` into one free-text field under the wrong name.
+
 ### 2026-07-06 — Information Sequencing: professional fit leads the cover-letter opener, personal proof follows
 
 **New features**
