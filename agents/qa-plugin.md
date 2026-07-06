@@ -1129,6 +1129,21 @@ grep -c "\"interrupted\":" <build>/skills/career-engine-orchestrator/orchestrato
 
 **FAIL condition:** any count is 0.
 
+### Check 54 — Information Sequencing (personal-affinity opener rule) wired end-to-end (2026-07-06 addition)
+
+New craft rule: a cover letter's opener may lead with a personal detail only when that detail is itself the professional credential for the role — affinity/fandom/biographical attachment must wait for the body, after a proof anchor, and must never be explained ("labeling") once placed. Verify the doctrine, its enforcement, and the writer's own self-check all landed together.
+
+```bash
+grep -c "Information Sequencing" <build>/skills/writer-craft/SKILL.md              # must be >= 1 (doctrine)
+grep -c "Pattern J — Personal-affinity opener" <build>/skills/gatekeeper-checks/SKILL.md   # must be >= 1 (enforcement)
+grep -c "Pattern A-J" <build>/skills/gatekeeper-checks/SKILL.md                    # must be >= 1 (range updated from A-I)
+grep -c "Pattern A-I" <build>/skills/gatekeeper-checks/SKILL.md                    # must be 0 (old range must not survive alongside the new one)
+grep -c "Information Sequencing" <build>/agents/letter-writer.md                   # must be >= 1 (round-1 self-check)
+grep -c "Information Sequencing" <build>/references/cover-letter-templates-default.md   # must be >= 1 (pointer)
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement, or the "must be 0" count is nonzero.
+
 ### Check 36 — Humanizer enforcement mechanisms present (2026-07-02 fix)
 
 Four enforcement-strengthening additions closing rule-exists-but-applied-inconsistently gaps diagnosed from real letters: an exhaustiveness re-scan, a generalized inanimate-subject test (not a fixed 3-verb list), an explicit metaphor/simile naming in Step 3, and a mandatory subject-change trigger for the pronoun-antecedent check.

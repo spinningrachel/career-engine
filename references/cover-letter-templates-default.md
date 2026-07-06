@@ -73,7 +73,7 @@ Layer 1 (universal mechanics) and Layer 2 (per-user parameters) embedded. Layer 
 **Dials (maximums — no minimums; a shorter letter is never a violation):** {MAX_WORDS} words (default ≤320), up to {SENTENCE_COUNT_MAX} sentences (default ≤18), contractions light (default ≤1 per 100w), exclamations 0–1 beyond greeting, numerals up to {NUMERAL_COUNT_MAX} (default ≤8, for metrics readers).
 
 ## Block 1 — Opening (2–3 sentences)
-Within the first two sentences the reader knows why this person, this company, right now. The context must be non-transferable.
+Within the first two sentences the reader knows why this person, this company, right now. The context must be non-transferable. Professional fit leads; personal proof follows — a personal detail may open only when it is itself the professional credential, never merely evidence of affinity (see Information Sequencing, `skills/writer-craft/SKILL.md` §8).
 
 **Variants:**
 1. `Thanks to {REFERRER} for flagging the {ROLE} role. The timing is perfect, and I am a {SELF_LABEL} {IDENTITY_IDIOM}.`

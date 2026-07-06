@@ -258,6 +258,7 @@ Run all five checks against the letter as written. If any of (1), (2), or (3) fa
    - Makes a joke or casual aside as its first move
    - Opens with a generic enthusiasm statement ("I was excited to see," "I would love to bring my skills")
    - Establishes fit through a NEGATION rather than a direct claim ("nothing about X feels abstract to me" instead of stating directly what DOES feel concrete)
+   - Leads with personal attachment, fandom, or biographical detail that is evidence of affinity rather than the direct professional credential for this role (Information Sequencing, `skills/writer-craft/SKILL.md` §8) — move it to the body, after a proof anchor, unless the personal fact IS itself the qualification
 2. **Opener coherence** — Does the opener undercut the content cues in Why I Want This Role? If the opener jokes or hedges where the WIWTR signals directness and conviction, that is a mismatch.
 3. **WIWTR implementation** — Is the user's WIWTR material woven into specific narrative moments, or merely mentioned, summarized, or used as a topic heading? The letter must draw from the user's actual words and framing — not produce a thematic summary.
 4. **Concrete vs. abstract** — Does it name something specific about this company or role the reader will recognize as real (a product detail, a market fact, a named proof point)?

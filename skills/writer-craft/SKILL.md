@@ -156,6 +156,15 @@ X is always required. Y is optional when the outcome is specific without a numbe
 
 **Opener source — non-negotiable.** The opener's content and angle come from the user's own words: Why I Want This Role (WIWTR) when present, otherwise the role-matched Motivation Bank entries. Never invented, never derived from the writer's own reading of the JD. Polish for formal writing; do not replace her vocabulary with generic professional language.
 
+**Information Sequencing — professional fit leads, personal proof follows.** The opener earns the reader's attention through professional relevance — the role, the fit, the why-now. Personal details, even highly relevant ones, earn more weight mid-letter once the professional case is already established. Never open with personal attachment, fandom, or biographical detail unless the personal fact is itself the professional credential.
+
+**The test for opener-eligible personal content:** is the personal fact the direct qualification for the role, or is it evidence of passion/affinity? If the former, it may lead. If the latter, it belongs in the body, after at least one proof anchor.
+
+- ✓ **Opener-eligible:** "I've spent 25 years in the Tel Aviv ecosystem" — for a role marketing Tel Aviv. The personal fact is the credential.
+- ✗ **Not opener-eligible:** "I grew up cheering for the Orioles" — for a sports media role. Relevant, but affinity is not qualification. Move to body after the professional case is made.
+
+**Never explain personal relevance — that's labeling, cut it.** If a personal detail belongs mid-letter, place it there and let the reader make the connection. Sentences that explain why a personal detail matters ("That's who I am as a fan, and it's also how I think about audience") are labeling — cut them, wherever in the letter they appear, not just the opener.
+
 **Role named in the first sentence — mandatory.** Does not have to lead the sentence, but must be clear and specific.
 
 **Satisfy this jointly with the Subject-first rule (§4) in the same draft — do not write the sentence one way and let the gatekeeper find the conflict.** A real production run took 4 gatekeeper rounds on one letter because the writer fixed "role in sentence 1" in isolation, which broke "her as grammatical subject," then fixed that, which produced a banned cliché ("...was mine the moment I saw it" — see the phrase ban in §2). The two constraints are jointly satisfiable in one pass: keep her as the grammatical subject and name the role as the object of what she wants or reacted to. Fix pattern: "I want the [Role Title] at [Company]..." or "[Role Title] at [Company] is the reason I'm writing..." — not "[Role Title] at [Company] was mine/meant for me" (satisfies role-placement, breaks subject-first in spirit, and risks the banned fit-declaration family in §2). Draft the opener against both rules at once, not one then the other.
@@ -169,6 +178,7 @@ X is always required. Y is optional when the outcome is specific without a numbe
 - A description of the company's own product/positioning back to them
 - A methodology announcement
 - Anonymous — must name the company or role, not "Reading this posting..."
+- Personal attachment/fandom/biographical detail leading before the professional case is made, unless that detail is itself the credential (see Information Sequencing above)
 
 **⛔ Non-waivable carve-out — even when WIWTR echoes JD language.** The opening-paragraph pattern checks (market-framing, setup-before-subject, JD/company language mirroring) apply even when the candidate's own WIWTR notes happen to echo similar phrasing to the JD or the company's public materials. A real hard fail occurred when a writer "faithfully" traced an opener sentence back to WIWTR text that itself echoed a JD tagline — tracing content back to her own words does not exempt it from the pattern check. If her WIWTR phrasing reproduces JD or company-tagline language closely enough to read as mirroring, rewrite it in a way that keeps her substance and angle but does not mirror the source language. "It came from her own words" is never sufficient justification on its own — the pattern check runs regardless of source.
 
