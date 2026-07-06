@@ -83,6 +83,11 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-06 — Information Sequencing: professional fit leads the cover-letter opener, personal proof follows
+
+**New features**
+- **Information Sequencing rule** (`skills/writer-craft/SKILL.md` §8): a personal detail may open a cover letter only when it is itself the direct professional credential for the role — evidence of affinity or passion (fandom, biographical attachment) must wait for the body, after at least one proof anchor, and must never be explained ("labeling") once placed. Enforced as Gate 5 Pattern J (Tier 1, non-waivable, same as the other opener patterns) and added to the letter-writer's own round-1 opener self-check.
+
 ### 2026-07-05 — Cover-letter Tier 1/Tier 2 grading overhaul, intake page-body purity, and a real-run QA pass
 
 Triggered by an independent review of a real delivered letter (Nova) that passed the gatekeeper despite severe problems — no philosophy-before-proof paragraph, zero identity-idiom instances, zero short sentences, a transferable opener, and several banned-pattern variants a literal-string search couldn't match. Two Explore-agent audits traced every gap to a precise root cause before any fix was designed. A full QA sweep (mechanical checks, Phase 0 cross-reference sweep, pipeline logic review, trace simulation) closed the session, catching a live packaging bug and a dispatch-key mismatch before they shipped.
