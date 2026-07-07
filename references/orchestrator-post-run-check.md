@@ -30,7 +30,7 @@ For each cover letter being validated:
 
 1. Convert to plain text: `pandoc "<output-path>/<cover-letter>.docx" -t plain`
 2. **Greeting:** Confirm the letter opens with "Hi to the" — not "Dear" or any formal variant.
-3. **Word count:** Count body words (excluding greeting and sign-off). Flag if over 320 words (no minimum).
+3. **Word count:** Count body words (excluding greeting and sign-off). Flag if over 320 words (no minimum) — or over 250 when this role's `Strategy = Strategic`.
 4. **Key proof signals:** Confirm that key proof signals from `02-professional-background.md` (Role Facts) — the most recent role's key outcomes — are woven naturally into the body. Flag if the body contains no named outcomes from the candidate's background.
 5. **Sign-off:** Confirm the letter closes with "Looking forward to next steps," followed by the user's full name and nothing else. Flag any additional text after the name.
 6. **Opening paragraph:** Confirm the first paragraph is the user's personal reaction to this specific role — first person, her response to the opportunity, before any credential or company description. This check cannot be waived by coach output or Strategy. Flag if the first paragraph: leads with company analysis; leads with a career credential; leads with an availability statement; OR has the user as the grammatical subject of the first sentence but the sentence pivots immediately to a general market/industry observation rather than her reaction to THIS role (Pattern G2). Also flag if the very first sentence frames an industry challenge or market condition before the user appears as a reacting subject (Pattern I).

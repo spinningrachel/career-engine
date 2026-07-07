@@ -354,7 +354,7 @@ Body paragraphs are regular markdown paragraphs (Normal style — no annotation 
 
 ### Word count and structure
 
-All cover letters are limited to a single page, maximum 320 words with no minimum (not counting greeting or sign-off). This matches the requirement in `skills/writer-craft/SKILL.md` and the gatekeeper check. Structure and voice are consistent across all letters and follow the framework below.
+All cover letters are limited to a single page, maximum 320 words with no minimum (not counting greeting or sign-off) — or 250 when the role's `Strategy = Strategic`. This matches the requirement in `skills/writer-craft/SKILL.md` and the gatekeeper check. Structure and voice are consistent across all letters and follow the framework below.
 
 ### Voice constraints
 

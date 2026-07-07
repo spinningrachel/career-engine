@@ -109,7 +109,7 @@ Every violation must include a `→ [resolution]` per the resolution format in `
 
 ### Coach Output Check
 
-Run all checks in `skills/gatekeeper-checks/SKILL.md` → Coach Output Check: the fabrication check, the **Field-fit and format checks** (items 1-6), the **mandatory-field presence check** (item 7), and the **outreach map structural purity check** (item 8). Any one kind of violation is a FAIL.
+Run all checks in `skills/gatekeeper-checks/SKILL.md` → Coach Output Check: the fabrication check, the **Field-fit and format checks** (items 1-6), the **mandatory-field presence check** (item 7), the **outreach map structural purity check** (item 8), and the **coach context block over-written check** (item 9). Any one kind of violation is a FAIL.
 
 If everything passes, reply `PASS` (no file write needed).
 

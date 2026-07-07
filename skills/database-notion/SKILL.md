@@ -120,10 +120,10 @@ This is Path B step 1 above, also used wherever a skill needs a view URL: one `n
 
 **Write to the EXISTING property of that exact name — never create a property or a numbered variant** (the "Strategy 1" bug: an agent that couldn't write `Strategy` cleanly made a duplicate). If a target property is missing, rejects the write, or its type doesn't match the schema (§1), **stop and report** — never invent a field.
 
-**Write-only-to-empty** (where the caller specifies it): read the current value first; if populated (including `N/A`), skip — do not overwrite. The caller names any always-overwrite exceptions (e.g. `JD proof`, `Strategy`).
+**Both write-only-to-empty and always-overwrite are supported per property — the caller specifies which applies to each, and this adapter has no opinion on which should be the default.** Write-only-to-empty: read the current value first; if populated (including `N/A`), skip — do not overwrite. Always-overwrite: write the coach's/caller's fresh value regardless of what's currently there. Pipelines differ on which is the default: intake's Step 0.9a, for example, defaults every coach-owned property to always-overwrite with three named write-only-to-empty exceptions (`JD Body`, `Gap handling`, the `wiwtr_questions` WIWTR append) — see `career-engine-intake/SKILL.md`. Follow whatever the calling skill specifies per property, not an assumption carried over from a different pipeline.
 
 **Mechanism:**
-- On Path A1 (the `ntn` gate passed), writes may go through `ntn api /v1/pages/<page_id> -X PATCH -d '{"properties": {...}}'` — same write-only-to-empty rule, same parallelism.
+- On Path A1 (the `ntn` gate passed), writes may go through `ntn api /v1/pages/<page_id> -X PATCH -d '{"properties": {...}}'` — same per-property write-only-to-empty / always-overwrite rule, same parallelism.
 - Otherwise use the connector: `notion-update-page`, properties keyed by exact name, select values exactly matching the schema options.
 
   **Exact required call shape — do not guess this.** The tool requires `command` and `page_id` as top-level arguments, NOT the bare `{"id": ..., "properties": {...}}` shape that seems natural by analogy to other Notion tools:

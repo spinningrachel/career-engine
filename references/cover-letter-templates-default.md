@@ -12,7 +12,7 @@ Layer 1 (universal mechanics) and Layer 2 (per-user parameters) embedded. Layer 
 |---|---|
 | Greeting | `Hi to the {COMPANY} team!` Add `and to {REFERRER_NAME}` only for a real referrer. Never "the {NAME}". |
 | Sign-off | `Looking forward to next steps,` or `Excited for what's ahead!` then {YOUR_NAME}. |
-| Length | Max {MAX_WORDS} words (default 320), no minimum. Up to {SENTENCE_COUNT_MAX} sentences (default ≤22), no minimum — a short letter with no padding is not a violation. |
+| Length | Max {MAX_WORDS} words (default 320), no minimum — **except when the coach's `Strategy` property = `Strategic`, where the max is 250 regardless of Template A/B.** Template and Strategy are independent axes; the Strategy override applies on top of whichever template is selected. Up to {SENTENCE_COUNT_MAX} sentences (default ≤22), no minimum — a short letter with no padding is not a violation. |
 | Sentence rhythm | Mean {MEAN_SENTENCE_LENGTH} words (default 14–23) with deliberate spread. Every letter carries one 2–5 word sentence and one {LONG_SENTENCE_LENGTH}+ word sentence (default 35–50). |
 | Sentence engine | Subject-first active declarative. No questions unless deliberate (0–5 flex). No expletive openers ("There is/are"). No abstract label noun-phrase subjects. |
 | Punctuation | Zero em dashes. Zero colons in body copy. Zero semicolons. Commas chain clauses and lists. Exclamations {EXCLAMATION_COUNT} per letter (default 1–2). Parenthetical asides for warmth, never hedging. |
@@ -70,7 +70,7 @@ Layer 1 (universal mechanics) and Layer 2 (per-user parameters) embedded. Layer 
 
 **Use when:** No referral, no personal tie, US/neutral-distance company, metrics-driven or developer reader.
 
-**Dials (maximums — no minimums; a shorter letter is never a violation):** {MAX_WORDS} words (default ≤320), up to {SENTENCE_COUNT_MAX} sentences (default ≤18), contractions light (default ≤1 per 100w), exclamations 0–1 beyond greeting, numerals up to {NUMERAL_COUNT_MAX} (default ≤8, for metrics readers).
+**Dials (maximums — no minimums; a shorter letter is never a violation):** {MAX_WORDS} words (default ≤320; ≤250 when `Strategy = Strategic` — see Shared Invariants → Length), up to {SENTENCE_COUNT_MAX} sentences (default ≤18), contractions light (default ≤1 per 100w), exclamations 0–1 beyond greeting, numerals up to {NUMERAL_COUNT_MAX} (default ≤8, for metrics readers).
 
 ## Block 1 — Opening (2–3 sentences)
 Within the first two sentences the reader knows why this person, this company, right now. The context must be non-transferable. Professional fit leads; personal proof follows — a personal detail may open only when it is itself the professional credential, never merely evidence of affinity (see Information Sequencing, `skills/writer-craft/SKILL.md` §8).
@@ -131,7 +131,7 @@ Vision teaser or diligence proof. No commitment vows in cold letters.
 
 **Use when:** Referral, named individual, local market, personal product connection, trust-driven buyer, founding role, or strong culture fit.
 
-**Dials (maximums — no minimums; a shorter letter is never a violation):** {MAX_WORDS} words (default ≤320), up to {SENTENCE_COUNT_MAX} sentences (default ≤20), contractions on, exclamations up to 2 beyond greeting (never doubled), numerals up to {NUMERAL_COUNT_MAX} (default ≤2), second person up to {SECOND_PERSON_COUNT} (default ≤2), one parenthetical aside allowed.
+**Dials (maximums — no minimums; a shorter letter is never a violation):** {MAX_WORDS} words (default ≤320; ≤250 when `Strategy = Strategic` — see Shared Invariants → Length), up to {SENTENCE_COUNT_MAX} sentences (default ≤20), contractions on, exclamations up to 2 beyond greeting (never doubled), numerals up to {NUMERAL_COUNT_MAX} (default ≤2), second person up to {SECOND_PERSON_COUNT} (default ≤2), one parenthetical aside allowed.
 
 **Required phrasing (founding/build-from-scratch roles only):** `{STRATEGIC_LABEL}` (default "strategic builder") appears exactly once in the letter. Once, not twice.
 
@@ -142,6 +142,7 @@ Vision teaser or diligence proof. No commitment vows in cold letters.
 2. `When I saw the {ROLE} role, I wrote the same day.`
 3. `When I saw that {COMPANY} is building {JD_SUBJECT} and looking for a founding {ROLE} to build the whole engine from zero, I applied immediately.`
 4. `I have followed {COMPANY} for {TIME_PERIOD}, so seeing the {ROLE} role open was a genuinely good day.`
+5. `I wrote the day I saw the {ROLE} role, because {IDENTITY_CLAIM} {IDENTITY_IDIOM}.` (fuses the same-day-urgency move above with the Self-definition variants' identity idiom below into one sentence — use this fusion only once per letter, never alongside a separate Self-definition-variant sentence in the same opener.)
 
 **Connection variants (state the reaction directly, no destiny formula):**
 1. `I'm a {FUNCTIONAL_LEADER} and a {PRODUCT_CONNECTION} of {PRODUCT}.`
@@ -211,7 +212,7 @@ Commitment or desire statement. One exclamation maximum.
 
 | Dial | Template A (Cold) | Template B (Warm) |
 |---|---|---|
-| Max word count | ≤{MAX_WORDS, default 320} | ≤{MAX_WORDS, default 320} |
+| Max word count | ≤{MAX_WORDS, default 320} — ≤250 when `Strategy = Strategic` (both templates; see Shared Invariants → Length) | ≤{MAX_WORDS, default 320} — ≤250 when `Strategy = Strategic` (both templates; see Shared Invariants → Length) |
 | Sentence count | ≤{SENTENCE_COUNT_MAX, default 18} | ≤{SENTENCE_COUNT_MAX, default 20} |
 | Contractions per 100w | ≤{CONTRACTION_RATE, default 1} | ≤{CONTRACTION_RATE, default 4} |
 | Mean sentence length | up to {MEAN_LENGTH, default 23} words | up to {MEAN_LENGTH, default 23} words |
@@ -228,7 +229,7 @@ Commitment or desire statement. One exclamation maximum.
 
 ## Pre-Send Checklist (Universal)
 
-- [ ] Word count ≤ {MAX_WORDS}; one 2–5 word sentence and one {LONG_SENTENCE_LENGTH}+ word sentence present
+- [ ] Word count ≤ {MAX_WORDS} (≤250 when `Strategy = Strategic`); one 2–5 word sentence and one {LONG_SENTENCE_LENGTH}+ word sentence present
 - [ ] Zero em dashes, zero body colons, zero semicolons (find-and-replace the text)
 - [ ] Banned-vocabulary scan clean per your personal voice calibration file
 - [ ] Attribution-safe phrasings used exactly (no overstating, no vague nouns)
@@ -254,7 +255,7 @@ Run a mini forensic pass on the user's {ARCHIVE_SIZE, default 5–6} past cover 
 
 Users with no archive get corpus-neutral defaults:
 - {IDENTITY_IDIOM_POOL} = `at heart` / `at my core` / `to the core`
-- {MAX_WORDS} = 320
+- {MAX_WORDS} = 320 (regardless of archive size or absence, this drops to 250 whenever the letter's `Strategy = Strategic` — not a fingerprinted Layer-2 parameter, a fixed per-letter override)
 - {CONTRACTION_RATE} = 1–2 per 100w
 - {BANNED_PER_USER} = universal AI-tells only
 - {STRATEGIC_LABEL} = "strategic builder"

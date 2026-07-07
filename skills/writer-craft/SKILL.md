@@ -138,7 +138,7 @@ X is always required. Y is optional when the outcome is specific without a numbe
 
 **Greeting:** exactly "Hi to the [Company] team!" or "Hi to [Name]!" — never "Dear Hiring Manager." Stealth roles (no public company name): "Hi to the team!"
 
-**Word count:** maximum 320 words on the body (excluding greeting/sign-off), no minimum. 270-320 is the typical delivered-letter register — aim there when content supports it. This is a round-aware advisory at the gatekeeper (first pass returns to writer; later passes defer to the humanizer), never a hard block past round 1.
+**Word count:** maximum 320 words on the body (excluding greeting/sign-off), no minimum — **except when `Strategy = Strategic`, where the maximum is 250 words.** 270-320 is the typical delivered-letter register for an `IC` or `Hybrid` letter; aim there when content supports it. For a `Strategic` letter, aim for 220-250 instead — the letter argues at organizational altitude rather than stacking IC-level proof, and that argument doesn't need the extra room. This is a round-aware advisory at the gatekeeper (first pass returns to writer; later passes defer to the humanizer), never a hard block past round 1 — the 250 ceiling for `Strategic` follows the exact same advisory mechanics as the 320 ceiling for everything else, just a lower number.
 
 **Paragraph length:** max 3-4 lines per paragraph, then a blank line. The close is always its own paragraph, never attached to the paragraph before it.
 
@@ -260,7 +260,7 @@ Named patterns for the opener paragraph. Fill the bracketed slots with the user'
 
 **Structure:**
 - [ ] Greeting exactly "Hi to the [Company] team!" / "Hi to [Name]!"
-- [ ] Word count ≤320 (excluding greeting/sign-off), counted via `wc -w` on the body text — not estimated
+- [ ] Word count ≤320, or ≤250 if `Strategy = Strategic` (excluding greeting/sign-off), counted via `wc -w` on the body text — not estimated
 - [ ] Role title appears using exact JD phrasing
 - [ ] Every proof paragraph does exactly one thing — nothing restates a CV bullet
 - [ ] No paragraph over 4 lines; close is its own paragraph

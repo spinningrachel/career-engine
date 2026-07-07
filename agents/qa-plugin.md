@@ -626,8 +626,8 @@ grep -c "Draft Directory not written" <build>/skills/career-engine-new-applicati
 The coach strategic letter review (Option 4) must be wired into both the new-application pipeline (after Step 5.2 gatekeeper PASS) and the edit pipeline (after Step E7.3 gatekeeper PASS). The recruiter and HM cover letter reviewers must NOT appear in either pipeline.
 
 ```bash
-grep -c "option=letter-review" <build>/skills/career-engine-new-application/SKILL.md   # must be >= 1
-grep -c "option=letter-review" <build>/skills/career-engine-edit/SKILL.md              # must be >= 1
+grep -c "Option 4 — Strategic Letter Review" <build>/skills/career-engine-new-application/SKILL.md   # must be >= 1 (dispatch is by literal heading name, never a slug-style option= value — see CLAUDE.md's Option 4a contract row; this check's pattern was stale after the 2026-07-05 template-selection-ownership transfer)
+grep -c "Option 4 — Strategic Letter Review" <build>/skills/career-engine-edit/SKILL.md              # must be >= 1
 grep -c "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter" <build>/skills/career-engine-new-application/SKILL.md   # must be 0
 grep -c "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter" <build>/skills/career-engine-edit/SKILL.md             # must be 0
 grep -c "Option 4" <build>/agents/career-coach.md   # must be >= 1
@@ -786,17 +786,67 @@ grep -c "| \`Needs Research\` |" <build>/skills/database/SKILL.md               
 
 **FAIL condition:** any count differs from its stated requirement.
 
-### Check 35b — Prioritization → intake always-overwrite fix present (2026-07-02 fix)
+### Check 35b — Prioritization → intake always-overwrite fix present (2026-07-02 fix; superseded/broadened 2026-07-07 — see Check 55)
 
-`Role Summary`, `Location`, and `Priority` must be always-overwrite (not write-only-to-empty) in intake's Step 0.9a, matching the `JD proof` pattern. The coach-complete field list must still require enough fields that a Prioritization-only role can never pass as coach-complete.
+`Role Summary`, `Location`, and `Priority` must be always-overwrite (not write-only-to-empty) in intake's Step 0.9a, matching the `JD proof` pattern. The coach-complete field list must still require enough fields that a Prioritization-only role can never pass as coach-complete. As of 2026-07-07 this is a special case of the general always-overwrite default (Check 55) rather than a standalone exception — Check 55 supersedes the exact-phrase assertion this check originally made; this check now verifies only the surviving, still-accurate claims.
 
 ```bash
-grep -c "Role summary\`, \`Location\`, and \`Priority\` are always-overwrite" <build>/skills/career-engine-intake/SKILL.md   # must be >= 1
-grep -ci "\*\*always overwrite\*\*" <build>/skills/career-engine-intake/SKILL.md             # must be >= 3 (Priority, Location, Role summary bullets)
+grep -ci "\*\*always overwrite" <build>/skills/career-engine-intake/SKILL.md                 # must be >= 14 (broadened 2026-07-07 — most properties are now always-overwrite, not just Priority/Location/Role summary; pattern intentionally omits the trailing \*\* since several bullets read "**always overwrite.**" with the period inside the bold)
 grep -c "Prioritization" <build>/CLAUDE.md                                                   # must be >= 1 (cross-file-contract row)
 ```
 
 **FAIL condition:** any count is 0 or below its stated requirement.
+
+### Check 55 — Intake writeback default flipped to always-overwrite, three named exceptions only (2026-07-07 change)
+
+Step 0.9a's default changed from write-only-to-empty (with a handful of named always-overwrite exceptions) to always-overwrite (with exactly three named write-only-to-empty exceptions: `JD Body`, `Gap handling`, the `wiwtr_questions` WIWTR append). Verify the new default rule, all three exceptions, and the confirmation-pass fix (comparing against the coach's returned value rather than testing emptiness, since most properties can now be non-empty going in) all landed, and that the two stale contradictions this exposed (`coach-output.md`'s leftover "Priority... do not overwrite" line; `Strategy`'s always-overwrite status disagreeing between files) are gone.
+
+```bash
+grep -c "Rule: always overwrite" <build>/skills/career-engine-intake/SKILL.md                        # must be >= 1 (the new default statement)
+grep -c "Exceptions — these three remain write-only-to-empty" <build>/skills/career-engine-intake/SKILL.md   # must be >= 1
+grep -c "Gap handling\` — \*\*write-only-to-empty exception\*\*" <build>/skills/career-engine-intake/SKILL.md  # must be >= 1
+grep -c "so \"is it empty?\" is the wrong test" <build>/skills/career-engine-intake/SKILL.md          # must be >= 1 (confirmation-pass fix)
+grep -c "do not overwrite\. The user decides" <build>/skills/career-coach/coach-output.md             # must be 0 (stale Priority carve-out removed)
+grep -c "always overwrite; call out big swings" <build>/skills/career-coach/coach-output.md           # must be >= 1 (its replacement)
+grep -c "write if empty" <build>/skills/career-engine-intake/SKILL.md                                 # must be 0 (Step 0.9a's per-property list — every remaining "write if empty" was flipped to always-overwrite or moved to the write-only-to-empty exception list; JD Body's own bullet uses "write if empty AND..." — confirm any surviving hit traces only to that bullet, not a missed flip)
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement, or a "must be 0" count is nonzero (for the last check, a nonzero count is only acceptable if every match traces to the `JD Body` bullet — otherwise FAIL).
+
+### Check 56 — Coach context block terseness: short labels, culture as a screen point, optional closing angle (2026-07-07 addition)
+
+The coach context block (Screen 1-3, prepended to `Why I Want This Role`) changed from a 20-words-per-criterion cap that its own worked example over-used, to a hard 8-word cap with most points at 1-4 words, an explicit ban on connecting the label back to the candidate's background, culture competing for one of the slots when the company signals it matters, and an optional 4th `Closing angle:` line. Verify the doctrine and its gatekeeper enforcement both landed.
+
+```bash
+grep -c "Hard cap: 8 words per point" <build>/skills/career-coach/coach-output.md              # must be >= 1
+grep -c "Culture as a screen point" <build>/skills/career-coach/coach-output.md                # must be >= 1
+grep -c "Closing angle:" <build>/skills/career-coach/coach-output.md                           # must be >= 1
+grep -c "20 words max\|Hard cap: 20 words" <build>/skills/career-coach/coach-output.md         # must be 0 (old cap must not survive alongside the new one)
+grep -c "Coach context block over-written" <build>/skills/gatekeeper-checks/SKILL.md           # must be >= 1 (gatekeeper check 9)
+grep -c "coach context block over-written check.*item 9\|item 9.*coach context" <build>/agents/gatekeeper.md  # must be >= 1 (wired into the Coach Output Check run list)
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement, or the "must be 0" count is nonzero.
+
+### Check 57 — Strategy=Strategic 250-word cover-letter cap wired everywhere; new origin-story/self-definition opener fusion added (2026-07-07 addition)
+
+Two small, additive cover-letter changes made in the same session, both scoped to avoid touching any existing tone/structure/banned-vocabulary rule: (1) the 320-word cover-letter cap now drops to 250 whenever the coach's `Strategy` property = `Strategic` — this required threading `Strategy` into every gatekeeper `option=cover-letter` spawn call (it was never passed before) as well as updating the canonical rule, the drafting target, both orchestrator Bash backstops, the Dial Sheet, and the post-run checklist. (2) One new Template B origin-story variant (`I wrote the day I saw the {ROLE} role, because {IDENTITY_CLAIM} {IDENTITY_IDIOM}.`) fusing the same-day-urgency move with the identity-idiom device — purely additive to an existing numbered list, no other line touched.
+
+```bash
+grep -c "Strategy = Strategic\`, where the maximum is 250 words" <build>/skills/writer-craft/SKILL.md          # must be >= 1 (canonical rule)
+grep -c "≤250 when \`Strategy = Strategic\`\|250 when \`Strategy = Strategic\`" <build>/agents/letter-writer.md  # must be >= 1 (drafting target)
+grep -c "Strategy = Strategic" <build>/skills/gatekeeper-checks/SKILL.md                                      # must be >= 3 (Calibration authority line, Gate 1 body-max bullet, Gate 9 Dial-sheet word-count bullet)
+grep -c "Strategy\` (the coach's Step 0.8 output\|Strategy\` (from the Step E0 row payload\|Strategy\` (from the coach properties verified in Step E1\|Strategy\` (same as Step" <build>/skills/career-engine-new-application/SKILL.md <build>/skills/career-engine-edit/SKILL.md   # must be >= 6 (one per gatekeeper option=cover-letter spawn site: new-app Step 5.2 + 5.95, edit E0.7 + E7.3 + E7.7 + E8.5)
+grep -c "Strategy = Strategic" <build>/skills/career-engine-new-application/SKILL.md    # must be >= 1 (Step 5.95 Bash backstop)
+grep -c "Strategy = Strategic" <build>/skills/career-engine-edit/SKILL.md               # must be >= 1 (Step E8.5 Bash backstop)
+grep -c "Strategy = Strategic" <build>/references/cover-letter-templates-default.md    # must be >= 4 (Shared Invariants Length row, Template A dials, Template B dials, Dial Sheet table)
+grep -c "I wrote the day I saw the" <build>/references/cover-letter-templates-default.md  # must be >= 1 (new opener variant)
+grep -c "the humanizer's only inputs are the letter, the career-data path, and the voice-calibration file" <build>/skills/career-engine-new-application/SKILL.md <build>/skills/career-engine-edit/SKILL.md  # must be >= 2 (confirms the humanizer's input boundary was correctly left untouched — Strategy is never passed to it)
+grep -c "same parameters as the Step 5.2 spawn above" <build>/skills/career-engine-new-application/SKILL.md   # must be >= 1 (Step 5.2's own FAIL-round-1 loop-continuation spawn restates CAREER_DATA/Strategy explicitly instead of leaving them implicit)
+grep -c "same parameters as the Step E7.3 spawn above\|same parameters as the Step E7.7 spawn above" <build>/skills/career-engine-edit/SKILL.md   # must be >= 2 (same fix at both edit-pipeline loop-continuation sites)
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement.
 
 ### Check 35c — Two bundled intake bug fixes present (2026-07-02 fix)
 
@@ -1291,7 +1341,7 @@ Pay particular attention to:
 - Step 0b: does the notionApi query path have a defined fallback if the query returns zero results vs returns an error?
 - Step 0.5: is the Indeed fallback path unambiguous — would an agent know exactly when to invoke it vs proceed?
 - Step 0.8: is the coach-complete definition exhaustive — could an agent disagree on whether a role is coach-complete?
-- Step 0.9a: is the "write only to empty properties" rule checkable by the agent, or does it require a prior read step that isn't explicitly specified?
+- Step 0.9a: is the "always overwrite, three named write-only-to-empty exceptions" rule checkable by the agent, or does it require a prior read step that isn't explicitly specified?
 - Every user-facing output step: is it explicitly labelled as declaration or question? (F8)
 
 ### Check 24 — New application steps logic review
