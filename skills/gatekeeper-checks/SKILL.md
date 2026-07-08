@@ -13,7 +13,7 @@ description: 'Check definitions for the gatekeeper agent. Three checks: CV Check
 
 ## CV Check
 
-Run Gate 0 (ATS pre-check) first, then Gates 1-4 in order.
+Run Gate 0 (ATS pre-check) first, then Gates 1-5 in order.
 
 ### Gate 0 — ATS Pre-Check (hard fail)
 
@@ -90,6 +90,14 @@ Cross-referenced from `writer-craft/SKILL.md` §3-4; these are style-quality che
 - **Passive voice** where an active rewrite is available.
 - **Synonym cycling** — rotating synonyms for the same concept instead of repeating the right word.
 - **Filler phrases** left uncut: "in order to," "at this point in time," "it is important to note that," "due to the fact that," "has the ability to," "in the event that."
+
+### Gate 5 — Skills Section Content (hard fail)
+
+A format contract is not a content contract — this gate checks what's actually IN `## SKILLS`, not just whether the heading exists (that's Gate 0). Cross-referenced from `writer-craft/SKILL.md` §5's three-way test. **Hard fail on any of the three:**
+
+- **Knowledge listed as a skill.** A subject-matter/domain area the candidate knows *about*, not a capability she *does* — e.g. "Cybersecurity," "Identity & access management (IAM/PAM)," "Non-human identity (NHI)" as standalone skill-list items. FAIL: "[item] is domain knowledge, not a skill — cut it from `## SKILLS` or move it to Summary/Role-emphasis framing."
+- **Title or role label listed as a skill.** A job title or role descriptor is never a skill — e.g. "Founding Marketer." FAIL: "[item] is a title, not a capability — cut it."
+- **More than 3 skill groups, or cross-group duplication.** FAIL if the section has more than 3 categorized groups, or if the same item (or a clear paraphrase of it) appears in more than one group. Quote both groups and the overlapping item(s): "[group A] and [group B] both claim [overlapping concept] — merge or cut one."
 
 ---
 

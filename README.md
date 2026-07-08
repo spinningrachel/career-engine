@@ -10,6 +10,8 @@ It connects your career materials to a Notion job-tracking database and runs a m
 
 All of it draws from one source of truth: **`career-data`**, a separate skill that holds your positioning framework, career content bank, and approved voice. `career-data` lives on your own machine and is never modified by plugin runs or updates.
 
+> ⚠️ **A human must stay in the loop.** Only you know you best — this tool drafts, it doesn't decide. Review and finalize every CV and cover letter before it goes out, no matter how good the output gets. That's especially true early on: until `career-data` is built out with your real background, voice, and delivered letters, drafts will need more of your time and editing, not less — the pipeline gets better as your data does, not instead of it.
+
 > 📖 **Full documentation lives in the [Wiki](https://github.com/spinningrachel/career-engine/wiki).** This page is just the quick start.
 
 ---
@@ -82,6 +84,19 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 ---
 
 ## Changelog
+
+### 2026-07-08 — Cover-letter opener loophole, CV skills-section content contract, mid-run scope-check anti-pattern, JD proof mandatory gap
+
+Traced from real production output and a Cowork session export after continued pipeline use.
+
+**New features**
+- **CV skills-section content contract.** `## SKILLS` previously had a format contract (heading text, one-line vs. categorized-block by Role Type) but zero content contract — nothing stopped domain knowledge ("Cybersecurity | IAM/PAM | Non-human identity (NHI)") or a job title ("Founding Marketer") from being listed as if it were a skill, and nothing capped or de-duplicated overlapping groups (real output had "Cross-Functional Leadership" and "Product Marketing & Growth" both claiming the same cross-functional-alignment capability under different headings). Fixed with a three-way test (skill you DO / knowledge you know ABOUT / a title — only the first belongs here) and a 3-group cap with mandatory cross-group de-duplication, enforced by a new hard-fail Gate 5 in the gatekeeper's CV Check.
+- **Human-in-the-loop disclaimer added to README.** Only the user knows herself best — final review and editing before sending remains essential regardless of how good the drafts get, and a user whose `career-data` is still thin should expect to spend more review time up front, not less, until it's built out.
+
+**Bug fixes**
+- **Cover-letter opener sourcing loophole in Use-Case Structure pattern #10.** §8's non-negotiable sourcing rule (opener content must trace to WIWTR/Motivation Bank, never the agent's own JD/market reading) was correctly stated, but pattern #10 ("Problem-first observation opener") was worded standalone enough — "she has a genuine professional observation about a recurring problem" — that it read as license to construct that observation from the writer's own analysis. A real letter did exactly this, opening with an analyst-style claim about "the problem underneath" the role instead of anything traceable to the candidate's documented reaction. Fixed by re-anchoring pattern #10 explicitly to the same §8 sourcing mandate, with the pattern unavailable entirely when no qualifying documented observation exists.
+- **Mid-run "how do you want me to proceed" pause killed a real production run.** `orchestrator-queue.md`'s Absolute Constraints already explicitly prohibited pausing mid-run to ask about scope — yet a real Cowork run did exactly that anyway, triggered by a different rationalization than the first documented instance of this failure mode (perceived call-volume/cost anxiety this time, not "how do I pick 5 roles"). The run had correctly capped its queue at 5 and gotten 3 gatekeeper rounds into role 1's CV when it stopped to ask whether to continue given the number of agent calls; the question itself then failed with a transport error and the whole session died — 4 of 5 queued roles never processed, no final report ever generated. Fixed with a named anti-pattern block citing the real incident directly at the decision point, matching this repo's established remedy for prose-only prohibitions that survive being explicit.
+- **`JD proof` silently droppable by the coach despite every downstream check assuming it's mandatory.** The always-overwrite/anti-fabrication instructions for `JD proof` and its presence in all three cross-file enforcement lists (intake coach-complete, always-overwrite, confirmation-pass; gatekeeper Coach Output Check) were all intact — but the two agent-facing prompt files (`coach-output.md`'s and `career-coach.md`'s own "mandatory to return" enumerations) both omitted it, isolating it in a separate sentence that never used the word "mandatory." Fixed by adding it to both enumerations so the coach's own generation-time instructions match what every downstream check already assumes.
 
 ### 2026-07-07 — Intake writeback default flipped to always-overwrite; coach context block terseness
 

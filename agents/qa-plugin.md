@@ -848,6 +848,56 @@ grep -c "same parameters as the Step E7.3 spawn above\|same parameters as the St
 
 **FAIL condition:** any "must be >= N" count below its stated requirement.
 
+### Check 58 — Cover-letter opener pattern #10 re-anchored to §8 sourcing mandate (2026-07-08 fix)
+
+Pattern #10 ("Problem-first observation opener") in `skills/writer-craft/SKILL.md` §9 previously read as license to construct a "professional observation" from the writer's own JD/market analysis. Verify it now explicitly requires the observation to trace to documented WIWTR/Motivation Bank content, with the pattern unavailable when no such content exists.
+
+```bash
+grep -c "must itself be sourced from her documented WIWTR/Motivation Bank content" <build>/skills/writer-craft/SKILL.md   # must be >= 1
+grep -c "this pattern is not available for this letter" <build>/skills/writer-craft/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** any count below its stated requirement.
+
+### Check 59 — CV skills-section content contract wired end-to-end (2026-07-08 addition)
+
+New three-way test (skill/knowledge/title) + 3-group cap + de-dup rule in `writer-craft/SKILL.md` §5, enforced by a new hard-fail Gate 5 in the gatekeeper's CV Check, with matching template guidance and a CLAUDE.md cross-file-contract row.
+
+```bash
+grep -c "three-way test" <build>/skills/writer-craft/SKILL.md   # must be >= 1
+grep -c "Cap: 3 skill groups maximum" <build>/skills/writer-craft/SKILL.md   # must be >= 1
+grep -c "Gate 5 — Skills Section Content" <build>/skills/gatekeeper-checks/SKILL.md   # must be >= 1
+grep -c "Gates 1-5 in order" <build>/skills/gatekeeper-checks/SKILL.md   # must be >= 1 (framing line updated from "1-4")
+grep -c "Gate 0-4 for CV Check" <build>/CLAUDE.md   # must be 0 (stale gate-count claim must not survive alongside Gate 5)
+grep -c "three-way test" <build>/references/background/background-cross-cutting-skills.md   # must be >= 1 (template guidance points at the same rule)
+grep -c "CV skills-section content contract" <build>/CLAUDE.md   # must be >= 1 (cross-file-contract row)
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement, or the "must be 0" count is nonzero.
+
+### Check 60 — Mid-run scope-check anti-pattern block present (2026-07-08 fix)
+
+A real Cowork run paused mid-pipeline to ask "how do you want me to proceed" over perceived call volume, despite `orchestrator-queue.md` already explicitly prohibiting exactly this. Verify the named anti-pattern block landed, citing the real incident, plus the matching CLAUDE.md row and README changelog entry.
+
+```bash
+grep -c "Named anti-pattern: pausing mid-run over perceived call-volume" <build>/skills/career-engine-orchestrator/orchestrator-queue.md   # must be >= 1
+grep -c "Mid-run scope-check anti-pattern" <build>/CLAUDE.md   # must be >= 1
+grep -c "Mid-run \"how do you want me to proceed\" pause killed a real production run" <build>/README.md   # must be >= 1
+```
+
+**FAIL condition:** any count below its stated requirement.
+
+### Check 61 — JD proof added to both agent-facing mandatory enumerations (2026-07-08 fix)
+
+`JD proof`'s always-overwrite and cross-file enforcement (intake, gatekeeper) were already correct, but the coach's own generation-time "mandatory to return" prompts omitted it in two files, making it more likely to be silently dropped at the source. Verify both now name it explicitly.
+
+```bash
+grep -c "JD proof\`\*\* (a fresh verbatim quote every run" <build>/skills/career-coach/coach-output.md   # must be >= 1
+grep -c "Priority Reason\`, and \*\*\`JD proof\`\*\* are \*\*mandatory to return\*\*" <build>/agents/career-coach.md   # must be >= 1
+```
+
+**FAIL condition:** any count below its stated requirement.
+
 ### Check 35c — Two bundled intake bug fixes present (2026-07-02 fix)
 
 (1) Step 0.7 must have an explicit "do not ask the user" guard for the 5-role selection. (2) The Notion adapter's Path B view-query call (steps 2-3) must be delegated, not run directly in the caller's context.
