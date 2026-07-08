@@ -165,6 +165,11 @@ Check for these failure patterns — any one FAILs:
 
 **Non-transferability forcing function — run after the Pattern A-J checks, before concluding Gate 5.** Name explicitly — in the violation file on FAIL, or as your own working note on PASS — the single most specific, non-transferable anchor the opening paragraph contains: a named real referrer, a named product she's personally used, a specific dated event, or a specific verbatim JD/company detail reacted to. Quote it. **If none can be named — if every sentence in the opener would read identically with the company name swapped out — that is itself a FAIL, independent of whether any single Pattern A-J matched:** "No non-transferable anchor found in the opening paragraph — every sentence would read the same for a different company. Name the specific anchor, or the opener fails this test regardless of pattern-matching." This turns the existing "could this apply to any company?" test from a silent verdict into a forced, checkable output — a Gate 5 PASS with no anchor named is an incomplete check, not a completed one.
 
+**Pattern-derivation forcing function — Tier 2, not Tier 1 (see Grading below); run after the Non-transferability check.** A real, sourced fact can still be wrapped in an invented sentence shape — this checks the opener's *construction*, not its content (the Non-transferability check above already covers content). Name which Use-Case Structure (`writer-craft/SKILL.md` §9) or personalized-template variant the opener derives from.
+
+- **If it derives from a named pattern or variant:** note it and move on.
+- **If it's a novel construction:** name the *move* it performs (every named pattern makes one — a reaction, a recognition, an observation, a decision). Then test: **would this sentence's structure work as a direct answer to "why do you want this role?" or "how do you feel about applying?"** If yes, this check type fails — regardless of how specific or personal the content is. This is the same failure family as Pattern A's generic-enthusiasm ban, just with a real fact filling an otherwise-hollow frame instead of empty enthusiasm. **Confirmed real example:** "I want the Retention Product Lead role at Loora because I taught English as a second language..." — grammatically clean, genuinely sourced content, no Pattern A-J hit, and still a direct answer to an unstated interview question rather than a reaction. → Rewrite until the sentence performs a reaction, not an answer.
+
 **Sentence structure violations in the opening paragraph — FAIL:**
 - **Gerund as subject:** "Finding the right words for...," "Building GTM for...," "Having spent [time]..." — subject must be the user (first person).
 - **Prepositional phrase opener — agent-drafted only:** "In a market where...," "For companies at this stage..." with no archive precedent. Archive-consistent ramps ("After years in regulated, trust-dependent categories...") pass.
@@ -292,11 +297,11 @@ Hard fails block **every round**, exactly as before — the set of what counts a
 
 #### Tier 2 — aggregate ≥70% required
 
-Tier 2 is a checklist of **32 distinct, named check types**, not raw violation-instance counts. Each check type is binary across the whole letter: **0 violations of that type anywhere = the check type passes; 1+ violations anywhere = the check type fails**, regardless of how many instances occur. A letter with five instances of the antithesis formula fails that one check type exactly the same as a letter with one instance.
+Tier 2 is a checklist of **33 distinct, named check types**, not raw violation-instance counts. Each check type is binary across the whole letter: **0 violations of that type anywhere = the check type passes; 1+ violations anywhere = the check type fails**, regardless of how many instances occur. A letter with five instances of the antithesis formula fails that one check type exactly the same as a letter with one instance.
 
-**Tier 2 score = (check types passed ÷ 32) × 100. PASS if ≥70%. FAIL if <70%,** naming the score and every failing check type by name.
+**Tier 2 score = (check types passed ÷ 33) × 100. PASS if ≥70%. FAIL if <70%,** naming the score and every failing check type by name.
 
-**Mechanical execution — run this as two passes, not one mental read-through of all 32.**
+**Mechanical execution — run this as two passes, not one mental read-through of all 33.**
 1. **One Bash grep-battery, one tool call**, covering every literal-pattern-matchable check type below (the antithesis test, the false-range/approach-announcement families, the filler-phrase list, the transition/cliché-phrase list, the template-variant-reuse diff). The gatekeeper already has Bash. (The Gate 6 curated word/phrase lists and the fit-declaration family are now Tier 1 — run those in the same grep battery, but they gate the letter before Tier 2 is even scored; see Grading above.)
 2. **A focused second pass for the remaining genuinely-semantic checks** (idiom/metaphor recognition, hollow metaphor, presumptuous verdict, the Gate 8 forcing function, syntax correctness, sentence-rhythm) — a much smaller set once the mechanical pass has cleared most of the list.
 
@@ -345,6 +350,9 @@ Tier 2 is a checklist of **32 distinct, named check types**, not raw violation-i
 
 *From Gate 7 (template-variant reuse — added 2026-07-05):*
 32. No near-verbatim reuse of the generic default template's illustrative variant text (new users only — this check does not run at all when a personalized templates file was used)
+
+*From Gate 5 (pattern-derivation forcing function — added 2026-07-08):*
+33. Novel opener construction passes the direct-answer test (fails only when the opener doesn't derive from a named pattern AND its structure would work as a direct answer to "why do you want this role?"/"how do you feel about applying?" — see Gate 5)
 
 **Round-aware behavior:**
 - **Round 1, Tier 1 clean, Tier 2 <70%:** FAIL → letter-writer, naming the percentage and every failing check type.

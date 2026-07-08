@@ -282,6 +282,9 @@ Named patterns for the opener paragraph. Fill the bracketed slots with the user'
 - [ ] First sentence does not make a market/industry/role claim before the user appears as subject
 - [ ] Not anonymous ("Reading this posting..." with no company/role named)
 - [ ] Passes the non-waivable JD-mirroring carve-out (§8) even if traced to WIWTR
+- [ ] **Pattern-derivation forcing function.** Name which Use-Case Structure (§9) or personalized-template variant the opener's *construction* derives from — not just its content. A real, sourced fact can still be wrapped in an invented sentence shape; this checks the container, not just what's inside it.
+  - **If it derives from a named pattern or variant:** done, move on.
+  - **If it doesn't — a novel construction:** name the *move* it performs instead (every named pattern makes one — a reaction, a recognition, an observation, a decision). Then run this test: **would this sentence's structure work as a direct answer to "why do you want this role?" or "how do you feel about applying?"** If yes, it fails regardless of how specific or personal the content is — this is the same failure family as the Pattern A generic-enthusiasm ban (§9/Gate 5), just with a real fact filling an otherwise-hollow frame instead of empty enthusiasm. A confirmed real example: "I want the [Role] at [Company] because I taught English as a second language..." — grammatically clean, genuinely sourced content, and still a direct answer to an unstated interview question rather than a reaction. Rewrite until the sentence performs a reaction, not an answer.
 
 **Fabrication traps:**
 - [ ] No scope, attribution, or seniority claim undocumented in `01-writing-rules.md`/`02-professional-background.md`

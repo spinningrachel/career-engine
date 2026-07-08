@@ -85,6 +85,13 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-08 — Cover-letter opener pattern-derivation forcing function (Gate 5, Tier 2)
+
+Traced from a live QA exercise comparing a real delivered letter against the full doctrine, JD, and career-data. Every existing opener check verifies *content* (sourcing to WIWTR/Motivation Bank, non-transferability, the Pattern A-J banned-shape list) — nothing checked whether the opener's *construction* actually derives from a named Use-Case Structure (`writer-craft/SKILL.md` §9) or personalized-template variant. A real letter's opening sentence — "I want the [Role] role at [Company] because I taught English as a second language..." — was genuinely sourced (the fact traces to the Motivation Bank), tripped no Pattern A-J ban, and still wasn't derived from any of the 11 named patterns or either template's Block 1 variants. It read as a direct answer to "why do you want this role?" — the same failure family as Pattern A's generic-enthusiasm ban, just with real content filling an otherwise-hollow frame instead of empty enthusiasm.
+
+**New features**
+- **Gate 5 pattern-derivation forcing function.** A two-part check, added to both the writer's self-check (`writer-craft/SKILL.md` §11, proactive) and the gatekeeper (`gatekeeper-checks/SKILL.md` Gate 5, reactive): name which pattern the opener derives from, or — if novel — name the move it performs and test whether its structure would work as a direct answer to an unstated interview question. Deliberately **Tier 2, not Tier 1** — a naming-only check would just produce a labeled version of the same problem, but folding this into Gate 5's hard-fail Pattern A-J set would raise the fail rate on letters that pass today without the insight first being validated against a body of real letters, the same bar Gate 6's word-list Tier 1 promotion cleared before it moved tiers. Bumps the Cover Letter Check's Tier 2 checklist from 32 to 33 named check types, updated everywhere that count is stated.
+
 ### 2026-07-08 — Publications and thought-leadership talks as cover-letter proof
 
 **New features**

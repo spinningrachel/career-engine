@@ -912,6 +912,32 @@ grep -c "PUBLICATIONS\` section:" <build>/agents/cv-writer.md   # must be >= 1 (
 
 **FAIL condition:** any count below its stated requirement.
 
+### Check 63 — Gate 5 pattern-derivation forcing function, Tier 2, bumps checklist to 33 (2026-07-08 addition)
+
+Every existing opener check verifies content (sourcing, non-transferability, banned patterns) — none checked whether the opener's *construction* actually derives from a named Use-Case Structure or personalized-template variant. A sentence can be genuinely sourced, trip no Pattern A-J ban, and still be an invented shape nobody's template produced. Fixed with a two-part forcing function (name the pattern, or — if novel — test whether the sentence's structure would work as a direct answer to "why do you want this role?") on both the writer side (proactive self-check) and the gatekeeper side (Tier 2, not Tier 1 — deliberately not folded into Gate 5's hard-fail Pattern A-J set). Bumps the Tier 2 checklist from 32 to 33 named check types — this check supersedes Check 51's now-stale "32" assertions (see the note there).
+
+```bash
+# Writer-side self-check item present
+grep -c "Pattern-derivation forcing function" <build>/skills/writer-craft/SKILL.md              # must be >= 1
+grep -c "would this sentence's structure work as a direct answer to" <build>/skills/writer-craft/SKILL.md   # must be >= 1
+# Gatekeeper-side Tier 2 check present, explicitly marked Tier 2 not Tier 1
+grep -c "Pattern-derivation forcing function — Tier 2, not Tier 1" <build>/skills/gatekeeper-checks/SKILL.md   # must be >= 1
+grep -c "33. Novel opener construction passes the direct-answer test" <build>/skills/gatekeeper-checks/SKILL.md   # must be >= 1 (checklist item 33 itself)
+# Every check-type count is internally consistent at 33 — no orphaned "32" claim anywhere
+grep -c "33 distinct, named check types" <build>/skills/gatekeeper-checks/SKILL.md   # must be >= 1
+grep -c "32 distinct, named check types" <build>/skills/gatekeeper-checks/SKILL.md   # must be 0
+grep -Ec "all 32\b" <build>/skills/gatekeeper-checks/SKILL.md                        # must be 0 (broader sweep — a literal-string check for one exact phrase missed "run this as two passes... all 32" on the first pass of this check; this catches that class of miss, not just the named-checklist phrasing)
+grep -c "check types passed ÷ 33" <build>/skills/gatekeeper-checks/SKILL.md          # must be >= 1
+grep -c "\[n\] of 33" <build>/agents/gatekeeper.md                                   # must be >= 1
+grep -c "\[n\] of 32" <build>/agents/gatekeeper.md                                   # must be 0
+grep -c "33 named, binary check types" <build>/CLAUDE.md                            # must be >= 1
+grep -c "32 named, binary check types" <build>/CLAUDE.md                            # must be 0
+grep -c "33-item checklist" <build>/CLAUDE.md                                       # must be >= 1
+grep -c "32-item checklist" <build>/CLAUDE.md                                       # must be 0
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement, or any "must be 0" count is nonzero.
+
 ### Check 35c — Two bundled intake bug fixes present (2026-07-02 fix)
 
 (1) Step 0.7 must have an explicit "do not ask the user" guard for the 5-role selection. (2) The Notion adapter's Path B view-query call (steps 2-3) must be delegated, not run directly in the caller's context.
@@ -1180,22 +1206,15 @@ grep -c "Job URL correction" <build>/CLAUDE.md                                  
 
 **FAIL condition:** any "must be 0" count is nonzero, or any "must be >= N" count is below its stated requirement.
 
-### Check 51 — Generic-default-template reuse check, identity-idiom adjacency fix, and Gate 6 Tier 1 promotion wired (2026-07-05 fix, same-day revision)
+### Check 51 — Generic-default-template reuse check, identity-idiom adjacency fix, and Gate 6 Tier 1 promotion wired (2026-07-05 fix, same-day revision; count superseded 2026-07-08 — see Check 63)
 
-Two live letters (Mixmax, Unframe) each reused a template illustrative variant nearly word-for-word in 2-3 structural blocks; the user then confirmed the reused phrases were her own real prior sentences captured in her *personalized* templates file, not the plugin's synthetic scaffolding — narrowing the check to the generic default template only. Separately: an identity-idiom timing ambiguity was fixed, a full production trace showed the literally-banned word "passionate" was correctly detected by the gatekeeper but PASSed anyway because Tier 2's percentage-based grading diluted one banned-word hit into an invisible few percent — fixed by promoting Gate 6's curated literal-string lists (and the fit-declaration family) to Tier 1, dropping Tier 2 from 36 to 32 check types. Verify all of it landed consistently — this count changed twice in one day (35→36→32), so check for the final state and the absence of every intermediate one.
+Two live letters (Mixmax, Unframe) each reused a template illustrative variant nearly word-for-word in 2-3 structural blocks; the user then confirmed the reused phrases were her own real prior sentences captured in her *personalized* templates file, not the plugin's synthetic scaffolding — narrowing the check to the generic default template only. Separately: an identity-idiom timing ambiguity was fixed, a full production trace showed the literally-banned word "passionate" was correctly detected by the gatekeeper but PASSed anyway because Tier 2's percentage-based grading diluted one banned-word hit into an invisible few percent — fixed by promoting Gate 6's curated literal-string lists (and the fit-declaration family) to Tier 1, dropping Tier 2 from 36 to 32 check types. That 32 was itself superseded on 2026-07-08 when a 33rd check type was added (Check 63) — this check now verifies only the surviving, still-accurate claims from this entry; the count assertions live in Check 63.
 
 ```bash
 # Generic-default-template reuse check present, correctly narrowed to exclude personalized files
 grep -c "Generic-default-template verbatim reuse" <build>/skills/gatekeeper-checks/SKILL.md         # must be >= 1
 grep -c "against a user's own" <build>/skills/gatekeeper-checks/SKILL.md                             # must be >= 1
 grep -c "do not run this check at all" <build>/skills/gatekeeper-checks/SKILL.md                    # must be >= 1 (personalized-file skip)
-# Every check-type count is internally consistent at 32 (35 base -> 36 same-day addition -> 32 after Gate 6 promotion) — no orphaned old count anywhere
-grep -c "32 distinct, named check types" <build>/skills/gatekeeper-checks/SKILL.md   # must be >= 1
-grep -rc "3[456] distinct, named check types" <build>/skills/gatekeeper-checks/SKILL.md | grep -v ":0$" | wc -l   # must be 0
-grep -c "\[n\] of 32" <build>/agents/gatekeeper.md                                    # must be >= 1
-grep -Ec "\[n\] of 3[456]" <build>/agents/gatekeeper.md                               # must be 0
-grep -c "32 named, binary check types" <build>/CLAUDE.md                             # must be >= 1
-grep -c "36-item checklist\|35-item checklist" <build>/CLAUDE.md                     # must be 0
 # Identity-idiom adjacency fix — proof either side of the label now explicitly passes; the "several paragraphs away" failure case is explicit
 grep -c "direction doesn't matter, adjacency does" <build>/skills/gatekeeper-checks/SKILL.md          # must be >= 1
 grep -c "still fails" <build>/skills/gatekeeper-checks/SKILL.md                                       # must be >= 1 (the several-paragraphs-away FAIL case is named explicitly)
@@ -1206,7 +1225,7 @@ grep -c "This is the seat" <build>/skills/gatekeeper-checks/SKILL.md            
 grep -c "Personal-voice exemption — same rule as the idiom exemption" <build>/skills/writer-craft/SKILL.md   # must be >= 1
 ```
 
-**FAIL condition:** any "must be 0" count is nonzero, or any "must be >= N" count is below its stated requirement. The two "must be 0" checks (old "35" references) are the important ones here — a half-updated count is worse than the original ambiguity, since it makes the checklist internally inconsistent.
+**FAIL condition:** any "must be >= N" count is below its stated requirement. (The count-consistency assertions formerly here moved to Check 63, which verifies the current count — 33 — rather than the historical 32.)
 
 ### Check 52 — Orchestrator-side Bash mechanical backstop, humanizer Bash grant, and coach-outline literal-path enforcement (2026-07-05 fix)
 
