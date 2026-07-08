@@ -95,6 +95,8 @@ These define what a passing CV even is. Cutting them changes correctness, not po
 
 **`## TOOLS` — optional.** Include only when the JD calls out tools or Role Type is Specialist/Builder and the JD discusses tooling. Omit for Leader/Scaler roles regardless of JD content. No tool or technology name of any kind belongs inside experience bullets, ever — not even one named in the JD, not even as illustration. Tool identity lives only in `## TOOLS`.
 
+**`## PUBLICATIONS` — optional, rarely used.** Include only when `background-portfolio.md` documents 2+ published/bylined pieces or original-POV talks AND thought leadership is genuinely relevant to this role's positioning (visible in Role emphasis, the JD, or company culture signals — e.g. analyst-facing, evangelist, or community-facing roles). When in doubt, omit — most CVs never need this section, and the underlying content already works as cover-letter proof (§10) whether or not it appears here.
+
 **`## SKILLS` content rules — a format contract is not a content contract.** Every item in this section must pass a three-way test:
 - **Skill (belongs here):** a verb-backed capability she *does* — something she can perform, not something she merely knows about or has been called.
 - **Knowledge (does NOT belong here):** a subject-matter area she knows *about* — a domain, a technology category, a regulatory area. Domain knowledge belongs in the Summary or in Role-emphasis framing (sourced from `03-framework.md` §Domain depth), never in `## SKILLS`. ✗ "Cybersecurity | Identity & access management (IAM/PAM) | Non-human identity (NHI)" is a domain-knowledge list, not a skills list.
@@ -253,6 +255,8 @@ Named patterns for the opener paragraph. Fill the bracketed slots with the user'
 **Interview-trigger gaps** (from recruiter review, when passed): address proactively only where WIWTR or documented background gives a real answer, woven into the narrative — never as Q&A. Fabrication rules always override — a reviewer flag never authorizes invention.
 
 **Proof-point partitioning — run before drafting.** The CV is written first and spends the strongest documented proof (summary claims, bullet outcomes, metrics). Before selecting the letter's proof, list what the CV already spent. The letter's proof comes from what the CV does NOT carry: the detail layers in the role-facts files, adjacent engagements, the story or decision logic behind a bullet, testimonials, portfolio artifacts. If every documented proof point is CV-spent, enhance the strongest one (the story behind it) rather than importing a restatement.
+
+**Published/bylined writing and original-POV talks are unusually strong letter proof — prefer them when a qualifying one exists.** Unlike most portfolio artifacts, a publication or a talk where she originated the point of view is rarely CV-spent (a CV bullet almost never cites one verbatim), so it's genuinely fresh information the reader hasn't already seen elsewhere in the application — not a restatement dressed up differently. When `background-portfolio.md` has a relevant published piece or talk for this role, prefer it over a restated CV-adjacent portfolio item.
 
 **Discarded and unreadable input is always surfaced — never silent.** When the fabrication rule sets aside a piece of the user's own input, or any input is uninterpretable (garbled text, a directive referencing content that no longer exists): exclude it from the letter, log it in the revision log, and surface it in the final delivery as a named ask-back — she can only fix what she can see.
 

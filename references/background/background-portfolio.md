@@ -13,6 +13,8 @@ description: Portfolio, work samples, and the delivered-letters archive pointer.
 
 *What counts as a portfolio sample varies by profession: code repositories, design files, published papers, case studies, reports, writing samples, data analyses, presentation decks, regulatory filings, documentation, legal briefs, financial models, or anything else that demonstrates your work directly.*
 
+*If you write or speak publicly, document it well: published/bylined articles and talks where you originated the point of view (not just attended) are especially valuable cover-letter proof, since they're rarely repeated in a CV bullet — see `writer-craft/SKILL.md` §10's Proof-point partitioning. A category like "Published Papers" or "Talks & Publications" below works the same as any other portfolio category.*
+
 ### {{PORTFOLIO_CATEGORY_1}}
 
 *(e.g., Technical Work / Published Papers / Case Studies / Design Work / Writing Samples / Code / Reports)*

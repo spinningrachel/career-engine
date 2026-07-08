@@ -898,6 +898,20 @@ grep -c "Priority Reason\`, and \*\*\`JD proof\`\*\* are \*\*mandatory to return
 
 **FAIL condition:** any count below its stated requirement.
 
+### Check 62 — Publications as cover-letter proof + conditional `## PUBLICATIONS` CV section (2026-07-08 addition)
+
+Published/bylined writing and original-POV talks elevated as especially strong letter proof in §10, plus a new rarely-used, content-gated `## PUBLICATIONS` CV section mirroring `## TOOLS`'s conditional pattern — no new config key. Verify all four touch points landed.
+
+```bash
+grep -c "Published/bylined writing and original-POV talks are unusually strong letter proof" <build>/skills/writer-craft/SKILL.md   # must be >= 1 (§10 proof-elevation rule)
+grep -c "PUBLICATIONS\`.*optional, rarely used" <build>/skills/writer-craft/SKILL.md   # must be >= 1 (§5 conditional CV section gate)
+grep -ci "if you write or speak publicly" <build>/references/background/background-portfolio.md   # must be >= 1 (strengthened template guidance)
+grep -c "PUBLICATIONS\` is optional and rarely used" <build>/agents/cv-writer.md   # must be >= 1 (mirrors the optional-section gate)
+grep -c "PUBLICATIONS\` section:" <build>/agents/cv-writer.md   # must be >= 1 (mirrors the drafting-step instruction)
+```
+
+**FAIL condition:** any count below its stated requirement.
+
 ### Check 35c — Two bundled intake bug fixes present (2026-07-02 fix)
 
 (1) Step 0.7 must have an explicit "do not ask the user" guard for the 5-role selection. (2) The Notion adapter's Path B view-query call (steps 2-3) must be delegated, not run directly in the caller's context.

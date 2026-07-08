@@ -85,6 +85,12 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-08 — Publications and thought-leadership talks as cover-letter proof
+
+**New features**
+- **Published/bylined writing and original-POV talks elevated as especially strong cover-letter proof.** Unlike most portfolio artifacts, a publication or a talk where the user originated the point of view is rarely spent on the CV, so it's genuinely fresh information the reader hasn't seen elsewhere in the application rather than a restatement. The underlying plumbing already existed — `background-portfolio.md` already listed "published papers, writing samples" as a sanctioned category, and `writer-craft/SKILL.md` §10's Proof-point partitioning already named "portfolio artifacts" as valid letter proof — this release elevates them specifically (prefer a qualifying publication/talk over a restated CV-adjacent portfolio item) and strengthens the portfolio template's guidance to flag this explicitly.
+- **New conditional CV section: `## PUBLICATIONS`.** Rarely used — gated the same way `## TOOLS` already is, on content presence (2+ documented published pieces or talks) plus role relevance (visible in Role emphasis, the JD, or company culture signals), not a new config key. Most CVs will never carry this section, and omitting it costs nothing since the same content already works as cover-letter proof regardless.
+
 ### 2026-07-08 — Cover-letter opener loophole, CV skills-section content contract, mid-run scope-check anti-pattern, JD proof mandatory gap
 
 Traced from real production output and a Cowork session export after continued pipeline use.
