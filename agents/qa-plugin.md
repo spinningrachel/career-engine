@@ -161,6 +161,28 @@ grep -rn "<your-first-name>\|<your-last-name>\|<your-notion-database-id>\|<your-
 
 **FAIL condition:** any real personal name, email, Notion DB ID, or output path found in `agents/` or `skills/`.
 
+**Binary `.dotx`/`.dotm` files are IN SCOPE and require their own extraction pass — this is not covered by the grep above.** `--include="*.md"` structurally cannot see inside a Word file's zipped XML body, and this is a **confirmed real gap, not theoretical**: on 2026-07-09, `references/cv-template-brief-default.dotx`'s own `document.xml` body text (a worked example's EDUCATION section) contained real institution names — the same real personal content that had already leaked into (and been separately scrubbed from) `skills/career-engine-export/static-cv-footer.md` — and this check's existing grep passed cleanly the whole time, because it never looked inside the `.dotx` at all. For every `.dotx`/`.dotm` file in `references/` (the plugin's shipped blank defaults), extract and read the actual body text before declaring this check clean:
+
+```bash
+# For each .dotx/.dotm under <build>/references/:
+mkdir -p /tmp/qa-dotx-scan && cd /tmp/qa-dotx-scan
+unzip -q -o "<build>/references/<file>.dotx" -d extracted
+python3 -c "
+import re
+with open('extracted/word/document.xml', encoding='utf-8') as f:
+    content = f.read()
+texts = re.findall(r'<w:t[^>]*>([^<]*)</w:t>', content)
+print(' '.join(t for t in texts if t.strip()))
+"
+# Also check docProps/core.xml and docProps/app.xml for dc:creator / cp:lastModifiedBy / any real name —
+# Word auto-populates these from the OS account and they are a distinct leak vector from the body text.
+grep -o '<dc:creator>[^<]*</dc:creator>\|<cp:lastModifiedBy>[^<]*</cp:lastModifiedBy>' extracted/docProps/core.xml
+```
+
+**Read the printed body text yourself — do not grep it for a fixed list of known-bad strings and call that sufficient.** A grep-only pass is exactly what let the 2026-07-09 leak through twice (it also existed in the footer `.md` file first, was fixed there, then found separately in the `.dotx` body on the very next QA pass because nobody had actually read the `.dotx` text). Any proper noun in the body that doesn't plausibly belong to whatever fictional/placeholder persona the template uses (check the surrounding names/companies for internal consistency — a real institution sitting inside an otherwise fictional worked example is exactly the pattern that leaked) is a FAIL, same as `dc:creator`/`cp:lastModifiedBy` being non-empty.
+
+**FAIL condition (extended):** any real name, institution, employer, email, or other identifying content found in a `.dotx`/`.dotm` body, header, footer, or docProps — in addition to the `agents/`/`skills/` grep FAIL condition above.
+
 ### Check 6b — career-data structure (only if a career-data skill is provided)
 
 `career-data` is the user's external data skill. It is NEVER part of the build. If the invoker points you at a local `career-data`, validate its structure: read `career-data-marker.json` and confirm every file in its `expected_files` is present and non-empty.
@@ -937,6 +959,33 @@ grep -c "32-item checklist" <build>/CLAUDE.md                                   
 ```
 
 **FAIL condition:** any "must be >= N" count below its stated requirement, or any "must be 0" count is nonzero.
+
+### Check 64 — CV footer files carry zero real personal content, resolve from career-data (2026-07-09 fix)
+
+**Confirmed production bug, not theoretical.** The plugin's own `skills/career-engine-export/static-cv-footer.md` (and its Hebrew twin `static-cv-footer-he.md`) had accumulated one real user's actual degree and university names — content Check 6 never catches, since Check 6 only scans for a fixed set of literal `<your-...>` placeholder tokens, not for arbitrary real names in prose. `convert-cv.sh` hardcoded the plugin's own copy of this file for every CV export, so every installation of the plugin was silently appending that real person's Education/Languages section onto every user's exported CV. Fixed by scrubbing both files to `{{...}}` placeholders and moving resolution to career-data (`$CV_FOOTER`/`$CV_FOOTER_HE`), matching the `$CV_TEMPLATE`/`$CL_TEMPLATE` 2026-07-04 fix.
+
+```bash
+# The plugin's own footer files must be placeholder-only — no literal degree, institution, or language content
+grep -c "{{USER_DEGREE_1}}\|{{USER_INSTITUTION_1}}" <build>/skills/career-engine-export/static-cv-footer.md   # must be >= 1 each
+grep -Ec "University of [A-Z]|College of [A-Z]" <build>/skills/career-engine-export/static-cv-footer.md       # must be 0 (a real institution name, not the {{...}} placeholder or the generic "University of Example" hint text)
+grep -c "{{USER_DEGREE_1_HE}}\|{{USER_INSTITUTION_1_HE}}" <build>/skills/career-engine-export/static-cv-footer-he.md   # must be >= 1 each
+grep -c "University of Liverpool\|University of Chicago" <build>/skills/career-engine-export/static-cv-footer.md <build>/skills/career-engine-export/static-cv-footer-he.md   # must be 0 (the specific real institutions this bug leaked — a literal-string regression check)
+
+# convert-cv.sh no longer hardcodes a plugin-relative footer path — it takes the resolved path as an argument
+grep -c "PLUGIN_DIR.*static-cv-footer" <build>/skills/career-engine-export/scripts/convert-cv.sh   # must be 0
+grep -c 'CV_FOOTER="\$4"' <build>/skills/career-engine-export/scripts/convert-cv.sh                # must be >= 1
+
+# Every call site passes the career-data-resolved $CV_FOOTER/$CV_FOOTER_HE, never a ${CLAUDE_PLUGIN_ROOT}-relative footer path
+grep -rc 'CLAUDE_PLUGIN_ROOT.*static-cv-footer' <build>/skills/career-engine-export/SKILL.md <build>/skills/career-engine-new-application/SKILL.md <build>/skills/career-engine-edit/SKILL.md   # must be 0 for each file
+grep -c '\$CV_FOOTER' <build>/skills/career-engine-orchestrator/orchestrator-queue.md   # must be >= 1 (Template resolution block)
+grep -c '\$CV_FOOTER' <build>/skills/career-engine-edit/SKILL.md                        # must be >= 1 (its own standalone Template resolution block)
+
+# Setup copies the blank defaults to career-data and asks the user to fill in real content — never leaves this for later
+grep -c "static-cv-footer.md" <build>/skills/career-engine-setup/SKILL.md   # must be >= 1
+grep -c "what are your actual degrees, institutions, and languages" <build>/skills/career-engine-setup/SKILL.md   # must be >= 1
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement, or any "must be 0" count is nonzero. Also FAIL if either plugin-side footer file contains any real-looking institution/degree name not wrapped in `{{...}}` — the grep patterns above are a floor, not a substitute for a human/LLM read of the two files' actual content on every QA pass.
 
 ### Check 35c — Two bundled intake bug fixes present (2026-07-02 fix)
 

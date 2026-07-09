@@ -18,7 +18,7 @@ Produces a {{USER_SECOND_LANGUAGE}} version of the user's CV and cover letter. T
 
 **Mirror structure exactly.** Do not add sections absent from the source. Do not remove sections present in the source.
 
-**Preserve all pandoc custom-style annotations exactly** — `{custom-style="RoleTitle"}`, `{custom-style="BlueFont"}`, `{custom-style="RoleOverview"}`, `{custom-style="RoleActivitiesList"}`, etc. These are structural, not linguistic.
+**Preserve all pandoc custom-style annotations exactly** — `{custom-style="RoleTitle"}`, `{custom-style="ColorEmphasis"}`, `{custom-style="RoleOverview"}`, `{custom-style="RoleActivitiesList"}`, etc. These are structural, not linguistic.
 
 **Do not include `## EDUCATION` or `## LANGUAGES` in output.** The pipeline appends a footer file for these sections before pandoc conversion — do not duplicate them.
 

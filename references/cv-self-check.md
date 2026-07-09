@@ -60,7 +60,7 @@ Run every item in order before returning output. The gatekeeper runs the same ch
 ## Header
 
 - [ ] Output markdown does NOT include `{custom-style="Name"}` or `{custom-style="ContactInfo"}` blocks
-- [ ] **BlueFont bracket check:** scan the output for any occurrence of `}{custom-style="BlueFont"}` not preceded by `]`. Every BlueFont span must be written as `[text]{custom-style="BlueFont"}`. A missing opening bracket causes pandoc to render the literal annotation string into the DOCX. Fix any unbracketed spans before returning.
+- [ ] **ColorEmphasis bracket check:** scan the output for any occurrence of `}{custom-style="ColorEmphasis"}` not preceded by `]`. Every ColorEmphasis span must be written as `[text]{custom-style="ColorEmphasis"}`. A missing opening bracket causes pandoc to render the literal annotation string into the DOCX. Fix any unbracketed spans before returning.
 
 ## Body word count
 

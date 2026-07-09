@@ -59,7 +59,7 @@ FAIL if EXPERIENCE or PROFILE SUMMARY headings are absent or substantially renam
 
 **`## PUBLICATIONS` — optional and rare for Detailed, forbidden for Brief.** Same rule shape as `## TOOLS` above, applied to the newer Publications section: not a FAIL on absence for Detailed. For Brief: FAIL if a `## PUBLICATIONS` section appears at all — "PUBLICATIONS section is not permitted in a Brief CV — there is no room for it on a one-page format (`writer-craft/SKILL.md` §5b), regardless of how strong the qualifying content is."
 
-**BlueFont annotation check.** Scan for the pattern `[^]]{custom-style="BlueFont"}` — i.e. `{custom-style="BlueFont"}` not immediately preceded by `]` (an unbracketed span; pandoc renders the literal annotation string as body text). FAIL every hit: "Unbracketed BlueFont span: `[text here]` — wrap: `[text here]{custom-style=\"BlueFont\"}`."
+**ColorEmphasis annotation check.** Scan for the pattern `[^]]{custom-style="ColorEmphasis"}` — i.e. `{custom-style="ColorEmphasis"}` not immediately preceded by `]` (an unbracketed span; pandoc renders the literal annotation string as body text). FAIL every hit: "Unbracketed ColorEmphasis span: `[text here]` — wrap: `[text here]{custom-style=\"ColorEmphasis\"}`."
 
 ---
 

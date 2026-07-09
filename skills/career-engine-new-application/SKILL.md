@@ -365,11 +365,11 @@ cp /tmp/he-<cl_filename>.md "<output_dir>/"
 Convert using the Hebrew DOCX production protocol from `career-engine-export`:
 
 ```bash
-# $CV_TEMPLATE_HE and $CL_TEMPLATE_HE already resolved (fixed career-data paths, no config key)
+# $CV_TEMPLATE_HE, $CL_TEMPLATE_HE, and $CV_FOOTER_HE already resolved (fixed career-data paths, no config key)
 
 # Hebrew CV — concatenate with Hebrew footer, then convert
 cat /tmp/he-<cv_filename>.md \
-    "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/static-cv-footer-he.md" \
+    "$CV_FOOTER_HE" \
     > /tmp/he-<cv_filename>-with-footer.md
 
 pandoc /tmp/he-<cv_filename>-with-footer.md \
