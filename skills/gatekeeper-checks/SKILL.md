@@ -13,7 +13,7 @@ description: 'Check definitions for the gatekeeper agent. Three checks: CV Check
 
 ## CV Check
 
-Run Gate 0 (ATS pre-check) first, then Gates 1-4 in order.
+Run Gate 0 (ATS pre-check) first, then Gates 1-5 in order.
 
 ### Gate 0 — ATS Pre-Check (hard fail)
 
@@ -91,18 +91,26 @@ Cross-referenced from `writer-craft/SKILL.md` §3-4; these are style-quality che
 - **Synonym cycling** — rotating synonyms for the same concept instead of repeating the right word.
 - **Filler phrases** left uncut: "in order to," "at this point in time," "it is important to note that," "due to the fact that," "has the ability to," "in the event that."
 
+### Gate 5 — Skills Section Content (hard fail)
+
+A format contract is not a content contract — this gate checks what's actually IN `## SKILLS`, not just whether the heading exists (that's Gate 0). Cross-referenced from `writer-craft/SKILL.md` §5's three-way test. **Hard fail on any of the three:**
+
+- **Knowledge listed as a skill.** A subject-matter/domain area the candidate knows *about*, not a capability she *does* — e.g. "Cybersecurity," "Identity & access management (IAM/PAM)," "Non-human identity (NHI)" as standalone skill-list items. FAIL: "[item] is domain knowledge, not a skill — cut it from `## SKILLS` or move it to Summary/Role-emphasis framing."
+- **Title or role label listed as a skill.** A job title or role descriptor is never a skill — e.g. "Founding Marketer." FAIL: "[item] is a title, not a capability — cut it."
+- **More than 3 skill groups, or cross-group duplication.** FAIL if the section has more than 3 categorized groups, or if the same item (or a clear paraphrase of it) appears in more than one group. Quote both groups and the overlapping item(s): "[group A] and [group B] both claim [overlapping concept] — merge or cut one."
+
 ---
 
 ## Cover Letter Check
 
-**Calibration authority:** the humanizer holds calibration authority over voice register and word-count decisions around the 320-word target. The 320-word body limit is a round-aware advisory, not a hard fail (see Grading). The gatekeeper enforces the mandatory structure gates below and flags word overage as advisory only — it does not apply voice register judgments that conflict with the humanizer's calibration output.
+**Calibration authority:** the humanizer holds calibration authority over voice register and word-count decisions around the 320-word target (250 when this letter's `Strategy = Strategic`). The word-count body limit is a round-aware advisory, not a hard fail (see Grading). The gatekeeper enforces the mandatory structure gates below and flags word overage as advisory only — it does not apply voice register judgments that conflict with the humanizer's calibration output.
 
 ### Gate 1 — Format (hard fail unless noted advisory)
 
 - **Greeting:** `Hi to the [Company name] team!` or `Hi to [Name]!` — stealth roles (no public company name): `Hi to the team!` or `Hi to the [JD descriptor] team!`. **Hard fail.**
 - **Role named in the first sentence of the body** — need not lead the sentence, but must be explicit. **Hard fail.**
 - **Sign-off:** a brief forward-looking close (default "Looking forward to next steps,"), then `{{USER_FULL_NAME}}` on its own line. The gatekeeper does not judge sign-off voice/register against the delivered-letters archive (humanizer's calibration authority — see Calibration authority above); accept any reasonable forward-looking sign-off. Flag structurally only: missing sign-off, name not on its own line, or a P.S. containing company-positioning commentary (a P.S. for logistics/warmth is fine). **Hard fail on structural flags only.**
-- **Body: maximum 320 words** (excluding greeting/sign-off; no minimum; 270-320 is the typical delivered-letter register). **Count mechanically — write the body text to a scratch file and run `wc -w` via the Bash tool; never estimate.** A real production run had the writer's self-reported count under the true figure by 20-40 words on every letter (two shipped over 320 as a direct result) — treat any writer-supplied count as unverified until you've recounted it yourself. **Advisory — round-aware** (see Grading): block-and-trim on round 1, deferred to humanizer on round 2+. Never block past round 1 on word count alone.
+- **Body: maximum 320 words, or 250 when this letter's `Strategy = Strategic`** (excluding greeting/sign-off; no minimum; 270-320 is the typical delivered-letter register for `IC`/`Hybrid`, 220-250 for `Strategic` — see `skills/writer-craft/SKILL.md` §7). **If `Strategy` was not passed to this check, use the 320 default and log it** — same graceful-fallback convention as Gate 9's `Template selected` handling below; do not stop or guess. **Count mechanically — write the body text to a scratch file and run `wc -w` via the Bash tool; never estimate.** A real production run had the writer's self-reported count under the true figure by 20-40 words on every letter (two shipped over 320 as a direct result) — treat any writer-supplied count as unverified until you've recounted it yourself. **Advisory — round-aware** (see Grading): block-and-trim on round 1, deferred to humanizer on round 2+. Never block past round 1 on word count alone.
 - **Language skills — FAIL if present.** Language proficiency statements ("Fluent in Hebrew and English," "native speaker of [language]," any language-as-credential statement) belong in the CV only. FAIL: "Language skills must not appear in the cover letter — this belongs in the CV." **Hard fail.**
 
 ### Personal-content exemption — read before running any content gate
@@ -156,6 +164,11 @@ Check for these failure patterns — any one FAILs:
 - **Pattern J — Personal-affinity opener without professional credential (Information Sequencing violation):** leads with personal attachment, fandom, or biographical detail that is evidence of passion/affinity rather than the direct professional qualification for the role. Test: is the personal fact itself the credential for this role, or is it evidence that she cares? If affinity only, it must not lead — it belongs in the body, after at least one proof anchor. ✓ Passes: "I've spent 25 years in the Tel Aviv ecosystem" leading a letter for a role marketing Tel Aviv — the fact IS the credential. ✗ FAILs: "I grew up cheering for the Orioles" leading a letter for a sports-media role — relevant, but affinity is not qualification. **Labeling sub-check, applies wherever in the letter the personal detail eventually appears, not just the opener:** FAIL if a sentence explains why the personal detail matters ("That's who I am as a fan, and it's also how I think about audience") instead of just stating the fact and letting the reader make the connection.
 
 **Non-transferability forcing function — run after the Pattern A-J checks, before concluding Gate 5.** Name explicitly — in the violation file on FAIL, or as your own working note on PASS — the single most specific, non-transferable anchor the opening paragraph contains: a named real referrer, a named product she's personally used, a specific dated event, or a specific verbatim JD/company detail reacted to. Quote it. **If none can be named — if every sentence in the opener would read identically with the company name swapped out — that is itself a FAIL, independent of whether any single Pattern A-J matched:** "No non-transferable anchor found in the opening paragraph — every sentence would read the same for a different company. Name the specific anchor, or the opener fails this test regardless of pattern-matching." This turns the existing "could this apply to any company?" test from a silent verdict into a forced, checkable output — a Gate 5 PASS with no anchor named is an incomplete check, not a completed one.
+
+**Pattern-derivation forcing function — Tier 2, not Tier 1 (see Grading below); run after the Non-transferability check.** A real, sourced fact can still be wrapped in an invented sentence shape — this checks the opener's *construction*, not its content (the Non-transferability check above already covers content). Name which Use-Case Structure (`writer-craft/SKILL.md` §9) or personalized-template variant the opener derives from.
+
+- **If it derives from a named pattern or variant:** note it and move on.
+- **If it's a novel construction:** name the *move* it performs (every named pattern makes one — a reaction, a recognition, an observation, a decision). Then test: **would this sentence's structure work as a direct answer to "why do you want this role?" or "how do you feel about applying?"** If yes, this check type fails — regardless of how specific or personal the content is. This is the same failure family as Pattern A's generic-enthusiasm ban, just with a real fact filling an otherwise-hollow frame instead of empty enthusiasm. **Confirmed real example:** "I want the Retention Product Lead role at Loora because I taught English as a second language..." — grammatically clean, genuinely sourced content, no Pattern A-J hit, and still a direct answer to an unstated interview question rather than a reaction. → Rewrite until the sentence performs a reaction, not an answer.
 
 **Sentence structure violations in the opening paragraph — FAIL:**
 - **Gerund as subject:** "Finding the right words for...," "Building GTM for...," "Having spent [time]..." — subject must be the user (first person).
@@ -248,7 +261,7 @@ The letter must SHOW with specifics, not TELL with confident-sounding sentences 
 **Identity idiom.** **FAIL if the letter uses a self-descriptive identity label ("I'm a builder," "I'm a translator between X and Y," "I'm a connector") as a bare claim with no proof attached nearby.** "Nearby" means the same sentence, the immediately adjacent sentence, **or** the immediately adjacent paragraph — in either direction. A label substantiated by named proof that comes right before it (a close-paragraph callback after proof already ran, e.g. "...led that turnaround at [Company]. I'm a builder at heart.") passes exactly like proof that comes right after — direction doesn't matter, adjacency does. A label with no proof anywhere near it — proof only several paragraphs away, or absent entirely — fails. **This is not "proof exists somewhere in the letter": a label sitting alone in the opener while the only proof is in the close, three paragraphs later, still fails** — the reader hits the bare claim long before the proof arrives, and that gap is the defect. Distinct from Gate 6's general idiom-as-filler ban — this check is specifically about identity-claiming shorthand substituting for demonstrated proof.
 
 **Dial-sheet checks — Tier 2, not Tier 1 (see Grading section below). Maximum only, never minimum:**
-- Word count against the template's ceiling
+- Word count against the template's ceiling — 320, or 250 when this letter's `Strategy = Strategic` (same override as Gate 1's body-max check; the Strategy override applies on top of whichever template — A or B — was selected, since template and Strategy are independent axes)
 - Sentence count against the template's ceiling
 - Contraction density against the template's ceiling
 - Exclamation count against the template's ceiling
@@ -284,11 +297,11 @@ Hard fails block **every round**, exactly as before — the set of what counts a
 
 #### Tier 2 — aggregate ≥70% required
 
-Tier 2 is a checklist of **32 distinct, named check types**, not raw violation-instance counts. Each check type is binary across the whole letter: **0 violations of that type anywhere = the check type passes; 1+ violations anywhere = the check type fails**, regardless of how many instances occur. A letter with five instances of the antithesis formula fails that one check type exactly the same as a letter with one instance.
+Tier 2 is a checklist of **33 distinct, named check types**, not raw violation-instance counts. Each check type is binary across the whole letter: **0 violations of that type anywhere = the check type passes; 1+ violations anywhere = the check type fails**, regardless of how many instances occur. A letter with five instances of the antithesis formula fails that one check type exactly the same as a letter with one instance.
 
-**Tier 2 score = (check types passed ÷ 32) × 100. PASS if ≥70%. FAIL if <70%,** naming the score and every failing check type by name.
+**Tier 2 score = (check types passed ÷ 33) × 100. PASS if ≥70%. FAIL if <70%,** naming the score and every failing check type by name.
 
-**Mechanical execution — run this as two passes, not one mental read-through of all 32.**
+**Mechanical execution — run this as two passes, not one mental read-through of all 33.**
 1. **One Bash grep-battery, one tool call**, covering every literal-pattern-matchable check type below (the antithesis test, the false-range/approach-announcement families, the filler-phrase list, the transition/cliché-phrase list, the template-variant-reuse diff). The gatekeeper already has Bash. (The Gate 6 curated word/phrase lists and the fit-declaration family are now Tier 1 — run those in the same grep battery, but they gate the letter before Tier 2 is even scored; see Grading above.)
 2. **A focused second pass for the remaining genuinely-semantic checks** (idiom/metaphor recognition, hollow metaphor, presumptuous verdict, the Gate 8 forcing function, syntax correctness, sentence-rhythm) — a much smaller set once the mechanical pass has cleared most of the list.
 
@@ -337,6 +350,9 @@ Tier 2 is a checklist of **32 distinct, named check types**, not raw violation-i
 
 *From Gate 7 (template-variant reuse — added 2026-07-05):*
 32. No near-verbatim reuse of the generic default template's illustrative variant text (new users only — this check does not run at all when a personalized templates file was used)
+
+*From Gate 5 (pattern-derivation forcing function — added 2026-07-08):*
+33. Novel opener construction passes the direct-answer test (fails only when the opener doesn't derive from a named pattern AND its structure would work as a direct answer to "why do you want this role?"/"how do you feel about applying?" — see Gate 5)
 
 **Round-aware behavior:**
 - **Round 1, Tier 1 clean, Tier 2 <70%:** FAIL → letter-writer, naming the percentage and every failing check type.
@@ -411,5 +427,6 @@ The fabrication check above verifies *traceability*. It does NOT catch content t
 6. **Length caps.** FAIL if `Keywords` exceeds 9 total (Critical >4, Important >3, or Nice-to-have >2); or `Culture` exceeds 3 bullets; or `Role emphasis` is missing its labeled **Mandate** / **Likely KPIs** structure.
 7. **Mandatory-field presence.** For every role in the coach's output that completed full research (not a triage exit, Priority 1–4), FAIL if any of the following has no value at all — not even `Unknown`/`[LOW]`/`N/A` where the property's own rules permit that as a valid value: `Role summary`, `Priority`, `Priority Reason`, `Role emphasis`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Culture`, `Landscape`, `JD proof`, `Company Stage`, `Hiring manager's role`, `Manager role confirmed`, `No incumbents in this function`, `Gap handling` (skip this one check if the spawner states gap handling is disabled for this run), `Location` (skip this one check if the spawner states the database has no `Location` property), `JD Body` (skip this one check for a role marked `content-exists` or `needs-manual` in Step 0.5 — only check it for a role marked with any `url-fetched*` marker this run), and `Date first advertised`/`First Advertised`. **Also FAIL if `Hiring manager's role` and `Manager role confirmed` are merged into a single field under any other name (e.g. a free-text "Hiring Manager" field combining name, title, and confirmation status)** — a real production run did exactly this, dropping both named properties while appearing to answer the question. This list must stay in parity with the Step 0.8 coach-complete list and the Step 0.9a confirmation-pass list in `skills/career-engine-intake/SKILL.md` — see the Cross-file contracts table in `CLAUDE.md`. Name every missing field by role; this is a structural presence check independent of the fabrication and field-fit checks above, which cannot catch an omitted field.
 8. **Outreach map structural purity.** The outreach map is the ONLY page-body content in the entire intake pipeline, and it must have identical structure every run. FAIL if the coach's `**Outreach map:**` return, for any role, contains anything beyond exactly these four parts: the `## Outreach — <Company>` heading, the ≤3-row table, `**Note angles**`, `**Email / WhatsApp**`. In particular, FAIL on a "Writing Angle" section, a "Message angle" section, numbered interview-style questions embedded in or adjacent to the map, or any other free-text commentary that isn't one of the four named parts — none of these have a defined format and none belong in page body. Quote the offending content and name the role. This check runs before intake ever writes to Notion (Step 0.8.5, ahead of the Step 0.9e page-body write) — it is the first line of defense; Step 0.9e's own extraction rule is the second.
+9. **Coach context block over-written.** FAIL if any Screen line (1-3) or the optional `Closing angle:` line in the coach context block (prepended to `Why I Want This Role`) exceeds 8 words, or reads as a sentence or explanation that connects the signal to the candidate's background rather than naming it as a short label (`coach-output.md`'s worked contrast: `PLG` is correct; "PLG execution credibility — activation frameworks, PQL design, in-product lifecycle" is over-written). This check does not apply to the separate transfer/credibility line (covered by check 4) or the optional GTM-lens lines. Quote the offending line and name the role.
 
 Each FAIL names the property, quotes the offending text (or states "missing entirely" for check 7), and states the fix.

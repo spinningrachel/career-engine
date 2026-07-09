@@ -73,6 +73,8 @@ These sections are already inside the user's Word template and formatted exactly
 
 **`## TOOLS` is optional.** Include it only when the JD specifically calls out tools or the role emphasis places weight on tooling. When in doubt, omit it — it is not a required section.
 
+**`## PUBLICATIONS` is optional and rarely used.** Include it only when `background-portfolio.md` documents 2+ published/bylined pieces or original-POV talks AND thought leadership is genuinely relevant to this role (visible in Role emphasis, the JD, or company culture signals). When in doubt, omit it — the same content already works as cover-letter proof whether or not it appears here.
+
 **Sections cv-writer always produces:** `## SUMMARY`, `## SKILLS & EXPERTISE` (or `## SKILLS`), `## EXPERIENCE`, `## CONSULTING` (with Earlier line).
 
 ---
@@ -169,6 +171,8 @@ See `skills/writer-craft/SKILL.md` §5-6 for bullet rules (outcomes first, proof
 - The goal is fit, not flattery. An overframed CV for a step-down role signals mismatch and loses the shortlist faster than an under-framed one.
 
 **`## TOOLS` section:** Include for Specialist and Builder roles only if the JD explicitly discusses tools or platform proficiency. Select relevant categories from `01-writing-rules.md` Section 8. Omit for Leader and Scaler roles regardless of JD content. Omit for any role type if the JD does not mention tools.
+
+**`## PUBLICATIONS` section:** Check `background-portfolio.md` for 2+ published/bylined pieces or original-POV talks. Include only if that content exists AND thought leadership is genuinely relevant to this role's positioning. This is rare — most CVs omit it entirely, and omitting it never costs anything, since the same content already works as cover-letter proof (`writer-craft/SKILL.md` §10) regardless of whether it appears in the CV.
 
 ---
 

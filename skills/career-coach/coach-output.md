@@ -153,15 +153,15 @@ Rules:
 
 ## Output Rules — RETURN these for intake to write (the coach does NOT write Notion)
 
-**You do not write to Notion. You return your analysis; intake (Step 0.9a) is the single authoritative writer.** In the intake pipeline (Option 2), the orchestrating intake skill takes the properties you return in your output and writes them to the database through the adapter (schema-validated select values, write-only-to-empty, never creating a property, with a post-write confirmation pass). Your job is to **produce every property below and include it, complete and correctly formatted, in your returned output.** A property you analyzed but omitted from your output never reaches Notion.
+**You do not write to Notion. You return your analysis; intake (Step 0.9a) is the single authoritative writer.** In the intake pipeline (Option 2), the orchestrating intake skill takes the properties you return in your output and writes them to the database through the adapter (schema-validated select values, **always-overwrite** — the assumption is the user wanted this role refreshed, so your fresh values always supersede whatever is already in Notion, with exactly three named exceptions: `JD Body`, `Gap handling`, and the `wiwtr_questions` append, all of which stay write-only-to-empty — never creating a property, with a post-write confirmation pass). Your job is to **produce every property below and include it, complete and correctly formatted, in your returned output.** A property you analyzed but omitted from your output never reaches Notion.
 
 **Return every property to its named slot — never as page-body prose.** All your output maps to the named properties below. Do not emit letter strategy, coaching notes, priorities, or KPIs as free page-body text — they belong in their properties (candidate-facing framing goes in the coach context block you return for `Why I Want This Role`). The outreach map is the one body write, which intake makes (Step 0.9e) from the map you return.
 
-**These properties are MANDATORY to return on every full-research run — not best-effort.** `Role emphasis` (Mandate + Likely KPIs lines), `Role summary`, `Priority`, `Priority Reason`, `Landscape` (sectioned), `Strategy`, `Keywords`, `Role Type`, `Relationship type`, `Gap handling`, `Culture`, the **location-compatibility result**, the job's **`Location`** (the role's stated location — e.g. "Tel Aviv, Israel / Hybrid" — verbatim from the posting; `Remote` or `Unknown` when that is the truth; this is the literal location, **distinct from** the location-compatibility verdict), **`Date first advertised` / First Advertised**, and the **`Why I Want This Role` coach context block**. `Role summary`, `Priority Reason`, location, and First Advertised are the most-dropped — never finish a role with any of these missing from your output when you produced a value (or its `[LOW]` / range / `Unknown`). If a value is genuinely impossible, say so by property name in Patterns; do not silently omit it.
+**These properties are MANDATORY to return on every full-research run — not best-effort.** `Role emphasis` (Mandate + Likely KPIs lines), `Role summary`, `Priority`, `Priority Reason`, `Landscape` (sectioned), `Strategy`, `Keywords`, `Role Type`, `Relationship type`, `Gap handling`, `Culture`, **`JD proof`** (a fresh verbatim quote every run — the anti-fabrication guardrail; see the always-overwrite rule below), the **location-compatibility result**, the job's **`Location`** (the role's stated location — e.g. "Tel Aviv, Israel / Hybrid" — verbatim from the posting; `Remote` or `Unknown` when that is the truth; this is the literal location, **distinct from** the location-compatibility verdict), **`Date first advertised` / First Advertised**, and the **`Why I Want This Role` coach context block**. `Role summary`, `Priority Reason`, `JD proof`, location, and First Advertised are the most-dropped — never finish a role with any of these missing from your output when you produced a value (or its `[LOW]` / range / `Unknown`). If a value is genuinely impossible, say so by property name in Patterns; do not silently omit it.
 
 **Select / multi-select values MUST match the schema.** For every Select (`Strategy`, `Relationship type`, `Gap handling`, etc.) and multi-select (`Role Type`, etc.) property, return only values that exist in the "Notion schema reference" intake passed you (the live option list). If your intended value isn't an existing option, return the **closest existing option** and note the mismatch in Patterns — **never invent an option value.** `Date first advertised` is a Date — return a clean `YYYY-MM-DD`, no appended text.
 
-**`JD proof` — return it fresh every run** (intake overwrites it, the one exception to write-only-to-empty): the verbatim quote must be traceable to the JD text this run fetched or found, never a cached Notion value.
+**`JD proof` — return it fresh every run** (intake always overwrites it, same as nearly every other property here): the verbatim quote must be traceable to the JD text this run fetched or found, never a cached Notion value.
 
 **`Corrected Job URL` — optional, never mandatory, and only when confirmed.** Return it only when the Job URL verification check (`coach-research.md`) found the original URL genuinely broken and a confirmed working alternate for the identical role. Intake — never you — writes it to the `Job URL` property, and only intake decides whether to overwrite (see Step 0.9a). Omit this field entirely on every role where you didn't independently confirm a correction — this is a backstop for what Step 0.5's own fetch ladder didn't already catch, not a routine return.
 
@@ -170,9 +170,10 @@ Rules:
 Format of the block:
 ```
 **Coach context**
-Screen 1: [what the HM is actually hiring for — direct, specific noun phrase, 20 words max]
-Screen 2: [second screening criterion]
-Screen 3: [third screening criterion]
+Screen 1: [top screening point — a short label, not a sentence]
+Screen 2: [second screening point — same brevity]
+Screen 3: [third screening point — same brevity; may be the culture signal — see Culture as a screen point below]
+[Closing angle: OPTIONAL 4th point, only when genuinely important and it doesn't fit Screens 1-3 — same brevity]
 [If function shift, step-down, or operating-model transition: ONE line, ≤25 words, naming only the credibility-of-transfer argument. A confirm-first note, if any, is a separate ≤10-word line. **When `GAP_HANDLING = disabled`, this is an affirmative transfer claim only — never a gap inventory or "the X real gaps" cataloging.**]
 [GTM lens answers if material: why you / why them / why now — one tight line each, only if they add something not in the criteria]
 
@@ -180,16 +181,20 @@ Screen 3: [third screening criterion]
 ```
 
 Rules:
-- Each screen criterion is a noun phrase, not a sentence. Name the capability or signal precisely. "PLG execution credibility — activation frameworks, PQL design, in-product lifecycle" is correct. "Someone who can drive growth through product-led strategies" is not. **Hard cap: 20 words per criterion — enforce it.**
-- **Whole-block cap.** Total: 3 screen criteria + at most the one-line transfer note + optional GTM-lens lines. If the block runs past ~6 short lines, you have over-written it — cut back to the caps above. The transfer note in particular is ONE line, never a paragraph.
-- No candidate credential names, no company names from her background in the criteria — writers read her background separately.
-- The GTM lens lines (why you / why them / why now) are optional; include only when they add material framing beyond the criteria themselves.
+- **Each screen point is a short label, not a sentence or a mini-paragraph — be pedantically brief.** Often 1-4 words is enough: `PLG` on its own is a correct Screen line. "PLG execution credibility — activation frameworks, PQL design, in-product lifecycle" is now over-written; that level of explanation belongs in `Role emphasis`, not here. "Someone who can drive growth through product-led strategies" was never correct either — it's a sentence, and it explains the signal instead of naming it. **Hard cap: 8 words per point — most points should be 1-4.**
+- **Do not connect the label back to the candidate's background or argue for why it matters.** That's the letter's job, and `Role emphasis` / `Culture` already carry the fuller detail — this block is a pointer to what to lead with, not a second copy of the analysis. This is the single most common way this block gets over-written: reaching for language that "sounds complete" instead of trusting a bare label.
+- **Expand past a bare label only when the label alone would be genuinely ambiguous** — even read next to `Role emphasis` and `Culture`, which the letter-writer has open at the same time. "Security-first buyers" needs those three words to mean anything on its own; "security" alone might not. Never expand just to sound more finished — a correct 1-word point beats a padded 6-word one.
+- **Culture as a screen point.** Screens 1-3 default to what the HM is hiring for, but culture competes for one of those three slots — or the optional fourth — when the company itself signals it matters: a JD with a genuine Values/Culture section beyond generic boilerplate, or a notably developed careers page. When that signal is real, give it a slot with a short culture cue (`autonomy-first`, `no-politics culture`) — not a restatement of the full `Culture` property, which already has the detail.
+- **A fourth point, when it earns its place.** If a genuinely important signal — including culture, when it didn't already take one of the top 3 — doesn't fit Screens 1-3 and doesn't need expansion, add one more line labeled `Closing angle:` flagging it as usable in the letter's close. Skip it entirely when 3 points already cover everything worth flagging; do not manufacture a fourth to fill the line.
+- **Whole-block cap.** Total: up to 3 screen points + at most 1 closing-angle line + at most the one-line transfer note + optional GTM-lens lines. If the block runs past ~7 short lines, you have over-written it — cut back. The transfer note in particular is ONE line, never a paragraph.
+- No candidate credential names, no company names from her background in the points — writers read her background separately.
+- The GTM lens lines (why you / why them / why now) are optional; include only when they add material framing beyond the points themselves.
 - Intake's placement: if the field already has content, the block goes above it with `---` as the separator and the existing content verbatim below; if empty, just the block (no separator). You return the block; intake handles placement.
 - This block is returned for Option 2 (intake pipeline) only. Never produce a `Why I Want This Role` block for Options 1, 3, 4, 5, or 6 (those have no Notion writeback).
 
 **`Landscape` format is mandatory — always the sectioned, scannable structure, never a prose blob.** Every Landscape write uses the `## Competitors` / `## Market Signals` / `## User Voice` / `## Company & Org` / `## Recruitment Signals` / `## Career Path` headings with one tight sourced bullet per point. A wall of paragraphs is a format failure even if the content is right.
 
-**`Landscape` exception:** If Landscape is already populated, do not replace it — prepend the new section-format content above the existing content, separated by a `---` divider. Existing content is less current but still valuable; preserve it verbatim below the divider.
+**`Landscape` is always overwritten**, same as nearly every other property here: intake replaces whatever is already in Notion with your fresh section-format content — it does not prepend or preserve the prior version.
 
 **`wiwtr_questions` — return for full-research roles (Priority 1–4); never for triage-exit roles (Priority 5–6).** These are bespoke coaching questions for the USER (not the agent), written in second person, to inspire genuine motivation content before the letter pipeline runs. Intake writes them to the WIWTR field in Notion below the coach context block (write-only-to-empty: only when no user content exists). See WIWTR Question Generation below for doctrine.
 
@@ -242,8 +247,8 @@ wiwtr_questions:
 4. [Question 4 — if needed]
 ```
 
-**`Priority` exception:** If the coach's analysis produces a materially different priority than what is set (e.g., role is identifiable as an open application that must be `Fifth`, or research reveals a hard disqualifier that changes the score), flag the discrepancy in Patterns and note the recommended value — but still do not overwrite. The user decides.
+**`Priority` — always overwrite; call out big swings.** Your fresh score always supersedes whatever is set — this is never a case to defer to the user (see Step 0.9a's always-overwrite rule). When your score differs materially from what was already set (e.g., the role is an open application that must score `Fifth`, or research reveals a hard disqualifier), flag the discrepancy and your reasoning in Patterns so the user notices the change — but return the new value regardless; intake writes it.
 
-**`N/A` counts as a value.** Do not overwrite `N/A` with new content. A field set to `N/A` was deliberately set that way.
+**`N/A` is a value, not a lock.** For the three write-only-to-empty exceptions (`Gap handling`, `JD Body`, the `wiwtr_questions` append), an existing `N/A` counts as populated and is not overwritten — the same as any other content. For every other property, an existing `N/A` is exactly as stale as any other prior value: if your research produces a real answer this run, return it, and intake will overwrite the old `N/A`.
 
 **If a property is empty:** write the coach's output. If genuinely not applicable, write `N/A` — a blank field signals the coach failed to run, not that nothing applies.
