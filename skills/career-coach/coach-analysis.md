@@ -29,6 +29,8 @@ Before any analysis, determine the gap handling mode in this order:
 - If the value is `"enabled"` or the key is absent (default): set `GAP_HANDLING = enabled`. Proceed normally.
 - A per-role override always wins: if the user included "no gap handling" in their prompt for this run, treat as disabled for this run only.
 
+**Same pre-flight, same order, for `cv_type_mode`:** when invoked by intake, the spawn prompt passes `cv_type_mode` (read from `pipeline-preferences.json` → `cv_type.mode`). Use it directly; do not re-read the config file yourself. If it is missing from the spawn prompt (standalone invocation), Read `pipeline-preferences.json` yourself via the same career-data resolution as above, and default to `"Detailed"` if the key is absent. Set a session flag `CV_TYPE_MODE = <value>`. This flag governs whether `Role emphasis` gets the appended CV-type recommendation clause below — only when `CV_TYPE_MODE == "Variant"`.
+
 ### Part 0 — Priority scoring (full research roles)
 
 This step runs only for roles that reached full research (Priority 1–4 from triage, pre-scored roles, or `--full-research` runs). For Priority 5–6 triage-exit roles, Priority and Priority Reason were already written in Step 2c and are final.
@@ -167,7 +169,7 @@ Surface this reading in `Role emphasis`, and let it guide the `Strategy` letter-
 |---|---|
 | `Priority` | Numeric urgency/fit rank (1 = highest). The sort handle; the *why* lives in `Priority Reason`. |
 | `Priority Reason` | One sentence justifying the score — name the driver(s) and any reason it isn't higher. |
-| `Role emphasis` | An interpretive read of what will matter most to succeed: the real mandate (not the responsibilities), where the job sits in the company's moment, special constraints, and the most-likely/implied KPIs. |
+| `Role emphasis` | An interpretive read of what will matter most to succeed: the real mandate (not the responsibilities), where the job sits in the company's moment, special constraints, and the most-likely/implied KPIs. Conditionally carries an appended CV-type recommendation when `CV_TYPE_MODE == "Variant"` — see below. |
 | `Role summary` | The plain-language "what the job is in practice" — scope, stage, ownership areas, constraints (solo, budget), business timing. The version you'd tell a friend. ≤400 chars. |
 | `Landscape` | A structured market + company + product brief: snapshot (location, size, founders), product (what it is, how it works), buyers/personas, GTM motion, funding/stage, org context, competitive frame. |
 | `Keywords` | A prioritized requirements map from the JD — Critical / Important / Nice-to-have, hard-capped. For ATS targeting, proof-point selection, and go/no-go on a missing "Critical". |
@@ -233,6 +235,36 @@ For Specialist / practitioner roles (IC contributor, no direct reports), explici
 - **Reporting line:** Who does this role report to?
 - **Team context:** Founding role (build from scratch) or joining an established team?
 - **IC ownership scope:** What does this person own vs. oversee vs. collaborate on?
+
+**CV-type recommendation — only when `CV_TYPE_MODE == "Variant"` (set in the Settings pre-flight above).** When the user's config defers the CV-format decision to per-role choice, append a final line to `Role emphasis` (below the Mandate/Likely KPIs/Step-down lines, still inside the same property — this is not a separate field):
+
+```
+**Recommended CV Type:** Detailed | Brief — [one-line rationale].
+```
+
+When `CV_TYPE_MODE` is `"Detailed"` or `"Brief"`, omit this line entirely — `Role emphasis` looks exactly as it does without this feature. This recommendation is advisory only: it does not write to the user's own per-role `CV Type` database field (`skills/database/SKILL.md` — user-owned, agents never write it); it exists so the user has a reasoned suggestion to act on.
+
+**Judgment reference — CV Type Recommendation Matrix.** Use this table as a starting point for the recommendation, then adjust for what the specific JD and company actually signal — it is a reference to reason from, not a rigid lookup (the same way the Priority Framework above is applied with judgment, not mechanically). Weigh geography, seniority, and tech vertical together; where they conflict, prioritize geography and vertical over seniority, since screening norms are usually set by market and function before individual seniority nuance.
+
+| Geography | Seniority | Vertical context | Recommended length |
+|---|---|---|---|
+| Israel | Any | Cybersecurity, Deep Tech, AI | Strictly 1 page |
+| US/Canada | Early career | Software Dev, HR Tech, Sales | Strictly 1 page |
+| US/Canada | Mid-Senior (10+ yrs) | Cyber, Cloud, FinTech | 2 pages |
+| US/Global | Specialist | AI Research, Deep Tech | 2-3 pages (Research-CV style) |
+| South Africa | Mid-Senior | FinTech, SaaS, Enterprise | 2 pages (Commonwealth/UK model) |
+| South America (LATAM) | Early-Mid | E-commerce, EdTech, SaaS | 1-2 pages |
+| United Kingdom | Junior-Mid | DevTools, LegalTech, Product | 2 pages |
+| France | Any | High-growth startups | Strictly 1 page |
+| Germany (DACH) | Any | Cyber, Industrial Tech | 2-4 pages |
+| India | Mid-Senior | Data Science, DevOps | 2-3 pages |
+| Any | Associate-VP | Private Equity / M&A | Strictly 1 page |
+
+**Cross-cutting triggers, regardless of geography:** Deep Tech/Infrastructure roles more often justify a second page (system-architecture/project-depth complexity); HR/People/Legal Tech roles skew one-page unless C-suite; Cybersecurity needs enough ATS keyword density to balance against brevity.
+
+**Mapping to this plugin's binary Detailed/Brief system:** the table above is expressed in page counts because it reflects general resume/CV norms; this plugin only has two discrete CV types. "Strictly 1 page" maps to **Brief**; every 2+-page recommendation maps to **Detailed** — Detailed already isn't fixed-length, so a "2-4 pages" signal just confirms the multi-page format is the right call, not a new constraint on it.
+
+**Sourcing caveat — the Israel, South Africa, and South America rows are not from originally-sourced research.** They're inferred from general international recruitment norms and should be treated as a reasonable starting judgment, not an authoritative fact — flag uncertainty in the rationale line when leaning on one of these three rows (e.g. "Brief — Israeli deep-tech norms favor brevity [inferred, not directly sourced]").
 
 **`JD proof`** — The single most revealing sentence from the JD that proves your Role emphasis interpretation. Direct quote, verbatim. For the user's reference only — no writing agent reads this field.
 

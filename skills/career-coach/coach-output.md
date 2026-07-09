@@ -50,6 +50,7 @@ Return findings in this exact structure for every role received.
   - **Mandate:** <business problem / real mandate> [HIGH/LOW]
   - **Likely KPIs:** <metric set the role is measured on; target-model set for a transition> [HIGH/LOW]
   - **Step-down / transition:** <one line, only if detected>
+  - **Recommended CV Type:** <Detailed | Brief — one-line rationale> — **only when `CV_TYPE_MODE == "Variant"`** (see `coach-analysis.md`'s CV Type Recommendation Matrix). Omit this line entirely when `CV_TYPE_MODE` is `Detailed` or `Brief` — it is not a separate property, just conditional content within `Role emphasis`, and it never writes to the user's own per-role `CV Type` database field.
 - **JD proof:** "<verbatim quote>"
 - **Keywords:** Critical: <terms> | Important: <terms> | Nice-to-have: <terms>
 - **Strategy:** `IC` | `Strategic` | `Hybrid`

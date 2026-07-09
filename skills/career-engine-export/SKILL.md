@@ -17,15 +17,16 @@ This skill governs all DOCX production in the career-engine pipeline. Load it be
 
 cv-writer outputs **styled markdown** using pandoc's `custom-style` div and span syntax. The pipeline converts it to `.docx` at Step 6 using pandoc with the `.dotx` reference templates. A short post-processing script then updates the role-specific Subtitle in the CV document header.
 
-**Templates — fixed-path convention, no config key, never an external OS path (2026-07-04 fix).** All four templates resolve by fixed filename inside `${CAREER_DATA}/references/templates/` — there is no `cv_template` or `word_templates_path` config key anymore, and the plugin never reads a template from outside career-data:
-- `$CV_TEMPLATE` = `${CAREER_DATA}/references/templates/cv.dotx` — CV reference template. Contains all custom styles, the user's name and contact info in the document header, and correct formatting throughout.
+**Templates — fixed-path convention, no config key, never an external OS path (2026-07-04 fix).** All templates resolve by fixed filename inside `${CAREER_DATA}/references/templates/` — there is no `cv_template` or `word_templates_path` config key anymore, and the plugin never reads a template from outside career-data:
+- `$CV_TEMPLATE` = `${CAREER_DATA}/references/templates/cv.dotx` — CV reference template, **Detailed CV Type**. Contains all custom styles, the user's name and contact info in the document header, and correct formatting throughout.
+- `$CV_TEMPLATE_BRIEF` = `${CAREER_DATA}/references/templates/cv-brief.dotx` — CV reference template, **Brief CV Type** (one-page, two-column). Required only when the resolved CV Type for a role is `Brief` — see the CV Type resolution step in `career-engine-new-application/SKILL.md`/`career-engine-edit/SKILL.md`. Never used for a Detailed-type role.
 - `$CL_TEMPLATE` = `${CAREER_DATA}/references/templates/cover-letter-template.dotx` — Cover letter reference template. Contains header and styles. **This must resolve from career-data, never from the plugin's own `references/` default** — the plugin's copy is the new-user default only (see `career-engine-setup/SKILL.md`), and using it in place of the user's own personalized template was a real production bug (the cover letter export silently ignored the user's actual template every run).
 - `$CV_TEMPLATE_HE` = `${CAREER_DATA}/references/templates/cvHe.dotm` — Hebrew CV reference template (note the `.dotm` extension — this file is macro-enabled, not `.dotx`).
 - `$CL_TEMPLATE_HE` = `${CAREER_DATA}/references/templates/he-letter.dotx` — Hebrew cover letter reference template.
 
-Confirm each file exists before use. `$CV_TEMPLATE` and `$CL_TEMPLATE` are required for any export — if either is missing, stop and report: "career-data is missing `references/templates/<filename>` — run `/career-engine:setup --phase 5` to restore the default templates, or add your own at that path." `$CV_TEMPLATE_HE`/`$CL_TEMPLATE_HE` are optional — if either is missing, Hebrew export for that document type is unavailable; skip it and note it, exactly as the old `word_templates_path`-empty case did.
+Confirm each file exists before use. `$CV_TEMPLATE` and `$CL_TEMPLATE` are required for any export — if either is missing, stop and report: "career-data is missing `references/templates/<filename>` — run `/career-engine:setup --phase 5` to restore the default templates, or add your own at that path." `$CV_TEMPLATE_BRIEF` follows the same required-when-needed rule as the Hebrew templates: if the resolved CV Type for this role is `Brief` and `cv-brief.dotx` is missing, stop and report the same way — never silently fall back to `$CV_TEMPLATE` (that would silently produce a Detailed-shaped document for a role the user explicitly configured as Brief). `$CV_TEMPLATE_HE`/`$CL_TEMPLATE_HE` are optional — if either is missing, Hebrew export for that document type is unavailable; skip it and note it, exactly as the old `word_templates_path`-empty case did.
 
-None of the four templates should be read into context. Use them only as pandoc `--reference-doc` arguments.
+None of these templates should be read into context. Use them only as pandoc `--reference-doc` arguments.
 
 ---
 
@@ -74,6 +75,16 @@ Filename convention: lowercase, no spaces, hyphens between words, `.md` extensio
 
 ### 3. Convert with pandoc
 
+**Select the CV template path first — conditional on the resolved CV Type for this role** (read from `$PIPE/cv-type.txt`, written by the resolution step earlier in the pipeline; never re-derived here):
+
+```bash
+if [ "<resolved CV Type>" = "Brief" ]; then
+  CV_TEMPLATE_FOR_EXPORT="$CV_TEMPLATE_BRIEF"
+else
+  CV_TEMPLATE_FOR_EXPORT="$CV_TEMPLATE"
+fi
+```
+
 Run the conversion script:
 
 ```bash
@@ -82,11 +93,11 @@ bash "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/convert-cv.sh" \
   "/tmp/<cl_filename>.md" \
   "<output_dir>/<company_dir>" \
   "${CLAUDE_PLUGIN_ROOT}" \
-  "$CV_TEMPLATE" \
+  "$CV_TEMPLATE_FOR_EXPORT" \
   "$CL_TEMPLATE"
 ```
 
-`$CV_TEMPLATE` (arg 5) and `$CL_TEMPLATE` (arg 6) are the resolved `.dotx` paths from `${CAREER_DATA}/references/templates/` (fixed filenames `cv.dotx`/`cover-letter-template.dotx` — no config key, see the Templates section above). The personal templates live in career-data, not the plugin (R-37). The script fails fast if either is missing. (R-42 — the script previously hardcoded a literal `{{USER_DOTX_FILE}}.dotx` and a stale export-skill footer path, which broke every export. **2026-07-04 fix:** arg 6 added — the script previously hardcoded the plugin's own default `references/cover-letter-template.dotx` for every cover letter export, silently ignoring the user's actual personalized template every run.)
+`$CV_TEMPLATE_FOR_EXPORT` (arg 5) resolves to either `$CV_TEMPLATE` (`cv.dotx`) or `$CV_TEMPLATE_BRIEF` (`cv-brief.dotx`) per the conditional above — `convert-cv.sh` itself needs no change for this; it already takes the template path as a plain positional argument, so only this caller-side resolution differs by CV Type. `$CL_TEMPLATE` (arg 6) is the resolved `.dotx` path from `${CAREER_DATA}/references/templates/` (fixed filename `cover-letter-template.dotx` — no config key, see the Templates section above). The personal templates live in career-data, not the plugin (R-37). The script fails fast if either is missing. (R-42 — the script previously hardcoded a literal `{{USER_DOTX_FILE}}.dotx` and a stale export-skill footer path, which broke every export. **2026-07-04 fix:** arg 6 added — the script previously hardcoded the plugin's own default `references/cover-letter-template.dotx` for every cover letter export, silently ignoring the user's actual personalized template every run.)
 
 Pandoc inherits the header/footer from the reference template. The user's name and contacts appear automatically. Only the Subtitle (role tagline) needs updating per role.
 
@@ -119,11 +130,14 @@ Both files must exist and be nonzero before proceeding.
 pandoc "<output_dir>/<company_dir>/<cv_filename>.docx" -t plain | wc -w
 ```
 
-This gives a plain-text word count of the full rendered document (including all headers, titles, dates, and body). The user's CV is senior-level with a full work history — a clean 2-page document is normal and expected. Thresholds are calibrated accordingly:
+This gives a plain-text word count of the full rendered document (including all headers, titles, dates, and body). **Thresholds branch by CV Type — a Brief CV's one-page target is a materially tighter constraint than Detailed's.**
 
+**Detailed:** the user's CV is senior-level with a full work history — a clean 2-page document is normal and expected. Thresholds are calibrated accordingly:
 - **Under 1050 words** — proceed to Notion writeback.
 - **1050–1350 words** — likely 2 dense pages; proceed but flag in the chat summary: "CV word count at [N] — confirm 2-page fit before sending."
 - **Over 1350 words** — likely over 2 pages. Return to cv-writer with: "CV plain-text word count is [N] after DOCX conversion, indicating likely overflow beyond 2 pages. Cut bullets from the lowest-priority roles to bring body word count under 1000."
+
+**Brief:** apply the single total-body word-count backstop ceiling from `writer-craft/SKILL.md` §5b instead (a one-page target, not a 2-page one — do not apply Detailed's thresholds above to a Brief CV). If over the ceiling, return to cv-writer with: "Brief CV plain-text word count is [N] after DOCX conversion, over the one-page backstop ceiling — fold more roles into the `Earlier:` line or tighten bullet density (`writer-craft/SKILL.md` §5b's one-page-fit judgment principle)."
 
 After cv-writer returns a revised draft, re-run the full export protocol from Step 2. One revision pass only — if still over threshold after one pass, proceed and flag in the chat summary.
 
@@ -145,7 +159,7 @@ Example: `{{DRAFT_DIR_URL_BASE}}applications-2026-05-26%2Fnorthwind%2F`
 
 ## File naming conventions
 
-All filenames are lowercase, no spaces, hyphens between words. Extension is `.docx`.
+All filenames are lowercase, no spaces, hyphens between words. Extension is `.docx`. **Unchanged by CV Type** — a Brief CV uses the same `cv-...` filename pattern as Detailed; one CV is produced per role regardless of type, so there is no naming collision to resolve.
 
 - CV: `cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx`
 - Standard cover letter: `coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx`
@@ -332,7 +346,59 @@ Use for company name in RoleTitle — ONE word or phrase per line, maximum:
 **Earlier:** Senior marketing and content roles across B2B SaaS, media, and agency — full details on LinkedIn.
 ```
 
-Plain `Normal` style paragraph. "Earlier:" is bolded with standard markdown `**bold**`.
+Plain `Normal` style paragraph. "Earlier:" is bolded with standard markdown `**bold**`. For Brief, this line closes out `## EXPERIENCE` directly (there is no `## CONSULTING` to sit between it and the rest of the document) — see the Brief annotation reference below.
+
+---
+
+## CV — custom-style annotation reference — Brief variant
+
+**⚠ Known technical limitation, empirically CONFIRMED against a real build — plain pandoc markdown cannot produce the two-column sidebar layout.** Two mechanisms were tested against a real `cv-template-brief-default.dotx` build (python-docx, with `RoleTitle`/`RoleActivitiesList`/`RoleActivitySingle`/`SkillsHeading`/`Skills`/`BlueFont` custom styles defined, converted with `pandoc --reference-doc`):
+
+1. **Pipe table with `::: {custom-style="..."}` div content in cells** — pandoc's pipe-table parser requires strictly single-line cell content and a `|---|---|` header separator row; multi-line block content (headings, divs) inside a cell is not parsed as a table at all — the whole block silently degrades to one literal-text paragraph, with every `|` and `:::` character rendered as visible text. **Confirmed broken.**
+2. **Grid table (`+---+---+` ASCII-art borders) with block content in cells** — pandoc's grid-table parser IS designed for multi-paragraph cell content in principle, but requires the border and content rows to be exactly character-aligned to the declared column widths; a real test with hand-authored grid syntax failed to parse as a table at all (same literal-text degradation as the pipe table). Even if a perfectly-aligned grid table can be made to work, **requiring an LLM writer agent to hand-align ASCII-art table borders character-for-character, every draft and every revision, is not a reliable content-generation target** — a single misaligned dash silently breaks the whole layout with no error, exactly as observed in testing.
+
+**What did work, confirmed in the same test:** `RoleTitle`, `RoleActivitiesList`, and `BlueFont` div/span annotations applied correctly (verified via the rendered DOCX's `w:pStyle`/`w:rStyle` references) when used in normal linear (non-table) markdown — identical to how they already work for Detailed. The problem is specifically the two-column table wrapper, not the annotation system itself.
+
+**Recommended mechanism — not yet built, a real follow-up item, distinct from the blank template file itself:** cv-writer should NOT attempt to emit a pandoc table at all. Instead:
+1. cv-writer outputs Brief content as ordinary **linear, single-column markdown** (exactly like Detailed), using two HTML-comment markers to delimit what belongs in the sidebar vs. the main column — e.g. `<!-- SIDEBAR -->` ... `<!-- /SIDEBAR -->` around the Skills content, everything outside those markers is main-column content. This is a content-generation task cv-writer is already good at (linear markdown with simple delimiters) — no ASCII-art alignment, no nested div-in-table syntax.
+2. A new post-processing script (python-docx, same pattern as the existing `update-subtitle.py` — a small script that runs after pandoc, not instead of it) splits the sidebar-marked and main-marked content into two separate small pandoc conversions (or one conversion plus a re-parse), builds the two-column table shell (the same shell already proven to work in `cv-template-brief-default.dotx` — see that file for a working reference), and inserts each portion's rendered paragraphs into the correct cell, preserving their custom styles.
+3. Step 6 of the production protocol gains a Brief-only step calling this new script, parallel to how Step 4 already calls `update-subtitle.py`.
+
+**This script does not exist yet — building it is out of scope for the template file itself and needs its own implementation pass.** Until it exists, a Brief CV cannot actually be exported to the two-column visual shape described in this feature — the blank default `.dotx` template (a real, working file with all the right custom styles defined) and the content-authoring rules (`writer-craft/SKILL.md` §5b, `agents/cv-writer.md`) are ready, but the "assemble them into a two-column DOCX" step is not.
+
+### Content annotations — Skills (sidebar) and Profile Summary / Experience (main column)
+
+Once the marker-based split above is built, the content on each side uses ordinary annotations, unchanged from what's proven to work:
+
+```markdown
+<!-- SIDEBAR -->
+::: {custom-style="SkillsHeading"}
+SKILLS
+:::
+
+::: {custom-style="Skills"}
+[Example — one flat pipe-separated or line-per-skill list; no Role-Type-driven categorization, unlike Detailed's Scaler/Specialist categorized blocks]
+:::
+<!-- /SIDEBAR -->
+
+## PROFILE SUMMARY
+
+[Example — your profile paragraph, tighter than Detailed's summary; see writer-craft/SKILL.md §5b for the word-count backstop]
+
+## EXPERIENCE
+
+::: {custom-style="RoleTitle"}
+Head of [Function] | [Company Name]{custom-style="BlueFont"} | *[Start] -- [End]*
+:::
+
+- ::: {custom-style="RoleActivitiesList"}
+  [Example — short, condensed bullet]
+  :::
+
+**Earlier:** [Company A], [Company B], [Company C] ([Year]–[Year])
+```
+
+Contact details (phone, email, location, site) are template-header content or the first table cell's fixed content, same convention as Detailed's header/contact info — cv-writer never writes them. (The photo, if the user's template includes one, is baked into the `.dotx` template directly — cv-writer never generates or inserts an image; see `pipeline-preferences.json` → `cv_type.brief_has_photo`.) **No `RoleOverview` annotation is ever used here** — Brief has no RoleOverview line at all (`writer-craft/SKILL.md` §5b). The `**Earlier:**` line is the last element inside `## EXPERIENCE`, not a separate section.
 
 ---
 

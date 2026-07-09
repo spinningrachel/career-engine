@@ -19,7 +19,7 @@ The pipeline produces two deliverables per role: a CV DOCX and a cover letter DO
 
 **Only applies when the processing queue contains 2 or more roles.**
 
-Before processing the full queue, identify the warm-up role — the first role to process. The warm-up role's gatekeeper violations will be extracted and injected as pre-warnings into the cv-writer prompt for all remaining roles, reducing loops across the batch.
+Before processing the full queue, identify the warm-up role — the first role to process. **Process the warm-up role to completion (through Step 4.5) before starting any other role in the batch — this mechanism only works serially.** The warm-up role's gatekeeper violations will be extracted and injected as pre-warnings into the cv-writer prompt for all remaining roles, reducing loops across the batch; there is nothing to extract yet if other roles are already running in parallel with it.
 
 **Warm-up role selection logic:**
 1. If any role in the queue has priority `Highest` — use the first one.
@@ -68,6 +68,17 @@ Immediately after creating `$PIPE`, write the role's Notion-sourced properties t
 
 **Write mechanics:** On Path A use the `Write` tool or `cat >` to write the file directly. On Path B (host-bridge MCP), use Desktop Commander `write_file` to create it host-side — same R-30 pattern as other `$PIPE/` writes.
 
+### Step 0.type — Resolve CV Type (single resolution point)
+
+Immediately after Step 0.data, resolve which CV format this role gets. This is the **only** place this pipeline reads `cv_type` config or the database for it — every downstream spawn (Steps 1, 1.5, 4, 4.5, and Step 6 export) reads the resolved value from `$PIPE/cv-type.txt`, never re-deriving it.
+
+1. Read `pipeline-preferences.json` → `cv_type.mode` (career-data first, plugin blank template as last-resort fallback — same R-37 resolution order as every other config key). **A present-but-invalid value** (anything other than exactly `Detailed`/`Brief`/`Variant`) is treated the same as missing: try the next source; invalid everywhere → default `Detailed`, noted in config-health.
+2. **`--now` mode:** no Notion row exists for this run (Pre-Step 5). If `mode` resolved to `Variant`, there is no per-role database field to read — default directly to `Detailed` and skip step 3 entirely.
+3. If `mode` is `Detailed` or `Brief`, that is the resolved value — **the database backend is never consulted.**
+4. If `mode` is `Variant` (and not `--now` mode), read this role's own `CV Type` field from the configured database backend (a single targeted read on this role's Page ID — delegate to the backend adapter, e.g. `notion-fetch` on this role's page, never re-describe the mechanics inline). **Distinguish a genuine empty field from a failed read:** empty/absent field on a successfully-read page → resolved value defaults to `Detailed`. A read that errors or can't reach the page at all → stop and report for this role ("could not read `CV Type` for [Company] — [error]") rather than silently defaulting; do not treat a tool failure as equivalent to an empty field.
+5. **If the resolved value is `Brief`:** confirm `$CV_TEMPLATE_BRIEF` (`${CAREER_DATA}/references/templates/cv-brief.dotx`) exists now, before any drafting begins — fail fast rather than discovering the missing template only at Step 6 export, after a full draft/gatekeeper/revision cycle has already run. Missing → stop and report: "career-data is missing `references/templates/cv-brief.dotx` — run `/career-engine:setup --phase 5` to add it, or set `cv_type.mode` to `Detailed` for this role."
+6. Write the resolved value (`Detailed` or `Brief`) to `$PIPE/cv-type.txt`.
+
 ---
 
 ## CV Steps (1 through 4.5)
@@ -78,6 +89,7 @@ Immediately after creating `$PIPE`, write the role's Notion-sourced properties t
 
 Spawn `cv-writer` with `option=draft`, passing:
 - `CAREER_DATA=${CAREER_DATA}`
+- `CV Type=<value from $PIPE/cv-type.txt, resolved at Step 0.type>` — read the file, never re-derive
 - `Role summary` (the compressed JD proxy — contains role context, key requirements, and self-characterization section)
 - The coach's output for this role: `Role emphasis`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`
 - `CV_PATH=$PIPE/cv-draft.md` — the writer writes the draft there and returns the path (R-41).
@@ -86,11 +98,11 @@ Spawn `cv-writer` with `option=draft`, passing:
 
 ### Step 1.5 — Gatekeeper (CV draft check)
 
-Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, the CV path `$PIPE/cv-draft.md` to read, `Role summary`, the coach's `Keywords` property, and `OUTPUT_PATH=$PIPE/gatekeeper-cv-<round>.md`. The gatekeeper's ATS pre-check parses Keywords into tiers (Critical / Important / Nice-to-have) to verify coverage. It returns `PASS`, or `FAIL: <n> violations → <path>` (R-41).
+Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, `CV Type=<value from $PIPE/cv-type.txt>`, the CV path `$PIPE/cv-draft.md` to read, `Role summary`, the coach's `Keywords` property, and `OUTPUT_PATH=$PIPE/gatekeeper-cv-<round>.md`. The gatekeeper's ATS pre-check parses Keywords into tiers (Critical / Important / Nice-to-have) to verify coverage. It returns `PASS`, or `FAIL: <n> violations → <path>` (R-41).
 
 **If PASS:** proceed to Step 2.
 
-**If FAIL:** read the violation file at the returned path. If all violations are mechanical and unambiguous (swap two words, remove one phrase, reorder paragraphs — no creative judgment required), apply them inline to `$PIPE/cv-draft.md`. If any violation requires cv-writer judgment (rewriting a bullet, resolving a fabrication flag), spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `CV_PATH=$PIPE/cv-draft.md` (read and overwrite), the gatekeeper violation path, and the fix-log path `$PIPE/fix-log.md` (read and append). Locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After fix, spawn `gatekeeper` again with `option=cv` (new `OUTPUT_PATH` round). Repeat until PASS. Do not surface this loop to the user — log violation rounds internally.
+**If FAIL:** read the violation file at the returned path. If all violations are mechanical and unambiguous (swap two words, remove one phrase, reorder paragraphs — no creative judgment required), apply them inline to `$PIPE/cv-draft.md`. If any violation requires cv-writer judgment (rewriting a bullet, resolving a fabrication flag), spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `CV Type=<value from $PIPE/cv-type.txt>`, `CV_PATH=$PIPE/cv-draft.md` (read and overwrite), the gatekeeper violation path, and the fix-log path `$PIPE/fix-log.md` (read and append). Locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After fix, spawn `gatekeeper` again with `option=cv` (new `OUTPUT_PATH` round). Repeat until PASS. Do not surface this loop to the user — log violation rounds internally.
 
 **Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 1.5)` section in the revision log, proceed to Step 2, and flag for the user in the final delivery that this CV needs manual review before sending.
 
@@ -100,7 +112,7 @@ Spawn `recruiter-reviewer` with `CAREER_DATA=${CAREER_DATA}`, `Role summary`, th
 
 ### Step 4 — CV writer (revision)
 
-Spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `CV_PATH=$PIPE/cv-final.md` (write), the draft path `$PIPE/cv-draft.md`, and the recruiter review path `$PIPE/recruiter-cv.md` to read. The writer also writes the CV CHANGES section to `$PIPE/cv-changes.md` and returns the paths (R-41). Step 7d reads `$PIPE/cv-changes.md` for the feedback file.
+Spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `CV Type=<value from $PIPE/cv-type.txt>`, `CV_PATH=$PIPE/cv-final.md` (write), the draft path `$PIPE/cv-draft.md`, and the recruiter review path `$PIPE/recruiter-cv.md` to read. The writer also writes the CV CHANGES section to `$PIPE/cv-changes.md` and returns the paths (R-41). Step 7d reads `$PIPE/cv-changes.md` for the feedback file.
 
 If any recruiter flag identifies a skill or credential gap the user does not have — do not address it. IT SHOULD BE COMPLETELY OMITTED. Reframing, surfacing, and reordering are permitted; fabrication and scope-hedging ARE ABSOLUTELY PROHIBITED.
 
@@ -119,11 +131,11 @@ cp "$PIPE/cv-final.md" "<output_dir>/<company_dir>/<cv_filename>.md"
 
 ### Step 4.5 — Gatekeeper (CV final check)
 
-Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, the CV path `$PIPE/cv-final.md` to read, `Role summary`, the coach's `Keywords` property, and `OUTPUT_PATH=$PIPE/gatekeeper-cv-<round>.md`.
+Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, `CV Type=<value from $PIPE/cv-type.txt>`, the CV path `$PIPE/cv-final.md` to read, `Role summary`, the coach's `Keywords` property, and `OUTPUT_PATH=$PIPE/gatekeeper-cv-<round>.md`.
 
 **If PASS:** proceed to Step 5.
 
-**If FAIL:** spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `CV_PATH=$PIPE/cv-final.md` (read and overwrite), the gatekeeper violation path, and the fix-log path `$PIPE/fix-log.md` (read and append). Locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, re-copy `$PIPE/cv-final.md` to `/tmp/<cv_filename>.md` and the output backup path before spawning `gatekeeper` again (new `OUTPUT_PATH` round). Repeat until PASS. Log all violation rounds internally.
+**If FAIL:** spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `CV Type=<value from $PIPE/cv-type.txt>`, `CV_PATH=$PIPE/cv-final.md` (read and overwrite), the gatekeeper violation path, and the fix-log path `$PIPE/fix-log.md` (read and append). Locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After revision, re-copy `$PIPE/cv-final.md` to `/tmp/<cv_filename>.md` and the output backup path before spawning `gatekeeper` again (new `OUTPUT_PATH` round). Repeat until PASS. Log all violation rounds internally.
 
 **Cap: 3 revision passes.** If the gatekeeper still returns FAIL after pass 3, log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 4.5)` section in the revision log, proceed to Step 5, and flag for the user in the final delivery that this CV needs manual review before sending.
 
@@ -425,6 +437,7 @@ where `$OUTPUT_DIR` is the run directory resolved by the orchestrator (e.g. `{{O
       "title": "<title>",
       "track": "<cv | now>",
       "status": "completed",
+      "cv_type": "<Detailed | Brief — the value resolved at Step 0.type, persisted here since $PIPE/cv-type.txt is deleted at Step 7g cleanup>",
       "cv_path": "<company_dir>/<cv_filename>.docx",
       "cover_letter_path": "<company_dir>/<cl_filename>.docx",
       "feedback_path": "<company_dir>/feedback-<roletitle>-<company>-<monYYYY>.md",

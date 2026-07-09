@@ -85,9 +85,9 @@ results-driven, passionate, dynamic, proactive, experienced, highly qualified, t
 
 ---
 
-## [CV] §5 — CV Document Shape (correctness, not style)
+## [CV] §5 — CV Document Shape (correctness, not style) — Detailed
 
-These define what a passing CV even is. Cutting them changes correctness, not polish.
+These define what a passing CV even is. Cutting them changes correctness, not polish. **This section describes the Detailed CV Type only** — see §5b immediately below for the Brief variant, which diverges structurally (no RoleOverview, no Consulting split, different required-heading list).
 
 **Required sections:** `## SUMMARY`, `## SKILLS` or `## SKILLS & EXPERTISE`, `## EXPERIENCE`, `## CONSULTING` (with an "Earlier:" line) when applicable.
 
@@ -105,7 +105,33 @@ These define what a passing CV even is. Cutting them changes correctness, not po
 
 ---
 
-## [CV] §6 — CV Content Rules (demonstrated failure modes)
+## [CV] §5b — CV Document Shape (correctness, not style) — Brief
+
+The one-page, two-column condensed CV Type. Correctness rules for this shape only — for Detailed, see §5 above. Content rules (§6, below) are shared by both types.
+
+**Required sections:** `## PROFILE SUMMARY`, `## SKILLS`, `## EXPERIENCE`. Note the summary banner is `## PROFILE SUMMARY`, not `## SUMMARY` — deliberately different text so "the Brief CV" is never confused with "the CV's summary paragraph" (see `CLAUDE.md` naming note for this feature).
+
+**FORBIDDEN sections — hard stop, no exceptions, same as Detailed:** `## EDUCATION`, `## LANGUAGES`, `## ADDITIONAL` (from the shared `static-cv-footer.md` append). Also never produced for Brief specifically: `## CONSULTING`, `## TOOLS` — there is no room for either on a one-page format, and Brief has no consulting/fractional split at all (see the flat Experience structure below).
+
+**No RoleOverview — structural absence, not a shorter version.** Detailed's RoleOverview line (company context + scope, in italic under RoleTitle) does not exist in Brief at all. Do not write one. Do not run a RoleTitle/RoleOverview count-parity check against Brief output — there is nothing to count.
+
+**Flat Experience structure, `Earlier:` line closes it out.** Brief's `## EXPERIENCE` is a single flat, reverse-chronological list — no separate Consulting section, no full-time/consulting split. The same `**Earlier:**` aggregation-line convention used in Detailed (§5, "Earlier: line placement") applies here too, but instead of preceding `## CONSULTING`, it is the **last line of `## EXPERIENCE` itself** — closing out the section once the most recent/relevant roles have had their individual entries. Document order: named roles (most recent/relevant first) → `**Earlier:**` line (if used) → end of section.
+
+**One-page fit is a judgment call — this plugin never hardcodes how many roles get a full entry vs. fold into `Earlier:`.** It depends on the specific user's total career length, number of employers, and how much room her actual `.dotx` template has (read `cv_type.brief_has_photo` from `pipeline-preferences.json` if set — blank means assume no photo). This mirrors why the cover-letter opener is a principle and not a template (`CLAUDE.md` Key design decisions) — a fixed number here would fit one person's CV and misfit everyone else's. Order by relevance and recency exactly as Detailed does; give the most recent/relevant roles full treatment with tapering bullet density; fold everything beyond what the page can hold into one `Earlier:` line.
+
+**Skills — one flat list, not Role-Type-categorized.** Detailed's Scaler/Specialist skills format uses multiple `SkillsHeading`/`Skills` category blocks (§ role-type-definitions.md). Brief always uses a single flat `## SKILLS` list regardless of Role Type — there isn't room for categorized sub-headings on one page.
+
+**Mechanical backstop — one total-body word ceiling, not a per-section formula.** Matching how Detailed's own summary paragraph has a hard `≤120` word ceiling as a correctness backstop (not a style suggestion), Brief has a single generous total-body word-count ceiling covering the whole CV (Profile Summary + Skills + Experience combined), checked with `wc -w`. This exists to catch a CV that clearly won't fit one page — it is not a per-section formula, and it applies the same way regardless of any individual user's career length. **[Ceiling TBD — set against a real drafted example rather than guessed; do not invent a number here without one.]**
+
+**Same annotation system as Detailed.** `RoleTitle`, `RoleActivitiesList`/`RoleActivitySingle`, `BlueFont`, and the flat `SkillsHeading`/`Skills` pair all apply exactly as documented in `skills/career-engine-export/SKILL.md`'s Brief annotation reference — just without `RoleOverview`, since Brief never uses it. Output without these annotations produces an unstyled DOCX, same as Detailed.
+
+**Approved bullets — read the Brief-labeled subsection, never derive from Detailed's.** `background-approved-bullets.md` carries adjacent `Detailed: Approved bullets` / `Brief: Approved bullets` subsections per company. Read only `Brief: Approved bullets` when drafting this CV Type. If that subsection is empty (not yet curated for this company), write fresh bullets from the role-facts files — same fabrication discipline as always, never lengthen or split a Detailed bullet into a "Brief version" as a substitute for reading the actual Brief-curated content.
+
+**Bullet-writing doctrine — same rules as §6, shorter.** Brief reuses Detailed's outcomes-first, XYZ-formula content rules (§6, below) exactly — no new bullet philosophy, just tighter word budgets per bullet given the space constraint.
+
+---
+
+## [CV] §6 — CV Content Rules (demonstrated failure modes — applies to both Detailed and Brief)
 
 **The single-instance trap — most common summary failure.** A summary sentence implies a repeated pattern. If the CV shows the claim only once, the sentence overreaches. **Test, run on every summary sentence:** "Does this imply a repeated competency? How many times does the CV actually show it?" Once → move the specific detail to a bullet under that role; replace the summary sentence with the generalized capability claim. Twice or more across different roles → the pattern is real, the summary can claim it.
 

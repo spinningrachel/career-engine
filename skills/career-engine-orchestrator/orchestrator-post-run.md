@@ -29,7 +29,7 @@ Read `${CAREER_DATA}/references/linkedin-profile.md`.
 
 ### Step 8a — Aggregate keywords
 
-The coach returned a tiered `Keywords` string for each role processed this run (format: `Critical: ... | Important: ... | Nice-to-have: ...`). Collect all of them.
+The coach returned a tiered `Keywords` string for each role processed this run (format: `Critical: ... | Important: ... | Nice-to-have: ...`). Read each role's value from `$PIPE/role-properties.md` (the queue-level file written in Step O1 — the same source Step O2's readiness check reads from) rather than from an in-memory return, matching how the rest of this pipeline threads properties through disk instead of context. Collect all of them.
 
 For each role, split on `|` to extract the three tier strings, then split each tier on `,` to get individual terms. Normalize each term: trim whitespace, preserve original casing. Pool all terms across all tiers into a single frequency map — record how many roles each term appeared in and which companies. Terms from Critical and Important tiers carry more signal weight than Nice-to-have, but all feed the frequency map.
 

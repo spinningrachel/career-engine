@@ -17,6 +17,11 @@
     "my_location": "",
     "database_property": ""
   },
+  "cv_type": {
+    "mode": "Detailed",
+    "brief_has_photo": "",
+    "description": "Which CV format to produce. 'Detailed' (default) = the existing full CV. 'Brief' = the one-page two-column condensed CV. 'Variant' = read the per-role 'CV Type' field from your configured database backend instead (values 'Detailed'/'Brief') — defaults to Detailed if that field is empty for a role; when configured, the career coach also appends a CV-type recommendation to Role emphasis during intake to help you decide. The 'CV Type' database field is a fixed name (not configurable, unlike location_compatibility) — setup instructs you to add it directly. brief_has_photo ('yes'/'no', optional) tells cv-writer whether your Brief template has a photo — leave blank to assume no photo."
+  },
   "favorite_brands": [],
   "preferred_job_sites": [],
   "local_job_sites": [],

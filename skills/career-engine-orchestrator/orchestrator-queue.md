@@ -98,7 +98,7 @@ If `career-engine-export` is not loaded when you reach the DOCX export step, bac
 
 **Run end-to-end. Do not stop to ask the user about scope — not before launch, not at the queue report, not mid-run.**
 
-The career coach caps the run and selects which roles process this session. That cap is the decision. Do not pause after Role 1 to ask whether to continue. Do not ask whether to batch DOCX conversion. Do not ask whether the run is too long.
+Step O3's Priority-ordered selection (below) caps the run and selects which roles process this session — that cap is the decision, already made deterministically before the run starts. (This is Step O3's own logic, not a live coach spawn — the coach is never spawned from this pipeline; see the note further below.) Do not pause after Role 1 to ask whether to continue. Do not ask whether to batch DOCX conversion. Do not ask whether the run is too long.
 
 If a single role fails, log the failure and move to the next role. The only valid mid-run pauses are a hard unrecoverable system error or the user explicitly typing a stop command in chat.
 
@@ -176,6 +176,8 @@ These are database operations. **Load `${CLAUDE_PLUGIN_ROOT}/skills/database-not
 
   **If the subagent cannot access `notion-fetch`** (tool not available in its spawned context — check its return; a subagent that can't call the tool will say so or return an empty/error result instead of the expected format): fall back to running the per-page fetches directly in the orchestrator's own context, but still write each result to `$PIPE/role-properties.md` before fetching the next page, and treat this as a degraded path, not the default — log it in the revision log so it's visible that the delegation didn't fire this run.
 
+  **If the subagent returns text that doesn't match the required `## ROLE — <Company> — <Position>` format at all** (not a tool-unavailable error, not a per-page `## FAILED` entry — just malformed or unparseable output): treat this the same as the tool-unavailable case above — do not try to salvage or partially parse it. Fall back to running the per-page fetches directly in the orchestrator's own context, log in the revision log that the delegated return didn't match the expected format, and proceed via the degraded path.
+
   Step O2's readiness check reads the four scalar fields it needs (`Role summary`, `Role emphasis`, `Keywords`, `Strategy`) from `$PIPE/role-properties.md`, not from in-memory fetch results — this is the same pattern intake's Step 0.5 already uses for `$PIPE/queue.md`.
 - If every rung fails, stop and report — never treat it as zero results, and never improvise `notion-search` (R-39).
 
@@ -230,13 +232,13 @@ Run `career-engine-new-application` Steps 1 through 7 for each role in queue ord
 
 **Carry all resolved config vars into every role's execution.** The preflight set `$OUTPUT_FOLDER`, `$DRAFT_DIR_URL_BASE`, `$CV_TEMPLATE`, `$DEFAULT_LANGUAGE`, `$OUTPUT_DIR_PREFIX`, `$CAREER_DATA`, and `$NOTION_DATABASE_ID`. These must remain in scope through every step of new-application — including Step 7a (which builds the Draft Directory URL from `$DRAFT_DIR_URL_BASE`) and Step 6 (which uses `$CV_TEMPLATE` and `$OUTPUT_FOLDER`). If any of these is unset when a step needs it, stop and report rather than silently defaulting or skipping.
 
-**Pipeline is determined by the user's chat command**, not by a Notion property she sets per-role. All `Interested` roles default to the standard cv pipeline unless the user specifies otherwise in chat.
+**Within this pipeline (New Applications), which track a role runs is determined by the user's chat command**, not by a Notion property she sets per-role — all `Interested` roles default to the standard cv pipeline unless the user specifies otherwise in chat. This orchestrator's Step O1 only ever fetches `Interested`-status roles, so `Needs editing` never appears as a live branch inside this per-role loop.
 
 | Pipeline | What runs | Deliverables |
 |---|---|---|
 | `New Applications` (default) | cv pipeline — Steps 1 through 7 per role, then orchestrator Step 8 once | CV DOCX + cover letter DOCX + feedback MD |
 | `--now` | fast track — see `orchestrator-modes.md` | CV DOCX + feedback MD + cover letter DOCX only if Why I Want This Role content is provided in chat |
-| `Needs editing` | career-engine-edit (separate skill) — Steps E0 through E10 | Updated CV DOCX + updated cover letter DOCX; starts from existing Notion outputs, not from scratch. Trigger when the user says "edit CVs" or similar, or when roles have Status = Needs editing. |
+| `Needs editing` *(reference only — not a branch of this loop)* | career-engine-edit (separate skill, separate entry point) — Steps E0 through E10 | Updated CV DOCX + updated cover letter DOCX; starts from existing Notion outputs, not from scratch. Listed here for orientation only: this pipeline is invoked directly when the user says "edit CVs" or similar — it is never reached by this orchestrator's `Interested`-only Step O1 fetch, regardless of what Status a role happens to carry. |
 
 The JD for each role was already in Notion (`JD Body`) when fetched in Step O1. Pass it directly to per-role sub-agents — do not re-fetch.
 

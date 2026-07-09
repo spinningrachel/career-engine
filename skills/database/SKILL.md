@@ -71,6 +71,8 @@ Each property in the job applications database has a single designated owner. Ag
 *Written for full-research roles only (Priority 1–4, pre-scored, or `--full-research`):*
 `Role emphasis`, `JD proof`, `Keywords`, `Strategy`, `Gap handling`, `Role summary`, `Company Stage`, `Culture`, `Landscape`, `Person who Advertised Role (if not Hiring Manager)`, `Hiring Manager's Name`, `Hiring manager's role`, `Manager role confirmed`, `No incumbents in this function`, `First Advertised`, `Recent news`, `Funding context`, and conditionally `Job URL`.
 
+**`Role emphasis` conditionally carries a CV-type recommendation.** When `pipeline-preferences.json` → `cv_type.mode` is `"Variant"`, the coach appends a one-line CV-type recommendation with rationale (Detailed or Brief) to the end of the `Role emphasis` text it already writes — see `skills/career-coach/coach-analysis.md`'s CV Type Recommendation Matrix. This is advisory only; it does not write to the user-owned `CV Type` field below. When `cv_type.mode` is `Detailed` or `Brief`, `Role emphasis` carries no such clause — this is not a separate property, just conditional content within an existing one.
+
 No other agent rewrites or second-guesses any of these. **`Gap handling` is the exception to the carry-forward rule — if the user has edited it in the tracker, the pipeline reads her version as authoritative. The write-only-to-empty rule enforces this: if the field is non-empty, the coach skips writing. This exception only applies when `gap_handling_mode` is not `disabled` — see config.**
 
 **`Job URL` is written only when a correction exists, never as a routine write.** The coach never writes Notion directly (same as every other property here) — it returns `Corrected Job URL` only when its own backstop verification (`coach-research.md` → Job URL verification) confirms the original URL is broken and finds a matching working alternate; intake (Step 0.9a) is still the sole writer, and only intake decides whether to apply the correction (preferring the coach's value over Step 0.5's `Working URL` capture when both exist for the same role). A role whose original URL still works never touches this property.
@@ -82,6 +84,8 @@ No other agent rewrites or second-guesses any of these. **`Gap handling` is the 
 **`Why I Want This Role`** is set manually by the user. Agents never write to it. If it is empty when the pipeline runs, the letter-writer still runs and writes from the **Motivation Bank** (its primary source); it skips the letter for that role (CV only) only when neither `Why I Want This Role` nor any role-relevant Motivation Bank entry has usable material — that decision belongs to the letter-writer's Sufficiency Gate.
 
 **The `Note` field is the user's space. Agents never write to it.**
+
+**`CV Type`** (select: `Detailed`/`Brief`) is set manually by the user, per role — a fixed field name (setup instructs the user to add it directly; there is no configurable name like `location_compatibility.database_property`, since this property has no pre-existing name to reconcile with). Agents read it only when `pipeline-preferences.json` → `cv_type.mode` is `"Variant"`, to decide which CV format to produce for that role; they never write to it. Empty defaults to `Detailed`. See `skills/career-coach/coach-analysis.md` for the recommendation the coach surfaces (in `Role emphasis`, above) to help the user decide.
 
 ---
 

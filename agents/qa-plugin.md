@@ -1144,6 +1144,34 @@ grep -c "Information Sequencing" <build>/references/cover-letter-templates-defau
 
 **FAIL condition:** any "must be >= N" count below its stated requirement, or the "must be 0" count is nonzero.
 
+### Check 55 — Brief CV Type wired end-to-end (2026-07-09 addition)
+
+New CV Type feature: a second CV shape (`Brief` — one-page, two-column) alongside the existing `Detailed` CV, selected via `pipeline-preferences.json` → `cv_type.mode` (`Detailed`/`Brief`/`Variant`, the last deferring to a per-role, user-owned, backend-neutral `CV Type` database field). Verify every layer landed together — config schema, doctrine, gate branching, export plumbing, setup onboarding, and the naming discipline (the CV type is `Brief`, never `Summary`, to avoid colliding with the CV's own `## SUMMARY`/`## PROFILE SUMMARY` section).
+
+```bash
+grep -c '"cv_type"' <build>/references/pipeline-preferences.json                          # must be >= 1 (config schema)
+grep -c "database_property" <build>/references/pipeline-preferences.json | head -1        # sanity: cv_type block must NOT add its own database_property key (fixed name, unlike location_compatibility)
+grep -c "CV Type" <build>/skills/database/SKILL.md                                        # must be >= 1 (user-owned property doc)
+grep -c "CV Type Recommendation Matrix" <build>/skills/career-coach/coach-analysis.md      # must be >= 1 (doctrine + sourcing caveat)
+grep -c "not from originally-sourced research" <build>/skills/career-coach/coach-analysis.md  # must be >= 1 (sourcing caveat preserved)
+grep -c "Recommended CV Type" <build>/skills/career-coach/coach-output.md                  # must be >= 1 (conditional clause inside Role emphasis template, not a new field)
+grep -c "CV Type=Detailed|Brief" <build>/agents/cv-writer.md                                # must be >= 1
+grep -c "Brief-Specific Rules" <build>/agents/cv-writer.md                                  # must be >= 1
+grep -c "§5b" <build>/skills/writer-craft/SKILL.md                                          # must be >= 1 (Brief Document Shape)
+grep -c "CV Type" <build>/agents/gatekeeper.md                                              # must be >= 1 (CV Check param)
+grep -c "Brief only" <build>/skills/gatekeeper-checks/SKILL.md                               # must be >= 1 (Gate 2 branch)
+grep -c "RoleOverview-parity check is \*\*skipped entirely\*\* for Brief" <build>/skills/gatekeeper-checks/SKILL.md  # must be >= 1
+grep -c "CV_TEMPLATE_BRIEF" <build>/skills/career-engine-export/SKILL.md                     # must be >= 1
+grep -c "CONFIRMED against a real build" <build>/skills/career-engine-export/SKILL.md        # must be >= 1 (the tested-not-hypothesized finding)
+ls <build>/references/cv-template-brief-default.dotx                                        # must exist
+grep -c "Step 0.type" <build>/skills/career-engine-new-application/SKILL.md                  # must be >= 1
+grep -c "Step E0.type" <build>/skills/career-engine-edit/SKILL.md                            # must be >= 1
+grep -c "CV Type — mandatory question" <build>/skills/career-engine-setup/SKILL.md           # must be >= 1
+grep -ci '"Summary" CV Type\|CV Type=Summary\|Summary CV Type' <build>/agents/*.md <build>/skills/*/SKILL.md   # must be 0 (naming discipline — Brief, never Summary, as a type label)
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement, the `.dotx` file missing, or the naming-discipline grep nonzero. **Known accepted gap, not a FAIL:** the sidebar/main-column post-processing script that assembles the two-column DOCX from marker-delimited markdown does not exist yet — `career-engine-export/SKILL.md`'s Brief annotation reference documents this explicitly as a follow-up build item. Confirm the doc says so (`grep -c "does not exist yet" <build>/skills/career-engine-export/SKILL.md` — must be >= 1) rather than silently promising a working feature it can't yet produce.
+
 ### Check 36 — Humanizer enforcement mechanisms present (2026-07-02 fix)
 
 Four enforcement-strengthening additions closing rule-exists-but-applied-inconsistently gaps diagnosed from real letters: an exhaustiveness re-scan, a generalized inanimate-subject test (not a fixed 3-verb list), an explicit metaphor/simile naming in Step 3, and a mandatory subject-change trigger for the pronoun-antecedent check.

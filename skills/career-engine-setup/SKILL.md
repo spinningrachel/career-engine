@@ -364,11 +364,14 @@ For each role confirmed in the interview, create or update `background/backgroun
 - Key metrics: [answer]
 - What was built: [summary from CV + interview]
 
-Approved CV bullets:
+**Detailed: Approved bullets**
 [LEAVE EMPTY — approved bullets are populated through pipeline iterations, not setup]
+
+**Brief: Approved bullets**
+[LEAVE EMPTY — approved bullets are populated through pipeline iterations, not setup. Stays empty indefinitely if `cv_type.mode` is never `Brief` or `Variant` — cv-writer falls back to writing fresh Brief bullets from role facts when this subsection is empty, per `agents/cv-writer.md`'s Brief-Specific Rules.]
 ```
 
-**Important:** Do not populate approved bullets from the user's old CV. Old CV bullet language is raw material, not approved language. The approved bullets section starts empty for every company and fills in as the user runs the pipeline and locks bullets they're happy with.
+**Important:** Do not populate approved bullets from the user's old CV. Old CV bullet language is raw material, not approved language. Both the Detailed and Brief subsections start empty for every company and fill in as the user runs the pipeline and locks bullets she's happy with — the two are curated separately, since Brief's bullets are much shorter and more selective than Detailed's, not a shortened copy of them.
 
 Populate `background/background-portfolio.md` from any portfolio materials submitted.
 Populate `background/background-testimonials.md` from LinkedIn recommendations or peer feedback confirmed in the interview.
@@ -529,6 +532,8 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 
 6. Say: "**Important:** Do not rename the columns in your Notion database. The pipeline writes to them by exact name — renaming breaks the integration silently."
 
+7. **CV Type property — only relevant if Variant mode is chosen later in this phase.** The duplicated template likely does not include this property yet, since it's new. Once the CV Type question below (under "Document templates") is answered, if the answer was `Variant`, come back here and say: "Since you chose to let each role decide its CV format, add a **Select** property to your Notion database named exactly `CV Type`, with two options: `Detailed` and `Brief`. You set this per role yourself — the pipeline reads it, never writes to it." Skip this step entirely if `Detailed` or `Brief` was chosen instead — there's nothing to add.
+
 ---
 
 ### Option B — Google Sheets
@@ -540,8 +545,10 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 2. Write a CSV file to `/tmp/career-engine-tracker.csv` containing only the header row with all required columns in order:
 
 ```
-Company,Position,Job URL,Status,Priority,JD Body,Why I Want This Role,Role emphasis,JD proof,Keywords,Strategy,Role Type,Relationship type,Gap handling,Role summary,Hiring Manager's Name,Hiring manager's role,Manager role confirmed,Person who Advertised Role (if not Hiring Manager),No incumbents in this function,Landscape,First Advertised,Last Pipeline Run,Link to CV,Draft Directory,CV File Name,Letter File Name,Languages,Edit type,Note
+Company,Position,Job URL,Status,Priority,JD Body,Why I Want This Role,Role emphasis,JD proof,Keywords,Strategy,Role Type,Relationship type,Gap handling,Role summary,Hiring Manager's Name,Hiring manager's role,Manager role confirmed,Person who Advertised Role (if not Hiring Manager),No incumbents in this function,Landscape,First Advertised,Last Pipeline Run,Link to CV,Draft Directory,CV File Name,Letter File Name,Languages,Edit type,CV Type,Note
 ```
+
+`CV Type` is included regardless of which `cv_type.mode` the user chooses — it's a normal, cheap column to have even when unused (same as `Languages` for a single-language user). It only matters when `cv_type.mode` is `Variant`; the user sets it herself per role, the pipeline never writes to it.
 
 3. Tell the user: "Download this file and upload it to Google Sheets (File → Import → Upload). This creates your tracking sheet with all the required columns."
 
@@ -560,6 +567,7 @@ Set up data validation (dropdown lists) on the following columns in my Google Sh
 - Column "Languages": allow multiple selections from: {{USER_DEFAULT_LANGUAGE}}, {{USER_SECOND_LANGUAGE}}
   (If single-language, allow only: {{USER_DEFAULT_LANGUAGE}})
 - Column "Edit type": allow only these exact values: CV, Letter, Both
+- Column "CV Type": allow only these exact values: Detailed, Brief (used only if you tell the pipeline to let each role decide its own format — otherwise leave this column empty)
 
 These values must match exactly — they are hard-coded in the pipeline that reads this sheet.
 ```
@@ -581,7 +589,7 @@ These values must match exactly — they are hard-coded in the pipeline that rea
 ```
 Create a database/table with the following columns. Do not rename them — they are referenced by exact name by an external pipeline.
 
-Columns: Company, Position, Job URL, Status, Priority, JD Body, Why I Want This Role, Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, Gap handling, Role summary, Hiring Manager's Name, Hiring manager's role, Manager role confirmed, Person who Advertised Role (if not Hiring Manager), No incumbents in this function, Landscape, First Advertised, Last Pipeline Run, Link to CV, Draft Directory, CV File Name, Letter File Name, Languages, Edit type, Note
+Columns: Company, Position, Job URL, Status, Priority, JD Body, Why I Want This Role, Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, Gap handling, Role summary, Hiring Manager's Name, Hiring manager's role, Manager role confirmed, Person who Advertised Role (if not Hiring Manager), No incumbents in this function, Landscape, First Advertised, Last Pipeline Run, Link to CV, Draft Directory, CV File Name, Letter File Name, Languages, Edit type, CV Type, Note
 
 Select column values (must match exactly):
 - Status: New | Needs Research | Interested | CV Ready for Review | Applied | Researched | Needs editing
@@ -592,6 +600,7 @@ Select column values (must match exactly):
 - Languages (multi-select): {{USER_DEFAULT_LANGUAGE}} | {{USER_SECOND_LANGUAGE}}
   (If single-language, only: {{USER_DEFAULT_LANGUAGE}})
 - Edit type: CV | Letter | Both
+- CV Type: Detailed | Brief (used only if you tell the pipeline to let each role decide its own format — otherwise leave empty)
 ```
 
 4. Once set up, ask for the access URL or connection details. Write to `.claude/settings.json` under `job_tracking.source`.
@@ -601,8 +610,28 @@ Ask the user for their output folder path. This is where all pipeline output (CV
 
 Write the path as `output_folder` in `${CAREER_DATA}/references/pipeline-preferences.json` (the career-data config). Do NOT substitute `{{OUTPUT_FOLDER}}` into plugin files — the orchestrator resolves it from the config at runtime (R-38).
 
+**CV Type — mandatory question, never skipped.** Ask: "Which CV format do you want the pipeline to produce?
+- **Detailed** (recommended default) — the existing full CV, one to two pages depending on your career length.
+- **Brief** — a one-page, two-column condensed CV.
+- **Not sure yet** — let each role decide instead. A `CV Type` field on your job-tracking database (set up above) overrides per role, and the career coach will also suggest a type per role during intake to help you decide."
+
+There is no fourth option and no way to skip this question — every user gets an explicit `cv_type.mode` written, even when the honest answer is "not sure" (which writes `Variant`, itself a deliberate choice, not a default-by-omission).
+
+Write to the career-data config (`pipeline-preferences.json` → `cv_type`):
+- `mode` = `Detailed` | `Brief` | `Variant` (from the answer above)
+
+**If `Brief` or `Variant` was chosen:** ask "Do you want to use the plugin's blank Brief template, or provide your own `.dotx`?" — same choice as the Detailed CV template below, collected now because it's part of the same decision.
+- If own file: copy it into `career-data/references/templates/`, renaming to the fixed filename `cv-brief.dotx` regardless of the file's original name.
+- If default: copy the plugin's `${CLAUDE_PLUGIN_ROOT}/references/cv-template-brief-default.dotx` into `career-data/references/templates/` as `cv-brief.dotx`.
+
+**If the user provided her own `cv-brief.dotx`** (skip this if she used the plugin default — there's nothing to describe yet): ask, optionally, one time: "Does your Brief template include a photo?" Write the answer to `cv_type.brief_has_photo` (`yes`/`no`, blank if she'd rather not say) in the same config object — optional; `cv-writer` assumes no photo when it's blank.
+
+**If `Variant` was chosen:** the per-role `CV Type` field must exist on whichever job-tracking backend was set up above — see the addition to Option A/B/C's instructions in Phase 5 above (the Notion template needs it added manually; the Sheets/other-platform column list already includes it).
+
+---
+
 **Document templates**
-Every export reads four possible files from `career-data/references/templates/` by **fixed filename — there is no config key for any of them** (R-38, 2026-07-04 fix): `cv.dotx`, `cover-letter-template.dotx`, and the optional Hebrew pair `cvHe.dotm`/`he-letter.dotx` (collected separately below, only if the user configured a second language). The pipeline looks for these exact names and nothing else — it never reads a config key or an external OS path for any of them.
+Every export reads five possible files from `career-data/references/templates/` by **fixed filename — there is no config key for any of them** (R-38, 2026-07-04 fix): `cv.dotx`, `cv-brief.dotx` (collected above, only if Brief/Variant was chosen), `cover-letter-template.dotx`, and the optional Hebrew pair `cvHe.dotm`/`he-letter.dotx` (collected separately below, only if the user configured a second language). The pipeline looks for these exact names and nothing else — it never reads a config key or an external OS path for any of them.
 
 Ask: "Do you want to use the included CV and cover letter templates, or provide your own `.dotx` files?"
 - If own files: copy each into `career-data/references/templates/`, **renaming to the fixed filename regardless of the file's original name** — the user's file becomes `cv.dotx` / `cover-letter-template.dotx`. The pipeline cannot find a template under any other filename.
@@ -699,6 +728,10 @@ Write the answers into `target_titles` (array, priority order), `remote_preferen
       "my_location": "<city/country/region, or empty to skip>",
       "database_property": "<property/field name in your tracker, or empty to skip>"
     },
+    "cv_type": {
+      "mode": "<Detailed | Brief | Variant>",
+      "brief_has_photo": "<yes / no, or empty>"
+    },
     "favorite_brands": [],
     "preferred_job_sites": [],
     "local_job_sites": [],
@@ -716,7 +749,7 @@ Write the answers into `target_titles` (array, priority order), `remote_preferen
     }
   }
   ```
-  (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted; `location_compatibility` both keys empty = check skipped; `favorite_brands` empty array = no boost.) **Required for any run:** `output_folder`; **also required when a database backend is configured:** `database_id`. **Every other key is optional** — a run completes without it and the config-health notice lists what is empty/missing. There is no `cv_template` or `word_templates_path` key (R-38, 2026-07-04 fix) — CV/cover-letter/Hebrew templates resolve by fixed filename from `career-data/references/templates/`, never a config lookup. Write the `database_*` names on a fresh setup; the pipeline still reads the legacy `notion_database_id`/`notion_needs_editing_view_url`/`notion_property` names for older configs. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop only if a *required* key is missing. Never substitute any of these into plugin files.
+  (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted; `location_compatibility` both keys empty = check skipped; `favorite_brands` empty array = no boost.) **Required for any run:** `output_folder`; **also required when a database backend is configured:** `database_id`. **`cv_type.mode` is always explicitly asked and written during setup** (see "CV Type" above) — never left to the JSON default; `brief_has_photo` stays optional. **Every other key is optional** — a run completes without it and the config-health notice lists what is empty/missing. There is no `cv_template` or `word_templates_path` key (R-38, 2026-07-04 fix) — CV/cover-letter/Hebrew templates resolve by fixed filename from `career-data/references/templates/`, never a config lookup. Write the `database_*` names on a fresh setup; the pipeline still reads the legacy `notion_database_id`/`notion_needs_editing_view_url`/`notion_property` names for older configs. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop only if a *required* key is missing. Never substitute any of these into plugin files.
   (or `"disabled"`, matching the user's choice). Preserve any other keys already present in the file.
 - Apply the **Writing personal data** rule: in Claude Code write `career-data` directly; in Cowork stage the change and emit the Appendix-A handoff (`references/career-data-skill-handoff.md`). Refresh the `career-data` backup export after a direct write.
 - Do NOT write this preference to `~/.claude/settings.json` — that location is reachable only from the user's own machine and silently falls back to the default everywhere else. The pipeline still reads it as a legacy fallback, but `career-data` is the authority.
