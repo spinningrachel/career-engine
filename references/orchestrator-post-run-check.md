@@ -11,10 +11,10 @@ Validate at least 2 pairs (CV + cover letter) from this run — the first role p
 
 ## CV Validation
 
-For each CV being validated:
+For each CV being validated, first check this role's **CV Type** (from `run-metrics`'s `cv_type` field, or `$PIPE/cv-type.txt` if still present) — item 2 below branches on it.
 
 1. Convert to plain text: `pandoc "<output-path>/<cv>.docx" -t plain`
-2. **Experience ordering:** Confirm the most recent full-time role appears first in `## EXPERIENCE` (see `02-professional-background.md` for the correct ordering), followed by other full-time roles in reverse-chronological order. Flag if any consulting/fractional entry appears in `## EXPERIENCE` — it belongs in `## CONSULTING`. Flag if `## CONSULTING` section is absent from the document.
+2. **Experience ordering (Detailed):** Confirm the most recent full-time role appears first in `## EXPERIENCE` (see `02-professional-background.md` for the correct ordering), followed by other full-time roles in reverse-chronological order. Flag if any consulting/fractional entry appears in `## EXPERIENCE` — it belongs in `## CONSULTING`. Flag if `## CONSULTING` section is absent from the document. **Experience ordering (Brief):** confirm the same reverse-chronological order within the single flat `## EXPERIENCE` list — **never flag a Brief CV for lacking `## CONSULTING`, `## TOOLS`, or `## PUBLICATIONS`; Brief never produces any of the three by design.** If an `**Earlier:**` line is present, confirm it's the last line in the section.
 3. **Tagline:** Confirm the subtitle under the user's name is the exact role title from the JD — not a generic descriptor. It must be the job title the user applied for (e.g., "[Role Title]"). Flag if absent, if it is a generic tagline, or if it differs from the JD role title.
 4. **Repetition:** Flag any opening action verb appearing more than twice. Flag any phrase appearing verbatim in more than one bullet.
 5. **Fabrication:** (Skip — enforced upstream by the cv-writer's mandatory self-check and the gatekeeper. Any CV reaching this step has already passed both gates.)
@@ -30,7 +30,7 @@ For each cover letter being validated:
 
 1. Convert to plain text: `pandoc "<output-path>/<cover-letter>.docx" -t plain`
 2. **Greeting:** Confirm the letter opens with "Hi to the" — not "Dear" or any formal variant.
-3. **Word count:** Count body words (excluding greeting and sign-off). Flag if over 320 words (no minimum).
+3. **Word count:** Count body words (excluding greeting and sign-off). Flag if over 320 words (no minimum) — or over 250 when this role's `Strategy = Strategic`.
 4. **Key proof signals:** Confirm that key proof signals from `02-professional-background.md` (Role Facts) — the most recent role's key outcomes — are woven naturally into the body. Flag if the body contains no named outcomes from the candidate's background.
 5. **Sign-off:** Confirm the letter closes with "Looking forward to next steps," followed by the user's full name and nothing else. Flag any additional text after the name.
 6. **Opening paragraph:** Confirm the first paragraph is the user's personal reaction to this specific role — first person, her response to the opportunity, before any credential or company description. This check cannot be waived by coach output or Strategy. Flag if the first paragraph: leads with company analysis; leads with a career credential; leads with an availability statement; OR has the user as the grammatical subject of the first sentence but the sentence pivots immediately to a general market/industry observation rather than her reaction to THIS role (Pattern G2). Also flag if the very first sentence frames an industry challenge or market condition before the user appears as a reacting subject (Pattern I).

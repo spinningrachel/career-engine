@@ -95,6 +95,15 @@ These define what a passing CV even is. Cutting them changes correctness, not po
 
 **`## TOOLS` — optional.** Include only when the JD calls out tools or Role Type is Specialist/Builder and the JD discusses tooling. Omit for Leader/Scaler roles regardless of JD content. No tool or technology name of any kind belongs inside experience bullets, ever — not even one named in the JD, not even as illustration. Tool identity lives only in `## TOOLS`.
 
+**`## PUBLICATIONS` — optional, rarely used.** Include only when `background-portfolio.md` documents 2+ published/bylined pieces or original-POV talks AND thought leadership is genuinely relevant to this role's positioning (visible in Role emphasis, the JD, or company culture signals — e.g. analyst-facing, evangelist, or community-facing roles). When in doubt, omit — most CVs never need this section, and the underlying content already works as cover-letter proof (§10) whether or not it appears here.
+
+**`## SKILLS` content rules — a format contract is not a content contract.** Every item in this section must pass a three-way test:
+- **Skill (belongs here):** a verb-backed capability she *does* — something she can perform, not something she merely knows about or has been called.
+- **Knowledge (does NOT belong here):** a subject-matter area she knows *about* — a domain, a technology category, a regulatory area. Domain knowledge belongs in the Summary or in Role-emphasis framing (sourced from `03-framework.md` §Domain depth), never in `## SKILLS`. ✗ "Cybersecurity | Identity & access management (IAM/PAM) | Non-human identity (NHI)" is a domain-knowledge list, not a skills list.
+- **Title/role label (does NOT belong here):** a job title or role descriptor is never a skill. ✗ "Founding Marketer" is a title, not a capability — cut it.
+
+**Cap: 3 skill groups maximum.** Each item appears in exactly one group; groups must be conceptually distinct from each other — run a de-dup pass before returning a draft. ✗ "Cross-Functional Leadership" (Product-Marketing-Sales alignment | Sales enablement | Partner and channel enablement) sitting alongside "Product Marketing & Growth" (Cross-functional work with product, engineering, and data) is the same idea claimed twice under two headings — merge or cut one.
+
 **BlueFont annotation syntax and pandoc custom-style annotations** (RoleTitle, RoleOverview, RoleActivitiesList, RoleActivitySingle, SkillsHeading, Skills, Salutation, Signature Char) — apply exactly as documented in `skills/career-engine-export/SKILL.md`. Output without these annotations produces an unstyled DOCX.
 
 **"Earlier:" line placement.** `## CONSULTING` always comes AFTER the "Earlier:" aggregation line, never before it. Document order: named full-time roles → "Earlier:" line → `## CONSULTING`.
@@ -111,7 +120,7 @@ The one-page, two-column condensed CV Type. Correctness rules for this shape onl
 
 **Required sections:** `## PROFILE SUMMARY`, `## SKILLS`, `## EXPERIENCE`. Note the summary banner is `## PROFILE SUMMARY`, not `## SUMMARY` — deliberately different text so "the Brief CV" is never confused with "the CV's summary paragraph" (see `CLAUDE.md` naming note for this feature).
 
-**FORBIDDEN sections — hard stop, no exceptions, same as Detailed:** `## EDUCATION`, `## LANGUAGES`, `## ADDITIONAL` (from the shared `static-cv-footer.md` append). Also never produced for Brief specifically: `## CONSULTING`, `## TOOLS` — there is no room for either on a one-page format, and Brief has no consulting/fractional split at all (see the flat Experience structure below).
+**FORBIDDEN sections — hard stop, no exceptions, same as Detailed:** `## EDUCATION`, `## LANGUAGES`, `## ADDITIONAL` (from the shared `static-cv-footer.md` append). Also never produced for Brief specifically: `## CONSULTING`, `## TOOLS`, `## PUBLICATIONS` — there is no room for any of the three on a one-page format, regardless of how strong the qualifying content is, and Brief has no consulting/fractional split at all (see the flat Experience structure below).
 
 **No RoleOverview — structural absence, not a shorter version.** Detailed's RoleOverview line (company context + scope, in italic under RoleTitle) does not exist in Brief at all. Do not write one. Do not run a RoleTitle/RoleOverview count-parity check against Brief output — there is nothing to count.
 
@@ -164,7 +173,7 @@ X is always required. Y is optional when the outcome is specific without a numbe
 
 **Greeting:** exactly "Hi to the [Company] team!" or "Hi to [Name]!" — never "Dear Hiring Manager." Stealth roles (no public company name): "Hi to the team!"
 
-**Word count:** maximum 320 words on the body (excluding greeting/sign-off), no minimum. 270-320 is the typical delivered-letter register — aim there when content supports it. This is a round-aware advisory at the gatekeeper (first pass returns to writer; later passes defer to the humanizer), never a hard block past round 1.
+**Word count:** maximum 320 words on the body (excluding greeting/sign-off), no minimum — **except when `Strategy = Strategic`, where the maximum is 250 words.** 270-320 is the typical delivered-letter register for an `IC` or `Hybrid` letter; aim there when content supports it. For a `Strategic` letter, aim for 220-250 instead — the letter argues at organizational altitude rather than stacking IC-level proof, and that argument doesn't need the extra room. This is a round-aware advisory at the gatekeeper (first pass returns to writer; later passes defer to the humanizer), never a hard block past round 1 — the 250 ceiling for `Strategic` follows the exact same advisory mechanics as the 320 ceiling for everything else, just a lower number.
 
 **Paragraph length:** max 3-4 lines per paragraph, then a blank line. The close is always its own paragraph, never attached to the paragraph before it.
 
@@ -249,7 +258,7 @@ Named patterns for the opener paragraph. Fill the bracketed slots with the user'
 
 9. **Anticipated question** — an obvious hesitation exists (domain gap, seniority mismatch). Move: name the reader's likely question directly, without apology → answer immediately with named proof.
 
-10. **Problem-first (observation opener)** — she has a genuine professional observation about a recurring problem, and this role is the next instance of it. **The user must be the grammatical subject of the first sentence** — opening with a market-category claim ("So many marketers...") is a hard fail. The observation is supporting context in sentence 2 or 3, after she is established as subject.
+10. **Problem-first (observation opener)** — she has a genuine professional observation about a recurring problem, and this role is the next instance of it. **The observation must itself be sourced from her documented WIWTR/Motivation Bank content — a reaction she has already articulated — never constructed from the writer's own reading of the JD, the company, or the market.** This is the same §8 sourcing mandate, not an exception to it: an analyst-style claim about "the problem underneath" a role, dressed up as her observation, is exactly the violation §8 already bans. If no such documented observation exists, this pattern is not available for this letter — use a different Use-Case Structure, or defer to the Sufficiency Gate. **The user must be the grammatical subject of the first sentence** — opening with a market-category claim ("So many marketers...") is a hard fail. The observation is supporting context in sentence 2 or 3, after she is established as subject.
 
 11. **Value claim opener** — the most natural default. Move: name the company/posting → observe what they need → pivot to a confident value claim in her own voice ("It sounds like you're looking for me! I'm a strategic builder...") → name HOW in one clause → thread the domain connection → close warm and confident. The user is the subject by the second sentence at the latest. **When a required voiced phrase like "strategic builder" is part of the source material for this opener, it must survive every revision round — a real whack-a-mole failure dropped it mid-revision; a targeted fix to one flagged sentence must never silently delete a phrase that was correct and required.**
 
@@ -273,6 +282,8 @@ Named patterns for the opener paragraph. Fill the bracketed slots with the user'
 
 **Proof-point partitioning — run before drafting.** The CV is written first and spends the strongest documented proof (summary claims, bullet outcomes, metrics). Before selecting the letter's proof, list what the CV already spent. The letter's proof comes from what the CV does NOT carry: the detail layers in the role-facts files, adjacent engagements, the story or decision logic behind a bullet, testimonials, portfolio artifacts. If every documented proof point is CV-spent, enhance the strongest one (the story behind it) rather than importing a restatement.
 
+**Published/bylined writing and original-POV talks are unusually strong letter proof — prefer them when a qualifying one exists.** Unlike most portfolio artifacts, a publication or a talk where she originated the point of view is rarely CV-spent (a CV bullet almost never cites one verbatim), so it's genuinely fresh information the reader hasn't already seen elsewhere in the application — not a restatement dressed up differently. When `background-portfolio.md` has a relevant published piece or talk for this role, prefer it over a restated CV-adjacent portfolio item.
+
 **Discarded and unreadable input is always surfaced — never silent.** When the fabrication rule sets aside a piece of the user's own input, or any input is uninterpretable (garbled text, a directive referencing content that no longer exists): exclude it from the letter, log it in the revision log, and surface it in the final delivery as a named ask-back — she can only fix what she can see.
 
 ---
@@ -286,7 +297,7 @@ Named patterns for the opener paragraph. Fill the bracketed slots with the user'
 
 **Structure:**
 - [ ] Greeting exactly "Hi to the [Company] team!" / "Hi to [Name]!"
-- [ ] Word count ≤320 (excluding greeting/sign-off), counted via `wc -w` on the body text — not estimated
+- [ ] Word count ≤320, or ≤250 if `Strategy = Strategic` (excluding greeting/sign-off), counted via `wc -w` on the body text — not estimated
 - [ ] Role title appears using exact JD phrasing
 - [ ] Every proof paragraph does exactly one thing — nothing restates a CV bullet
 - [ ] No paragraph over 4 lines; close is its own paragraph
@@ -297,6 +308,9 @@ Named patterns for the opener paragraph. Fill the bracketed slots with the user'
 - [ ] First sentence does not make a market/industry/role claim before the user appears as subject
 - [ ] Not anonymous ("Reading this posting..." with no company/role named)
 - [ ] Passes the non-waivable JD-mirroring carve-out (§8) even if traced to WIWTR
+- [ ] **Pattern-derivation forcing function.** Name which Use-Case Structure (§9) or personalized-template variant the opener's *construction* derives from — not just its content. A real, sourced fact can still be wrapped in an invented sentence shape; this checks the container, not just what's inside it.
+  - **If it derives from a named pattern or variant:** done, move on.
+  - **If it doesn't — a novel construction:** name the *move* it performs instead (every named pattern makes one — a reaction, a recognition, an observation, a decision). Then run this test: **would this sentence's structure work as a direct answer to "why do you want this role?" or "how do you feel about applying?"** If yes, it fails regardless of how specific or personal the content is — this is the same failure family as the Pattern A generic-enthusiasm ban (§9/Gate 5), just with a real fact filling an otherwise-hollow frame instead of empty enthusiasm. A confirmed real example: "I want the [Role] at [Company] because I taught English as a second language..." — grammatically clean, genuinely sourced content, and still a direct answer to an unstated interview question rather than a reaction. Rewrite until the sentence performs a reaction, not an answer.
 
 **Fabrication traps:**
 - [ ] No scope, attribution, or seniority claim undocumented in `01-writing-rules.md`/`02-professional-background.md`

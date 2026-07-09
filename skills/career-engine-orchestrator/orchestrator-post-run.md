@@ -2,6 +2,8 @@
 
 **Load this file after all per-role pipeline steps complete, OR when the per-role loop stops early due to a hard external blocker** (rate/spend limit, connection loss, or any non-retryable error unrelated to letter/CV quality) **— run every step below scoped to whatever roles actually completed, never skip this sequence because the run didn't reach the full queue.** It covers post-run validation, the LinkedIn updates file, revision log, bullet approval, run metrics, and final chat delivery. Every "all roles" reference below means "all roles that completed this run," not the original queue size, whenever the run was interrupted.
 
+**Every file read or write in this document (Step 8b's CV markdown reads, Step 8c's `linkedin-updates` write, Step 9's revision log write, Step 9c's `run-metrics` write) routes through whichever access path (A or B) `orchestrator-queue.md`'s *Mandatory path verification* already confirmed for this run — never re-verify or default to a raw `cat`/`awk` bash heredoc if this run is on Path B.** On Path B, perform these same reads and writes through the host filesystem tool discovered at preflight, targeting the same output-folder paths shown below — the `bash`/`awk` snippets in this file illustrate the Path A form only.
+
 ---
 
 ## Post-Run Validation
@@ -29,7 +31,7 @@ Read `${CAREER_DATA}/references/linkedin-profile.md`.
 
 ### Step 8a — Aggregate keywords
 
-The coach returned a tiered `Keywords` string for each role processed this run (format: `Critical: ... | Important: ... | Nice-to-have: ...`). Read each role's value from `$PIPE/role-properties.md` (the queue-level file written in Step O1 — the same source Step O2's readiness check reads from) rather than from an in-memory return, matching how the rest of this pipeline threads properties through disk instead of context. Collect all of them.
+The coach returned a tiered `Keywords` string for each role processed this run (format: `Critical: ... | Important: ... | Nice-to-have: ...`). Read each role's value from `$QUEUE_PIPE/role-properties.md` (the queue-level file written in Step O1 — the same source Step O2's readiness check reads from) rather than from an in-memory return, matching how the rest of this pipeline threads properties through disk instead of context. Collect all of them.
 
 For each role, split on `|` to extract the three tier strings, then split each tier on `,` to get individual terms. Normalize each term: trim whitespace, preserve original casing. Pool all terms across all tiers into a single frequency map — record how many roles each term appeared in and which companies. Terms from Critical and Important tiers carry more signal weight than Nice-to-have, but all feed the frequency map.
 
@@ -47,16 +49,19 @@ Note: With a 5-role cap per run, "2 roles" = 40% of the batch. That is a meaning
 
 ### Step 8b — Extract summary phrases
 
-For each completed role, read the saved CV markdown from the output folder:
+For each completed role, read the saved CV markdown from the output folder. **The heading to extract after depends on this role's CV Type** (from `run-metrics`'s `cv_type` field, or re-read `$PIPE/cv-type.txt` if the role's `$PIPE` still exists): Detailed uses `## SUMMARY`; Brief uses `## PROFILE SUMMARY`.
 
 ```bash
 # CV markdowns are saved in the role's company subdirectory alongside the DOCX files
+# Detailed:
 cat "<output_dir>/<company_dir>/<cv_filename>.md" | awk '/^## SUMMARY/{found=1; next} found && /^[^#]/ && NF{print; exit}'
+# Brief:
+cat "<output_dir>/<company_dir>/<cv_filename>.md" | awk '/^## PROFILE SUMMARY/{found=1; next} found && /^[^#]/ && NF{print; exit}'
 ```
 
-This extracts the first non-empty paragraph after the `## SUMMARY` heading — which is the summary paragraph. Store it paired with company name and role title.
+This extracts the first non-empty paragraph after the summary heading — which is the summary paragraph. Store it paired with company name and role title.
 
-If a markdown file is missing (role used a different path or failed), skip that role's summary and note it.
+If a markdown file is missing (role used a different path or failed), skip that role's summary and note it. **If the file exists but the expected heading (per this role's CV Type) isn't found** — the `awk` command returns nothing rather than erroring — treat this the same as a missing file: skip that role's summary and note it by name, rather than silently omitting it with no indication anything went wrong.
 
 **Gap-analysis mode (profile available):** compare each extracted summary phrase against the profile's actual About section and headline. Only surface a phrase as a recommendation when it says something the About section doesn't already say, or says it meaningfully better — and state which existing About sentence it would strengthen or replace. Phrases that merely restate the current About are dropped, not listed.
 
@@ -151,6 +156,8 @@ Run after Step 9 (revision log). For every role completed this run that produced
 
 > "New bullets were written for: **[Company A]**, **[Company B]**, **[Company C]**. Which of these should I add to your approved list? Approved bullets will be reused verbatim in future CVs for the same company. Reply with company names, 'all', or 'none'."
 
+**Labeling — this is a non-blocking declaration, not a synchronous pause.** Post the question and proceed immediately to Step 9c and Final Chat Delivery in the same turn; do not hold the run open waiting for a reply. If the user answers in a later turn, apply the handling below at that time. This is distinct from the mid-run scope-check anti-pattern this file's sibling explicitly bans (`orchestrator-queue.md` Absolute Constraints) only in that it comes after all processing is already complete — it must never be moved earlier in the sequence or made to block any role's completion.
+
 **If the user says 'all' or names specific companies:** For each approved company, append the bullets from the delivered CV into `${CAREER_DATA}/references/background/background-role-facts-<company>.md` under the heading `**Approved CV bullets:**`. Use the company name slug from the database record to identify the file (e.g. company "Acme Corp" → `background-role-facts-acme-corp.md`). If a bullets section already exists for that company, merge — do not duplicate bullets already present. This writes the personal data layer: in Code, write `${CAREER_DATA}` directly; in Cowork, stage the append to the output folder and emit the Appendix-A handoff (write path, §5.3) — never write a divergent copy.
 
 **If the user says 'none' or does not respond:** Skip. Bullets remain as candidate status and will be rewritten fresh on the next run.
@@ -170,7 +177,7 @@ cat > "<output_dir>/run-metrics-$(date +%Y-%m-%d).json" << 'JSON_EOF'
   "pipeline": "<New Applications|Edit|Intake>",
   "roles_processed": <N>,
   "roles_per_company": [
-    {"company": "<name>", "track": "<cv|now>", "hebrew": <true|false>}
+    {"company": "<name>", "track": "<cv|now>", "hebrew": <true|false>, "cv_type": "<Detailed|Brief>"}
   ],
   "agents_invoked": {
     "career_coach": <N>,
@@ -191,15 +198,17 @@ cat > "<output_dir>/run-metrics-$(date +%Y-%m-%d).json" << 'JSON_EOF'
 JSON_EOF
 ```
 
-Fill all values from the run state. Set each agent count from the actual invocations this run. Leave `token_counts` as the literal string `"pending — written by Stop hook at session end"` — the hook replaces this value when the session closes. **`roles_processed` always means roles actually completed this run — never the original queue size on an interrupted run.** Omit `interrupted`, `interruption_reason`, and `roles_not_started` entirely on a clean run rather than writing `false`/empty values — their presence is itself the signal that this run didn't reach the full queue.
+Fill all values from the run state. Set each agent count from the actual invocations this run. Leave `token_counts` as the literal string `"pending — written by Stop hook at session end"` — the hook replaces this value when the session closes. **`roles_processed` always means roles actually completed this run — never the original queue size on an interrupted run.** Omit `interrupted`, `interruption_reason`, and `roles_not_started` entirely on a clean run rather than writing `false`/empty values — their presence is itself the signal that this run didn't reach the full queue. **`cv_type`** is each role's resolved value from `$PIPE/cv-type.txt` (written at that role's Step 0.type) — carried into this schema so a run report can distinguish Detailed from Brief roles; omit this key entirely for `--now`-track roles if `$PIPE/cv-type.txt` was never written for them.
+
+**Failure handling:** If the write fails, retry once. If it still fails on an interrupted run, the Final Chat Delivery hard gate below blocks on this file the same as it blocks on `linkedin-updates` — do not send the interrupted-run confirmation without it. On a clean run, a persistent failure is non-blocking: note it in the final chat delivery message and proceed (run-metrics is a structural record, not a deliverable the user is waiting on when everything else succeeded).
 
 ---
 
 ## Final Chat Delivery
 
-**Hard gate — Step 8 must be confirmed complete before this line is delivered.** Before sending the final confirmation, verify:
-- `linkedin-updates-<YYYY-MM-DD>.md` exists in the output folder and is nonzero.
-- If it is missing or zero bytes: run Step 8 now. If Step 8 fails on retry, include the full file content inline in chat with the note "LinkedIn updates file write failed — content follows."
+**Hard gate — before sending the final confirmation, verify the files this run's completion form requires:**
+- **Clean run:** `linkedin-updates-<YYYY-MM-DD>.md` exists in the output folder and is nonzero. If it is missing or zero bytes: run Step 8 now. If Step 8 fails on retry, include the full file content inline in chat with the note "LinkedIn updates file write failed — content follows."
+- **Interrupted run:** all three of `linkedin-updates-<YYYY-MM-DD>.md`, `revision-log-<YYYY-MM-DD>.md`, and `run-metrics-<YYYY-MM-DD>.json` exist in the output folder and are nonzero (revision-log's own non-blocking rule at Step 9 and run-metrics's clean-run non-blocking rule at Step 9c are both superseded here — on an interrupted run all three block). For any that are missing: re-run that step now. If it still fails on retry, include its full content inline in chat with a "<file> write failed — content follows" note, matching the linkedin-updates handling above.
 
 **Step 8 runs ONLY on new-application pipeline runs.** Do not produce a LinkedIn updates file for `--edit`, `--coach-skills`, `--now`, or any other mode.
 
