@@ -85,6 +85,15 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-11 — career-data reachability verification + staging fallback (subagent tool-surface mismatch)
+
+A real New Application pipeline run got cleanly through career-data discovery, the health check, and building a 28-role Notion queue — proving the Notion connector and subagent spawning both worked normally — then failed at the first `cv-writer` spawn: 7 tool calls and ~25K tokens burned discovering that the `${CAREER_DATA}` path handed to it was categorically unreachable by any tool it had. Independently confirmed: the orchestrator's own `Read` tool hit the identical "is a VM path... Read tool runs on the host filesystem" error on the same path its own broader-search tool had just confirmed present. `cv-writer` did the right thing — it hard-stopped rather than fabricate a CV, per its own doctrine.
+
+This is a distinct failure mode from the two already-documented career-data self-locate fixes (2026-07-06, 2026-07-10) — those are about *finding* career-data; this is about the tool that finds it not being guaranteed to be the same tool surface a spawned subagent gets to *read* it with.
+
+**Bug fix**
+- `skills/career-engine-orchestrator/orchestrator-queue.md` Step O1, `skills/career-engine-edit/SKILL.md` Step E0, and `skills/career-engine-intake/SKILL.md` Step 0a.5 each now run a one-line `Read` reachability check on `career-data-marker.json` immediately after establishing their own run-scoped scratch directory (`$QUEUE_PIPE`/`$RUN_PIPE`/`$PIPE`) — `Read` is the one tool every writing subagent in this pipeline is guaranteed to have, regardless of what else it's granted. When it succeeds (the common case), nothing changes — every spawn instruction across all three pipelines still just interpolates `${CAREER_DATA}` exactly as before. When it fails with a reachability error (as opposed to a genuine not-found, which the existing self-locate fixes already handle), the affected pipeline stages the small set of text files subagents actually read — `01-writing-rules.md`, `02-professional-background.md`, `background/`, `03-framework.md`, `framework/`, `linkedin-profile.md`, `voice-calibration-coverletters.md`, `delivered-letters/`, and `pipeline-preferences.json` — into a `career-data-staged/` subfolder of that same scratch directory, then reassigns `${CAREER_DATA}` to it for the rest of the run. The `.dotx`/`.dotm` templates are deliberately excluded — only this pipeline's own `pandoc` call ever touches those, never a subagent. No spawn instruction anywhere in the plugin needed to change. Intake's Inline mode is a named, not-yet-covered gap (no `$PIPE` exists there to stage into) rather than a silent one — a single ad hoc role has a human present watching a failure happen in real time, unlike an unattended batch run, so the risk profile is smaller.
+
 ### 2026-07-11 — PII scrubbed from two shipped templates; two spawn-wiring fixes from a closing QA pass
 
 **Bug fix — real personal data in two shipped `.dotx` templates, confirmed shipping in every prior release**
