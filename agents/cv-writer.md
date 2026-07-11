@@ -182,7 +182,7 @@ SKILLS
 :::
 <!-- /SIDEBAR -->
 ```
-Everything outside the markers (`## PROFILE SUMMARY`, `## EXPERIENCE`) is main-column content. A post-export script splits and places each portion into the template's two-column table shell — this agent's job stops at emitting correctly marked linear markdown.
+Everything outside the markers (`## PROFILE SUMMARY`, `## EXPERIENCE`) is main-column content. `skills/career-engine-export/scripts/assemble_brief_cv.py` (2026-07-10) parses this exact markdown and places each portion into the template's two-column table shell — this agent's job stops at emitting correctly marked linear markdown; it never sees the table.
 
 ---
 
@@ -257,7 +257,7 @@ For every flag raised by either reviewer, apply this decision logic in order:
 
 **Decision 1** — Can this be addressed through reframing, reordering, or re-emphasis of documented experience? If yes: make the change. Record what changed and which flag it resolves.
 
-**Decision 2** — Is there documented experience in the reference files that maps to this flag but was not surfaced in the draft? If yes: surface it. Record what was added and which flag it resolves.
+**Decision 2** — Is there documented experience in the reference files that maps to this flag but was not surfaced in the draft? If yes: surface it. Record what was added and which flag it resolves. **Before making this change, re-verify traceability at the NEW placement and scope — not just at the old one.** Moving a claim to a more prominent or more general position (a Consulting-only bullet → Summary/Skills; one company's scope → a career-wide claim) is a wider claim than the one that may have been true narrowly. A prior gatekeeper pass verifying the narrower version does not carry over automatically. **Confirmed production failure this prevents:** a recruiter review asked to surface "Infrastructure-as-Code (IaC)" more prominently in Summary/Skills, citing an existing Consulting bullet as the traceable source — but that bullet's own IaC/cloud-resilience claim had already been flagged by the gatekeeper as only partially verified for its named clients. Widening the claim's placement without re-checking amplified an already-shaky claim into one that failed traceability outright, and the CV's real ATS keyword coverage got worse (3-of-4 Critical keywords → 0-of-4) with each subsequent "fix." If the new, broader wording doesn't independently trace, do not make the change — treat it the same as Decision 3 below.
 
 **Decision 3** — Is there no documented basis to address this flag without fabricating a claim? If yes: do not make any change. Do not annotate or classify the flag — simply leave it unaddressed.
 

@@ -87,7 +87,7 @@ else
 fi
 ```
 
-Run the conversion script:
+**Detailed — run the conversion script (unchanged):**
 
 ```bash
 bash "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/convert-cv.sh" \
@@ -103,7 +103,38 @@ bash "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/convert-cv.sh" \
 
 Pandoc inherits the header/footer from the reference template. The user's name and contacts appear automatically. Only the Subtitle (role tagline) needs updating per role.
 
-### 4. Update the Subtitle in the CV header
+**Brief — the CV skips pandoc entirely; only the cover letter goes through it (2026-07-10 fix — see the Brief annotation reference below for why).** `convert-cv.sh` is never called for a Brief role — pandoc's DOCX table writer cannot represent this template's nested/merged-cell layout, full empirical record below. Convert the cover letter directly, with the same two-line pandoc invocation `convert-cv.sh` already uses internally for the cover letter half:
+
+```bash
+pandoc "/tmp/<cl_filename>.md" \
+  --reference-doc="$CL_TEMPLATE" \
+  -o "<output_dir>/<company_dir>/<cl_filename>.docx"
+```
+
+Then assemble the CV directly with `assemble_brief_cv.py`. This one call fully replaces both this step's CV conversion AND Step 4's Subtitle update for Brief — the script writes the role tagline directly into the table's row-0 cell in the same pass, since Brief's name/tagline live in the table, not a document-header paragraph:
+
+```bash
+python3 "${CLAUDE_PLUGIN_ROOT}/skills/career-engine-export/scripts/assemble_brief_cv.py" \
+  --cv-md "/tmp/<cv_filename>.md" \
+  --cv-footer "$CV_FOOTER" \
+  --template "$CV_TEMPLATE_FOR_EXPORT" \
+  --output "<output_dir>/<company_dir>/<cv_filename>.docx" \
+  --name "<user's full name>" \
+  --tagline "<role title>" \
+  --contact "<contact line>" [repeat --contact once per line — city/country, phone, email, site, LinkedIn]
+```
+
+**Where each value comes from — none of it is cv-writer's own markdown, same convention as Detailed's template-baked header contact:**
+- `--cv-md` / `--cv-footer` / `--template` / `--output` — the same paths already resolved earlier in this step and in the Templates section above.
+- `--name` and `--contact` — the user's identity/contact values, resolved from career-data (`01-writing-rules.md` §8, R-37) exactly like every other identity placeholder this pipeline already resolves. Never parsed from cv-writer's markdown, which never emits them.
+- `--tagline` — **the exact same resolved role-title value** Step 4 passes to `update-subtitle.py` for Detailed: same source, same verbatim-JD-title rule, just written into a table cell instead of a header paragraph.
+- `--additional` — **omit this flag.** No property in this pipeline resolves an "Additional" value today, for either CV Type — Detailed's own `## ADDITIONAL` is added later by the user's own Word macro, post-export, never by this pipeline (see the annotation reference below). `assemble_brief_cv.py` omits the ADDITIONAL heading and content entirely when the flag isn't passed. This is a pre-existing gap, not a regression introduced by this fix.
+
+The script parses `<cv_filename>.md` itself (cv-writer's own linear markdown — skills/summary/roles) and `$CV_FOOTER` (education/languages) via pandoc's JSON AST, and fails loudly (`RuntimeError`) if it can't find at least one role, rather than silently producing an empty Experience table.
+
+### 4. Update the Subtitle in the CV header — Detailed only
+
+**Brief: skip this step entirely.** The tagline is already written by Step 3's `assemble_brief_cv.py` call, directly into the table's row-0 cell — there is no document-header Subtitle paragraph to update for Brief.
 
 Run the subtitle script on the file in the output directory (convert-cv.sh writes DOCX directly to output_dir, not /tmp):
 
@@ -355,7 +386,9 @@ Plain `Normal` style paragraph. "Earlier:" is bolded with standard markdown `**b
 
 ## CV — custom-style annotation reference — Brief variant
 
-**⚠ Known technical limitation, empirically CONFIRMED against a real build — plain pandoc markdown cannot produce the two-column sidebar layout.** Two mechanisms were tested against a real `cv-template-brief-default.dotx` build (python-docx, with `RoleTitle`/`RoleActivitySingle`/`SkillsHeading`/`Skills`/`ColorEmphasis` custom styles defined, converted with `pandoc --reference-doc`):
+**Two-column sidebar assembly (2026-07-10 fix) — the pandoc-table approach below is empirically ruled out; the actual mechanism is `skills/career-engine-export/scripts/assemble_brief_cv.py`, invoked at Step 6/Step 3 above.** The findings that ruled out a pandoc-table approach are kept below as the record of why this design was chosen — read them before touching the assembly script or this section, since a future edit that tries to route Brief content back through pandoc's table writer will hit the exact same wall.
+
+**Empirically CONFIRMED against a real build — plain pandoc markdown cannot produce the two-column sidebar layout.** Two mechanisms were tested against a real `cv-template-brief-default.dotx` build (python-docx, with `RoleTitle`/`RoleActivitySingle`/`SkillsHeading`/`Skills`/`ColorEmphasis` custom styles defined, converted with `pandoc --reference-doc`):
 
 1. **Pipe table with `::: {custom-style="..."}` div content in cells** — pandoc's pipe-table parser requires strictly single-line cell content and a `|---|---|` header separator row; multi-line block content (headings, divs) inside a cell is not parsed as a table at all — the whole block silently degrades to one literal-text paragraph, with every `|` and `:::` character rendered as visible text. **Confirmed broken.**
 2. **Grid table (`+---+---+` ASCII-art borders) with block content in cells** — pandoc's grid-table parser IS designed for multi-paragraph cell content in principle, but requires the border and content rows to be exactly character-aligned to the declared column widths; a real test with hand-authored grid syntax failed to parse as a table at all (same literal-text degradation as the pipe table). Even if a perfectly-aligned grid table can be made to work, **requiring an LLM writer agent to hand-align ASCII-art table borders character-for-character, every draft and every revision, is not a reliable content-generation target** — a single misaligned dash silently breaks the whole layout with no error, exactly as observed in testing.
@@ -367,14 +400,21 @@ Plain `Normal` style paragraph. "Earlier:" is bolded with standard markdown `**b
 - **Rows 0–2 — horizontally merged across columns 1+2, full width:** row 0 = Name + Tagline (header), row 1 = the Profile Summary paragraph, row 2 = the `## EXPERIENCE` section banner.
 - **Rows 3 through 3+N−1 — one row per named role, split into two real sub-columns:** column 1 (narrow) holds **only the date range**, styled `RoleActivitySingle`; column 2 (wide) holds the `RoleTitle` line — **now WITHOUT a date, just `Title | Company | Location`** — followed by that role's bullets, each its own `RoleActivitySingle` div (never `RoleActivitiesList` — Brief has no such style; every activity line, including every bullet of a multi-bullet role, is its own separate `RoleActivitySingle` paragraph, confirmed against the template's actual style definitions and the delivered worked example).
 
-**This table shell is the template's OWN body content — it is not what pandoc's `--reference-doc` mechanism gives cv-writer for free.** `--reference-doc` only borrows **styles** (`styles.xml`) from the reference file; it does not copy the reference file's own document body, tables, or example text into pandoc's output (confirmed by direct test: converting linear markdown against this exact template produces a linear, single-column result — zero tables — even though the template file itself contains one). The table above is the **design target** for the not-yet-built post-processing script below, not something that happens automatically today.
+**This table shell is the template's OWN body content — it is not what pandoc's `--reference-doc` mechanism gives cv-writer for free.** `--reference-doc` only borrows **styles** (`styles.xml`) from the reference file; it does not copy the reference file's own document body, tables, or example text into pandoc's output (confirmed by direct test: converting linear markdown against this exact template produces a linear, single-column result — zero tables — even though the template file itself contains one). The table above is the **design target** that `assemble_brief_cv.py` (below) builds directly via python-docx — it does not happen automatically from pandoc conversion.
 
-**Recommended mechanism — not yet built, a real follow-up item, distinct from the blank template file itself:** cv-writer should NOT attempt to emit a pandoc table at all. Instead:
-1. cv-writer outputs Brief content as ordinary **linear, single-column markdown** (exactly like Detailed), using HTML-comment markers to delimit what belongs in each zone: `<!-- SIDEBAR -->` ... `<!-- /SIDEBAR -->` around the Skills content (Education is NOT cv-writer's own content — see below), and a per-role date line immediately following each `RoleTitle` div so the script can tell which line is the date vs. the first bullet. This is a content-generation task cv-writer is already good at (linear markdown with simple delimiters) — no ASCII-art alignment, no nested div-in-table syntax.
-2. A new post-processing script (python-docx, same pattern as the existing `update-subtitle.py` — a small script that runs after pandoc, not instead of it) builds the table shell shown above (1 vertically-merged sidebar cell spanning all rows, 3 horizontally-merged full-width header/summary/heading rows, then one two-column row per role), and inserts each portion's rendered paragraphs into the correct cell, preserving their custom styles. **For Brief specifically, this script also routes `$CV_FOOTER`'s Education content into the sidebar cell** (appended after Additional, before the sidebar cell closes) rather than appending it after `## EXPERIENCE` the way Detailed's flat document does — Brief's Education placement genuinely differs from Detailed's, even though both read from the same shared `$CV_FOOTER` source content.
-3. Step 6 of the production protocol gains a Brief-only step calling this new script, parallel to how Step 4 already calls `update-subtitle.py`.
+**Implemented mechanism (2026-07-10) — `skills/career-engine-export/scripts/assemble_brief_cv.py`.** cv-writer does NOT emit a pandoc table at all — it never has for Brief, and this fix didn't change that:
+1. cv-writer outputs Brief content as ordinary **linear, single-column markdown** (exactly like Detailed), using the `<!-- SIDEBAR -->` ... `<!-- /SIDEBAR -->` HTML-comment markers around the `## SKILLS` block, plus a per-role date line immediately following each `RoleTitle` div (its own `RoleActivitySingle` div) so the script can tell which line is the date vs. the first bullet. This is unchanged from before this fix — cv-writer's doctrine (`writer-craft/SKILL.md` §5b, `agents/cv-writer.md`) already specified this exact format; the gap was purely on the assembly side.
+2. `assemble_brief_cv.py` builds the table shell (1 vertically-merged sidebar cell spanning all rows, 3 horizontally-merged full-width header/summary/heading rows, then one two-column row per role) by opening the **actual** `cv-brief.dotx` template directly with python-docx and writing each portion's paragraphs into the correct cell, preserving custom styles — no markdown, no pandoc round-trip for the CV. It parses cv-writer's own markdown and `$CV_FOOTER` via **pandoc's JSON AST** (not regex) to build the data it needs: `pandoc -f markdown -t json` on the raw source markdown sidesteps the line-wrapping corruption that broke the annotation-only approaches above, because that corruption only ever showed up on a pandoc-rendered/re-wrapped round trip — parsing cv-writer's original markdown directly never hits it. **For Brief specifically, `$CV_FOOTER`'s Education and Languages content routes into the sidebar cell** (Languages' multiple footer lines are joined into the sidebar's single flat `Skills`-styled paragraph, matching the template's own convention; Education stays one paragraph per degree, also matching the template) — rather than appending after `## EXPERIENCE` the way Detailed's flat document does. Both CV Types read the same shared `$CV_FOOTER` source content; only the placement differs.
+3. Role-row count is fully dynamic — the script clones or removes `<w:tr>` elements to match however many roles are passed, relocating the sidebar's closing bottom border to whichever row ends up last. Tested against the real template growing to 6 roles and shrinking to 1 (`skills/career-engine-export/scripts/test_assemble_brief_cv.py`).
+4. Step 6 of the production protocol calls this script for Brief roles in place of `convert-cv.sh`'s CV half and `update-subtitle.py` (see Step 3/Step 4 above) — the cover letter still converts through a plain pandoc call, unaffected.
 
-**This script does not exist yet — building it is out of scope for the template file itself and needs its own implementation pass.** Until it exists, a Brief CV cannot actually be exported to the two-column visual shape described in this feature — the blank default `.dotx` template (a real, working file with all the right custom styles defined, including the target table shell) and the content-authoring rules (`writer-craft/SKILL.md` §5b, `agents/cv-writer.md`) are ready, but the "assemble them into a two-column DOCX" step is not. **In the interim, cv-writer's markdown still converts via the same flat, linear, single-column path Detailed uses** — `$CV_FOOTER`'s Education/Languages content lands appended at the end of the document (not inside a sidebar), same as it always has; only once the post-processing script exists does Education's real placement (sidebar) take effect.
+**⚠ Scope — this ONLY works against the default template or a cosmetic derivative of it.** `assemble_brief_cv.py` hard-codes the exact table shape shown above: specific rows/columns, specific merged cells (row 0 and row 2 gridSpan across columns 1-2; column 0 vertically merged from row 1 down), and specific named styles (`RoleTitle`, `RoleActivitySingle`, `SkillsHeading`, `Skills`, `PersonalDetails`, `ColorEmphasis`, `Heading 1`, `Subtitle`, `Heading 2`, `Normal`). It is safe against a personalized `cv-brief.dotx` **only** when the user changed fonts, colors, spacing, or alignment and left the table's rows/columns/merges and style names alone. It is **not** safe against a template where the table itself was restructured (rows or columns added/removed, merges changed, styles renamed or deleted) — the script cannot fill a different shape. `career-engine-setup/SKILL.md`'s "Document templates" step warns the user about this explicitly before she supplies her own file, and `validate_template_structure()` in the script itself fails loudly with a specific, itemized error (never a silent misrender, never an opaque python-docx exception) if a template reaches export time with a shape or missing style the script doesn't recognize — see the negative test in `test_assemble_brief_cv.py`.
+
+**Two implementation findings worth keeping in mind if this script is ever touched:**
+- **python-docx's `Document()` rejects a `.dotx` outright** — it checks the main part's content type (`...wordprocessingml.template.main+xml` for a `.dotx`, `...document.main+xml` for a `.docx`), not the file extension, and raises `ValueError` on the template content type. `assemble_brief_cv.py`'s `load_docx_or_dotx()` patches the `[Content_Types].xml` override in memory (no temp file) before handing the bytes to python-docx — this is required, not optional; confirmed by testing directly against the shipped `cv-brief.dotx`.
+- **Some template paragraphs wrap their run in a `<w:hyperlink>` element** (e.g. the sidebar's website line) that `python-docx`'s `paragraph.runs` does not see. Clearing only `p.runs` before rewriting a reused paragraph left the old hyperlink text behind, silently concatenated onto the new content. `set_cell_paragraphs()` clears every child of the paragraph except `pPr` instead.
+
+**Known, pre-existing gap, not introduced by this fix: no pipeline value resolves "Additional" content for either CV Type.** Detailed's `## ADDITIONAL` is added later by the user's own Word macro, post-export — the automated pipeline has never produced it. `assemble_brief_cv.py` accepts an optional `--additional` value and omits the ADDITIONAL heading and content from the sidebar entirely when it isn't supplied, the same way `## TOOLS`/`## PUBLICATIONS` are omitted when there's no qualifying content.
 
 ### Content annotations — Skills (sidebar) and Profile Summary / Experience (main column)
 
@@ -416,7 +456,7 @@ Head of [Function] | [Company Name]{custom-style="ColorEmphasis"} | Location
 **Earlier:** [Company A], [Company B], [Company C] ([Year]–[Year])
 ```
 
-**RoleTitle no longer carries a date for Brief** — it is `Title | Company | Location` only (Detailed's RoleTitle is unaffected and still ends with the date range). The date is its own `RoleActivitySingle` div, immediately after `RoleTitle` and before the first bullet — this is the line the not-yet-built post-processing script will recognize and route into the narrow date column; every `RoleActivitySingle` div after it is a bullet, routed to the wide title-and-bullets column instead.
+**RoleTitle no longer carries a date for Brief** — it is `Title | Company | Location` only (Detailed's RoleTitle is unaffected and still ends with the date range). The date is its own `RoleActivitySingle` div, immediately after `RoleTitle` and before the first bullet — this is the line `assemble_brief_cv.py` recognizes as the date (the first `RoleActivitySingle` div after a `RoleTitle`) and routes into the narrow date column; every `RoleActivitySingle` div after it is a bullet, routed to the wide title-and-bullets column instead.
 
 Contact details (phone, email, location, site) are template-header content or the first table cell's fixed content, same convention as Detailed's header/contact info — cv-writer never writes them. (The photo, if the user's template includes one, is baked into the `.dotx` template directly — cv-writer never generates or inserts an image; see `pipeline-preferences.json` → `cv_type.brief_has_photo`.) **No `RoleOverview` annotation is ever used here** — Brief has no RoleOverview line at all (`writer-craft/SKILL.md` §5b). The `**Earlier:**` line is the last element inside `## EXPERIENCE`, not a separate section.
 

@@ -193,12 +193,15 @@ cat > "<output_dir>/run-metrics-$(date +%Y-%m-%d).json" << 'JSON_EOF'
   "interrupted": <true|false, present only when the run stopped early — omit this key entirely on a clean run>,
   "interruption_reason": "<one-line cause, e.g. 'monthly spend limit reached' — omit when interrupted is false or absent>",
   "roles_not_started": ["<company>", "..."],
+  "roles_halted": [
+    {"company": "<name>", "track": "<cv|cover_letter>", "step": "<the pipeline step where the halt-before-export policy triggered, e.g. '5.2'>", "reason": "<one-line unresolved-violation summary>", "revision_log": "<path>"}
+  ],
   "token_counts": "pending — written by Stop hook at session end"
 }
 JSON_EOF
 ```
 
-Fill all values from the run state. Set each agent count from the actual invocations this run. Leave `token_counts` as the literal string `"pending — written by Stop hook at session end"` — the hook replaces this value when the session closes. **`roles_processed` always means roles actually completed this run — never the original queue size on an interrupted run.** Omit `interrupted`, `interruption_reason`, and `roles_not_started` entirely on a clean run rather than writing `false`/empty values — their presence is itself the signal that this run didn't reach the full queue. **`cv_type`** is each role's resolved value from `$PIPE/cv-type.txt` (written at that role's Step 0.type) — carried into this schema so a run report can distinguish Detailed from Brief roles; omit this key entirely for `--now`-track roles if `$PIPE/cv-type.txt` was never written for them.
+Fill all values from the run state. Set each agent count from the actual invocations this run. Leave `token_counts` as the literal string `"pending — written by Stop hook at session end"` — the hook replaces this value when the session closes. **`roles_processed` always means roles actually completed this run — never the original queue size on an interrupted run.** Omit `interrupted`, `interruption_reason`, and `roles_not_started` entirely on a clean run rather than writing `false`/empty values — their presence is itself the signal that this run didn't reach the full queue. **`roles_halted` is populated by reading `$OUTPUT_DIR/halted-roles.json`** (written incrementally by the pipeline steps at the moment each role halts — see `orchestrator-queue.md`'s Absolute Constraints for the append mechanism and entry shape) — copy its `roles` array in directly, do not re-derive it from memory of the run. Omit the `roles_halted` key entirely when that file doesn't exist (no role halted this run). **This file is the structural record backing the Final Chat Delivery's mandatory halted-role addendum below** — every entry in it must have a corresponding line in that chat message, and vice versa; both read from the same file, neither is reconstructed from conversational memory of a halt that may have happened many roles or turns earlier. A halted role does NOT count toward `roles_processed` (it produced no delivered output), but its coach/writer/gatekeeper agent invocations still count in `agents_invoked`. **`cv_type`** is each role's resolved value from `$PIPE/cv-type.txt` (written at that role's Step 0.type) — carried into this schema so a run report can distinguish Detailed from Brief roles; omit this key entirely for `--now`-track roles if `$PIPE/cv-type.txt` was never written for them.
 
 **Failure handling:** If the write fails, retry once. If it still fails on an interrupted run, the Final Chat Delivery hard gate below blocks on this file the same as it blocks on `linkedin-updates` — do not send the interrupted-run confirmation without it. On a clean run, a persistent failure is non-blocking: note it in the final chat delivery message and proceed (run-metrics is a structural record, not a deliverable the user is waiting on when everything else succeeded).
 
@@ -214,12 +217,16 @@ Fill all values from the run state. Set each agent count from the actual invocat
 
 After Step 9c completes and Step 8 is confirmed, deliver a single confirmation line in chat:
 
-**Clean run (all queued roles completed):**
-`All N roles completed. Files are in your output folder and Notion rows are updated. LinkedIn updates file: linkedin-updates-<YYYY-MM-DD>.md`
+**Clean run (all queued roles either completed or halted per the Absolute Constraints' halt-before-export policy — no external blocker):**
+`All N roles processed. Files are in your output folder and Notion rows are updated. LinkedIn updates file: linkedin-updates-<YYYY-MM-DD>.md`
 
-**Interrupted run (a hard external blocker stopped the loop early):** the confirmation may expand to name what completed, what didn't, and why — but only *after* Steps 8-9c have already run for the completed roles, never as a substitute for them. State plainly: which roles are fully done (files written, Notion updated), which role was mid-chain when the blocker hit (Notion left untouched, nothing half-written), which roles never started, and the concrete unblock step (e.g. "raise or reset the limit at claude.ai/settings/usage, then say 'continue the remaining roles'"). The run-metrics, revision-log, and linkedin-updates files for the completed roles must already exist in the output folder before this message is sent — confirm they do, the same way Step 8's hard gate above already requires.
+**Mandatory addendum — read directly from `$OUTPUT_DIR/halted-roles.json` (the same file `roles_halted` in run-metrics was populated from, above — do not reconstruct this list from memory), one line per entry, appended directly under either form above, never omitted when the file exists and is non-empty:**
+`[Company] — [Role Title]: blocked, not delivered — [reason] — see [revision_log].`
+A halted role has no DOCX and no Notion status change; this line is the only place its state is reported, so it cannot be silently missed the way a same-status-as-clean-pass role could be before this fix. If a role halted on the CV but its cover letter (or vice versa) still passed cleanly, say so explicitly rather than reporting the whole role as blocked.
 
-Nothing else beyond one of these two forms. All feedback, validation results, and decisions are in the revision log files in the output folder.
+**Interrupted run (a hard external blocker stopped the loop early):** the confirmation may expand to name what completed, what didn't, and why — but only *after* Steps 8-9c have already run for the completed roles, never as a substitute for them. State plainly: which roles are fully done (files written, Notion updated), which roles halted per the policy above, which role was mid-chain when the blocker hit (Notion left untouched, nothing half-written), which roles never started, and the concrete unblock step (e.g. "raise or reset the limit at claude.ai/settings/usage, then say 'continue the remaining roles'"). The run-metrics, revision-log, and linkedin-updates files for the completed roles must already exist in the output folder before this message is sent — confirm they do, the same way Step 8's hard gate above already requires.
+
+Nothing else beyond one of these two forms plus the mandatory halted-role addendum. All other feedback, validation results, and decisions are in the revision log files in the output folder.
 
 ---
 
