@@ -662,6 +662,23 @@ grep -c "hiring-manager-reviewer" <build>/agents  # must be 0 — agent file was
 
 **FAIL condition:** any required count is nonzero for hiring-manager-reviewer checks, or any other required count is zero.
 
+### Check 21t — Stop hook mechanically enforces the mid-run scope-check anti-pattern (2026-07-11 addition)
+
+`hooks/hooks.json` must carry a `Stop` hook that mechanically catches the mid-run scope-check anti-pattern (see CLAUDE.md's cross-file-contract row and the three named anti-pattern blocks in `orchestrator-queue.md`'s Absolute Constraints) — a real gate outside the model's own judgment, since three rounds of markdown reinforcement alone did not prevent a fourth occurrence. This supplements, and must not replace, the pre-existing token-logging `Stop` hook.
+
+```bash
+python3 -c "import json; json.load(open('<build>/hooks/hooks.json'))" && echo "valid JSON" || echo "INVALID JSON"
+grep -c '"type": "command"' <build>/hooks/hooks.json                          # must be >= 1 (original token-logging hook still present)
+grep -c "log-token-usage.sh" <build>/hooks/hooks.json                         # must be >= 1
+grep -c '"type": "prompt"' <build>/hooks/hooks.json                           # must be >= 1 (new scope-check hook)
+grep -c "last_assistant_message" <build>/hooks/hooks.json                     # must be >= 1
+grep -c 'ok\\": false' <build>/hooks/hooks.json                               # must be >= 1 (the prompt string is itself JSON, so the literal is escaped inside the outer file: ok\": false)
+```
+
+Also confirm (per the standard personal-data scan, since `hooks/hooks.json` is not `.md` and Check 6's grep doesn't cover it): read the `prompt` string yourself and confirm it names only generic pipeline concepts (Notion queue, CV/cover-letter drafting, orchestrator, gatekeeper) — no real name, path, or database ID.
+
+**FAIL condition:** the file is invalid JSON, either hook type is missing, the token-logging command hook was removed rather than supplemented, or the prompt text contains real personal data.
+
 ### Check 22 — Single-build model documented in CLAUDE.md
 
 In `CLAUDE.md`: verify the file describes the single-build architecture and the mandatory QA gate (the regression table was intentionally removed; architecture description and QA gate must remain).
@@ -1342,7 +1359,7 @@ grep -c "Brief-Specific Rules" <build>/agents/cv-writer.md                      
 grep -c "§5b" <build>/skills/writer-craft/SKILL.md                                          # must be >= 1 (Brief Document Shape)
 grep -c "CV Type" <build>/agents/gatekeeper.md                                              # must be >= 1 (CV Check param)
 grep -c "Brief only" <build>/skills/gatekeeper-checks/SKILL.md                               # must be >= 1 (Gate 2 branch)
-grep -c "RoleOverview-parity check is \*\*skipped entirely\*\* for Brief" <build>/skills/gatekeeper-checks/SKILL.md  # must be >= 1
+grep -c "skipped entirely.*for Brief" <build>/skills/gatekeeper-checks/SKILL.md  # must be >= 1 (2026-07-11 fix: prior literal-phrase pattern didn't match actual wording "...so that specific check is **skipped entirely** for Brief...")
 grep -c "CV_TEMPLATE_BRIEF" <build>/skills/career-engine-export/SKILL.md                     # must be >= 1
 grep -c "CONFIRMED against a real build" <build>/skills/career-engine-export/SKILL.md        # must be >= 1 (the tested-not-hypothesized finding)
 ls <build>/references/cv-template-brief-default.dotx                                        # must exist
@@ -1352,7 +1369,15 @@ grep -c "CV Type — mandatory question" <build>/skills/career-engine-setup/SKIL
 grep -ci '"Summary" CV Type\|CV Type=Summary\|Summary CV Type' <build>/agents/*.md <build>/skills/*/SKILL.md   # must be 0 (naming discipline — Brief, never Summary, as a type label)
 ```
 
-**FAIL condition:** any "must be >= N" count below its stated requirement, the `.dotx` file missing, or the naming-discipline grep nonzero. **Known accepted gap, not a FAIL:** the sidebar/main-column post-processing script that assembles the two-column DOCX from marker-delimited markdown does not exist yet — `career-engine-export/SKILL.md`'s Brief annotation reference documents this explicitly as a follow-up build item. Confirm the doc says so (`grep -c "does not exist yet" <build>/skills/career-engine-export/SKILL.md` — must be >= 1) rather than silently promising a working feature it can't yet produce.
+**FAIL condition:** any "must be >= N" count below its stated requirement, the `.dotx` file missing, or the naming-discipline grep nonzero.
+
+**2026-07-10 update — the "known accepted gap" below is now closed, not open.** The two-column assembly script was built and wired this same day: `skills/career-engine-export/scripts/assemble_brief_cv.py`, called from `career-engine-export/SKILL.md` Step 6 and referenced in `agents/cv-writer.md`. Verify the gap is actually closed rather than assuming the note below still applies:
+```bash
+grep -c "assemble_brief_cv.py" <build>/skills/career-engine-export/SKILL.md   # must be >= 1
+grep -c "does not exist yet" <build>/skills/career-engine-export/SKILL.md    # must be 0 (the stale "not yet built" language must not have survived)
+test -f <build>/skills/career-engine-export/scripts/assemble_brief_cv.py && echo 1 || echo 0   # must be 1
+```
+**FAIL condition (assembly script):** the script is missing, the SKILL.md doesn't reference it, or the stale "does not exist yet" language is still present.
 
 ### Check 36 — Humanizer enforcement mechanisms present (2026-07-02 fix)
 

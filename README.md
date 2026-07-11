@@ -85,6 +85,14 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-11 — Stop hook mechanically enforces the mid-run scope-check anti-pattern doctrine
+
+Three rounds of markdown reinforcement in `orchestrator-queue.md`'s Absolute Constraints (the "second confirmed instance," "third confirmed instance" blocks) still didn't prevent a fourth real occurrence — because prose doctrine only competes for weight against the model's in-the-moment judgment on a given turn; nothing about it can structurally stop a turn from ending in prose instead of a tool call. Fixed by adding a mechanism outside the model's control instead of another paragraph.
+
+**New feature**
+- `hooks/hooks.json` gained a second `Stop` hook (`type: "prompt"`, alongside the existing token-logging command hook) that reads `last_assistant_message` on every turn end. When the message shows clear evidence of an in-progress career-engine pipeline run (Notion queue, CV/cover-letter drafting, orchestrator/gatekeeper references) AND the turn paused or hedged on scope/cost/volume instead of advancing the queue or reporting one specific logged blocker, the hook returns `{"ok": false, "reason": "..."}` — which Claude Code uses to force the turn to continue with that reason as its next instruction, rather than letting it end. All other conversations (non-career-engine turns, genuine questions awaiting the user's input, a role halt already logged to `halted-roles.json`) pass through unaffected. Claude Code's built-in 8-consecutive-block cap remains the backstop against a genuine blocker looping forever.
+- This hook's justification is enforcement of the documented "run end-to-end" contract, not cost protection — `run-metrics-<date>.json` already gives the user complete after-the-fact cost visibility, so the orchestrator has never needed to pre-emptively guard against a large run.
+
 ### 2026-07-11 — career-data reachability verification + staging fallback (subagent tool-surface mismatch)
 
 A real New Application pipeline run got cleanly through career-data discovery, the health check, and building a 28-role Notion queue — proving the Notion connector and subagent spawning both worked normally — then failed at the first `cv-writer` spawn: 7 tool calls and ~25K tokens burned discovering that the `${CAREER_DATA}` path handed to it was categorically unreachable by any tool it had. Independently confirmed: the orchestrator's own `Read` tool hit the identical "is a VM path... Read tool runs on the host filesystem" error on the same path its own broader-search tool had just confirmed present. `cv-writer` did the right thing — it hard-stopped rather than fabricate a CV, per its own doctrine.
