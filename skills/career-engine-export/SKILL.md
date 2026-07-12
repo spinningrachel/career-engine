@@ -26,7 +26,9 @@ cv-writer outputs **styled markdown** using pandoc's `custom-style` div and span
 - `$CV_FOOTER` = `${CAREER_DATA}/references/static-cv-footer.md` — the static Education/Languages markdown appended to every English CV before pandoc conversion (see Step 3 below). **This must resolve from career-data, never from the plugin's own `skills/career-engine-export/` copy** — same reasoning as `$CL_TEMPLATE` above, and a **confirmed real production bug, not a theoretical one**: `convert-cv.sh` used to hardcode the plugin's own copy of this file for every CV export, and that plugin-shipped copy had accumulated one real user's actual degree/university content — meaning every installation of this plugin was silently appending someone else's real Education/Languages onto every user's exported CV (fixed 2026-07-09). The plugin's own copy is the new-user blank-`{{...}}`-placeholder default only (see `career-engine-setup/SKILL.md`).
 - `$CV_FOOTER_HE` = `${CAREER_DATA}/references/static-cv-footer-he.md` — the Hebrew-language equivalent, used only for Hebrew CV export (see the Hebrew production protocol below). Same career-data-only resolution rule as `$CV_FOOTER`.
 
-Confirm each file exists before use. `$CV_TEMPLATE`, `$CL_TEMPLATE`, and `$CV_FOOTER` are required for any export — if any is missing, stop and report: "career-data is missing `references/<filename>` — run `/career-engine:setup --phase 5` to restore the default templates, or add your own at that path." `$CV_TEMPLATE_BRIEF` follows the same required-when-needed rule as the Hebrew templates: if the resolved CV Type for this role is `Brief` and `cv-brief.dotx` is missing, stop and report the same way — never silently fall back to `$CV_TEMPLATE` (that would silently produce a Detailed-shaped document for a role the user explicitly configured as Brief). `$CV_TEMPLATE_HE`/`$CL_TEMPLATE_HE`/`$CV_FOOTER_HE` are optional — if any is missing, Hebrew export for that document type is unavailable; skip it and note it, exactly as the old `word_templates_path`-empty case did.
+**`$CV_FOOTER`/`$CV_FOOTER_HE` are conditional on `cv_footer.inject` (2026-07-12 fix) — the only templates in this list that are.** Read `cv_footer.inject` from `pipeline-preferences.json` (default `true` when the key is absent, for configs written before this feature existed). If `true` (the default): resolve both paths as above and require `$CV_FOOTER` to exist, per the paragraph below. **If `false`:** set `$CV_FOOTER=""` and `$CV_FOOTER_HE=""` — do not check for either file's existence, do not stop if they're absent, and pass the empty string through to `convert-cv.sh`/`assemble_brief_cv.py` unchanged. This is for a user who adds Education/Languages herself outside the pipeline (e.g. a personal Word macro run after export) — same "not this pipeline's job" treatment the CV's optional `## ADDITIONAL` section has always had.
+
+Confirm each file exists before use. `$CV_TEMPLATE` and `$CL_TEMPLATE` are always required for any export — if either is missing, stop and report: "career-data is missing `references/<filename>` — run `/career-engine:setup --phase 5` to restore the default templates, or add your own at that path." `$CV_FOOTER` is required **only when `cv_footer.inject` is true** (the default) — same stop-and-report message when missing in that case; never required when `cv_footer.inject` is false. `$CV_TEMPLATE_BRIEF` follows the same required-when-needed rule as the Hebrew templates: if the resolved CV Type for this role is `Brief` and `cv-brief.dotx` is missing, stop and report the same way — never silently fall back to `$CV_TEMPLATE` (that would silently produce a Detailed-shaped document for a role the user explicitly configured as Brief). `$CV_TEMPLATE_HE`/`$CL_TEMPLATE_HE`/`$CV_FOOTER_HE` are optional — if any is missing, Hebrew export for that document type is unavailable; skip it and note it, exactly as the old `word_templates_path`-empty case did.
 
 None of these templates should be read into context. Use them only as pandoc `--reference-doc` arguments.
 
@@ -211,14 +213,14 @@ Example: `cv-<last-name>-[role-title]-[company]-[mon-year].docx` / `revision-log
 
 Hebrew DOCX files are produced inline in Step 6H (Standard/Edit pipelines). This section documents the bash steps for reference — they are spelled out in full in each pipeline skill.
 
-**Footer:** Hebrew CVs use `$CV_FOOTER_HE` = `${CAREER_DATA}/references/static-cv-footer-he.md` (Hebrew-language Education and Languages sections) instead of `$CV_FOOTER`. Fixed path, no config key, career-data only — same resolution and same 2026-07-09 fix rationale as `$CV_FOOTER` in the Templates section above. The pipeline concatenates this file before calling pandoc.
+**Footer:** Hebrew CVs use `$CV_FOOTER_HE` = `${CAREER_DATA}/references/static-cv-footer-he.md` (Hebrew-language Education and Languages sections) instead of `$CV_FOOTER`. Fixed path, no config key, career-data only — same resolution and same 2026-07-09 fix rationale as `$CV_FOOTER` in the Templates section above. Conditional on `cv_footer.inject` exactly like `$CV_FOOTER` (2026-07-12 fix, see the Templates section above) — empty when `false`, in which case the pipeline skips the concatenation below entirely rather than passing an empty path to `cat`.
 
 **Hebrew templates:** Two dedicated templates exist for Hebrew output — both live in `${CAREER_DATA}/references/templates/`, fixed filenames, no config key and no external OS path (2026-07-04 fix — this used to point at an external, machine-specific Office templates folder via the now-removed `word_templates_path` config key):
 
 - `$CV_TEMPLATE_HE` = `${CAREER_DATA}/references/templates/cvHe.dotm` — Hebrew CV reference template. **Note the `.dotm` extension** (macro-enabled) — not `.dotx`.
 - `$CL_TEMPLATE_HE` = `${CAREER_DATA}/references/templates/he-letter.dotx` — Hebrew cover letter reference template.
 
-If any of these three files is missing, Hebrew export for that document type is unavailable; skip it and note it.
+If `$CV_TEMPLATE_HE`/`$CL_TEMPLATE_HE` is missing, Hebrew export for that document type is unavailable; skip it and note it. `$CV_FOOTER_HE` follows `cv_footer.inject` (see the Footer note above) — when `cv_footer.inject` is `false` it's expected to be empty/absent and never blocks Hebrew export; when `true`, a missing `$CV_FOOTER_HE` only makes Hebrew export unavailable the same way a missing `$CV_TEMPLATE_HE`/`$CL_TEMPLATE_HE` would (it's optional at preflight, per the Templates section above — the run isn't stopped for it, only Hebrew output for that role is skipped).
 
 Both Hebrew templates support RTL formatting. Use `--reference-doc` with these templates — do not use pandoc's default template for Hebrew output.
 
@@ -236,11 +238,16 @@ lang: he
 ```bash
 # $CV_TEMPLATE_HE resolved from ${CAREER_DATA}/references/templates/cvHe.dotm (fixed path, no config key)
 
-# 1. Concatenate Hebrew CV markdown with Hebrew footer
+# 1. Concatenate Hebrew CV markdown with Hebrew footer (if injecting)
 # $CV_FOOTER_HE resolved from ${CAREER_DATA}/references/static-cv-footer-he.md (fixed path, no config key)
-cat /tmp/he-<cv_filename>.md \
-    "$CV_FOOTER_HE" \
-    > /tmp/he-<cv_filename>-with-footer.md
+# $CV_FOOTER_HE is empty when cv_footer.inject is false -- skip the append entirely in that case
+if [ -n "$CV_FOOTER_HE" ]; then
+  cat /tmp/he-<cv_filename>.md \
+      "$CV_FOOTER_HE" \
+      > /tmp/he-<cv_filename>-with-footer.md
+else
+  cp /tmp/he-<cv_filename>.md /tmp/he-<cv_filename>-with-footer.md
+fi
 
 # 2. Convert with pandoc using Hebrew CV template
 pandoc /tmp/he-<cv_filename>-with-footer.md \

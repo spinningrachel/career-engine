@@ -165,6 +165,22 @@ def build_restructured_template(tmpdir):
     return path
 
 
+def assert_footer_omitted_when_not_supplied(tmpdir):
+    """cv_footer.inject=false: no footer content supplied. EDUCATION/LANGUAGES
+    headings must be omitted from the sidebar entirely (not present-but-blank),
+    same convention as the pre-existing ADDITIONAL-omitted-when-absent case."""
+    data = build_data(role_count_override=1)
+    data["education"] = []
+    data["languages"] = ""
+    out_path = os.path.join(tmpdir, "no-footer.docx")
+    m.fill_brief_cv(TEMPLATE, out_path, data)
+    doc = docx.Document(out_path)
+    sidebar_texts = [p.text for p in doc.tables[0].cell(1, 0).paragraphs]
+    assert "EDUCATION" not in sidebar_texts, "EDUCATION heading must be omitted when no footer content is supplied"
+    assert "LANGUAGES" not in sidebar_texts, "LANGUAGES heading must be omitted when no footer content is supplied"
+    assert "CONTACT details" in sidebar_texts and "SKILLS" in sidebar_texts, "unrelated sidebar content should be unaffected"
+
+
 def assert_restructured_template_rejected(tmpdir):
     broken_template = build_restructured_template(tmpdir)
     data = build_data(role_count_override=1)
@@ -197,6 +213,9 @@ def main():
 
         assert_restructured_template_rejected(tmpdir)
         print("  restructured (non-cosmetic) template correctly rejected with a clear error, no output written")
+
+        assert_footer_omitted_when_not_supplied(tmpdir)
+        print("  cv_footer.inject=false: EDUCATION/LANGUAGES correctly omitted from sidebar")
 
     print("ALL TESTS PASSED")
 

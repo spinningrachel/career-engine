@@ -679,6 +679,56 @@ Also confirm (per the standard personal-data scan, since `hooks/hooks.json` is n
 
 **FAIL condition:** the file is invalid JSON, either hook type is missing, the token-logging command hook was removed rather than supplemented, or the prompt text contains real personal data.
 
+### Check 21u — CV footer injection is optional via `cv_footer.inject` (2026-07-12 addition)
+
+The pipeline previously required `static-cv-footer.md`/`-he.md` to exist and appended it unconditionally on every CV export. A user who already manages Education/Languages herself (e.g. a personal Word macro run after export) now sets `cv_footer.inject: false` in `pipeline-preferences.json` to opt out entirely — no file required, none read. Verify every layer landed together.
+
+```bash
+grep -c '"cv_footer"' <build>/references/pipeline-preferences.json            # must be >= 1 (config schema)
+grep -c '"inject": true' <build>/references/pipeline-preferences.json         # must be >= 1 (default true, preserves existing behavior)
+# convert-cv.sh: empty CV_FOOTER must skip the append, not error
+grep -c 'if \[ -n "\${CV_FOOTER}" \]' <build>/skills/career-engine-export/scripts/convert-cv.sh   # must be >= 1
+grep -c '\[ -z "\${CV_FOOTER}" \] || \[ ! -f "\${CV_FOOTER}" \]' <build>/skills/career-engine-export/scripts/convert-cv.sh  # must be 0 (the old unconditional-required check must not survive)
+# assemble_brief_cv.py: --cv-footer must be optional, not required
+grep -c '"--cv-footer", required=True' <build>/skills/career-engine-export/scripts/assemble_brief_cv.py   # must be 0
+grep -c 'if data.get("languages")' <build>/skills/career-engine-export/scripts/assemble_brief_cv.py       # must be >= 1 (LANGUAGES heading omitted when absent)
+grep -c 'if data.get("education")' <build>/skills/career-engine-export/scripts/assemble_brief_cv.py       # must be >= 1 (EDUCATION heading omitted when absent)
+# both Template resolution blocks read the new key and branch on it
+grep -c "cv_footer.inject" <build>/skills/career-engine-orchestrator/orchestrator-queue.md  # must be >= 1
+grep -c "cv_footer.inject" <build>/skills/career-engine-edit/SKILL.md                       # must be >= 1
+grep -c "cv_footer.inject" <build>/skills/career-engine-export/SKILL.md                     # must be >= 1
+# setup asks before assuming, rather than always creating and prompting to fill in the footer
+grep -ci "ask before assuming" <build>/skills/career-engine-setup/SKILL.md                  # must be >= 1
+# Hebrew inline cat blocks (new-application + edit) must guard against an empty $CV_FOOTER_HE, not pass it unconditionally to cat
+grep -c 'if \[ -n "\$CV_FOOTER_HE" \]' <build>/skills/career-engine-new-application/SKILL.md  # must be >= 1
+grep -c 'if \[ -n "\$CV_FOOTER_HE" \]' <build>/skills/career-engine-edit/SKILL.md             # must be >= 1
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement, or any "must be 0" count nonzero (the old unconditional-required behavior must not survive alongside the new optional behavior).
+
+### Check 21v — "Condensed process" anti-pattern closed; humanizer non-skippable; CAREER_DATA/$PIPE capability checks present (2026-07-12/13 addition)
+
+A real Cowork run self-declared an undocumented "condensed process," hand-editing gatekeeper fixes directly instead of re-spawning `cv-writer`/`letter-writer`, silently skipping the humanizer, stripping custom-style markup via manual content relay (no shared filesystem), and losing CAREER_DATA access mid-spawn in a gatekeeper subagent. Verify all five fixes landed and the one deliberate asymmetry (edit pipeline has no inline-fix authorization, and must not gain one) wasn't accidentally closed.
+
+```bash
+grep -c "condensed process" <build>/skills/career-engine-orchestrator/orchestrator-queue.md                # must be >= 1 (verbatim incident quote)
+grep -c "Mid-spawn CAREER_DATA loss" <build>/skills/career-engine-orchestrator/orchestrator-queue.md          # must be >= 1
+grep -c "This fallback never applies to \`cv-writer\` or \`letter-writer\`" <build>/skills/career-engine-orchestrator/orchestrator-queue.md   # must be >= 1 (the gatekeeper-only scoping, explicit)
+grep -c "custom-style-wrapped text is never eligible" <build>/skills/career-engine-new-application/SKILL.md   # must be >= 1 (Step 1.5's carve-out)
+grep -c "mechanical and unambiguous" <build>/skills/career-engine-edit/SKILL.md                                # must be 0 (edit's deliberate asymmetry — never add inline-fix authorization here)
+grep -c "non-skippable-humanizer rule" <build>/skills/career-engine-orchestrator/orchestrator-queue.md          # must be >= 1 (the actual named rule, not just cross-references pointing at it)
+grep -c "non-skippable-humanizer rule" <build>/skills/career-engine-new-application/SKILL.md                   # must be >= 1 (Step 5.9 pointer)
+grep -c "non-skippable-humanizer rule" <build>/skills/career-engine-edit/SKILL.md                              # must be >= 1 (Step E8 pointer)
+grep -c "PIPE_FILESYSTEM_AVAILABLE" <build>/skills/career-engine-new-application/SKILL.md                       # must be >= 1 (Step 0.pipe.5)
+grep -c "PIPE_FILESYSTEM_AVAILABLE" <build>/skills/career-engine-edit/SKILL.md                                 # must be >= 1 (Step E0.pipe.5)
+grep -c "PIPE-CANARY" <build>/skills/career-engine-new-application/SKILL.md                                    # must be >= 1
+grep -c "Manual-relay rule" <build>/skills/career-engine-orchestrator/orchestrator-queue.md                     # must be >= 1 (the actual rule text, not just cross-references pointing at it)
+grep -c "Role 1's baseline spawn" <build>/skills/career-engine-edit/SKILL.md                                     # must be >= 1 (role-1-first sequencing so the canary result is known before roles 2+ dispatch)
+grep -c "run on Path A directly in the orchestrator's own context" <build>/skills/career-engine-new-application/SKILL.md   # must be >= 1 (Step 1.5's custom-style self-check has Path A/B branching, matching Step 5.95's existing pattern)
+```
+
+**FAIL condition:** any "must be >= N" count below its stated requirement, or the "must be 0" count (edit's inline-fix authorization) is nonzero. **Note:** both pipeline files' capability-check text refers to "the Absolute Constraints' manual-relay rule" / "`orchestrator-queue.md`'s manual-relay rule" by name — if the last grep above is 0, that's a dangling cross-reference to content that was never actually written, not just a missing feature; a prior draft of this exact fix shipped with precisely this gap before being caught in review.
+
 ### Check 22 — Single-build model documented in CLAUDE.md
 
 In `CLAUDE.md`: verify the file describes the single-build architecture and the mandatory QA gate (the regression table was intentionally removed; architecture description and QA gate must remain).

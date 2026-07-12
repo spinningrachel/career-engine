@@ -49,6 +49,22 @@ This is the only inter-role learning mechanism. It does not require agents to sh
 
 Before Step 1, create `<output_dir>/<company_dir>/_pipeline/` (the run's scratch area for intermediate text artifacts — reviewer feedback, revision logs, gatekeeper violations). Call this path `$PIPE`. On Path A use `mkdir -p`; on Path B create it through the host file tool (R-30). Every subagent below is given an exact `$PIPE/<file>.md` path to write to, and returns only a short status plus that path — never its full output (R-41). The orchestrator branches on the short status and, when a later step needs prior content, passes the path so that step reads it from disk. `_pipeline/` is intermediate only — it is not a deliverable and is not written to Notion.
 
+### Step 0.pipe.5 — Capability check: `$PIPE` filesystem availability (once per run)
+
+**Run this once, on the first role of the run — not per role.** Every step below assumes both the orchestrator and each spawned subagent can read/write the same `$PIPE/<file>.md` path (R-41's file-based handoff convention). That assumption doesn't hold in every environment — confirmed in a real run where no shared filesystem existed between the orchestrator and its subagents, forcing manual content relay that silently dropped custom-style annotation markup along the way (see the Absolute Constraints' manual-relay rule).
+
+Immediately after `$PIPE` is created above, write a canary file `$PIPE/pipe-canary.md` (fixed sentinel content, e.g. `PIPE-CANARY-OK`) via whichever path (A or B) the orchestrator's *Mandatory path verification* already confirmed for this run. Then prepend this line to Step 1's very first `cv-writer` spawn of the run only:
+
+> "Before anything else, attempt to Read `$PIPE/pipe-canary.md`. Your first returned line must be exactly `PIPE-CANARY: reachable` if you could read it, or `PIPE-CANARY: unreachable — <short reason>` if not. If unreachable, do not attempt to write `$PIPE/cv-draft.md` — return your full draft inline instead, prefixed `FULL-DRAFT-INLINE:`, so the orchestrator can relay it manually."
+
+Cache the result as `$PIPE_FILESYSTEM_AVAILABLE` (true/false) for the rest of the run — do not re-check per role.
+
+- **If available:** every `$PIPE`-file-path spawn instruction below works exactly as documented — nothing else changes.
+- **If unavailable:** post one non-blocking chat message before continuing the rest of role 1 (do not wait for a reply):
+  > "⚠️ This environment can't share files between me and the writing sub-agents (no `$PIPE` access) — I'll relay each draft's exact text between steps manually instead of pointing sub-agents at a shared file. This carries more handoff risk than the normal path, especially for CV/letter formatting markup, so I'm running the extra verification checks this adds. Continuing the run."
+
+  For the rest of the run, every step below that would normally pass a `$PIPE/<file>.md` path to a subagent must instead relay that prior subagent's exact returned text, copied byte-for-byte, into the next subagent's prompt — never retyped, cleaned, reformatted, or summarized, including pandoc `:::`/`custom-style=` markup (Absolute Constraints' manual-relay rule). Apply the same `custom-style=`-count self-check used at Step 1.5's inline hand-fixes to every relay point too: count occurrences in the outgoing text and in the composed next prompt; a mismatch means stop and re-copy verbatim before proceeding, never patch around it.
+
 ### Step 0.data — Write role properties to `$PIPE/role-properties.md`
 
 Immediately after creating `$PIPE`, write the role's Notion-sourced properties to disk before spawning any subagent. This file is the single on-disk record of role metadata for this pipeline run — it survives context compression and is available to every subagent in this role's pipeline as `$PIPE/role-properties.md`.
@@ -104,7 +120,7 @@ Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, `CV T
 
 **If PASS:** proceed to Step 2.
 
-**If FAIL:** read the violation file at the returned path. If all violations are mechanical and unambiguous (swap two words, remove one phrase, reorder paragraphs — no creative judgment required), apply them inline to `$PIPE/cv-draft.md`. If any violation requires cv-writer judgment (rewriting a bullet, resolving a fabrication flag), spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `CV Type=<value from $PIPE/cv-type.txt>`, `CV_PATH=$PIPE/cv-draft.md` (read and overwrite), the gatekeeper violation path, and the fix-log path `$PIPE/fix-log.md` (read and append). Locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After fix, spawn `gatekeeper` again with `option=cv`, using the same parameters as the Step 1.5 spawn above, including `CAREER_DATA=${CAREER_DATA}` and `CV Type=<value from $PIPE/cv-type.txt>` (new `OUTPUT_PATH` round). Repeat until PASS. Do not surface this loop to the user — log violation rounds internally.
+**If FAIL:** read the violation file at the returned path. If all violations are mechanical and unambiguous (swap two words, remove one phrase, reorder paragraphs — no creative judgment required) **and none of them touch text inside or immediately adjacent to a `::: {custom-style=...}` div or span** — a violation touching custom-style-wrapped text is never eligible for an inline hand-fix, no matter how small the wording change looks; it always goes through the cv-writer re-spawn below instead — apply them inline to `$PIPE/cv-draft.md`. **After applying any inline fix, verify the annotation markup survived: `grep -c 'custom-style=' $PIPE/cv-draft.md` before and after the edit, run on Path A directly in the orchestrator's own context (not a spawned subagent's); on Path B (sandbox Bash cannot reach the host file), run this same count through the host process tool discovered at preflight, against the host-side copy of `$PIPE/cv-draft.md` — never against a sandbox-local copy, which may not reflect the edit that was actually applied to the file the export step will convert. If the count dropped, the edit stripped annotation markup that should have been preserved — revert the edit and re-spawn `cv-writer` with `option=revision` instead (below), rather than proceeding with a CV that will export without its Word formatting.** (See the Absolute Constraints' "condensed process" anti-pattern — this carve-out exists because a real production run's inline hand-fixes silently stripped custom-style markup from two CVs.) If any violation requires cv-writer judgment (rewriting a bullet, resolving a fabrication flag), spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `CV Type=<value from $PIPE/cv-type.txt>`, `CV_PATH=$PIPE/cv-draft.md` (read and overwrite), the gatekeeper violation path, and the fix-log path `$PIPE/fix-log.md` (read and append). Locked-fixes instruction (see the orchestrator's Absolute Constraints): reintroducing a previously fixed violation is itself a FAIL, and a writer that reverts to an older base is re-spawned with the regression named — never patched by hand. After fix, spawn `gatekeeper` again with `option=cv`, using the same parameters as the Step 1.5 spawn above, including `CAREER_DATA=${CAREER_DATA}` and `CV Type=<value from $PIPE/cv-type.txt>` (new `OUTPUT_PATH` round). Repeat until PASS. Do not surface this loop to the user — log violation rounds internally.
 
 **Cap: 3 revision passes — but confirm the mechanical locked-fix checklist (Absolute Constraints) was actually re-verified each round before treating the cap as genuinely exhausted, not just re-flagged.** If the gatekeeper still returns FAIL after pass 3, this role halts here — per the Absolute Constraints' halt-before-export policy. Log all remaining violations under a `## Gatekeeper — Unresolved Violations (Step 1.5)` section in the revision log. **Do not proceed to Step 2 or any later step for this role; do not export or write back to Notion.** Write an entry to `$OUTPUT_DIR/halted-roles.json` now (Absolute Constraints — append discipline, exact entry shape). This is what makes the role reportable in the final chat delivery and run-metrics; naming it in chat with no persisted entry is not sufficient and does not satisfy this step. Continue processing every other role in the run's queue normally.
 
@@ -265,6 +281,8 @@ cp "$PIPE/letter-draft.md" "<output_dir>/<company_dir>/<cl_filename>.md"
 
 ### Step 5.9 — Humanizer (cover letter)
 
+See the Absolute Constraints' non-skippable-humanizer rule — this step runs for every role with a cover letter, no exceptions.
+
 **Before spawning, snapshot the revert target:** copy `$PIPE/letter-final.md` (the Step 5.3-passing text) to a sibling `$PIPE/letter-final.prehumanizer.md` — the revert target for Step 5.95. (The humanizer edits in place, so this snapshot must be taken first.)
 
 Spawn `humanizer`, passing `CAREER_DATA=${CAREER_DATA}`, the final cover letter markdown path `$PIPE/letter-final.md` (it edits in place), and `$PIPE/voice-calibration.md` if it was created in Step 4.9 (the durable voice calibration; the humanizer uses it instead of reading the archive directly). Do not pass Role summary, strategy, JD, or any role-specific context — the humanizer's only inputs are the letter, the career-data path, and the voice-calibration file.
@@ -368,11 +386,16 @@ Convert using the Hebrew DOCX production protocol from `career-engine-export`:
 
 ```bash
 # $CV_TEMPLATE_HE, $CL_TEMPLATE_HE, and $CV_FOOTER_HE already resolved (fixed career-data paths, no config key)
+# $CV_FOOTER_HE is empty when cv_footer.inject is false -- skip the footer append entirely in that case
 
-# Hebrew CV — concatenate with Hebrew footer, then convert
-cat /tmp/he-<cv_filename>.md \
-    "$CV_FOOTER_HE" \
-    > /tmp/he-<cv_filename>-with-footer.md
+# Hebrew CV — concatenate with Hebrew footer (if injecting), then convert
+if [ -n "$CV_FOOTER_HE" ]; then
+  cat /tmp/he-<cv_filename>.md \
+      "$CV_FOOTER_HE" \
+      > /tmp/he-<cv_filename>-with-footer.md
+else
+  cp /tmp/he-<cv_filename>.md /tmp/he-<cv_filename>-with-footer.md
+fi
 
 pandoc /tmp/he-<cv_filename>-with-footer.md \
   --reference-doc="${CV_TEMPLATE_HE}" \

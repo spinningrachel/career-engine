@@ -18,7 +18,10 @@ wiring):
     a table -- this is the same linear markdown format it already produces.
   - education / languages     <- parsed from $CV_FOOTER (static-cv-footer.md),
     the same file Detailed appends verbatim; Brief instead routes it into the
-    sidebar cell.
+    sidebar cell. --cv-footer is OPTIONAL (2026-07-12 fix, cv_footer.inject in
+    pipeline-preferences.json): omitted entirely from the sidebar when not
+    supplied, the same "not this pipeline's job" convention as --additional
+    below -- the user manages Education/Languages herself outside the pipeline.
   - name / tagline / contact  <- already-resolved pipeline/career-data values,
     passed in as CLI arguments. cv-writer never emits these (same convention
     as Detailed, whose header contact is baked into the user's own .dotx, not
@@ -496,14 +499,16 @@ def fill_brief_cv(template_path, output_path, data):
         sidebar_entries.append((line, "PersonalDetails"))
     sidebar_entries.append(("SKILLS", "SkillsHeading"))
     sidebar_entries.append((data["skills"], "Skills"))
-    sidebar_entries.append(("LANGUAGES", "SkillsHeading"))
-    sidebar_entries.append((data["languages"], "Skills"))
+    if data.get("languages"):
+        sidebar_entries.append(("LANGUAGES", "SkillsHeading"))
+        sidebar_entries.append((data["languages"], "Skills"))
     if data.get("additional"):
         sidebar_entries.append(("ADDITIONAL", "SkillsHeading"))
         sidebar_entries.append((data["additional"], "Skills"))
-    sidebar_entries.append(("EDUCATION", "Heading 2"))
-    for entry in data["education"]:
-        sidebar_entries.append((entry, "Skills"))
+    if data.get("education"):
+        sidebar_entries.append(("EDUCATION", "Heading 2"))
+        for entry in data["education"]:
+            sidebar_entries.append((entry, "Skills"))
     set_cell_paragraphs(t.cell(1, 0), sidebar_entries)
 
     set_cell_paragraphs(t.cell(1, 1), [(data["summary"], "Normal")])
@@ -539,7 +544,7 @@ def build_data(args, cv_parsed, footer_parsed):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--cv-md", required=True, help="Path to cv-writer's Brief CV markdown")
-    ap.add_argument("--cv-footer", required=True, help="Path to $CV_FOOTER (static-cv-footer.md)")
+    ap.add_argument("--cv-footer", default=None, help="Path to $CV_FOOTER (static-cv-footer.md); omit if cv_footer.inject is false in pipeline-preferences.json")
     ap.add_argument("--template", required=True, help="Path to $CV_TEMPLATE_BRIEF (cv-brief.dotx)")
     ap.add_argument("--output", required=True, help="Output .docx path")
     ap.add_argument("--name", required=True, help="User's full name (career-data identity placeholder, already resolved)")
@@ -550,8 +555,11 @@ def main():
 
     with open(args.cv_md, encoding="utf-8") as f:
         cv_parsed = parse_cv_markdown(f.read())
-    with open(args.cv_footer, encoding="utf-8") as f:
-        footer_parsed = parse_footer_markdown(f.read())
+    if args.cv_footer:
+        with open(args.cv_footer, encoding="utf-8") as f:
+            footer_parsed = parse_footer_markdown(f.read())
+    else:
+        footer_parsed = {"education": [], "languages": ""}
 
     data = build_data(args, cv_parsed, footer_parsed)
     fill_brief_cv(args.template, args.output, data)
