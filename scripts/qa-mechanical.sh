@@ -113,9 +113,9 @@ else
 fi
 
 # ================================================================
-# Check 20-view-creation — Notion view creation prohibition present (Notion adapter)
+# Check 20 — Notion view creation prohibition present (Notion adapter)
 # ================================================================
-expect_ge "20-view-creation" "skills/database-notion/SKILL.md" "create-database-view" 1
+expect_ge "20" "skills/database-notion/SKILL.md" "create-database-view" 1
 
 # ================================================================
 # Check 21 — Tiered Notion query ladder present in intake skill (R-1, R-25, R-35)
@@ -154,6 +154,15 @@ expect_ge "21d" "skills/database-notion/SKILL.md" "stop and report" 1
 # NOTE: Check 21k is NOT migrated — see notes file (FAIL condition references
 # "first five counts" but only three grep lines exist; a genuine contradiction
 # per the guardrail, left fully manual).
+
+# ================================================================
+# Check 21k — Canonical Path B shape + no notion-search improvisation (R-39)
+# (migrated 2026-07-13 after correcting its stale "first five counts" FAIL
+# condition to match its actual three greps — see notes file)
+# ================================================================
+expect_ge "21k" "skills/database-notion/SKILL.md" "never the bare database URL" 1
+expect_ge "21k" "skills/database-notion/SKILL.md" "cannot enumerate the queue" 1
+expect_eq0 "21k" "skills/career-engine/SKILL.md" "^  - mcp__5cd94b8e-1498-421b-bc5d-1bbb07682cf7__notion-search"
 
 # ================================================================
 # Check 21l — Pointers-not-payloads, and the Mave gate survives (R-41)
@@ -303,6 +312,10 @@ expect_ge "21s" "agents/career-coach.md" "Option 4" 1
 expect_ge "21s" "agents/career-coach.md" "Write" 1
 expect_eq0 "21s" "skills/career-engine-new-application/SKILL.md" "hiring-manager-reviewer"
 expect_eq0 "21s" "skills/career-engine-edit/SKILL.md" "hiring-manager-reviewer"
+# 2026-07-13 corrected re-inclusion of the source's 9th assertion (its grep
+# targeted the agents/ directory without -r — errored under GNU grep):
+c21s=$(grep -rn "hiring-manager-reviewer" "$TARGET/agents" 2>/dev/null | grep -v "qa-plugin.md" | wc -l | tr -d ' ')
+if [ "$c21s" -eq 0 ]; then report "21s" 1 ""; else report "21s" 0 "hiring-manager-reviewer referenced in agents/ ($c21s hit(s)) — retired reviewer must not appear"; fi
 
 # ================================================================
 # Check 21t — Stop hook mechanically enforces the mid-run scope-check anti-pattern
@@ -384,13 +397,12 @@ if [ "$c22c_colon_lw" -ge 1 ] || [ "$c22c_colon_wc" -ge 1 ]; then report "22c-co
 # ================================================================
 expect_ge "22b" "skills/career-engine-orchestrator/orchestrator-queue.md" "career-data discovery" 1
 expect_ge "22b" "skills/career-engine-orchestrator/orchestrator-queue.md" "Writing personal data" 1
-# NOTE: the source "data root (R-37)" >= 20 grep is NOT migrated as a strict
-# assertion — discovered during this migration to be self-referential: the
-# original bash block's own literal text (inside agents/qa-plugin.md) contained
-# the search string and counted itself as 1 of the 20 required files. Mechanizing
-# the check (replacing that block with a pointer line) permanently removes that
-# self-match, so the true post-migration count is 19, not 20, with no actual
-# content regression. See notes file.
+# 2026-07-13 correction of the source's ">= 20" file-count: the 20th file was
+# always agents/qa-plugin.md matching its own grep-pattern text (self-count,
+# removed by mechanization). Now asserted with a self-exclusion at the true
+# doctrine coverage of 19 files. See notes file + Check 22b prose.
+c22b=$(grep -rl "data root (R-37)" "$TARGET/agents" "$TARGET/skills" 2>/dev/null | grep -v "qa-plugin.md" | wc -l | tr -d ' ')
+if [ "$c22b" -ge 19 ]; then report "22b" 1 ""; else report "22b" 0 "'data root (R-37)' file count: found $c22b, need >= 19 (excluding qa-plugin.md)"; fi
 expect_ge "22b" "CLAUDE.md" "Placeholder resolution" 1
 
 # ================================================================
@@ -514,7 +526,10 @@ expect_ge "59" "CLAUDE.md" "CV skills-section content contract" 1
 # ================================================================
 # Check 60 — Mid-run scope-check anti-pattern block present
 # ================================================================
-expect_ge "60" "skills/career-engine-orchestrator/orchestrator-queue.md" "Named anti-pattern: pausing mid-run over perceived call-volume" 1
+# 2026-07-13: pattern updated when the block gained its canonical name prefix
+# ("Named anti-pattern — the mid-run scope-check anti-pattern, ...: pausing ...")
+expect_ge "60" "skills/career-engine-orchestrator/orchestrator-queue.md" "pausing mid-run over perceived call-volume" 1
+expect_ge "60" "skills/career-engine-orchestrator/orchestrator-queue.md" "the mid-run scope-check anti-pattern, the canonical name" 1
 expect_ge "60" "CLAUDE.md" "Mid-run scope-check anti-pattern" 1
 expect_ge "60" "README.md" 'Mid-run "how do you want me to proceed" pause killed a real production run' 1
 
@@ -558,6 +573,12 @@ expect_eq0 "63" "CLAUDE.md" "32-item checklist"
 # (PARTIALLY MECHANIZED — FAIL condition also requires a human/LLM read of both
 # footer files' actual content; the greps below are a floor, not a substitute.)
 # ================================================================
+# 2026-07-13 corrected re-inclusion: exclude the sanctioned "University of
+# Example" hint text the original regex falsely matched (see Check 64 prose).
+for f in "skills/career-engine-export/static-cv-footer.md" "skills/career-engine-export/static-cv-footer-he.md"; do
+  c64=$(grep -E "University of [A-Z]|College of [A-Z]" "$TARGET/$f" 2>/dev/null | grep -v "University of Example" | wc -l | tr -d ' ')
+  if [ "$c64" -eq 0 ]; then report "64" 1 ""; else report "64" 0 "real-looking institution name in $f ($c64 hit(s), excluding the Example hint)"; fi
+done
 expect_ge "64" "skills/career-engine-export/static-cv-footer.md" "{{USER_DEGREE_1}}" 1
 expect_ge "64" "skills/career-engine-export/static-cv-footer.md" "{{USER_INSTITUTION_1}}" 1
 # NOTE: the source "University of [A-Z]|College of [A-Z]" grep is NOT migrated —
@@ -807,39 +828,39 @@ expect_ge "54" "agents/letter-writer.md" "Information Sequencing" 1
 expect_ge "54" "references/cover-letter-templates-default.md" "Information Sequencing" 1
 
 # ================================================================
-# Check 55-brief-cv — Brief CV Type wired end-to-end (main bash block)
+# Check 65 (renumbered from duplicate "Check 55") — Brief CV Type wired end-to-end (main bash block)
 # NOTE: the "database_property ... | head -1" sanity line in the source has no
 # clear PASS/FAIL threshold (comment says "sanity" not "must be") — not migrated.
 # ================================================================
-expect_ge "55-brief-cv" "references/pipeline-preferences.json" '"cv_type"' 1
-expect_ge "55-brief-cv" "skills/database/SKILL.md" "CV Type" 1
-expect_ge "55-brief-cv" "skills/career-coach/coach-analysis.md" "CV Type Recommendation Matrix" 1
-expect_ge "55-brief-cv" "skills/career-coach/coach-analysis.md" "not from originally-sourced research" 1
-expect_ge "55-brief-cv" "skills/career-coach/coach-output.md" "Recommended CV Type" 1
-expect_ge "55-brief-cv" "agents/cv-writer.md" "CV Type=Detailed|Brief" 1
-expect_ge "55-brief-cv" "agents/cv-writer.md" "Brief-Specific Rules" 1
-expect_ge "55-brief-cv" "skills/writer-craft/SKILL.md" "§5b" 1
-expect_ge "55-brief-cv" "agents/gatekeeper.md" "CV Type" 1
-expect_ge "55-brief-cv" "skills/gatekeeper-checks/SKILL.md" "Brief only" 1
-expect_ge "55-brief-cv" "skills/gatekeeper-checks/SKILL.md" "skipped entirely.*for Brief" 1
-expect_ge "55-brief-cv" "skills/career-engine-export/SKILL.md" "CV_TEMPLATE_BRIEF" 1
-expect_ge "55-brief-cv" "skills/career-engine-export/SKILL.md" "CONFIRMED against a real build" 1
-expect_file "55-brief-cv" "references/cv-template-brief-default.dotx"
-expect_ge "55-brief-cv" "skills/career-engine-new-application/SKILL.md" "Step 0.type" 1
-expect_ge "55-brief-cv" "skills/career-engine-edit/SKILL.md" "Step E0.type" 1
-expect_ge "55-brief-cv" "skills/career-engine-setup/SKILL.md" "CV Type — mandatory question" 1
-# NOTE: the source naming-discipline grep ('"Summary" CV Type\|CV Type=Summary\|
-# Summary CV Type' across agents/*.md skills/*/SKILL.md) is NOT migrated —
-# baseline-tested against the known-good repo and it self-matches this very
-# check's own description inside agents/qa-plugin.md (the source grep has no
-# qa-plugin.md exclusion, unlike most other checks in this file). See notes file.
+expect_ge "65" "references/pipeline-preferences.json" '"cv_type"' 1
+expect_ge "65" "skills/database/SKILL.md" "CV Type" 1
+expect_ge "65" "skills/career-coach/coach-analysis.md" "CV Type Recommendation Matrix" 1
+expect_ge "65" "skills/career-coach/coach-analysis.md" "not from originally-sourced research" 1
+expect_ge "65" "skills/career-coach/coach-output.md" "Recommended CV Type" 1
+expect_ge "65" "agents/cv-writer.md" "CV Type=Detailed|Brief" 1
+expect_ge "65" "agents/cv-writer.md" "Brief-Specific Rules" 1
+expect_ge "65" "skills/writer-craft/SKILL.md" "§5b" 1
+expect_ge "65" "agents/gatekeeper.md" "CV Type" 1
+expect_ge "65" "skills/gatekeeper-checks/SKILL.md" "Brief only" 1
+expect_ge "65" "skills/gatekeeper-checks/SKILL.md" "skipped entirely.*for Brief" 1
+expect_ge "65" "skills/career-engine-export/SKILL.md" "CV_TEMPLATE_BRIEF" 1
+expect_ge "65" "skills/career-engine-export/SKILL.md" "CONFIRMED against a real build" 1
+expect_file "65" "references/cv-template-brief-default.dotx"
+expect_ge "65" "skills/career-engine-new-application/SKILL.md" "Step 0.type" 1
+expect_ge "65" "skills/career-engine-edit/SKILL.md" "Step E0.type" 1
+expect_ge "65" "skills/career-engine-setup/SKILL.md" "CV Type — mandatory question" 1
+# 2026-07-13 correction: the source naming-discipline grep lacked the
+# qa-plugin.md self-exclusion most other checks carry, so it matched this very
+# check's own description text. Now asserted with the exclusion added.
+c65=$(grep -rn '"Summary" CV Type\|CV Type=Summary\|Summary CV Type' "$TARGET"/agents/*.md "$TARGET"/skills/*/SKILL.md 2>/dev/null | grep -v "qa-plugin.md" | wc -l | tr -d ' ')
+if [ "$c65" -eq 0 ]; then report "65" 1 ""; else report "65" 0 "naming-discipline: found $c65 'Summary CV Type' occurrence(s), must be 0 (the type is Brief, never Summary)"; fi
 
 # ================================================================
-# Check 55-brief-cv-2026-07-10 — Brief CV two-column assembly script wired (second block)
+# Check 65-2026-07-10 (renumbered from 55-brief-cv-2026-07-10) — Brief CV two-column assembly script wired (second block)
 # ================================================================
-expect_ge "55-brief-cv-2026-07-10" "skills/career-engine-export/SKILL.md" "assemble_brief_cv.py" 1
-expect_eq0 "55-brief-cv-2026-07-10" "skills/career-engine-export/SKILL.md" "does not exist yet"
-expect_file "55-brief-cv-2026-07-10" "skills/career-engine-export/scripts/assemble_brief_cv.py"
+expect_ge "65-2026-07-10" "skills/career-engine-export/SKILL.md" "assemble_brief_cv.py" 1
+expect_eq0 "65-2026-07-10" "skills/career-engine-export/SKILL.md" "does not exist yet"
+expect_file "65-2026-07-10" "skills/career-engine-export/scripts/assemble_brief_cv.py"
 
 # ================================================================
 # Check 36 — Humanizer enforcement mechanisms present
@@ -883,4 +904,11 @@ if [ "$c0C_3" -eq 0 ]; then report "0C" 1 ""; else report "0C" 0 "found $c0C_3 g
 if [ "$c0C_4" -eq 0 ]; then report "0C" 1 ""; else report "0C" 0 "found $c0C_4 cover-letter-humanizer/voice-analyst reference(s)"; fi
 
 echo "qa-mechanical: $PASS passed, $FAIL failed"
-[ "$FAIL" -eq 0 ]
+
+# Relational layer (list parity, defined-term closure, spawn params, $PIPE closure)
+# — driven by the sibling qa-parity.json manifest. Its PARITY lines follow the
+# same contract as the CHECK lines above; a PARITY failure fails this script.
+PARITY_RC=0
+python3 "$(dirname "$0")/qa-parity.py" "$TARGET" || PARITY_RC=1
+
+[ "$FAIL" -eq 0 ] && [ "$PARITY_RC" -eq 0 ]

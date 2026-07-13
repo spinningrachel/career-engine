@@ -71,6 +71,19 @@ Run ALL checks in order. Never skip. Report PASS or FAIL per check.
 
 Run `bash <repo>/scripts/qa-mechanical.sh <repo>` and `bash <repo>/scripts/qa-mechanical.sh <unzipped-build-dir>` — both targets, every QA pass. Each `CHECK <id>: FAIL` line is a failure of the correspondingly numbered check in this file; report it under that check's name with the script's detail line, exactly as if you had run the greps yourself. If the script itself is missing, unreadable, or errors out (as opposed to reporting check failures), that is itself a QA FAIL — report it and fall back to running the affected checks' documented FAIL conditions manually from their prose. Never skip a mechanized check because the script "should have" covered it and didn't run.
 
+The battery ends by invoking the **relational layer** — `scripts/qa-parity.py` driven by `scripts/qa-parity.json` — whose `PARITY <id>: FAIL` lines are equally hard failures: list parity across sibling enumerations (coach mandatory fields, intake Step 0b capture), defined-term closure (a policy cited by name must exist under that name in its defining file), spawn-parameter context checks, and `$PIPE` producer/consumer closure (a pipeline doc must never read a `$PIPE` file nothing writes). **Manifest discipline:** when a session adds a member to any list the manifest tracks, or names a new policy other files will cite, the same session must update `qa-parity.json` — the manifest is how a one-list edit gets forced into a full-consumer sweep. A PARITY failure caused by a *stale anchor* (a region heading was reworded) is fixed by updating the manifest's anchor in the same commit, never by deleting the set.
+
+### Phase 0-D — Diff-scoped consumer sweep (run second, on the session's actual changes)
+
+The recurring failure family this phase exists for: a fix updates its named targets but nobody sweeps every *other* consumer of the same concept, so a stale sibling reference survives (retired names, renamed files, changed parameter sets, moved thresholds — all confirmed production escapes). Procedure:
+
+1. Determine what this session changed: `git status --short` plus `git diff HEAD` (and `git diff HEAD~1..HEAD` when the session already committed). If the invocation context names the changed files directly, use that too.
+2. From the diff, extract every **changed term**: file names created/renamed/deleted, property/field names added or removed from any list, policy/rule names introduced or reworded, parameter names added to any spawn, config keys, `$PIPE` file names, numeric thresholds/counts, and check numbers.
+3. For each changed term, `Grep` the **whole repo** (all of `agents/`, `skills/`, `references/`, `hooks/`, `scripts/`, `CLAUDE.md`, `README.md` — exclude only `docs/` and changelog history, which is frozen) and read every hit: does each other mention still agree with the change? A mention still reflecting the pre-change state is a FAIL of this phase, reported with file and line.
+4. For a term that gained a new consumer contract (a new list member, a new named policy), confirm `scripts/qa-parity.json` was extended to cover it (Phase 0-M's manifest discipline). Missing manifest coverage for a new parity-shaped contract is a FAIL of this phase.
+
+This phase scales with the change, not the repo — a small diff is a small sweep. It replaces nothing: the global checks below still run.
+
 ### Check 1 — Directory structure integrity
 
 Verify the following directories exist in each location being checked:
@@ -393,16 +406,9 @@ Mechanized: covered by scripts/qa-mechanical.sh (CHECK 21d) — run via the Mech
 
 `notion-query-database-view` takes no ad-hoc filter and needs a real view URL, so every Path B site must say so and resolve the view by name; the bare-database-URL form and the `notion-search` discovery fallback must not exist.
 
-```bash
-# The adapter states the Path B constraints (no bare DB URL / real view URL required)
-grep -c "never the bare database URL" <location>/skills/database-notion/SKILL.md
-# The adapter all-paths-fail rule forbids notion-search for discovery
-grep -c "cannot enumerate the queue" <location>/skills/database-notion/SKILL.md
-# notion-search must NOT be an allowlist entry in the entry skill (a comment may mention it)
-grep -c "^  - mcp__5cd94b8e-1498-421b-bc5d-1bbb07682cf7__notion-search" <location>/skills/career-engine/SKILL.md
-```
+Mechanized: covered by scripts/qa-mechanical.sh (CHECK 21k) — run via the Mechanical battery step; do not re-run these greps by hand. *(2026-07-13: the FAIL condition below previously said "any of the first five counts" — stale wording from an earlier, longer version of this check; the block has exactly three greps and always did in this form. Corrected to match, and migrated.)*
 
-**FAIL condition:** any of the first five counts is 0, OR the last count is not 0 (the last must be 0 — `notion-search` is intentionally unlisted).
+**FAIL condition:** either of the first two counts is 0, OR the last count is not 0 (the last must be 0 — `notion-search` is intentionally unlisted).
 
 ### Check 21l — Pointers-not-payloads, and the Mave gate survives (R-41)
 
@@ -580,7 +586,7 @@ Mechanized: covered by scripts/qa-mechanical.sh (CHECK 22c-colon-ban) — run vi
 
 The single-build and `career-data` model must be wired in.
 
-Mechanized: covered by scripts/qa-mechanical.sh (CHECK 22b) — run via the Mechanical battery step; do not re-run these greps by hand.
+Mechanized: covered by scripts/qa-mechanical.sh (CHECK 22b) — run via the Mechanical battery step; do not re-run these greps by hand. *(2026-07-13: the `"data root (R-37)"` file-count threshold moved from 20 to 19 with a `grep -v qa-plugin.md` exclusion — the 20th file was always `agents/qa-plugin.md` itself matching its own grep-pattern text, a self-count that vanished when the block was mechanized. No doctrine file lost the phrase; found during Phase 1 mechanization.)*
 
 **FAIL condition:** any count below its stated requirement.
 
@@ -722,7 +728,7 @@ Mechanized: covered by scripts/qa-mechanical.sh (CHECK 63) — run via the Mecha
 
 **Confirmed production bug, not theoretical.** The plugin's own `skills/career-engine-export/static-cv-footer.md` (and its Hebrew twin `static-cv-footer-he.md`) had accumulated one real user's actual degree and university names — content Check 6 never catches, since Check 6 only scans for a fixed set of literal `<your-...>` placeholder tokens, not for arbitrary real names in prose. `convert-cv.sh` hardcoded the plugin's own copy of this file for every CV export, so every installation of the plugin was silently appending that real person's Education/Languages section onto every user's exported CV. Fixed by scrubbing both files to `{{...}}` placeholders and moving resolution to career-data (`$CV_FOOTER`/`$CV_FOOTER_HE`), matching the `$CV_TEMPLATE`/`$CL_TEMPLATE` 2026-07-04 fix.
 
-Partially mechanized: the grep battery is covered by scripts/qa-mechanical.sh (CHECK 64); the read-and-confirm portion below still runs manually.
+Partially mechanized: the grep battery is covered by scripts/qa-mechanical.sh (CHECK 64); the read-and-confirm portion below still runs manually. *(2026-07-13: the original `University of [A-Z]|College of [A-Z]` assertion falsely matched the footer files' own sanctioned "University of Example" hint text — its inline comment said to exclude that but the regex never did. Corrected in the script with a `grep -v "University of Example"` filter and re-included; found during Phase 1 mechanization baseline.)*
 
 **FAIL condition:** any "must be >= N" count below its stated requirement, or any "must be 0" count is nonzero. Also FAIL if either plugin-side footer file contains any real-looking institution/degree name not wrapped in `{{...}}` — the grep patterns above are a floor, not a substitute for a human/LLM read of the two files' actual content on every QA pass.
 
@@ -876,16 +882,16 @@ Mechanized: covered by scripts/qa-mechanical.sh (CHECK 54) — run via the Mecha
 
 **FAIL condition:** any "must be >= N" count below its stated requirement, or the "must be 0" count is nonzero.
 
-### Check 55 — Brief CV Type wired end-to-end (2026-07-09 addition)
+### Check 65 — Brief CV Type wired end-to-end (2026-07-09 addition; renumbered from a duplicate "Check 55" on 2026-07-13 — the writeback Check 55 above keeps the number)
 
 New CV Type feature: a second CV shape (`Brief` — one-page, two-column) alongside the existing `Detailed` CV, selected via `pipeline-preferences.json` → `cv_type.mode` (`Detailed`/`Brief`/`Variant`, the last deferring to a per-role, user-owned, backend-neutral `CV Type` database field). Verify every layer landed together — config schema, doctrine, gate branching, export plumbing, setup onboarding, and the naming discipline (the CV type is `Brief`, never `Summary`, to avoid colliding with the CV's own `## SUMMARY`/`## PROFILE SUMMARY` section).
 
-Partially mechanized: the grep battery is covered by scripts/qa-mechanical.sh (CHECK 55-brief-cv); the read-and-confirm portion below still runs manually.
+Partially mechanized: the grep battery is covered by scripts/qa-mechanical.sh (CHECK 65); the read-and-confirm portion below still runs manually. *(2026-07-13: the naming-discipline grep previously lacked the `grep -v qa-plugin.md` self-exclusion most other checks carry, so it matched this check's own description text — corrected in the script and re-included; found during Phase 1 mechanization baseline.)*
 
 **FAIL condition:** any "must be >= N" count below its stated requirement, the `.dotx` file missing, or the naming-discipline grep nonzero.
 
 **2026-07-10 update — the "known accepted gap" below is now closed, not open.** The two-column assembly script was built and wired this same day: `skills/career-engine-export/scripts/assemble_brief_cv.py`, called from `career-engine-export/SKILL.md` Step 6 and referenced in `agents/cv-writer.md`. Verify the gap is actually closed rather than assuming the note below still applies:
-Mechanized: covered by scripts/qa-mechanical.sh (CHECK 55-brief-cv-2026-07-10) — run via the Mechanical battery step; do not re-run these greps by hand.
+Mechanized: covered by scripts/qa-mechanical.sh (CHECK 65-2026-07-10) — run via the Mechanical battery step; do not re-run these greps by hand.
 **FAIL condition (assembly script):** the script is missing, the SKILL.md doesn't reference it, or the stale "does not exist yet" language is still present.
 
 ### Check 36 — Humanizer enforcement mechanisms present (2026-07-02 fix)
@@ -961,7 +967,7 @@ Mechanized: covered by scripts/qa-mechanical.sh (CHECK 0C) — run via the Mecha
 
 Every agent spawn in every skill must pass `CAREER_DATA=${CAREER_DATA}` explicitly. This is the R-46/R-47 failure class — the single most common cause of silent fallback to blank templates.
 
-### Check 20 — CAREER_DATA in every spawn
+### Check 66 — CAREER_DATA in every spawn (renumbered from a duplicate "Check 20" on 2026-07-13 — the view-creation Check 20 above keeps the number)
 
 Read every skill file that spawns subagents: `career-engine-new-application/SKILL.md`, `career-engine-edit/SKILL.md`, `career-engine-orchestrator/SKILL.md`, `career-engine-intake/SKILL.md`. For each Spawn line or spawn instruction:
 
@@ -1006,6 +1012,25 @@ For each finding, report: the step reference, the failure type (from the list be
 **FAIL condition:** any finding of type F1–F7. Type F7 is advisory — report it, do not FAIL on it. F8 is FAIL.
 
 **F8 note:** this was the failure mode on 2026-06-17 when the orchestrator asked "How should I scope this New Applications run?" instead of declaring the queue and proceeding. The instruction said "report the queue and proceed immediately" but did not say the report was a one-way declaration — so the agent asked. Any step with similar structure is F8.
+
+### Check 67 — Trace-a-run (semantic pass, 2026-07-13 addition)
+
+Mentally execute ONE imaginary role end-to-end through each pipeline (New Application, Edit, Intake), reading only the doctrine as written — no charitable gap-filling. At every step ask: **could an agent actually execute this instruction as literally written?** Flag as FAIL any step that:
+- reads a file no prior step writes (the `cv-final.md` failure family — the mechanical `$PIPE` closure catches same-file cases; this pass catches cross-file and conditional ones);
+- names a tool that doesn't uniquely resolve (the "Indeed connector `search_jobs`" ambiguity family);
+- has no branch for a plausible failure of its own external call (Notion write, pandoc conversion, template missing — the 6H.2/0.9e family);
+- contains two instructions that cannot both be followed (the "stop and report… do not wait, proceed immediately" family);
+- assumes an environment capability (Bash reach, shared filesystem, resumable subagents) that its own file's preflight says may be absent, without routing for the absent case (the E9 Path-B family).
+
+Budget: one role per pipeline per QA pass, rotating emphasis (e.g. this pass traces the letter track deeply, next pass the CV track). Report each finding with step number and the exact unexecutable sentence.
+
+### Check 68 — Contradiction hunt (semantic pass, 2026-07-13 addition)
+
+Collect every statement phrased as an absolute — "never X", "always Y", "the ONLY sanctioned Z", "under no circumstances" — via `Grep` across `agents/` and `skills/`. For a sample of at least 10 per pass (prioritize files the session's diff touched, then rotate), search for OTHER statements about the same resource, step, or file, and flag any pair that cannot both be true (the "gatekeeper never reads delivered letters" vs. "confirm the hit in the delivered-letters archive" family, and the config-health vs. Final-Chat-Delivery format family). A contradiction between a rule and its own file's worked example counts (the §8 "Fix pattern" incident). Report both statements with file and line.
+
+### Check 69 — Enforcement red-team (semantic pass, 2026-07-13 addition)
+
+For each mechanical gate in the plugin — both hooks in `hooks/hooks.json`, the revision caps, the halt-before-export policy, the orchestrator Bash backstops, the round-aware Tier 2 grading — ask: **how would the documented failure mode present WITHOUT triggering this gate?** (The `AskUserQuestion` family: a turn ending in a tool call leaves no final text for a Stop hook to judge.) Consider: the gate's input never being produced, the trigger condition being narrower than the failure, the gate firing but its output being ignored downstream, and the failure arriving at a sibling step the gate doesn't cover. Report each credible bypass as a finding with the concrete presentation shape — "credible" means you can describe the exact sequence, not just name a fear.
 
 ### Check 23 — Intake pipeline logic review
 

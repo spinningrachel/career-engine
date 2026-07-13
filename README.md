@@ -85,6 +85,24 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-13 — QA Phase 2: relational parity layer, diff-scoped sweep, and semantic passes
+
+Builds on the same-day mechanical-battery extraction (entry below). The QA system is now three layers, aimed at the failure family enumerated checks can't catch: relational drift between files.
+
+**New relational layer (mechanical, runs on every commit)**
+- **`scripts/qa-parity.py` + `scripts/qa-parity.json`** — a manifest of cross-file consistency contracts: list parity (coach mandatory fields across all four enumerations; intake Step 0b's capture list), defined-term closure ("per the X policy" must resolve to a definition under that literal name), spawn-parameter context checks (every `option=cover-letter`/`option=cv` gatekeeper spawn carries `CAREER_DATA` and `Strategy`/`CV Type`), and `$PIPE` producer/consumer closure (no pipeline doc may read a `$PIPE` file nothing writes). Invoked automatically by `qa-mechanical.sh` and by the pre-commit hook. Mutation-tested.
+- **Manifest discipline (CLAUDE.md contract row):** a session that adds a member to a tracked list, or names a new citable policy, must extend the manifest in the same session.
+
+**Found by calibrating the manifest against the live repo (all fixed)**
+- **Intake Step 0b capture list was missing `Manager role confirmed`, `Hiring manager's role`, and `No incumbents in this function`** — all three are in Step 0.8's coach-complete checklist, so every genuinely coach-complete role read as incomplete and triggered a full pointless re-research. Fourth confirmed drift on this list family.
+- **"locked-fixes instruction" was cited 4× as "(see the orchestrator's Absolute Constraints)" but that file never used the term** — same defect shape as the halt-before-export naming gap. Now literally named at its definition.
+- **The mid-run scope-check anti-pattern block never carried its canonical name** in `orchestrator-queue.md` (CLAUDE.md and both hook prompts cite it by that name). Now named.
+
+**QA agent restructure (`agents/qa-plugin.md`)**
+- **Phase 0-D — diff-scoped consumer sweep:** extract every changed term from the session's diff, grep the whole repo per term, verify every other mention still agrees. Scales with the change, not the codebase.
+- **Checks 67–69 — semantic passes:** trace-a-run (execute an imaginary role per pipeline; flag unexecutable instructions), contradiction hunt (absolutes vs. other statements about the same resource), enforcement red-team (how would the failure present without triggering the gate?).
+- **Phase 1 notes-file resolutions:** Check 21k's stale "first five counts" FAIL condition corrected and migrated; Check 64's institution regex now excludes its own sanctioned "University of Example" hint; the Brief-CV naming grep and Check 22b's `data root (R-37)` count gained the qa-plugin.md self-exclusion (threshold recalibrated 20→19); Check 21s's directory-grep assertion fixed and re-included; the two duplicate check numbers renumbered (Brief CV → Check 65, spawn audit → Check 66).
+
 ### 2026-07-13 — QA mechanical battery extracted to script
 
 **Improvements**

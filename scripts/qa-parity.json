@@ -1,0 +1,196 @@
+{
+  "_comment": "Manifest for scripts/qa-parity.py — the relational QA layer. Each set declares a consistency contract that spans files; the checker fails when any location drifts. When a fix adds a member to one list, add it HERE too — the checker then forces the sweep of every sibling list. Region anchors are literal substrings; if a heading is reworded, update the anchor here in the same commit.",
+  "member_sets": [
+    {
+      "id": "coach-fields",
+      "_comment": "The coach mandatory-field parity contract (CLAUDE.md cross-file-contracts): Step 0.8 coach-complete list, Step 0.9a confirmation pass, gatekeeper Coach Output Check presence-check, and coach-output.md template slots must all carry every member. 'Hiring Manager's Name' is deliberately NOT a member — it is research-derived and optional (may be genuinely unfindable), mandatory nowhere.",
+      "members": [
+        "Role summary",
+        "Role emphasis",
+        "Keywords",
+        "Strategy",
+        "Role Type",
+        "Relationship type",
+        "Gap handling",
+        "Culture",
+        "Landscape",
+        "JD proof",
+        "Priority Reason",
+        "Company Stage",
+        "Location",
+        "First Advertised",
+        "Manager role confirmed",
+        "Hiring manager's role",
+        "No incumbents in this function",
+        "JD Body"
+      ],
+      "locations": [
+        {
+          "file": "skills/career-engine-intake/SKILL.md",
+          "start": "## Step 0.8 — Career coach",
+          "end": "## Step 0.8.5"
+        },
+        {
+          "file": "skills/career-engine-intake/SKILL.md",
+          "start": "### 0.9a — Write coach outputs",
+          "end": "### 0.9b"
+        },
+        {
+          "file": "skills/gatekeeper-checks/SKILL.md",
+          "start": "## Coach Output Check"
+        },
+        {
+          "file": "skills/career-coach/coach-output.md"
+        }
+      ]
+    },
+    {
+      "id": "intake-0b-capture",
+      "_comment": "Step 0b's delegated per-page fetch must capture every property any downstream step (0.5 routing, 0.8 coach-complete, 0.9a writeback) reads. Two confirmed production-failure families live here: JD Body/WIWTR (2026-07-13 fix) and the three coach-complete fields (2026-07-13 calibration finding).",
+      "members": [
+        "Role summary",
+        "Role emphasis",
+        "Keywords",
+        "Strategy",
+        "Role Type",
+        "Relationship type",
+        "Gap handling",
+        "Culture",
+        "Landscape",
+        "JD proof",
+        "Priority",
+        "Priority Reason",
+        "Company Stage",
+        "Location",
+        "First Advertised",
+        "Manager role confirmed",
+        "Hiring manager's role",
+        "No incumbents in this function",
+        "JD Body",
+        "Why I Want This Role"
+      ],
+      "locations": [
+        {
+          "file": "skills/career-engine-intake/SKILL.md",
+          "start": "Delegate the per-page property fetch",
+          "end": "Receive that one returned block"
+        }
+      ]
+    }
+  ],
+  "defined_terms": [
+    {
+      "id": "term-halt-policy",
+      "term": "halt-before-export policy",
+      "files": [
+        "skills/career-engine-orchestrator/orchestrator-queue.md"
+      ]
+    },
+    {
+      "id": "term-absolute-constraints",
+      "term": "Absolute Constraints",
+      "files": [
+        "skills/career-engine-orchestrator/orchestrator-queue.md"
+      ]
+    },
+    {
+      "id": "term-locked-fixes",
+      "term": "locked-fixes instruction",
+      "files": [
+        "skills/career-engine-orchestrator/orchestrator-queue.md"
+      ]
+    },
+    {
+      "id": "term-scope-check",
+      "term": "mid-run scope-check anti-pattern",
+      "files": [
+        "CLAUDE.md",
+        "skills/career-engine-orchestrator/orchestrator-queue.md"
+      ]
+    },
+    {
+      "id": "term-personal-voice",
+      "term": "personal-voice exemption",
+      "files": [
+        "skills/writer-craft/SKILL.md",
+        "skills/gatekeeper-checks/SKILL.md"
+      ]
+    },
+    {
+      "id": "term-sufficiency-gate",
+      "term": "Sufficiency Gate",
+      "files": [
+        "agents/letter-writer.md"
+      ]
+    },
+    {
+      "id": "term-motivation-bank-gate",
+      "term": "Motivation Bank Gate",
+      "files": [
+        "agents/letter-writer.md"
+      ]
+    },
+    {
+      "id": "term-mechanical-locked-fix-checklist",
+      "term": "mechanical locked-fix checklist",
+      "files": [
+        "skills/career-engine-orchestrator/orchestrator-queue.md"
+      ]
+    }
+  ],
+  "context_sets": [
+    {
+      "id": "gk-cl-spawn-params",
+      "_comment": "Every gatekeeper option=cover-letter spawn paragraph must carry CAREER_DATA and Strategy (the word-count-ceiling governor a bare respawn historically dropped), unless it explicitly restates by reference. min_sites guards against the trigger phrase being reworded out of existence, which would silently disable this check.",
+      "trigger": "option=cover-letter",
+      "files": [
+        "skills/career-engine-new-application/SKILL.md",
+        "skills/career-engine-edit/SKILL.md"
+      ],
+      "require": [
+        "CAREER_DATA=${CAREER_DATA}",
+        "Strategy"
+      ],
+      "alternates": [
+        "same parameters as"
+      ],
+      "min_sites": 6
+    },
+    {
+      "id": "gk-cv-spawn-params",
+      "_comment": "Every gatekeeper option=cv spawn paragraph must carry CAREER_DATA and the resolved CV Type (single-resolution-point contract).",
+      "trigger": "option=cv`",
+      "files": [
+        "skills/career-engine-new-application/SKILL.md",
+        "skills/career-engine-edit/SKILL.md"
+      ],
+      "require": [
+        "CAREER_DATA=${CAREER_DATA}",
+        "CV Type"
+      ],
+      "alternates": [
+        "same parameters as"
+      ],
+      "min_sites": 4
+    }
+  ],
+  "pipe_closure": {
+    "id": "pipe-closure",
+    "_comment": "Every $PIPE/$RUN_PIPE/$QUEUE_PIPE file token a pipeline doc mentions must have at least one occurrence on a line with a write marker in that same doc — otherwise the doc reads a file nothing writes (the cv-final.md failure family, 2026-07-13). Exceptions list legitimate cross-file handoffs with the producing file named in the reason.",
+    "files": [
+      "skills/career-engine-new-application/SKILL.md",
+      "skills/career-engine-edit/SKILL.md",
+      "skills/career-engine-intake/SKILL.md",
+      "skills/career-engine-orchestrator/orchestrator-queue.md",
+      "skills/career-engine-orchestrator/orchestrator-post-run.md"
+    ],
+    "write_marker_regex": "writ|overwrit|OUTPUT_PATH=|CV_PATH=|LETTER_PATH=|save|sav(ed|ing)|append|copy|cp |cat >|land|creat|stag|restor|produce|establish",
+    "exceptions": [
+      {
+        "file": "skills/career-engine-orchestrator/orchestrator-queue.md",
+        "token": "$PIPE/queue.md",
+        "reason": "comparative reference to intake's file — written by career-engine-intake/SKILL.md Step 0.5, not by this doc"
+      }
+    ]
+  }
+}

@@ -40,6 +40,13 @@ for fname in 'gatekeeper-cv' 'gatekeeper-cl' 'recruiter-cv.md' 'coach-letter-rev
     || fail "Pipeline file '$fname' missing from new-application SKILL.md"
 done
 
+# Relational layer: list parity, defined-term closure, spawn params, $PIPE closure
+# (scripts/qa-parity.py + qa-parity.json). Fast (<1s), so it runs on every commit —
+# this is what forces the consumer sweep when a fix touches one list but not its siblings.
+if ! python3 "$REPO/scripts/qa-parity.py" "$REPO" >/dev/null 2>&1; then
+  fail "qa-parity relational checks failed — diagnose with: python3 scripts/qa-parity.py ."
+fi
+
 if [ ${#ERRORS[@]} -gt 0 ]; then
   echo "❌ Invariant check failed — fix before committing:"
   printf '  - %s\n' "${ERRORS[@]}"
