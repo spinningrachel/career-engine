@@ -85,6 +85,13 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-13 — QA mechanical battery extracted to script
+
+**Improvements**
+- **`scripts/qa-mechanical.sh` added** — the deterministic portion of `agents/qa-plugin.md`'s grep/file-existence battery (fixed thresholds, no judgment) is now a standalone script (`bash scripts/qa-mechanical.sh <target-dir>`), covering 82 of the file's checks. It runs against both the repo root and an unzipped build in a new "Phase 0-M — Mechanical battery" step, printing one `CHECK <id>: PASS/FAIL` line per assertion plus a summary count. This is cheaper, faster, and immune to an LLM skipping or mis-running a grep by hand.
+- **`agents/qa-plugin.md` updated** — each migrated check's ` ```bash ` block was replaced with a one-line pointer to the script (or a "Partially mechanized" pointer where the check also requires a manual read-and-confirm step); check headings, descriptions, and FAIL-condition prose are all unchanged. Checks requiring judgment (personal-data review, pipeline logic/trace simulation, a handful of source-check discrepancies logged during the migration) remain fully manual by design.
+- Three discovered-during-migration discrepancies (two self-matching greps in Check 64 and Check 55, one check whose own bash block self-referenced its own search string) are documented in `docs/plans/qa-mechanization-phase-1-notes.md` rather than silently fixed.
+
 ### 2026-07-13 — Systemic QA sweep: 18 fixes across hooks, both pipelines, intake, and reference docs
 
 A cross-cutting audit clustered 18 latent defects into four systemic families and fixed all of them. None were new regressions — they were pre-existing gaps surfaced together, most of them side-effects of the 2026-07-04→07-12 fix velocity (each fix added enforcement text without a matching sweep of every consumer).
