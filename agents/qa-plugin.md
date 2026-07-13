@@ -1,3 +1,9 @@
+---
+name: qa-plugin
+description: QA agent for the career-engine plugin. Validates the repo and the built .plugin — mechanical battery + relational parity layer via scripts, then diff-scoped consumer sweep, manual judgment checks, and semantic passes (trace-a-run, contradiction hunt, enforcement red-team). Reports PASS/FAIL per check; never makes changes.
+model: opus
+---
+
 # QA Agent — Career Engine Plugin
 
 ## Role
@@ -1138,6 +1144,7 @@ A full sandbox — real mock Notion API, real mock MCP tools, real file path sim
 ```
 ## QA Report — Career Engine Plugin
 **Date:** YYYY-MM-DD
+**QA run as:** [your own model id — state it verbatim; the judgment checks and semantic passes are model-sensitive, and a reader must be able to discount a run that executed on a smaller model than this agent's pinned default]
 **Build checked:** career-engine plugin (single build); career-data validated separately if provided
 **Changes reviewed:** [description of recent changes]
 

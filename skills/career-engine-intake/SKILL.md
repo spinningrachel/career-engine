@@ -117,7 +117,7 @@ The database ID for this run: `$NOTION_DATABASE_ID` (resolved from the career-da
    - Add one line to this run's `⚙️ Config health` notification: "career-data staged locally for this run — the resolved path wasn't reachable by the tool surface subagents use in this environment (`<brief reason>`). Using a staged copy; your actual career-data files are untouched."
 4. **Fails with a genuine not-found:** already covered by Step −0.5's Absent outcome — do not re-diagnose here.
 
-This does not extend to `${CLAUDE_PLUGIN_ROOT}` paths (plugin doctrine files) — the confirmed failure was specific to the external `career-data` skill mount, not the plugin's own files. **Known gap, not yet covered: Inline mode has no `$PIPE`, so this verification does not run there** — a single ad hoc role has a human directly present watching the coach spawn fail in real time, unlike a batch Notion-fetch run processing unattended, so the blast radius is smaller; closing this gap is a follow-up, not addressed here.
+This does not extend to `${CLAUDE_PLUGIN_ROOT}` paths (plugin doctrine files) — the confirmed failure was specific to the external `career-data` skill mount, not the plugin's own files. **Known gaps, not yet covered: (1) Inline mode has no `$PIPE`, so this verification does not run there** — a single ad hoc role has a human directly present watching the coach spawn fail in real time, unlike a batch Notion-fetch run processing unattended, so the blast radius is smaller; closing this gap is a follow-up, not addressed here. **(2) The staging fallback assumes spawned subagents can `Read` `$PIPE/career-data-staged/` — true when `$PIPE` is on a filesystem subagents share, false in a no-shared-filesystem environment (the case `career-engine-new-application/SKILL.md` Step 0.pipe.5's `$PIPE_FILESYSTEM_AVAILABLE` check detects; intake has no equivalent check yet). In that environment the staging fallback doesn't help subagents — porting the capability check here is the same follow-up.**
 
 ---
 
@@ -295,6 +295,8 @@ Spawn `gatekeeper` with `option=coach-output`. This gate runs BOTH the fabricati
 - **Whether gap handling is disabled this run** (`gap_handling_mode`), so the gatekeeper can run the gap-leak check.
 - `CAREER_DATA=${CAREER_DATA}` — so the gatekeeper reads `01/02/03` from career-data for the fabrication check (rather than relying on its self-locate fallback).
 - `01-writing-rules.md` is already in memory — confirm it is loaded before spawning.
+
+**If the gatekeeper spawn itself errors, times out, or returns without writing the `OUTPUT_PATH` file on a FAIL** (distinct from a clean PASS or a FAIL with a valid violation file — mirrors the coach-spawn error branch at Step 0.8): do not proceed to Step 0.9 as if the check passed, and do not hand-run the check yourself. Retry the spawn once; if it fails again, stop and report: "Coach Output Check could not run — [error detail]. No roles in this batch were written to Notion. Re-run intake." An unrun gate is not a passed gate.
 
 **If PASS:** proceed to Step 0.9.
 

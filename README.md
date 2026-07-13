@@ -85,6 +85,11 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-13 — QA agent pinned to Opus with model disclosure
+
+- **`agents/qa-plugin.md` now pins `model: opus`** (the alias, matching the humanizer's convention). Post-restructure, everything mechanical lives in the scripts — what remains in the agent is pure judgment (personal-data review, diff sweep, semantic passes), which should not silently inherit a small session model. An explicit model on the spawning Agent call still overrides the pin when a stronger session model is available.
+- **QA reports now open with a "QA run as: `<model-id>`" line** so any run that executed on a different model than the pinned default is visible rather than silent.
+
 ### 2026-07-13 — QA Phase 2: relational parity layer, diff-scoped sweep, and semantic passes
 
 Builds on the same-day mechanical-battery extraction (entry below). The QA system is now three layers, aimed at the failure family enumerated checks can't catch: relational drift between files.
