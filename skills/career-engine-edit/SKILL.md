@@ -93,7 +93,7 @@ This does not extend to `${CLAUDE_PLUGIN_ROOT}` paths (plugin doctrine files) �
 - **`Edit type` is empty or not one of `CV`, `Letter`, `Both`:** do not proceed with this role under any circumstances. Do not default to `Both`. Log the skip: "[Company] — [Role Title]: skipped — Edit type not set. Add CV, Letter, or Both to the Edit type field in Notion." No subagent is spawned for this role.
 - **`Edit type` is `CV`, `Letter`, or `Both`:** proceed with that role using the routing below.
 
-Report the count to the user: "Found N roles marked Needs editing (M skipped — Edit type missing)." If the count after skipping is 0, **stop immediately and report that.** Do not continue the pipeline.
+Report the count to the user: "Found N roles marked Needs editing (M skipped — Edit type missing)." **When N ≥ 1 this report is a declaration, not a question — do not wait for a response; proceed immediately** (same labeling as the intake pipeline's Step 0b count report, so a report-then-silently-wait stall can't happen here either). If the count after skipping is 0, **stop immediately and report that.** Do not continue the pipeline.
 
 **Queue cap — maximum 5 roles per run.** If more than 5 roles remain after skipping, select the top 5 by Priority field: First > Second > Third > Fourth > Fifth. Ties at the same Priority level are broken randomly. Report which roles are deferred: "Deferring N roles — re-run edit to process them." Proceed only with the selected 5.
 
@@ -146,7 +146,7 @@ For each role in the editing queue, verify these **writer-needed fields** are po
 - **All four fields present** → role is ready; carry its existing coach values forward.
 - **Any field missing** → **hard-drop this role from the queue**. Log: "Career coach properties missing for [Company] — [Role Title]: missing `<list>`. Run intake first (`/career-engine --coach-skills`), then re-run edit." Leave Status unchanged.
 
-After the gate, confirm in chat: "Coach properties verified: N roles proceed, M excluded (missing coach properties)."
+After the gate, confirm in chat: "Coach properties verified: N roles proceed, M excluded (missing coach properties)." This is a declaration, not a question — do not wait for a response; proceed immediately to the per-role loop.
 
 ## Per-role editing pipeline
 
@@ -193,6 +193,7 @@ Agents in this track are explicitly informed they are improving existing work. P
 Spawn `cv-writer` with `option=revision`. Pass:
 - `CAREER_DATA=${CAREER_DATA}`
 - `CV Type=<value from $PIPE/cv-type.txt, resolved at Step E0.type>` — read the file, never re-derive
+- `CV_PATH=$PIPE/cv-final.md` (write) — **this is where the revised CV lands, and the explicit write that every later reference to `$PIPE/cv-final.md` (E3.25's comparison, E3.5/E5.5's gatekeeper reads, E5's read-and-overwrite, E7's "already at `$PIPE/cv-final.md`", E7.3's CV path) depends on.** The writer writes the full revised CV there and returns a 1-line status (R-41) — mirrors the new-application Step 4 convention exactly; no step downstream may assume this file exists unless this spawn (or a later overwrite of the same path) wrote it.
 - The existing CV text as the draft (from the saved markdown backup at the output path, or extracted using `pandoc "<cv>.docx" -t markdown` if only the DOCX is available)
 - The coach's verified properties as the strategic anchor
 - The baseline content violation file path `$PIPE/gatekeeper-baseline-cv.md` from Step E0.7, if it returned FAIL — the cv-writer reads it directly (so it addresses pre-existing violations immediately, not after another loop). Omit this line entirely if Step E0.7 returned PASS (no file was written).
@@ -223,7 +224,7 @@ Before passing the revised CV to the gatekeeper, compare the old and new version
 
 **Step E3.5 — Gatekeeper (content check)**
 
-Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, `CV Type=<value from $PIPE/cv-type.txt>`, the revised CV text, `Role summary` (from the coach properties verified in Step E1 — the JD proxy the gatekeeper reads), and the role's `Keywords` property (from the coach properties verified in Step E1 — required for the ATS pre-check).
+Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, `CV Type=<value from $PIPE/cv-type.txt>`, the revised CV path `$PIPE/cv-final.md` to read (written by the Step E3 spawn), `Role summary` (from the coach properties verified in Step E1 — the JD proxy the gatekeeper reads), the role's `Keywords` property (from the coach properties verified in Step E1 — required for the ATS pre-check), and `OUTPUT_PATH=$PIPE/gatekeeper-cv-<round>.md` (R-41 — read the file for the violation list, never expect it inline).
 
 **If PASS:** proceed to Step E4.
 
@@ -235,11 +236,11 @@ Spawn `recruiter-reviewer` with `CAREER_DATA=${CAREER_DATA}`, `CV Type=<value fr
 
 **Step E5 — CV writer (final revision)**
 
-Read recruiter feedback from `$PIPE/recruiter-review.md`. Spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `CV Type=<value from $PIPE/cv-type.txt>`, the revised CV from Step E3, and the recruiter feedback. Returns the final CV and revision log.
+Read recruiter feedback from `$PIPE/recruiter-review.md`. Spawn `cv-writer` with `option=revision`, passing `CAREER_DATA=${CAREER_DATA}`, `CV Type=<value from $PIPE/cv-type.txt>`, `CV_PATH=$PIPE/cv-final.md` (read and overwrite — the Step E3 output is the base; the final CV lands at this same path), and the recruiter review path `$PIPE/recruiter-review.md` to read. The writer overwrites `$PIPE/cv-final.md` in place and returns a 1-line status (R-41) — same convention as the new-application Step 4 spawn.
 
 **Step E5.5 — Gatekeeper (content check)**
 
-Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, `CV Type=<value from $PIPE/cv-type.txt>`, the final revised CV text, `Role summary` (from the coach properties verified in Step E1), and the role's `Keywords` property.
+Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, `CV Type=<value from $PIPE/cv-type.txt>`, the final CV path `$PIPE/cv-final.md` to read (overwritten by the Step E5 spawn), `Role summary` (from the coach properties verified in Step E1), the role's `Keywords` property, and `OUTPUT_PATH=$PIPE/gatekeeper-cv-<round>.md` (R-41 — read the file for the violation list, never expect it inline).
 
 **If PASS:** proceed to Step E7.
 
@@ -378,7 +379,11 @@ The humanizer changed the text after the last PASS, so that PASS is no longer va
 
 Follow the same pandoc production protocol as the main pipeline. See `career-engine-export` for the full protocol — including its CV-Type-conditional template selection (`$CV_TEMPLATE` vs `$CV_TEMPLATE_BRIEF`), which reads `$PIPE/cv-type.txt` (resolved at Step E0.type) exactly as the new-application pipeline does.
 
-Derive `<company_dir>` from the Company name using the naming convention in `career-engine-export`. Convert using the original run folder as the temporary landing pad: write the final CV markdown and the final cover letter markdown (the E8.5-verified `$PIPE/letter-draft.md`) to `/tmp/`, convert with pandoc using the `.dotx` reference templates, update the CV Subtitle, and copy both files to `<output_dir>/<company_dir>/`. If a file with the same name already exists, overwrite it — this is an edit, not a new file.
+Derive `<company_dir>` from the Company name using the naming convention in `career-engine-export`. Convert using the original run folder as the temporary landing pad: write the final CV markdown and the final cover letter markdown (the E8.5-verified `$PIPE/letter-draft.md`) to a temporary location, convert with pandoc using the `.dotx` reference templates, update the CV Subtitle, and copy both files to `<output_dir>/<company_dir>/`. If a file with the same name already exists, overwrite it — this is an edit, not a new file.
+
+**This step follows the same Path A/B routing established at E0-pre — it was previously the only file-producing step in this pipeline written as Path A-only, which made it unexecutable exactly where E0-pre's Path B detection had already said Bash can't reach the host filesystem:**
+- **Path A (direct Bash):** write the markdown to `/tmp/`, run pandoc and `update-subtitle.py` via Bash, `cp` the DOCXs to `<output_dir>/<company_dir>/`.
+- **Path B (host-bridge MCP):** write the intermediate markdown through the host file tool (host-side paths, never sandbox `/tmp/`), run pandoc and the subtitle script via the host process tool, and place the DOCXs in `<output_dir>/<company_dir>/` through the same tools — matching the routing E8.5's mechanical checklist and E9.5's move already use.
 
 Verify the produced file(s) exist and are nonzero before proceeding to Step E9.5. (Only the file(s) for the active Edit type are produced here — the unedited companion file is handled in E9.5.) **If verification fails** (file missing or zero bytes): re-run the pandoc conversion once; if the retry also fails, stop this role, log "[Company] — [Role Title]: DOCX production failed after retry — [error]" in the run-level revision log, flag it in the final delivery for manual export, and continue to the next role in the queue rather than blocking the whole run.
 
@@ -538,7 +543,9 @@ Use the same format as the main pipeline (see career-engine-new-application Step
 
 **Purpose:** state.json is crash recovery only. If this editing pipeline is interrupted mid-run, the orchestrator can resume by checking state.json and skipping roles already marked `completed`. It is not a record of prior editing runs.
 
-**At the start of an editing run, check per role — not one global "today's folder" check.** Each role's append target is its own run folder from Preflight step 1, which is the role's original application-run folder for a pre-existing role and only defaults to today's date for a role with no prior run at all — the two are frequently different folders within the same batch. For each `Needs editing` role: identify its run folder (Preflight step 1), check that folder's `state.json` for an entry matching this role's `notion_page_id` with today's `session_date`. If found and marked `completed`, skip it — it was processed before the crash. If no matching entry exists, or the entry's `session_date` is from a prior day, process the role from scratch. **Checking only a single "today's run folder" instead of each role's own folder will silently miss the completed-marker for any role whose original run predates today — that role gets redundantly reprocessed on every resume.**
+**At the start of an editing run, check per role — not one global "today's folder" check.** Each role's append target is its own run folder from Preflight step 1, which is the role's original application-run folder for a pre-existing role and only defaults to today's date for a role with no prior run at all — the two are frequently different folders within the same batch. For each `Needs editing` role: identify its run folder (Preflight step 1), check that folder's `state.json` for an entry matching this role's `notion_page_id` that belongs to the run being resumed. If found and marked `completed`, skip it — it was processed before the crash. If no matching entry exists, or the entry belongs to a genuinely earlier editing run, process the role from scratch. **Checking only a single "today's run folder" instead of each role's own folder will silently miss the completed-marker for any role whose original run predates today — that role gets redundantly reprocessed on every resume.**
+
+**"Belongs to the run being resumed" is run identity, not the calendar.** The `session_date` gate exists to distinguish this-run completions from stale prior-run completions — it was previously expressed as "matches today's date," which broke on the one boundary a multi-hour run actually crosses: a run that started before midnight and is resumed after it saw every completed entry carry yesterday's `session_date`, fail the today-check, and get fully reprocessed. The check is: the entry's `session_date` is today, **or** it is the calendar day the interrupted run started on when this run is an explicit resume of that run (the entry was written by the run being continued, not by a separate earlier session). An entry from a genuinely distinct prior editing run — a different run, not the one being resumed, regardless of how recent — still means process the role from scratch, exactly as before.
 
 **`Needs editing` always takes precedence over state.json.** A role's Notion Status is the source of truth for what mode to run. If a role is marked `Needs editing`, it runs the editing pipeline using the Notion entry as source material — even if it also appears in state.json from an earlier session.
 
@@ -548,7 +555,7 @@ Same format as the main pipeline (`skills/career-engine-orchestrator/orchestrato
 - **Mandatory, one line per role halted this run per the Absolute Constraints' halt-before-export policy** (E3.5, E5.5, E7.3, the E7.4 coach-directed cap, E7.7, or E8.5) — never omitted when at least one role halted: `[Company] — [Role Title]: blocked, not delivered — [specific unresolved violation(s) in one clause] — see revision-log-<file>.` A halted role has no DOCX and no Notion status change; this line is the only place its state is reported.
 - Named list of any roles that failed for a different reason (e.g. DOCX production failure — company, title, failure step, reason)
 - Any properties the coach updated and why (brief)
-- Single confirmation line if nothing notable to report: "All N roles edited. Files updated in the output folder and Notion rows updated."
+- Single confirmation line if nothing notable to report: "All N roles edited. Files updated in the output folder and Notion rows updated." **`N` is counted mechanically from this run's `completed` entries in `state.json` (the per-role appends from Step E10), never recalled from memory of the run** — the same read-back discipline the halted-roles addendum already has; a real run misstated its own completed-role count because the number came from conversational memory instead of the persisted record.
 
 ## Hard rules
 

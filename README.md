@@ -85,6 +85,38 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-13 — Systemic QA sweep: 18 fixes across hooks, both pipelines, intake, and reference docs
+
+A cross-cutting audit clustered 18 latent defects into four systemic families and fixed all of them. None were new regressions — they were pre-existing gaps surfaced together, most of them side-effects of the 2026-07-04→07-12 fix velocity (each fix added enforcement text without a matching sweep of every consumer).
+
+**Enforcement gaps in the hook layer**
+- **`AskUserQuestion` bypass closed** — a turn ending in an `AskUserQuestion` call produces no final assistant text for the Stop hook to judge (exactly how the second confirmed mid-run scope-check incident presented). A new `PreToolUse` prompt hook on `AskUserQuestion` now gates the question path directly.
+- **Stop hook false positives fixed** — the hook's "references the orchestrator/gatekeeper/pipeline steps" trigger matched development conversations *about* the plugin, and could auto-continue past legitimate developer questions. Criteria now require evidence of a run actually executing (real pipeline tool activity — Notion fetches, subagent spawns, `_pipeline`/`state.json`/`halted-roles.json` writes), with an explicit development-session exclusion and default-allow.
+
+**Doctrine named in one place, defined in another (or nowhere)**
+- **"Halt-before-export policy" now literally named in `orchestrator-queue.md`** — 15+ cap clauses across both pipelines cite it by that exact name; the defining paragraph never carried it.
+- **Unnamed-step skipping prohibited generically** — the condensed-process anti-pattern block named only the gatekeeper mechanical-fix scope and the humanizer; a new paragraph states every numbered step binds identically (naming recruiter review and the coach's Strategic Letter Review explicitly) unless the step itself states a skip condition.
+- **Config-health vs. Final Chat Delivery contradiction resolved** — the `⚙️ Config health` block is now a sanctioned Final Chat Delivery addendum (same mechanism as the halted-roles addendum) instead of an "end of run output" instruction the delivery's rigid two-form contract could never honor.
+- **Gatekeeper delivered-letters contradiction resolved** — `agents/gatekeeper.md` said "never read delivered letters for any check" while the personal-voice exemption and Gate 9's corpus-stats both require the archive. The rule is now scoped: no voice/register/quality judgment against the archive, with exactly two sanctioned mechanical lookups.
+
+**Missing error/branch paths**
+- **Intake Step 0b** — per-page fetch property list now includes `JD Body` and `Why I Want This Role` (both read downstream at 0.5/0.9a); the closing paragraph's "stop and report… do not wait, proceed immediately" contradiction restructured so don't-wait applies only to the N≥1 count report.
+- **Intake Step 0.9e** — outreach-map writes gained a per-role retry-once → log → continue failure path (mirrors 0.9d).
+- **Intake Indeed connector disambiguated** — identify by Indeed association via tool description, never by the bare `search_jobs` name (several unrelated connectors expose that name in one session).
+- **New-application 6H.2** — Hebrew export gained a template-existence check before conversion and a retry-once → log → continue path on failed DOCX verification; English delivery explicitly unaffected either way.
+- **Edit E9** — the only file-producing edit step written Path A-only now carries the same Path A/B routing as E0-pre/E8.5/E9.5.
+- **Edit E3/E5** — `$PIPE/cv-final.md` is now explicitly written (E3 `CV_PATH` write, E5 read-and-overwrite, R-41 one-line returns) instead of first appearing at E7 as "already at"; E3.5/E5.5 pass the path plus `OUTPUT_PATH` violation files.
+
+**State-tracking and self-reporting**
+- **Completed-role counts now mechanical** — the Final Chat Delivery's `N` (both pipelines) and run-metrics' `roles_processed` are counted from `state.json`'s `completed` entries, never conversational memory (a real run misstated its own count; the halted list already had this discipline, the completed count didn't).
+- **Edit crash-recovery date gate fixed** — "completed with today's `session_date`" reprocessed every finished role when a run crossed midnight; the gate is now run identity (the interrupted run's start date counts on an explicit resume), not the calendar.
+- **Edit E0/E1 reports labeled** — both now carry the "declaration, not a question — do not wait" labeling intake's reports already had.
+
+**Reference-doc drift**
+- `shared-voice-rules.md` frontmatter no longer cites the retired `cover-letter-humanizer` skill name.
+- `career-data-structure.md`'s canonical file list now includes `static-cv-footer.md`/`static-cv-footer-he.md` (conditional on `cv_footer.inject`).
+- QA Check 21t extended to assert the new PreToolUse hook and the Stop hook's state-evidence/development-exclusion/default-allow criteria.
+
 ### 2026-07-12 — Closed a self-declared "condensed process" that regressed a real cover letter, plus four related gaps
 
 A real Cowork pipeline run's own delivered feedback file admitted: *"This run used a condensed process throughout, in the interest of practical time constraints: gatekeeper mechanical fixes were frequently applied directly by the orchestrator rather than always re-spawning the writer agent, and a dedicated humanizer pass was only run where explicitly noted."* No such mode has ever existed in this plugin's doctrine (confirmed absent repo-wide) — it was invented mid-run under pressure from two real Cowork capability gaps: no shared filesystem between the orchestrator and its subagents, and no resumable-subagent (SendMessage) capability. Reading the actual session transcript (not the agent's own account of itself, which contained at least one confirmed-false claim about its own past behavior) surfaced five distinct, verified problems from this one run.

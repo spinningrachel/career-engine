@@ -673,11 +673,16 @@ grep -c "log-token-usage.sh" <build>/hooks/hooks.json                         # 
 grep -c '"type": "prompt"' <build>/hooks/hooks.json                           # must be >= 1 (new scope-check hook)
 grep -c "last_assistant_message" <build>/hooks/hooks.json                     # must be >= 1
 grep -c 'ok\\": false' <build>/hooks/hooks.json                               # must be >= 1 (the prompt string is itself JSON, so the literal is escaped inside the outer file: ok\": false)
+grep -c '"PreToolUse"' <build>/hooks/hooks.json                               # must be >= 1 (2026-07-13 addition — AskUserQuestion bypass closure)
+grep -c 'AskUserQuestion' <build>/hooks/hooks.json                            # must be >= 2 (the matcher value + at least one mention in its prompt)
+grep -c 'decision\\": \\"deny' <build>/hooks/hooks.json                       # must be >= 1 (the PreToolUse prompt's deny form, escaped inside the outer file)
 ```
 
-Also confirm (per the standard personal-data scan, since `hooks/hooks.json` is not `.md` and Check 6's grep doesn't cover it): read the `prompt` string yourself and confirm it names only generic pipeline concepts (Notion queue, CV/cover-letter drafting, orchestrator, gatekeeper) — no real name, path, or database ID.
+**2026-07-13 additions the greps above now assert:** (a) a `PreToolUse` prompt hook matching `AskUserQuestion` — a turn that ends by calling `AskUserQuestion` produces no final assistant text for the `Stop` hook to judge, so the question path needed its own gate; (b) the `Stop` hook's prompt must distinguish a pipeline run actually *executing* (real tool activity — Notion fetches, subagent spawns, `_pipeline`/`state.json`/`halted-roles.json` writes) from a conversation that merely *mentions or edits* the plugin, must state that development-session questions are never auto-continued past, and must default to `ok: true` when in doubt. Read both prompt strings and confirm all three of those elements are present.
 
-**FAIL condition:** the file is invalid JSON, either hook type is missing, the token-logging command hook was removed rather than supplemented, or the prompt text contains real personal data.
+Also confirm (per the standard personal-data scan, since `hooks/hooks.json` is not `.md` and Check 6's grep doesn't cover it): read the `prompt` strings yourself and confirm they name only generic pipeline concepts (Notion queue, CV/cover-letter drafting, orchestrator, gatekeeper) — no real name, path, or database ID.
+
+**FAIL condition:** the file is invalid JSON, any asserted hook is missing, the token-logging command hook was removed rather than supplemented, the Stop prompt lacks the development-session exclusion or default-allow language, or any prompt text contains real personal data.
 
 ### Check 21u — CV footer injection is optional via `cv_footer.inject` (2026-07-12 addition)
 

@@ -382,6 +382,8 @@ cp /tmp/he-<cv_filename>.md "<output_dir>/"
 cp /tmp/he-<cl_filename>.md "<output_dir>/"
 ```
 
+**Hebrew template existence check — before any conversion.** `$CV_TEMPLATE_HE` (`cvHe.dotm`) and `$CL_TEMPLATE_HE` (`he-letter.dotx`) are fixed career-data paths, but a user whose `Languages` includes Hebrew may still never have supplied them. Confirm both exist (and, when `cv_footer.inject` is true, that `$CV_FOOTER_HE` exists). If any required file is missing: **skip Hebrew export for this role and report it** — "Hebrew export for [Company] skipped: career-data is missing `references/templates/cvHe.dotm` / `he-letter.dotx` (or `references/static-cv-footer-he.md`) — run `/career-engine:setup --phase 5` to add them." The English delivery for this role is unaffected; log the skip in the run-level revision log and continue. Never run pandoc against a missing `--reference-doc` and let the raw error surface as the report.
+
 Convert using the Hebrew DOCX production protocol from `career-engine-export`:
 
 ```bash
@@ -418,6 +420,8 @@ Verify both files exist and are nonzero:
 ls -lh "<output_dir>/<company_dir>/he-cv-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 ls -lh "<output_dir>/<company_dir>/he-coverletter-<last-name>-<roletitle>-<company>-<monYYYY>.docx"
 ```
+
+**If verification fails for either file (missing or zero bytes):** re-run that file's pandoc conversion once — same handling as the English DOCX verification in Step 6. If the retry also fails, log `[Company] — Hebrew DOCX production failed after retry — [error]` in the run-level revision log, flag it in the final delivery for manual export, and continue — the English files and this role's Notion writeback are unaffected; a Hebrew conversion failure never blocks or reverts the English delivery.
 
 **Hebrew re-translation rule:** If either English document (CV or cover letter) is revised after Hebrew export, the corresponding Hebrew document MUST be fully re-translated from the updated English markdown — do not patch or edit the prior Hebrew text. If the English CV changes, re-translate the Hebrew CV. If the English cover letter changes, re-translate the Hebrew cover letter. Both change together only if both English documents changed. This applies regardless of how small the English edit is.
 
