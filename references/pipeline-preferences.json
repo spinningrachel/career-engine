@@ -24,7 +24,7 @@
   },
   "cv_footer": {
     "inject": true,
-    "description": "Whether the pipeline appends a static Education/Languages block (career-data's static-cv-footer.md / static-cv-footer-he.md) to every CV before conversion. Default true (existing behavior). Set 'inject' to false if you add this content yourself outside the pipeline — e.g. a personal Word macro run after export — same pattern this pipeline already uses for the CV's optional ADDITIONAL section, which has never been pipeline-managed. When false, static-cv-footer.md/-he.md are never read and are not required to exist in career-data."
+    "description": "Whether the user wants to inject their Education and Languages as part of the workflow. If not, the user needs to inject themselves after the workflow ends."
   },
   "favorite_brands": [],
   "preferred_job_sites": [],
