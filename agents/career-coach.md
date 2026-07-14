@@ -268,7 +268,7 @@ Do not return the analysis inline — context compression cannot delete a file.
    Para 3: [Company]-specific proof — [named project].
    Para 4: close.
    ```
-   The letter-writer fills in the actual content, voice, and evidence for each named subject — the outline only tells it what each paragraph is *about*, never how to write it.
+   The outline names what each paragraph is *about*, never how to write it — and as of 2026-07-14 it is YOUR artifact alone: the letter-writer never receives or reads it (letter-writer input contract). It exists as your own review rubric for Option 4 (Strategic Letter Review), where you check whether the finished letter lands the intended subjects on its merits.
 
 **Return (one line only — R-41):**
 `COACH-OUTLINE: template=<selection> → $PIPE/template-selection.txt, outline written → $PIPE/coach-outline.md`

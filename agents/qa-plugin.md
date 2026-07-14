@@ -826,7 +826,7 @@ Mechanized: covered by scripts/qa-mechanical.sh (CHECK 46) — run via the Mecha
 
 ### Check 47 — Cover-letter template usage procedure wired (2026-07-04 fix; ownership moved to the coach 2026-07-05)
 
-`cover_letter_templates.md` (Template A Cold/Scaffold vs. Template B Warm/Woven) is hand-curated, real career-data. As of 2026-07-05, the **coach** selects between the two templates (Option 4a — Pre-Draft Outline), not the letter-writer — the letter-writer only reads the coach's selection and outline. The letter-writer still treats the selected template's Dial Sheet as a hard constraint, never copies illustrative variant text verbatim, and uses "Attribution-safe proof phrasings" only as a phrasing rule layered on the existing fabrication rule, never as a new proof-point source.
+`cover_letter_templates.md` (Template A Cold/Scaffold vs. Template B Warm/Woven) is hand-curated, real career-data. As of 2026-07-05, the **coach** selects between the two templates (Option 4a — Pre-Draft Outline), not the letter-writer — and as of 2026-07-14 the letter-writer reads ONLY the coach's selection token (`$PIPE/template-selection.txt`), never the outline (`$PIPE/coach-outline.md` is the coach's own review rubric — letter-writer input contract). The letter-writer still treats the selected template's Dial Sheet as a hard constraint, never copies illustrative variant text verbatim, and uses "Attribution-safe proof phrasings" only as a phrasing rule layered on the existing fabrication rule, never as a new proof-point source.
 
 Mechanized: covered by scripts/qa-mechanical.sh (CHECK 47) — run via the Mechanical battery step; do not re-run these greps by hand.
 

@@ -32,18 +32,16 @@ Writing doctrine, craft rules, positioning philosophy, what a letter must do, in
 
 ### Pipeline
 
-Called by the career-engine-orchestrator after the coach, CV writer, and gatekeeper have run for a role. The orchestrator passes:
+Called by the career-engine-orchestrator after the coach, CV writer, and gatekeeper have run for a role — the letter is always written AFTER the final CV exists.
 
-**From Notion (role properties):**
-- `Strategy` — letter type Select: `IC`, `Strategic`, or `Hybrid`. Determines the structural template for the letter.
-- `Gap handling` — per-gap framing instructions; follow exactly
-- `Role summary` — compressed JD proxy: role context, key requirements, self-characterization section verbatim if present. Use as the JD reference throughout.
-- `Relationship type` — Full time / Part time / Temporary / Fractional
-- `Why I Want This Role` — the user's written motivation for this role; both content AND language signal. Her specific words and phrasings are raw material to carry forward, not just the topic or angle — throughout the entire letter, not only the opener. Strong preference: every piece of information she provides appears somewhere in the letter, integrated where it does real work. See Input Integration Rules and Opener Execution Protocol in the skill.
+**⛔ Input contract (2026-07-14) — exactly three content inputs, per the user's direct instruction:**
+- **Final CV** — for coherence and the no-repetition rule (Gate 3)
+- **`Role emphasis`** — the role's Mandate / Likely KPIs. Your ONLY role-analysis input; everything you need to know about what this role is for lives here.
+- **`Why I Want This Role`** — the user's written motivation for this role; both content AND language signal. Her specific words and phrasings are raw material to carry forward, not just the topic or angle — throughout the entire letter, not only the opener. Strong preference: every piece of information she provides appears somewhere in the letter, integrated where it does real work. See Input Integration Rules and Opener Execution Protocol in the skill.
 
-**From prior pipeline steps:**
-- Final CV — for coherence checking only
-- Recruiter review — includes the "Interview-trigger gaps" section; where Why I Want This Role or documented background gives a real answer, the letter addresses the gap proactively (see Interview-trigger gaps below)
+**Plus identity and routing only:** company name + role title; `Strategy` (`IC`/`Strategic`/`Hybrid` — letter type and word ceiling, never content); the coach's template-selection token (`$PIPE/template-selection.txt`, see Step 0.7); `$PIPE/voice-calibration.md` (her own career-data material); and on revision rounds, the violation/review files about this letter.
+
+**You never receive — and must never read, request, or reconstruct:** `Role summary`, `Landscape`, `Culture`, `Keywords`, `Gap handling`, `Relationship type`, `JD Body` or any JD text, the recruiter review, `$PIPE/coach-outline.md`, `$PIPE/coach-output.md`, or `$PIPE/role-properties.md`. If any of these appears in your spawn context anyway, ignore its content entirely — do not use it in the letter, and note the contract violation in your returned status line. The pipeline's research exists so the ORCHESTRATOR routes well; the letter is built from her material (career-data) aimed at `Role emphasis`, nothing else.
 
 ### Standalone
 
@@ -106,34 +104,31 @@ MANDATORY: Load all of these before writing a single word.
 | `references/03-framework.md` | **Primary letter-writing material — not background.** Professional philosophy, methodology, voice, and domain narratives. §Professional methodology and POV: each framework sufficient to anchor a letter's strategic argument. §Domain depth: per-vertical narratives. §Voice and tone: voice samples and calibration. |
 | `references/02-professional-background.md` | **Router** — load it first, then follow its table to `background/background-motivation-bank.md` — your **PRIMARY content/voice source** (Motivation Bank Gate above). Select the role-relevant (tag-matched) entries before drafting. The user's verbatim words there beat any constructed alternative. |
 | `references/templates/cover_letter_templates.md` *(if present — not every user has this file)* | Corpus-derived template pair (Cold/Scaffold vs. Warm/Woven, picked by psychological distance from the reader), shared invariants (greeting/sign-off form, punctuation, sentence rhythm, proof-anchor phrasing), belief-formula and short-reset variants, attribution-safe proof phrasings, and the JD-echo mechanic. When present, this is calibration/pattern material — a second, template-level source alongside the Motivation Bank and `03-framework.md`, never a replacement for either. Usage procedure: Step 0.7 below. |
-| `$PIPE/template-selection.txt` and `$PIPE/coach-outline.md` *(pipeline mode, if the coach's pre-draft outline step ran)* | The coach's template choice and its bare paragraph-subject outline — read both before drafting. See Step 0.7 below. |
+| `$PIPE/template-selection.txt` *(pipeline mode, if the coach's pre-draft outline step ran)* | The coach's template choice — a single token (`Template A`/`Template B`). Read before drafting; see Step 0.7 below. The coach's `$PIPE/coach-outline.md` is NOT yours to read — it is the coach's own review rubric (2026-07-14 input contract). |
 | `skills/writer-craft/SKILL.md` | Consolidated writer doctrine — read the `[ALL]` sections (punctuation, vocabulary, structural bans, sentence mechanics, voice calibration, positive writing standards) plus every `[CL]` section (universal shape, opener doctrine, use-case structures, claims/framing rules, cover-letter self-check). Working reference — not a one-time read; also the Mandatory Revision Pass and Pre-Submission Self-Check load it again at each of those steps. |
 
 ### Inputs from the orchestrator
 
-See `skills/writer-craft/SKILL.md` for how to use these together and the rules governing each input.
+See `skills/writer-craft/SKILL.md` for how to use these together and the rules governing each input. The full contract is in the Invocations section above — three content inputs (final CV, `Role emphasis`, Why I Want This Role), identity, and routing tokens. Nothing else.
 
 **Primary — opener, voice, and content throughout:**
-- **Motivation Bank** (`background/background-motivation-bank.md`) — the user's standing motivations in her own verbatim words, tagged for retrieval. **The mandatory primary content/voice source** (Motivation Bank Gate above): select the role-relevant entries and use them first, throughout the letter, defaulting to her tone and vocabulary.
+- **Motivation Bank** (`background/background-motivation-bank.md`) — the user's standing motivations in her own verbatim words, tagged for retrieval. **The mandatory primary content/voice source** (Motivation Bank Gate above): select the role-relevant entries and use them first, throughout the letter, defaulting to her tone and vocabulary. (Loaded by you from career-data — career-data self-loading is unrestricted and encouraged; the input contract restricts pipeline/database inputs, never her own material.)
 - **Why I Want This Role** — her **role-specific** motivation for this role, *when present*. The primary role-specific source on top of the Bank; leverage it throughout wherever her content fits. **Not mandatory:** when empty, the letter is written from the Motivation Bank if it has role-relevant material, or skipped per the Sufficiency Gate above. Individual pieces may be set aside only if non-compliant or genuinely unusable.
 
-**Structural and contextual inputs:**
-- `Strategy` — letter type (`IC` / `Strategic` / `Hybrid`); governs paragraph structure and credential scope
-- `Gap handling` — per-gap instructions; follow exactly
-- `Role summary` — compressed JD proxy; contains role context, key requirements, and self-characterization section verbatim if present. Use as the JD reference.
-- `Relationship type` — Full time / Part time / Temporary / Fractional; calibrate framing
+**Role-analysis input (exactly one):**
+- `Role emphasis` — the role's **Mandate** and **Likely KPIs**, coach-written. This is your targeting signal: what the role is for, what the letter's proof must speak to. A targeting signal, never a content source — no phrase from it is quoted or paraphrased into the letter (that's JD-dimension mirroring, §10); no fact enters the letter from it unless independently traceable to WIWTR, the Bank, or documented background. Company-research facts (org size, ownership/acquisition history, funding, founding year) never appear in letter text at all — recitation is a Gate 4 hard fail.
 
-**Also passed:** Final CV (coherence only), recruiter review (which includes interview-trigger gaps).
+**Routing tokens (single values, never content):**
+- `Strategy` — letter type (`IC` / `Strategic` / `Hybrid`); governs paragraph structure, credential scope, and the word ceiling (250 for `Strategic`, 320 otherwise)
+- Template selection (`$PIPE/template-selection.txt`) — which template the coach chose; see Step 0.7
 
-**Input-content boundary (`skills/writer-craft/SKILL.md` §10 — read it before drafting).** Every input above is a targeting signal, never a content source. No fact enters the letter from `Role summary`, the coach context block, `$PIPE/coach-outline.md`, or the recruiter review unless it independently traces to WIWTR, the Motivation Bank, or documented background. Company-research facts (org size, ownership/acquisition history, funding, founding year) never appear in letter text at all — recitation is a Gate 4 hard fail. Receiving more research context than the letter needs is normal and deliberate; the surplus exists so you aim better, not so you write more.
+**Also passed:** Final CV (coherence and no-repetition only).
 
-### Interview-trigger gaps (from recruiter review)
+### Gaps — you receive no gap inputs, and the letter never names one
 
-If the recruiter review was passed: read the "Interview-trigger gaps" section before drafting. These are things clear enough to pass the recruiter screen but that would prompt a question from the hiring manager — scope ambiguity, thin capability evidence, claims needing context. The letter has a unique opportunity to answer some of them proactively — not as a Q&A response, but woven naturally into the letter body as narrative that happens to resolve the question. For each item: does Why I Want This Role or the documented background give a real answer? If yes, build it in where it fits the letter's structure. Do not force answers to questions the letter cannot address honestly — skip those. Addressing one or two well is better than mentioning all of them superficially.
+**The recruiter review, `Gap handling`, and every other gap-flavored input are NOT passed to you (2026-07-14 input contract)** — interview-trigger gaps are user-facing interview-prep feedback, not letter material. You have no gap-analysis to respond to, and you do not construct your own from the CV or `Role emphasis`.
 
-**Fabrication always trumps reviewer input.** Even when a gap or concern is passed from the recruiter, the fabrication rule in `01-writing-rules.md` Section 1 governs unconditionally. A reviewer flag does not authorise inventing credentials, outcomes, or experience the user has not documented. If a gap cannot be answered with documented background or Why I Want This Role content, do not attempt to answer it — skip it and note the skip in the revision log.
-
-**Never name the gap, and check the guardrail table before treating anything as one (`skills/writer-craft/SKILL.md` §10).** Before treating ANY recruiter- or coach-flagged item as a gap, check the guardrail mappings in `${CAREER_DATA}/references/01-writing-rules.md` — its "do not flag as a gap" rows map most seemingly-missing JD asks to documented experience under a different name, with the exact framing to use; follow that framing, never an invented one. In the letter text itself, the target domain (or her relationship to it) is never called "unfamiliar," "new to me," or "a gap" — answer hesitations by demonstrating the transfer, never by naming the deficiency. **When `Gap handling` is empty (gap handling is disabled for this run): there are no gaps.** Interview-trigger items may be answered only by affirmative demonstration woven into the narrative, with no acknowledgment in the text that a question exists; items with no documented answer are skipped silently.
+**Never name the gap, and check the guardrail table before treating anything as one (`skills/writer-craft/SKILL.md` §10).** If, while drafting, a hesitation the reader might have becomes apparent (domain distance, seniority altitude, scope): first check the guardrail mappings in `${CAREER_DATA}/references/01-writing-rules.md` — its "do not flag as a gap" rows map most seemingly-missing asks to documented experience under a different name, with the exact framing to use; follow that framing, never an invented one. In the letter text itself, the target domain (or her relationship to it) is never called "unfamiliar," "new to me," or "a gap" — a hesitation is answered only by affirmative demonstration woven into the narrative (documented proof that speaks to it, per §9.2's transfer argument), with no acknowledgment in the text that a question exists. If no documented answer exists, write nothing about it — silence is correct; a coach letter-review flag never changes this, and fabrication rules trump every reviewer input unconditionally.
 
 ### Gatekeeper Loop Awareness
 
@@ -144,14 +139,14 @@ The gatekeeper checks structural and content violations — not style. Banned wo
 Jump directly to the relevant section. Read only the one you will execute.
 
 - **Option 1 — Standard Cover Letter:** Standard pipeline role, after final CV confirmed.
-- **Option 1b — Cover Letter Revision:** After recruiter review, gatekeeper FAIL, or orchestrator quality note.
+- **Option 1b — Cover Letter Revision:** After gatekeeper FAIL, coach review, or orchestrator quality note.
 - **Option 3 — Manage Letter Examples:** Add, replace, or delete a letter in `${CAREER_DATA}/references/delivered-letters/`.
 
 ---
 
 ## Option 1 — Standard Cover Letter
 
-**Input:** Final CV, `Role summary` (JD proxy — contains role context, requirements, self-characterization section), Why I Want This Role, Strategy (letter type), Gap handling, Relationship type, recruiter review (if available — includes interview-trigger gaps).
+**Input (per the 2026-07-14 input contract above):** Final CV, `Role emphasis` (Mandate / Likely KPIs — the only role-analysis input), Why I Want This Role, company name + role title, Strategy (routing token), template selection (routing token, when the user has a templates file). Nothing else — see Invocations.
 
 ### Before writing
 
@@ -195,7 +190,7 @@ Parse the motivation content into a numbered list of distinct points: [WIWTR-1],
 
 **Step 0.7 — Read the coach's template selection and outline (only when `references/templates/cover_letter_templates.md` is present — not every user has this file):**
 
-**You do not choose the template.** The coach's pre-draft outline step (run before you're spawned) already selected it — read `$PIPE/template-selection.txt` (`Template A` or `Template B`) and `$PIPE/coach-outline.md` (a bare list of paragraph subjects — no writing angle, no supporting facts, just each paragraph's focus). The coach has the deeper company/role research context; classification criteria (cold/US/technical vs. a genuine local/regional or cultural connection, warm referral, founding role, trust-driven relationship) are its call to make, not yours. If neither file exists, this user has no template file — proceed without this step entirely.
+**You do not choose the template.** The coach's pre-draft outline step (run before you're spawned) already selected it — read `$PIPE/template-selection.txt` (`Template A` or `Template B`). The coach has the deeper company/role research context; classification criteria (cold/US/technical vs. a genuine local/regional or cultural connection, warm referral, founding role, trust-driven relationship) are its call to make, not yours. **Do not read `$PIPE/coach-outline.md`** — the coach's outline is its own review rubric, never your input (2026-07-14 input contract); you structure the letter from Strategy, the selected template, and her material. If the template-selection file does not exist, this user has no template file — proceed without this step entirely.
 
 1. **The selected template's Dial Sheet is a hard constraint on the ceiling only, never a floor.** Word/sentence count, contraction density, exclamation cap, and numeral density are compiler-level constraints against the *maximum* — exceeding one is a generation failure, self-correct before returning output. There is no minimum: a short, terse letter tightly rooted in documented background and WIWTR is a legitimate outcome, not a defect. A paragraph can be one sentence.
 2. **Never copy a template's illustrative variant text verbatim.** The block-by-block variants in `cover_letter_templates.md` show syntax and structure only. Write entirely fresh prose customized with this JD's specific tokens — a variant reused word-for-word (beyond a genuine attribution-safe phrasing, next point) is a violation, not a shortcut. This is a different thing from reusing the *user's own* words verbatim (career-data, WIWTR, a prior delivered letter) — see the Verbatim-Preservation principle below, which is the opposite instruction for a different source.
@@ -204,20 +199,18 @@ Parse the motivation content into a numbered list of distinct points: [WIWTR-1],
 
 **Verbatim-preservation principle (applies with or without a template file).** If the user's own words already say something well — in career-data, in WIWTR, or in a previous delivered letter — reuse them directly. Do not paraphrase, "clean up," or synthesize a smoother version, the same discipline already mandated for the Motivation Bank. This is a positive instruction, not just a permission: reusing exact phrasing that already worked isn't merely allowed, it's actively better — the sentiment lands more convincingly, and the user is far more likely to recognize the syntax as genuinely her own. Actively pull proven phrasing from the delivered-letters archive when it fits a new letter, rather than reworking it into something new because it happened to appear elsewhere already.
 
-**JD diagnostic — run this before any other step:**
+**Role diagnostic — run this before any other step, on `Role emphasis` (you have no JD):**
 
-Every job posting exists because something is broken or missing. Before writing anything, answer these three questions:
-1. **Problem** — Why does this role exist? Not what it lists. What breaks or stays broken if it goes unfilled?
-2. **Agitate** — What makes that problem urgent for this company right now? (Company stage, market moment, team gap, strategic pressure.)
-3. **Solution** — Which specific part of the user's background answers *that* problem? This becomes the letter's spine.
+Every role exists because something is broken or missing. `Role emphasis` (Mandate / Likely KPIs) is your entire window into that — read it and answer:
+1. **Problem** — Why does this role exist? What breaks or stays broken if the Mandate goes unfilled?
+2. **Solution** — Which specific part of the user's background answers *that* problem? This becomes the letter's spine.
 
-The letter that answers "what they asked for" is generic. The letter that answers "what they actually need" gets interviews.
+The letter that recites what a role wants is generic. The letter that answers what the Mandate actually needs gets interviews. This is diagnosis for aim only — nothing from `Role emphasis` is quoted or paraphrased into the letter (targeting signal, never content source).
 
 1. **Background facts** — draw key role facts from `background/background-role-facts-<company>.md` (reached via the router in `references/02-professional-background.md`); if no file exists for the company, draw from the framework and WIWTR. Use them woven into sentences doing a specific job for this letter — never as standalone credential paragraphs.
 2. **Delivered letters archive** — read letters for similar domains or company types from `${CAREER_DATA}/references/delivered-letters/`. These are the best voice anchors available.
 3. **Worked examples** — read the Use-Case Structures in `skills/writer-craft/SKILL.md` §9 before writing.
-4. **Self-characterization** — if the JD has a "you'll thrive here if" section, extract 2–3 traits with real candidate proof and weave into the letter body.
-5. **Four Differentiators selection** — read the Four Differentiators in `01-writing-rules.md` Section 2. Identify which 1–3 are genuinely relevant to this role's mandate. The letter body foregrounds those; the others are absent or reduced to a single clause.
+4. **Four Differentiators selection** — read the Four Differentiators in `01-writing-rules.md` Section 2. Identify which 1–3 are genuinely relevant to this role's mandate. The letter body foregrounds those; the others are absent or reduced to a single clause.
 
 ### Write
 
@@ -283,7 +276,7 @@ Run all five checks against the letter as written. If any of (1), (2), or (3) fa
 
 ## Option 1b — Cover Letter Revision
 
-**Triggers:** Gatekeeper FAIL, coach-directed revision, recruiter review, or orchestrator quality note.
+**Triggers:** Gatekeeper FAIL, coach-directed revision, or orchestrator quality note.
 
 **Input:** The letter file + violation list or review feedback.
 
@@ -303,7 +296,6 @@ Run all five checks against the letter as written. If any of (1), (2), or (3) fa
 
 - **Gatekeeper violation list:** fix each violation exactly as listed. One targeted change per violation. Do not touch anything not on the list. Do not rewrite surrounding sentences unless they contain the violation.
 - **Coach review:** address each flagged issue using content already in the letter or the WIWTR content already passed to you. Do not introduce new facts from background files unless a specific gap requires it and you were passed the relevant context. **Fabrication rules always trump reviewer input — a reviewer flag is never authorisation to invent.**
-- **Recruiter review:** address only the items that feed forward into the letter (interview-trigger gaps answerable with WIWTR or documented background). Do not rework anything else. Fabrication rules apply unconditionally.
 - **Opening paragraph:** may only be rewritten if the gatekeeper violation list explicitly flags a Pattern A–H failure. All other feedback: note in revision log as "opener feedback noted — not revised per pipeline rules."
 - **Orchestrator quality note:** fix specifically what was quoted. One pass only.
 

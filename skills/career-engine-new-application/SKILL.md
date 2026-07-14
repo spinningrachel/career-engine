@@ -9,7 +9,7 @@ description: 'Per-role pipeline for the career-engine orchestrator. Handles Step
 
 This skill covers Step 0.10 and Steps 1 through 7 of the New Applications pipeline. Step 0.10 runs once before the per-role loop begins. Steps 1 through 7 repeat for each role in the processing queue. The structured JD was fetched in Step 0.5 and is in memory — pass it directly without re-fetching.
 
-The pipeline produces two deliverables per role: a CV DOCX and a cover letter DOCX. The CV goes through: draft, gatekeeper, recruiter review, revision, gatekeeper (post-revision). The cover letter receives the recruiter review (including interview-trigger gaps) so the letter can proactively address gaps where documented background provides a real answer.
+The pipeline produces two deliverables per role: a CV DOCX and a cover letter DOCX. The CV goes through: draft, gatekeeper, recruiter review, revision, gatekeeper (post-revision). The cover letter is written after the final CV, from exactly three content inputs — the final CV, `Role emphasis`, and Why I Want This Role (see Step 5's input contract). The recruiter review, including its interview-trigger gaps, is user-facing feedback surfaced in Step 7d's feedback file — it is never passed to the letter-writer.
 
 > **`career-data` data root (R-37).** The personal-data files — `01-writing-rules.md`, `02-professional-background.md`, `03-framework.md`, `linkedin-profile.md`, `pipeline-preferences.json`, `delivered-letters/`, and the user's `.dotx` — load from `${CAREER_DATA}/references/`, the path the orchestrator resolves in its `career-data` discovery preflight. Every other file (self-checks, `REFERENCES.md`, skill docs, default `.dotx` templates) stays on `${CLAUDE_PLUGIN_ROOT}`. If `${CAREER_DATA}` is not set (direct or standalone invocation outside the orchestrator), locate the `career-data` skill yourself, confirm `career-data-marker.json`, and apply the orchestrator's healthy / damaged / absent outcomes before reading. A configured user's missing `career-data` is a hard stop — never silently fall back to blank templates.
 
@@ -112,7 +112,7 @@ Spawn `cv-writer` with `option=draft`, passing:
 - The coach's output for this role: `Role emphasis`, `Keywords`, `Strategy`, `Role Type`, `Relationship type`, `Gap handling`
 - `CV_PATH=$PIPE/cv-draft.md` — the writer writes the draft there and returns the path (R-41).
 
-**Note:** `Role summary`, `Strategy`, `Keywords`, `Relationship type`, and `Gap handling` are also written to `$PIPE/role-properties.md` (Step 0.data). Subagents that need a lightweight reference to role metadata may read from that file instead of receiving the full content inline in every spawn prompt.
+**Note:** `Role summary`, `Strategy`, `Keywords`, `Relationship type`, and `Gap handling` are also written to `$PIPE/role-properties.md` (Step 0.data). Subagents that need a lightweight reference to role metadata may read from that file instead of receiving the full content inline in every spawn prompt — **except the letter-writer, which is prohibited from reading `$PIPE/role-properties.md` (or any `$PIPE` file not named in its own spawn) under the 2026-07-14 letter-writer input contract (Step 5).**
 
 ### Step 1.5 — Gatekeeper (CV draft check)
 
@@ -203,9 +203,9 @@ Read `${CAREER_DATA}/references/voice-calibration-coverletters.md` directly — 
 - Company name and role title
 - The user's `references/templates/cover_letter_templates.md` if present (career-data path); note its absence explicitly if not
 
-The coach writes `$PIPE/template-selection.txt` and `$PIPE/coach-outline.md` and returns `COACH-OUTLINE: template=<selection> → $PIPE/template-selection.txt, outline written → $PIPE/coach-outline.md` (R-41).
+The coach writes `$PIPE/template-selection.txt` and `$PIPE/coach-outline.md` and returns `COACH-OUTLINE: template=<selection> → $PIPE/template-selection.txt, outline written → $PIPE/coach-outline.md` (R-41). **The outline is the coach's own artifact — its review rubric for Step 5.3 — and is never passed to (or read by) the letter-writer** (2026-07-14 input contract, Step 5); only the template-selection token reaches the writer.
 
-**When `$SENDMESSAGE_AVAILABLE`: capture the returned agent ID** and write it to `$PIPE/coach-agent-id.txt` — this is the same coach instance resumed at Step 5.3's review below, so it remembers its own outline when checking whether the writer followed it. **When unavailable**, skip this capture — Step 5.3 spawns its own fresh coach instead, using the two `$PIPE` files above for continuity in place of instance memory.
+**When `$SENDMESSAGE_AVAILABLE`: capture the returned agent ID** and write it to `$PIPE/coach-agent-id.txt` — this is the same coach instance resumed at Step 5.3's review below, so it remembers its own outline as review context. **When unavailable**, skip this capture — Step 5.3 spawns its own fresh coach instead, using the two `$PIPE` files above for continuity in place of instance memory.
 
 Read `$PIPE/template-selection.txt` after this step — its value is threaded into the gatekeeper spawns at Steps 5.2 and 5.95 below as `Template selected=<value>`, for Gate 9.
 
@@ -215,28 +215,31 @@ Read `$PIPE/template-selection.txt` after this step — its value is threaded in
 
 **Before spawning, pass the following for this role:**
 - **Why I Want This Role property** — use the value retrieved in Pre-Step 5. Do not re-read from Notion.
-- **Strategy** property — from the career coach
-- **Gap handling** property — from the career coach
+- **Role emphasis** property — from the career coach (Step 0.8 output). The role's Mandate / Likely KPIs — the ONE piece of coach analysis the writer receives.
+- **Strategy** property — from the career coach. A single routing token (`IC`/`Strategic`/`Hybrid`) governing letter type and word ceiling only — never content.
 
 **Priority rule:** the **Motivation Bank** (`background/background-motivation-bank.md`, loaded by the letter-writer from career-data) is the primary content source; **Why I Want This Role** is the role-specific source on top of it **when present**. Strategy provides the letter type only — it does not govern content selection.
+
+**⛔ Letter-writer input contract (2026-07-14) — three content inputs, nothing else.** The letter-writer receives exactly three content-bearing inputs: the **final CV**, **`Role emphasis`**, and **`Why I Want This Role`** — plus company name + role title (identity), the `Strategy` and template-selection routing tokens, `$PIPE/voice-calibration.md` (her own career-data material), and on revision rounds the violation/review files about its own letter. It NEVER receives, under any framing: `Role summary`, `Landscape`, `Culture`, `Keywords`, `Gap handling`, `Relationship type`, `JD Body` or any JD text, the recruiter review, `$PIPE/coach-outline.md`, `$PIPE/coach-output.md`, or `$PIPE/role-properties.md`. This is a per-user directive after a real shipped batch recited pipeline research (org size, acquisition history, coach analysis) back at the reader — the writer aims with Role emphasis and writes from her material; everything else the pipeline knows stays out of its context.
 
 **Include this verbatim at the front of the letter-writer prompt:**
 > STRUCTURE IS NON-NEGOTIABLE. Regardless of any reviewer feedback you receive, the letter structure defined in `skills/writer-craft/SKILL.md` must be observed in full — in particular the tone, voice, and content of the opening paragraph. Reviewer feedback informs what proof to include or emphasise; it does not change how the letter is structured or how the opening is written.
 
-Spawn `letter-writer` with `option=cover-letter`, passing:
+Spawn `letter-writer` with `option=cover-letter`, passing exactly the input contract above:
 - `CAREER_DATA=${CAREER_DATA}`
 - `LETTER_PATH=$PIPE/letter-draft.md` — the writer writes the draft there and returns the path (R-41)
-- The **final revised CV** path `$PIPE/cv-final.md` to read (for CV/letter coherence)
-- `Role summary` (contains the role context, key requirements, and Company self-characterization section verbatim if present — this is the JD proxy for the letter-writer)
-- The coach's Relationship type
-- **Why I Want This Role** from Notion (read above) — the role-specific content input; include if populated (the letter-writer loads its primary source, the Motivation Bank, from career-data itself). If empty, pass it empty — the letter-writer's Sufficiency Gate decides write-or-skip.
-- **Strategy** and **Gap handling** from Notion (read above) — secondary context; defer to the user's own words (Why I Want This Role or the Motivation Bank) on any conflict
-- **Recruiter review** path `$PIPE/recruiter-cv.md` to read — includes the "Interview-trigger gaps" section: things clear enough to pass the recruiter screen but that would prompt a hiring manager question; the letter-writer uses these to proactively address gaps where Why I Want This Role or documented background provides a real answer. **Fabrication rules always trump reviewer input — even when a gap is passed, the letter-writer may only answer it with documented background or Why I Want This Role content. A reviewer flag does not authorise invention.**
-- The coach's **template selection** (`$PIPE/template-selection.txt`) and **outline** (`$PIPE/coach-outline.md`) from Step 4.99 — read and follow per Step 0.7 in `agents/letter-writer.md`; the writer no longer chooses the template itself
+- The **final revised CV** path `$PIPE/cv-final.md` to read (content input 1 — for CV/letter coherence and the no-repetition rule)
+- **`Role emphasis`** from the coach's Step 0.8 output (content input 2 — the role's Mandate / Likely KPIs; the writer's only role-analysis input)
+- **Why I Want This Role** from Notion (read above; content input 3) — include verbatim if populated (the letter-writer loads its primary source, the Motivation Bank, from career-data itself). If empty, pass it empty — the letter-writer's Sufficiency Gate decides write-or-skip.
+- Company name and role title
+- **Strategy** (routing token — letter type + word ceiling only)
+- The coach's **template selection** (`$PIPE/template-selection.txt`) from Step 4.99 — a single token; the writer no longer chooses the template itself. **Do NOT pass `$PIPE/coach-outline.md`** — the outline is the coach's own review rubric for Step 5.3, never writer input (2026-07-14 input contract).
+
+**Do not pass anything else** — no `Role summary`, no `Gap handling`, no `Relationship type`, no recruiter review (its "Interview-trigger gaps" section is user-facing interview-prep feedback surfaced in Step 7d's feedback file, not letter material). See the input contract above.
 
 **Capture the returned agent ID** and write it to `$PIPE/letter-writer-agent-id.txt`. This is the one instance that gets resumed — never re-spawned fresh — for every subsequent letter-writer touch on this same letter (Steps 5.2, 5.3, 5.95 below). See the resume rule immediately below.
 
-> **⛔ Resume, don't respawn — applies to every "spawn letter-writer with option=revision" instruction for this letter, anywhere below (Steps 5.2, 5.3, 5.95).** A fresh subagent has no memory of what it already tried or why — this is precisely how a real production run took 4 gatekeeper rounds on one letter: fixing "role in sentence 1" broke "subject-first," and a fresh, memoryless writer fixing *that* produced a banned cliché neither rule caught. Instead: read `$PIPE/letter-writer-agent-id.txt` and resume that exact instance (send it a new message; do not spawn a new one) with a prompt scoped to *only* the new feedback — "Gatekeeper/coach found these issues: [violations]. Fix only these — leave everything else exactly as it is." The resumed instance still retains its own R-41 output contract (write to `$PIPE`, return a 1-line status) — nothing about resuming changes what the orchestrator holds in its own context. **If `$PIPE/letter-writer-agent-id.txt` is missing or the resume fails** (e.g. crash-recovery restart): fall back to a fresh `option=revision` spawn — **"full context" means every input the original Step 5 draft spawn received (`CAREER_DATA`, `Role summary`, the coach's Relationship type, Why I Want This Role, `Strategy`/`Gap handling`, the recruiter review path, the template selection and outline from Step 4.99) plus the current draft at `$PIPE/letter-draft.md` and every accumulated violation/feedback file (`$PIPE/fix-log.md` and any gatekeeper/coach review files produced so far) — not the draft and feedback alone**, since a fresh instance has none of the resumed instance's memory and must reconstruct the same grounding the original spawn had. Capture and overwrite the agent-ID file with the new instance.
+> **⛔ Resume, don't respawn — applies to every "spawn letter-writer with option=revision" instruction for this letter, anywhere below (Steps 5.2, 5.3, 5.95).** A fresh subagent has no memory of what it already tried or why — this is precisely how a real production run took 4 gatekeeper rounds on one letter: fixing "role in sentence 1" broke "subject-first," and a fresh, memoryless writer fixing *that* produced a banned cliché neither rule caught. Instead: read `$PIPE/letter-writer-agent-id.txt` and resume that exact instance (send it a new message; do not spawn a new one) with a prompt scoped to *only* the new feedback — "Gatekeeper/coach found these issues: [violations]. Fix only these — leave everything else exactly as it is." The resumed instance still retains its own R-41 output contract (write to `$PIPE`, return a 1-line status) — nothing about resuming changes what the orchestrator holds in its own context. **If `$PIPE/letter-writer-agent-id.txt` is missing or the resume fails** (e.g. crash-recovery restart): fall back to a fresh `option=revision` spawn — **"full context" means every input the original Step 5 draft spawn received (`CAREER_DATA`, the final CV path, `Role emphasis`, Why I Want This Role, company name + role title, `Strategy`, the template selection token from Step 4.99 — exactly the input contract above, nothing more) plus the current draft at `$PIPE/letter-draft.md` and every accumulated violation/feedback file (`$PIPE/fix-log.md` and any gatekeeper/coach review files produced so far) — not the draft and feedback alone**, since a fresh instance has none of the resumed instance's memory and must reconstruct the same grounding the original spawn had. A crash-recovery respawn never widens the contract — `Role summary`, `Gap handling`, the recruiter review, and the coach outline stay out here exactly as they do at Step 5. Capture and overwrite the agent-ID file with the new instance.
 
 ### Step 5.2 — Gatekeeper (cover letter draft check)
 
@@ -254,7 +257,7 @@ Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DAT
 
 Entry condition: run only after Step 5.2 reaches a genuine PASS. **Step 5.2's cap-exhaustion path no longer reaches this step** — a role that hits that cap halts at Step 5.2 per the Absolute Constraints, never proceeds to coach review, humanizer, or export.
 
-**When `$SENDMESSAGE_AVAILABLE`, resume the coach instance captured at Step 4.99** (`$PIPE/coach-agent-id.txt`) with the **Option 4 — Strategic Letter Review** context below, rather than spawning fresh — it already holds the outline it wrote at Step 4.99 and can check whether the writer actually followed it. **When unavailable**, spawn a fresh `career-coach` with **Option 4 — Strategic Letter Review** instead. Either way, pass:
+**When `$SENDMESSAGE_AVAILABLE`, resume the coach instance captured at Step 4.99** (`$PIPE/coach-agent-id.txt`) with the **Option 4 — Strategic Letter Review** context below, rather than spawning fresh — it already holds the outline it wrote at Step 4.99 as its own review rubric (the writer never receives that outline — 2026-07-14 input contract; the coach checks whether the letter lands the intended subjects on its merits, not whether the writer transcribed the outline). **When unavailable**, spawn a fresh `career-coach` with **Option 4 — Strategic Letter Review** instead. Either way, pass:
 - `CAREER_DATA=${CAREER_DATA}`
 - The cover letter path `$PIPE/letter-draft.md` to read
 - `Role summary`, `Strategy`, `Keywords` (from the coach's Step 0.8 output)

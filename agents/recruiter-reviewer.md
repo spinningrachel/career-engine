@@ -108,7 +108,7 @@ After completing the recruiter review above, add one more section:
 [Maximum 3 items. If the CV raises no such questions, write: "No interview-trigger gaps identified."]
 ```
 
-This section feeds the letter-writer, which uses it to proactively address gaps where Why I Want This Role or documented background provides a real answer.
+This section is user-facing interview-prep feedback: it is surfaced in the role's feedback file for the user to read before an interview. **It is NOT passed to the letter-writer** (2026-07-14 letter-writer input contract) — the letter never responds to these items, and nothing here should be written with a letter revision in mind.
 
 ## Hard rules
 
