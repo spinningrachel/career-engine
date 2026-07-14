@@ -125,6 +125,8 @@ See `skills/writer-craft/SKILL.md` for how to use these together and the rules g
 
 **Also passed:** Final CV (coherence only), recruiter review (which includes interview-trigger gaps).
 
+**Input-content boundary (`skills/writer-craft/SKILL.md` §10 — read it before drafting).** Every input above is a targeting signal, never a content source. No fact enters the letter from `Role summary`, the coach context block, `$PIPE/coach-outline.md`, or the recruiter review unless it independently traces to WIWTR, the Motivation Bank, or documented background. Company-research facts (org size, ownership/acquisition history, funding, founding year) never appear in letter text at all — recitation is a Gate 4 hard fail. Receiving more research context than the letter needs is normal and deliberate; the surplus exists so you aim better, not so you write more.
+
 ### Interview-trigger gaps (from recruiter review)
 
 If the recruiter review was passed: read the "Interview-trigger gaps" section before drafting. These are things clear enough to pass the recruiter screen but that would prompt a question from the hiring manager — scope ambiguity, thin capability evidence, claims needing context. The letter has a unique opportunity to answer some of them proactively — not as a Q&A response, but woven naturally into the letter body as narrative that happens to resolve the question. For each item: does Why I Want This Role or the documented background give a real answer? If yes, build it in where it fits the letter's structure. Do not force answers to questions the letter cannot address honestly — skip those. Addressing one or two well is better than mentioning all of them superficially.

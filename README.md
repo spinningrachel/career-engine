@@ -85,6 +85,19 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-14 — Cover-letter voice bans and pipeline-input content boundary
+
+All from one real shipped letter batch the user rejected outright.
+
+**Bug fixes**
+- **New Tier 1 banned terms** — `mandate`, figurative `system`, "from a blank page", "for exactly that"/"exactly that", "in their flow", "toward the" motion constructions ("pulled me toward the [role]"), "handed me" employer-agency constructions ("never handed me a settled direction"), and the read-the-posting opener family ("I've read the [Role] posting twice", any version). Added to `writer-craft` §2 and Gate 6 Tier 1; both pipelines' export Bash backstops inherit them automatically.
+- **"zero to" mechanically capped** — one occurrence per letter maximum, zero when "from scratch" is already used; a real letter shipped three builder-origin phrases.
+- **Company-research recitation ban (Gate 4 hard fail)** — org size, ownership/acquisition history, funding, and founding-year facts are never recited back at the reader, regardless of grammatical subject.
+- **Manufactured passion hierarchy ban (Gate 4 hard fail)** — no superlative preference claims ("what I care about most") unless verbatim in WIWTR or the Motivation Bank; a documented interest is never license to rank it above her whole field.
+- **Prior-state employer claims** — "I rebuilt what existed at [Company]" and kin now explicitly under the fabrication/overreach rule; what existed before her arrival must trace to documented background.
+- **Pipeline inputs declared targeting signals, never content sources** — Role summary, the coach context block, the coach outline, and Landscape-derived facts exist so the writer aims better, not so it writes more; no fact enters a letter from a pipeline input unless it independently traces to WIWTR, the Bank, or documented background.
+- **`writer-craft` §8's worked opener example reworked** — it previously modeled "I read [Company]'s [Role Title] posting and...", the shape the rejected batch escalated into the read-it-twice opener; it no longer models reading-narration at all.
+
 ### 2026-07-13 — QA agent pinned to Opus with model disclosure
 
 - **`agents/qa-plugin.md` now pins `model: opus`** (the alias, matching the humanizer's convention). Post-restructure, everything mechanical lives in the scripts — what remains in the agent is pure judgment (personal-data review, diff sweep, semantic passes), which should not silently inherit a small session model. An explicit model on the spawning Agent call still overrides the pin when a stronger session model is available.

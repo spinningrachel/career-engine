@@ -45,6 +45,22 @@ results-driven, passionate, dynamic, proactive, experienced, highly qualified, t
 
 **[CL] Cover-letter-only phrase bans:** "I was just doing X" (name company/role/outcome), "I know how to sell X" (name company and result), "I knew this was mine" (any variant — state the reaction directly), "I spent the better part of a decade..." (name the years), metaphors and similes (name the actual thing).
 
+**[CL] Cover-letter-only bans — 2026-07-14 additions. Every one of these shipped in a real letter batch the user rejected outright; none is a style preference:**
+
+| Banned | Why / Fix |
+|---|---|
+| "mandate" | Pipeline-internal analysis vocabulary (the `Role emphasis` **Mandate** label) leaking into letter prose — never her voice. Say what the job is in plain words. |
+| "system" (figurative) | "Builds the system before it exists," "the system I built" meaning a function or process. Allowed only for an actual software/technical system. |
+| "from a blank page" / figurative "blank page" | Not her phrase. Use documented phrasing instead (subject to the "zero to" cap below). |
+| "for exactly that" / "exactly that combination" / "exactly that" as demonstrative emphasis | Points back at a recitation instead of saying the thing. Name the thing. |
+| "in their flow" / "in the flow" (figurative) | Invented jargon ("kept developers in their flow"). Name what actually happened. |
+| "toward the" as motion-metaphor motivation ("pulled me toward the [role]," "drew me toward") | Agent voice, not hers. State the want directly in her own words. Treat any letter-body "toward the" as a violation by default. |
+| "handed me" as employer-agency framing ("never handed me a settled direction") | A company doesn't hand direction. Describe what she actually did, sourced from documented background. |
+
+**"zero to" usage cap [CL] — allowed ONCE per letter, and only if "from scratch" is not already used.** "Zero to one," "zero-to-N," "from zero": maximum one occurrence in the whole body, and zero occurrences if "from scratch" appears anywhere in the letter. A real rejected letter carried three builder-origin phrases ("zero-to-one," "grew from zero to 13," "built from zero") — one is a credential, three are a tic.
+
+**Narrating the act of reading the posting — banned, any version [CL].** "I've read the [Role Title] posting twice," "I read the posting and...," "I've gone back to the posting" — performing diligence is not a reaction, and no version of this move may appear anywhere in a letter, opener or body. See §8 — the worked example there deliberately does not model this.
+
 **Idioms — absolute ban [ALL], one exception.** Any figurative phrase used non-literally ("hit the ground running," "wear many hats," "move the needle," "low-hanging fruit," "at the end of the day," "take it to the next level," "raise the bar," "think outside the box," and all similar) is banned — UNLESS it appears verbatim in the user's own Why I Want This Role or personal input, in which case it is her voice and may be used exactly as written. When in doubt, treat it as an idiom and replace it.
 
 ---
@@ -63,7 +79,7 @@ results-driven, passionate, dynamic, proactive, experienced, highly qualified, t
 
 **[CL] -ing phrases appended after a main clause — max 3 per letter, every one content-bearing.** "Contributing to," "showcasing," "highlighting," "enabling" tacked onto a complete sentence. A tail with real content (a real outcome, a real list) is fine at low count; a decorative tail ("...showcasing expertise") is banned at any count.
 
-**[CL] Unsubstantiated company-character claims and overreach — banned.** Never attribute something documented for only one past role to multiple roles, and never assert a fact about the company's business, culture, or product the user has not sourced from her own words or documented background. A real test overreach: claiming "AI agents doing the execution both times" when only one employer's bullets supported it. Every claim about scope, attribution, or pattern must be checkable against the specific role(s) it's grounded in — not generalized because it sounds better.
+**[CL] Unsubstantiated company-character claims and overreach — banned.** Never attribute something documented for only one past role to multiple roles, and never assert a fact about the company's business, culture, or product the user has not sourced from her own words or documented background. A real test overreach: claiming "AI agents doing the execution both times" when only one employer's bullets supported it. Every claim about scope, attribution, or pattern must be checkable against the specific role(s) it's grounded in — not generalized because it sounds better. **Prior-state claims about her own past employers are the same rule:** "I rebuilt what existed at [Company]," "I inherited a mess," "took over a stalled function" — what existed (or didn't exist) before her arrival is a factual claim that must trace to documented background like any other. A real rejected letter claimed "I rebuilt what existed at [Company]" about a company where the documented record shows she built the function from nothing — the claim was not just unsourced, it was backwards.
 
 ---
 
@@ -206,7 +222,7 @@ X is always required. Y is optional when the outcome is specific without a numbe
 
 **⛔ "I want the [Role Title] at [Company]..." is NOT a safe fix pattern, with or without a reason clause attached — an earlier version of this paragraph said otherwise and was wrong.** §11's own confirmed example already establishes why: "I want the [Role] at [Company] because I taught English as a second language..." FAILS the pattern-derivation forcing function despite being grammatically clean and genuinely sourced, because the sentence's underlying *move* is a direct answer to "why do you want this role?" — attaching a "because" clause supplies content, it does not change the move. A bare "I want the [Role Title] at [Company]." with the real non-transferable content deferred to a LATER sentence is the same failure, one step worse (no reason clause at all in sentence 1). **This exact confusion has already produced repeated, confirmed production failures** — including a clean, independently-reproduced test of this very doctrine, run with zero exposure to any prior failure, that cited this paragraph by name as justification for the exact shape it should never have recommended.
 
-Resolve the three-way constraint (subject-first + role-in-sentence-1 + no cliché) with a REACTION shape instead: name what she did (read, heard, recognized) and let the role/company arrive as the object of that reaction, with the non-transferable detail landing in the SAME sentence or the very next one — never deferred further. Worked example (fill every bracket with this letter's own specifics — never reuse this shape with placeholder brackets left in): "I read [Company]'s [Role Title] posting and recognized a problem I've already solved once: [the company's unnamed-category or positioning challenge] doesn't have a name buyers trust yet, any more than [her prior comparable challenge] did at [prior company]." Not: "I want the [Role Title] role at [Company]. [non-transferable content arriving two sentences later]." Not: "[Role Title] at [Company] was mine/meant for me" (breaks subject-first in spirit and risks the banned fit-declaration family in §2).
+Resolve the three-way constraint (subject-first + role-in-sentence-1 + no cliché) with a REACTION shape instead: name what she did (heard, saw, recognized) and let the role/company arrive as the object of that reaction, with the non-transferable detail landing in the SAME sentence or the very next one — never deferred further. Worked example (fill every bracket with this letter's own specifics — never reuse this shape with placeholder brackets left in): "When I saw that [Company] is hiring a [Role Title], I recognized a problem I've already solved once: [the company's unnamed-category or positioning challenge] doesn't have a name buyers trust yet, any more than [her prior comparable challenge] did at [prior company]." (An archive-consistent dependent-clause ramp carrying HER reaction — the shape Gate 5 explicitly passes.) **Do not perform the reaction by narrating the act of reading the posting** — "I've read the [Role Title] posting twice. It names the mandate plainly..." is performed diligence, not a reaction, and is banned in any version (§2). An earlier version of this worked example began "I read [Company]'s [Role Title] posting and..." — a real shipped letter escalated exactly that shape into the banned read-it-twice opener, which is why the example no longer models the reading-narration move at all. Not: "I want the [Role Title] role at [Company]. [non-transferable content arriving two sentences later]." Not: "[Role Title] at [Company] was mine/meant for me" (breaks subject-first in spirit and risks the banned fit-declaration family in §2).
 
 **No sentence shape shown anywhere in this doctrine — including this section's own worked example — is a pre-cleared exemption from §11's pattern-derivation forcing function.** Every opener must still independently pass that test on its own merits. Draft the opener against all of these constraints at once, not one then the other.
 
@@ -278,6 +294,12 @@ Named patterns for the opener paragraph. Fill the bracketed slots with the user'
 
 **JD-dimension mirroring — forbidden in prose,** except inside a transferability bullet list (§9.7), where it's the point.
 
+**Company-research recitation — banned.** Research facts about the company — headcount/org size, acquisition or ownership history, funding, founding year, valuation — are targeting context for the writer, never letter content. The reader works there; reciting their own company's dossier back at them reads as performed diligence, not fit. A real rejected letter opened with "a founding GTM Leader building from a blank page inside the roughly 100,000-person organization SAP folded WalkMe into back in 2023" — every fact in that clause is company research, none of it is her. This ban holds regardless of grammatical subject: putting "I" in front of the dossier line does not exempt it from the analyst-paragraph family. A company fact may appear only when it arrives inside her own verbatim WIWTR/Bank reaction — and even then, state the reaction, not the dossier line.
+
+**Pipeline inputs are targeting signals, never content sources.** `Role summary`, the coach context block, `$PIPE/coach-outline.md`, `Gap handling`, `Landscape`-derived facts, and the recruiter review tell you what to aim at — they are never quarries for sentences. No fact enters the letter from a pipeline input unless it independently traces to WIWTR, the Motivation Bank, or documented background (or is a JD requirement being answered with her documented proof). Receiving more research context than the letter needs is normal and deliberate — the surplus exists so you aim better, not so you write more. A letter that quotes coach research back at the reader fails the analyst-paragraph ban (§8) and the company-research recitation ban above.
+
+**No manufactured passion hierarchy.** Never rank one interest above the rest of her field — "what I care about most," "the work I love most," "nothing excites me more," or any superlative preference claim — unless she said it verbatim in WIWTR or the Motivation Bank. A tagged Bank entry showing genuine interest in a topic (e.g. PLG) is evidence she cares about it, never evidence she cares about it *more than everything else in marketing* — escalating a documented interest into a superlative is fabrication of a preference she has never stated.
+
 **Managed-vs-executed.** Credit management and ownership, not personal execution, when the user managed a team: "Oversaw analyst relations," not "ran analyst relations personally."
 
 **Temporal motivation hedges — forbidden.** "The seat I want most right now," "at this stage of my career" — cut any phrase implying "...as opposed to what I'll want later." Genuine motivation needs no time qualifier.
@@ -313,6 +335,7 @@ Named patterns for the opener paragraph. Fill the bracketed slots with the user'
 - [ ] Role named in the first sentence; company named in paragraph 1
 - [ ] First sentence does not make a market/industry/role claim before the user appears as subject
 - [ ] Not anonymous ("Reading this posting..." with no company/role named)
+- [ ] Does not narrate the act of reading the posting ("I've read the [Role] posting twice" or any version — §2)
 - [ ] Passes the non-waivable JD-mirroring carve-out (§8) even if traced to WIWTR
 - [ ] **Pattern-derivation forcing function.** Name which Use-Case Structure (§9) or personalized-template variant the opener's *construction* derives from — not just its content. A real, sourced fact can still be wrapped in an invented sentence shape; this checks the container, not just what's inside it. **"A named pattern" means one of the §9 Use-Case Structures or a personalized-template variant — never a worked example or "Fix pattern" snippet elsewhere in this doctrine (including §8's own opener-doctrine prose), which illustrate a narrower point and are not themselves pre-cleared exemptions from this test.**
   - **If it derives from a named pattern or variant:** done, move on.
@@ -335,6 +358,10 @@ Named patterns for the opener paragraph. Fill the bracketed slots with the user'
 - [ ] No CV fact repeated (verbatim or equivalent words) anywhere in the letter
 - [ ] At least one specific number or named outcome
 - [ ] No overreach — no claim generalized across roles beyond what's documented for each
+- [ ] No company-research fact (org size, ownership/acquisition history, funding, founding year) recited in letter text; no sentence whose only source is `Role summary` or coach materials (§10)
+- [ ] "zero to"/"from zero" appears at most once — and not at all if "from scratch" is present (§2)
+- [ ] No superlative preference claim ("what I care about most," "the work I love most") not verbatim hers (§10)
+- [ ] No prior-state claim about a past employer ("rebuilt what existed," "inherited") untraceable to documented background (§3)
 
 **Gut check:**
 - [ ] Does the first sentence sound like a person, not a form letter?
