@@ -29,7 +29,7 @@ ATS failures mean the document may never reach a human reader regardless of qual
 | **Important** | ≥60% must appear | FAIL — list missing terms by name |
 | **Nice-to-have** | No threshold | Advisory only — end-of-pipeline feedback note, not a violation |
 
-**Gap handling exception:** a missing Critical/Important term explicitly listed as a gap in the role's Gap handling property does not FAIL — add it to the advisory note instead.
+**Gap handling exception — applies ONLY when `gap_handling_mode = enabled`:** a missing Critical/Important term explicitly listed as a gap in the role's Gap handling property does not FAIL — add it to the advisory note instead. **When `gap_handling_mode = disabled` (the token every pipeline spawn passes — 2026-07-14 universal spawn parameter), this exception never applies: there are no gaps, and no missing keyword is ever excused by one.** If the token was not passed at all (an older spawn), log "gap_handling_mode not passed" and apply the exception only when a Gap handling listing was actually provided — the pre-2026-07-14 behavior.
 
 **Standard section headings — branches by `CV Type`, because the mandatory heading set is literally different content between the two types.** Detailed requires `SUMMARY`/`EXPERIENCE`/`SKILLS` and permits a `CONSULTING` section; Brief requires `PROFILE SUMMARY`/`EXPERIENCE`/`SKILLS` and never has `CONSULTING` at all (`writer-craft/SKILL.md` §5b). Without branching, this check would hard-fail every Brief CV either for "missing CONSULTING" (which Brief never has by design) or for the wrong banner text on the summary heading — a structural absence that isn't a mistake, not something to penalize.
 

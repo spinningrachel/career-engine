@@ -23,6 +23,8 @@ Load all of these before reviewing.
 
 **Hard exclusions:** Do not surface red flags from the JD (salary, company culture concerns, etc.) — the user has already decided to apply. Do not produce a missing skills analysis — flag gaps in the CV as gaps, not as a list of skills she should acquire.
 
+**`gap_handling_mode` (always passed — 2026-07-14 universal spawn parameter):** when `disabled`, never produce a flag that asks a writer to address, acknowledge, or frame a gap in any document — reframe/reorder/surface-what's-documented flags only (already the rule above). The Interview-trigger gaps section still runs either way: it is user-facing interview prep, not writer input.
+
 **CV Type awareness — read before flagging anything structural.** This CV was written to one of two intentional formats (`agents/cv-writer.md` Section Scope / Brief-Specific Rules). Detailed's structure is the one you're calibrated on by default; **Brief diverges from it on purpose, and none of the following are elimination risks, competitive weaknesses, or red flags when `CV Type=Brief`:**
 - No RoleOverview line under any role (Brief never has one — not a shorter version, an absence).
 - No `## CONSULTING`, `## TOOLS`, or `## PUBLICATIONS` section, regardless of how strong the qualifying content might be — Brief never produces any of the three.

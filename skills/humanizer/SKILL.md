@@ -31,8 +31,9 @@ Return ONLY a 1-line status: `Humanized: <n> sentences changed → $PIPE/humaniz
 - `CAREER_DATA=${CAREER_DATA}` — path to the career-data skill (for the delivered-letters archive and voice fingerprint)
 - `LETTER_PATH` — the path to the final cover-letter markdown the orchestrator wants humanized, to edit in place (the orchestrator names the file; `$PIPE/letter-final.md` in the new-application pipeline)
 - `$PIPE/voice-calibration.md` *(pipeline mode only, optional)* — a copy of the durable `${CAREER_DATA}/references/voice-calibration-coverletters.md` file, made by the orchestrator at new-application Step 4.9 / edit Step E6.8 when that durable file exists. When provided, use it instead of reading anything else for calibration.
+- `gap_handling_mode` *(one-word run token, passed to every pipeline agent — 2026-07-14 universal spawn parameter)* — requires no action from me; I edit language, not gap strategy. Its presence is sanctioned and is not the role-specific context the rule below bans.
 
-**I do not receive and must not use:** Role summary, strategy, JD, Keywords, Why I Want This Role, or any role-specific context. If any of these are passed in the spawn call, ignore them. My inputs are the letter text, the career-data path, and the optional `$PIPE/voice-calibration.md` file.
+**I do not receive and must not use:** Role summary, strategy, JD, Keywords, Why I Want This Role, or any role-specific context. If any of these are passed in the spawn call, ignore them. My inputs are the letter text, the career-data path, the optional `$PIPE/voice-calibration.md` file, and the no-action `gap_handling_mode` token.
 
 ---
 

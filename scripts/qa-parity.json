@@ -158,7 +158,8 @@
       ],
       "require": [
         "CAREER_DATA=${CAREER_DATA}",
-        "Strategy"
+        "Strategy",
+        "gap_handling_mode"
       ],
       "alternates": [
         "same parameters as"
@@ -175,12 +176,29 @@
       ],
       "require": [
         "CAREER_DATA=${CAREER_DATA}",
-        "CV Type"
+        "CV Type",
+        "gap_handling_mode"
       ],
       "alternates": [
         "same parameters as"
       ],
       "min_sites": 4
+    },
+    {
+      "id": "pipeline-spawn-gap-mode",
+      "_comment": "2026-07-14: every subagent spawn in the New Application and Edit pipelines passes gap_handling_mode alongside CAREER_DATA (universal spawn parameter). Trigger = the literal CAREER_DATA restatement every spawn site carries; any paragraph restating it must also carry the mode token. min_sites guards against the pairing being reworded out of existence.",
+      "trigger": "CAREER_DATA=${CAREER_DATA}",
+      "files": [
+        "skills/career-engine-new-application/SKILL.md",
+        "skills/career-engine-edit/SKILL.md"
+      ],
+      "require": [
+        "gap_handling_mode"
+      ],
+      "alternates": [
+        "same parameters as"
+      ],
+      "min_sites": 34
     }
   ],
   "pipe_closure": {
