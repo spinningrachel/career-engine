@@ -136,6 +136,15 @@
       "files": [
         "skills/career-engine-orchestrator/orchestrator-queue.md"
       ]
+    },
+    {
+      "id": "term-letter-writer-input-contract",
+      "_comment": "2026-07-14: the letter-writer receives exactly three content inputs (final CV, Role emphasis, WIWTR) plus identity and routing tokens. Cited across both pipelines, writer-craft, gatekeeper-checks, recruiter-reviewer, career-coach, qa-plugin. Canonical statement lives in new-application Step 5 and the agent file.",
+      "term": "letter-writer input contract",
+      "files": [
+        "skills/career-engine-new-application/SKILL.md",
+        "agents/letter-writer.md"
+      ]
     }
   ],
   "context_sets": [

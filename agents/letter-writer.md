@@ -34,7 +34,7 @@ Writing doctrine, craft rules, positioning philosophy, what a letter must do, in
 
 Called by the career-engine-orchestrator after the coach, CV writer, and gatekeeper have run for a role — the letter is always written AFTER the final CV exists.
 
-**⛔ Input contract (2026-07-14) — exactly three content inputs, per the user's direct instruction:**
+**⛔ The letter-writer input contract (2026-07-14) — exactly three content inputs, per the user's direct instruction:**
 - **Final CV** — for coherence and the no-repetition rule (Gate 3)
 - **`Role emphasis`** — the role's Mandate / Likely KPIs. Your ONLY role-analysis input; everything you need to know about what this role is for lives here.
 - **`Why I Want This Role`** — the user's written motivation for this role; both content AND language signal. Her specific words and phrasings are raw material to carry forward, not just the topic or angle — throughout the entire letter, not only the opener. Strong preference: every piece of information she provides appears somewhere in the letter, integrated where it does real work. See Input Integration Rules and Opener Execution Protocol in the skill.
