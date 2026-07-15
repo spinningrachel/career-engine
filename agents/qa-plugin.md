@@ -1036,7 +1036,7 @@ Collect every statement phrased as an absolute — "never X", "always Y", "the O
 
 ### Check 69 — Enforcement red-team (semantic pass, 2026-07-13 addition)
 
-For each mechanical gate in the plugin — both hooks in `hooks/hooks.json`, the revision caps, the halt-before-export policy, the orchestrator Bash backstops, the round-aware Tier 2 grading — ask: **how would the documented failure mode present WITHOUT triggering this gate?** (The `AskUserQuestion` family: a turn ending in a tool call leaves no final text for a Stop hook to judge.) Consider: the gate's input never being produced, the trigger condition being narrower than the failure, the gate firing but its output being ignored downstream, and the failure arriving at a sibling step the gate doesn't cover. Report each credible bypass as a finding with the concrete presentation shape — "credible" means you can describe the exact sequence, not just name a fear.
+For each mechanical gate in the plugin — both hooks in `hooks/hooks.json`, the revision caps, the flag-and-deliver policy (formerly halt-before-export), the orchestrator Bash backstops, the round-aware Tier 2 grading — ask: **how would the documented failure mode present WITHOUT triggering this gate?** (The `AskUserQuestion` family: a turn ending in a tool call leaves no final text for a Stop hook to judge.) Consider: the gate's input never being produced, the trigger condition being narrower than the failure, the gate firing but its output being ignored downstream, and the failure arriving at a sibling step the gate doesn't cover. Report each credible bypass as a finding with the concrete presentation shape — "credible" means you can describe the exact sequence, not just name a fear.
 
 ### Check 23 — Intake pipeline logic review
 

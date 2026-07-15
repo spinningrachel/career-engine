@@ -81,10 +81,11 @@
   "defined_terms": [
     {
       "id": "term-halt-policy",
-      "term": "halt-before-export policy",
+      "term": "flag-and-deliver policy",
       "files": [
         "skills/career-engine-orchestrator/orchestrator-queue.md"
-      ]
+      ],
+      "_comment": "2026-07-14: renamed from halt-before-export policy per the user's direct instruction — cap exhaustion delivers flagged output, never nothing. Both pipelines cite this exact name; definition lives in orchestrator-queue.md Absolute Constraints."
     },
     {
       "id": "term-absolute-constraints",
