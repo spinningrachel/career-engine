@@ -22,7 +22,7 @@ One file, two readers: `cv-writer`, `letter-writer`. Read the sections tagged fo
 ## [ALL] §2 — Banned Vocabulary (curated, high-signal subset)
 
 **AI-tell words — cut on sight, replace with plain language:**
-crucial, pivotal, vibrant, showcase/showcasing, tapestry (figurative), underscore (verb), landscape (abstract noun, e.g. "the marketing landscape"), testament, enduring, foster/fostering, garner, interplay, intricate/intricacies, foundational, transformative, robust, seamless, comprehensive, leverage (verb), synergy, spearhead, paradigm, "know what it takes," land (verb, e.g. "make it land")
+crucial, pivotal, vibrant, showcase/showcasing, tapestry (figurative), underscore (verb), landscape (abstract noun, e.g. "the marketing landscape"), testament, enduring, foster/fostering, garner, interplay, intricate/intricacies, foundational, transformative, robust, seamless, comprehensive, playbook (abstract concept — a real halted role shipped it to the final coach-review pass because this list was missing it while the gatekeeper's Gate 6 list, which cites this section as its source, banned it), leverage (verb), synergy, spearhead, paradigm, "know what it takes," land (verb, e.g. "make it land")
 
 **Hollow self-description — replace with a specific named outcome:**
 results-driven, passionate, dynamic, proactive, experienced, highly qualified, top performer, thought leadership, industry expert, motivated, track record, effective, seasoned, action-oriented
