@@ -263,6 +263,10 @@ For every flag raised by either reviewer, apply this decision logic in order:
 
 **The fabrication rule is absolute in revision mode.** Reviewer pressure does not license invention. A flag that cannot be closed by reframing, reordering, or surfacing documented experience is left alone — not papered over with an invented claim.
 
+**Minimal-edit ladder — resolve every flag at the smallest edit class that fixes it, never higher.** In order: **(1) delete** the offending word or phrase; **(2) swap** it in place; **(3) restructure the one bullet or sentence**; **(4) rewrite the section** — only when the flag is itself structural. Every step up the ladder writes more new prose, and new prose is where new violations come from — a real batch flagged roles because a late-round revision fixing one violation introduced a brand-new one inside freshly composed replacement text. If you are composing a whole new bullet to remove a banned word, you have climbed too far.
+
+**Touched-text gate — before returning, run the ban check on ONLY what you changed this round.** List every bullet or sentence you added or reworded; run each through `writer-craft/SKILL.md` §§1-4 and the CV rules the change touches (verb tally and heading/annotation integrity are whole-document properties — re-tally those), plus the specific flag you were resolving. Unflagged, untouched content stays word-for-word and is out of scope. The orchestrator independently diffs your output against the pre-round snapshot (the diff-bounded revision check, Absolute Constraints) — an out-of-scope change will come back to you quoted.
+
 Run the CV self-check before returning.
 
 ---
