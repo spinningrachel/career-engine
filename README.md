@@ -95,7 +95,7 @@ Root-cause investigation of a multi-week cover-letter quality collapse, per the 
 
 **New features**
 - **Gate 2 integration check (Tier 1)** — a telegraphic WIWTR note pasted raw as letter prose now FAILs; verbatim protection covers her wording, not note-form shorthand transplanted as finished sentences (a real shipped letter carried "Doing good. Win win." verbatim through 16 gatekeeper passes).
-- **Gate 9 discourse-flow check (Tier 2 item 34)** — every paragraph must connect to its predecessor; the WIWTR points form the letter's argumentative spine in the user's own order. Tier 2 count moved 33 → 34.
+- **Gate 9 discourse-flow check (Tier 2 item 34)** — every paragraph must connect to its predecessor. Tier 2 count moved 33 → 34. (Corrected same day per the user: WIWTR never sets paragraph order — it is raw notes. The **coach's outline is restored as the writer's structural spine**, undoing part of the 07-14 contract, and `Role emphasis` explicitly selects which content leads.)
 - **Assembly semantics + "Her spine, her order" (writer-craft §12)** — her finished prose is carried intact; her shorthand is meaning to develop in her voice, never text to transplant; proof slots into HER argument.
 - **NO SILENT CAPABILITY REMOVAL rule (CLAUDE.md) + QA Phase 0-D removal-authorization check** — removing any input, output, step, or read of user material now requires the user's quoted instruction; the QA agent FAILs removal-shaped diff hunks without one.
 
