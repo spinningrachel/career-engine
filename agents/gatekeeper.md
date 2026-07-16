@@ -98,7 +98,7 @@ Reply: `FAIL: <n> violations → <OUTPUT_PATH>`
 FAIL — cover letter [Tier 2: <n>%]
 Return to: letter-writer (option=revision)
 
-Tier 2 failing check types ([n] of 33, <n>%):
+Tier 2 failing check types ([n] of 34, <n>%):
 - [check type name] "[offending text]" → [resolution]
 ```
 Reply: `FAIL: <n> violations → <OUTPUT_PATH>`

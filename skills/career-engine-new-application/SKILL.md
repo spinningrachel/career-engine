@@ -186,6 +186,8 @@ Read `${CAREER_DATA}/references/voice-calibration-coverletters.md` directly — 
 - **If it exists:** copy its content to `$PIPE/voice-calibration.md`. Proceed to Step 5.
 - **If it does not exist** (new user, or the user has not yet applied the update-prompt that delivers it): this is not an error — do not hard-stop. Proceed to Step 5 without creating `$PIPE/voice-calibration.md`. The letter-writer and humanizer both fall back to their standalone Voice Gate / calibration protocol (read the delivered-letters archive directly, or `03-framework.md` §Voice and tone if the archive is also empty).
 
+**Either way, the letter-writer and humanizer ALSO read real letters from the delivered-letters archive at their own Voice Gates (restored 2026-07-16, per the user's direct instruction).** The calibration file is a supplement to the archive, never a substitute — do not describe it to any spawned agent as making the archive read unnecessary.
+
 ---
 
 ### Step 4.95 — Capability preflight (once per run)
@@ -290,7 +292,7 @@ See the Absolute Constraints' non-skippable-humanizer rule — this step runs fo
 
 **Before spawning, snapshot the revert target:** copy `$PIPE/letter-final.md` (the Step 5.3-passing text) to a sibling `$PIPE/letter-final.prehumanizer.md` — the revert target for Step 5.95. (The humanizer edits in place, so this snapshot must be taken first.)
 
-Spawn `humanizer`, passing `CAREER_DATA=${CAREER_DATA}`, `gap_handling_mode=$GAP_HANDLING_MODE`, the final cover letter markdown path `$PIPE/letter-final.md` (it edits in place), and `$PIPE/voice-calibration.md` if it was created in Step 4.9 (the durable voice calibration; the humanizer uses it instead of reading the archive directly). Do not pass Role summary, strategy, JD, or any role-specific context — the humanizer's only inputs are the letter, the career-data path, and the voice-calibration file.
+Spawn `humanizer`, passing `CAREER_DATA=${CAREER_DATA}`, `gap_handling_mode=$GAP_HANDLING_MODE`, the final cover letter markdown path `$PIPE/letter-final.md` (it edits in place), and `$PIPE/voice-calibration.md` if it was created in Step 4.9 (the durable voice calibration; the humanizer reads it alongside its own delivered-letters archive sample — the file supplements the archive, it never replaces it). Do not pass Role summary, strategy, JD, or any role-specific context — the humanizer's only inputs are the letter, the career-data path, and the voice-calibration file.
 
 The humanizer is a writing editor and linguistics expert. It loads `skills/humanizer/SKILL.md` (its full doctrine and procedure) and `skills/writer-craft/SKILL.md` (its `[ALL]` sections) and removes AI writing patterns sentence by sentence. It does not change structure, strategy, or content — only language.
 

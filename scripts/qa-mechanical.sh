@@ -550,22 +550,22 @@ expect_ge "62" "agents/cv-writer.md" "PUBLICATIONS\` is optional and rarely used
 expect_ge "62" "agents/cv-writer.md" "PUBLICATIONS\` section:" 1
 
 # ================================================================
-# Check 63 — Gate 5 pattern-derivation forcing function, Tier 2, bumps checklist to 33
+# Check 63 — Gate 5 pattern-derivation forcing function, Tier 2, bumps checklist to 33 (34 since 2026-07-16 discourse-flow addition)
 # ================================================================
 expect_ge "63" "skills/writer-craft/SKILL.md" "Pattern-derivation forcing function" 1
 expect_ge "63" "skills/writer-craft/SKILL.md" "would this sentence's structure work as a direct answer to" 1
 expect_ge "63" "skills/gatekeeper-checks/SKILL.md" "Pattern-derivation forcing function — Tier 2, not Tier 1" 1
 expect_ge "63" "skills/gatekeeper-checks/SKILL.md" "33. Novel opener construction passes the direct-answer test" 1
-expect_ge "63" "skills/gatekeeper-checks/SKILL.md" "33 distinct, named check types" 1
+expect_ge "63" "skills/gatekeeper-checks/SKILL.md" "34 distinct, named check types" 1
 expect_eq0 "63" "skills/gatekeeper-checks/SKILL.md" "32 distinct, named check types"
 c63_all32=$(grep -Ec "all 32\b" "$TARGET/skills/gatekeeper-checks/SKILL.md" 2>/dev/null || true); c63_all32=${c63_all32:-0}
 if [ "$c63_all32" -eq 0 ]; then report "63" 1 ""; else report "63" 0 "'all 32' (word boundary) found $c63_all32 time(s) in gatekeeper-checks/SKILL.md, must be 0"; fi
-expect_ge "63" "skills/gatekeeper-checks/SKILL.md" "check types passed ÷ 33" 1
-expect_ge "63" "agents/gatekeeper.md" "\[n\] of 33" 1
+expect_ge "63" "skills/gatekeeper-checks/SKILL.md" "check types passed ÷ 34" 1
+expect_ge "63" "agents/gatekeeper.md" "\[n\] of 34" 1
 expect_eq0 "63" "agents/gatekeeper.md" "\[n\] of 32"
-expect_ge "63" "CLAUDE.md" "33 named, binary check types" 1
+expect_ge "63" "CLAUDE.md" "34 named, binary check types" 1
 expect_eq0 "63" "CLAUDE.md" "32 named, binary check types"
-expect_ge "63" "CLAUDE.md" "33-item checklist" 1
+expect_ge "63" "CLAUDE.md" "34-item checklist" 1
 expect_eq0 "63" "CLAUDE.md" "32-item checklist"
 
 # ================================================================

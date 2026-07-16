@@ -91,7 +91,7 @@ results-driven, passionate, dynamic, proactive, experienced, highly qualified, t
 
 **Sentence-length variation [ALL].** Mix long and short deliberately — short lands emphasis, long carries nuance. A paragraph that reads monotone — noticeably same-length, same-shape sentences with no variation — needs intervention: break a long sentence in two, fuse two short ones, or land the point in one short sentence. This is a calibration target judged by ear against the delivered letters, not a word-count formula; do not restructure a paragraph that already reads naturally.
 
-**[CL] Sentence-rhythm floor — non-negotiable, not just a calibration target.** At least one sentence ≤8 words AND one ≥25 words must appear somewhere in the body. This is the gatekeeper's Gate 7 rhythm check and the humanizer's own Quantitative Final Gate — a letter with zero short sentences (flat rhythm) is a real, confirmed failure mode that has reached export before. Do not rely on a later stage to introduce this; write it in from the draft.
+**[CL] Sentence-rhythm variation — calibrated to her letters, never manufactured (reframed 2026-07-16; formerly a mechanical "one ≤8 AND one ≥25 words" floor).** Her delivered letters vary sentence length naturally — short declaratives land next to long, clause-trailing sentences (see the Voice Gate read and §8's Annotated Exemplar). Write with that variation from the draft; a letter of uniformly mid-length sentences reads flat and has reached export before. **But the variation must ride on real content: never write a fragment, or split a sentence, solely to satisfy a length target.** A short sentence earns its place by doing a job (an identity fragment, a causal fragment, a punchline after a long chain — §8's exemplar); a fragment with no job is an AI tell, not rhythm — the mechanical floor this rule replaces demonstrably manufactured them ("Doing good. Win win."). This is the gatekeeper's Gate 7 rhythm check and the humanizer's Quantitative Final Gate, both now measured against the archive's real statistics when available.
 
 **Synonym cycling — ban [ALL].** Pick the right word and repeat it. Rotating synonyms to avoid repetition is an AI tell.
 
@@ -256,6 +256,24 @@ Resolve the three-way constraint (subject-first + role-in-sentence-1 + no clich�
 
 The fix for both: read her actual words (WIWTR and the role-matched Bank entries), understand what she's saying AND how she's saying it, then write a letter paragraph that says it well in her words — shape the structure, preserve the language.
 
+### Annotated Exemplar (restored 2026-07-16 — removed without authorization in the 2026-07-02 consolidation)
+
+One opener paragraph, annotated for the syntactic choices that make it work. Mirror the choices, not the content. (The user's real delivered letters — read at the Voice Gate — are the live exemplars; this one teaches the sentence mechanics.)
+
+> *[Name] here.*
+
+"[Name]" as grammatical subject — a proper noun, two syllables, nothing embedded. The predicate is implied. Deliberate identity fragment: complete as a sentence.
+
+> *I'll be honest. I nearly screamed when I saw this role.*
+
+"I" as subject. Short finite verb ("nearly screamed"). Two independent statements as two sentences — the second is NOT a subordinate clause embedded inside the first's predicate. "When I saw this role" is a short adverbial, not a wh-clause stacked into the predicate object. (The originally delivered sentence joined these with an em dash; under §1's punctuation bans, write it as two sentences or a comma pair — the syntactic lesson is identical.)
+
+> *Because I was just doing it over the last year as the [function] leader at [Company A], a direct competitor of [Company B] that [key outcome metric] and was [exit/milestone].*
+
+Deliberate causal fragment. "I" as subject. "Was just doing it" — short finite verb, predicate complete in five words. All complexity enters after the predicate via appositives: "as the [function] leader at [Company A]" (adverbial), "a direct competitor of [Company B]" (appositive bolted to the noun), "that [key outcome]" (relative clause on the appositive — not on the main predicate). The main predicate stays clean.
+
+What the three annotations share: her sentences put a person up front, land the verb early, and let detail trail behind the predicate. Fragments are deliberate and rare — one identity fragment, one causal fragment, each doing a job. A fragment with no job ("Doing good. Win win." pasted from notes) is not this pattern; see §8's Failure mode A.
+
 ---
 
 ## [CL] §9 — Use-Case Structures for the Opener
@@ -365,6 +383,11 @@ Named patterns for the opener paragraph. Fill the bracketed slots with the user'
 - [ ] No superlative preference claim ("what I care about most," "the work I love most") not verbatim hers (§10)
 - [ ] No prior-state claim about a past employer ("rebuilt what existed," "inherited") untraceable to documented background (§3)
 
+**Integration and flow (2026-07-16):**
+- [ ] No raw note-paste: every WIWTR-derived passage is a grammatical sentence connected to its paragraph — no telegraphic fragment transplanted as-is (§12 assembly semantics; Gate 2 hard fail)
+- [ ] WIWTR substance carries her actual phrasing — not rewritten into polished-professional language that erases how she said it (§8 Failure mode B)
+- [ ] Spine test: read the paragraphs' first sentences in sequence — one person making one case, each paragraph picking up from the last; WIWTR points in her order unless there's a nameable reason to reorder (§12)
+
 **Gut check:**
 - [ ] Does the first sentence sound like a person, not a form letter?
 - [ ] Does it sound like the candidate, calibrated against the delivered letters?
@@ -384,3 +407,9 @@ Named patterns for the opener paragraph. Fill the bracketed slots with the user'
 **Verbatim-preservation principle.** If the user's own words already say something well — in career-data, in WIWTR, or in a previous delivered letter — reuse them directly. Do not paraphrase, "clean up," or synthesize a smoother version, the same discipline already mandated for the Motivation Bank. This is a positive instruction, not just a permission: reusing exact phrasing that already worked isn't merely allowed, it's actively better — the sentiment lands more convincingly, and the user is far more likely to recognize the syntax as genuinely her own. Actively pull proven phrasing from the delivered-letters archive when it fits a new letter, rather than reworking it into something new because it happened to appear elsewhere already. Verbatim reuse across letters is not a defect — writing every letter from scratch is exhausting, and reusing proven, working phrasing is efficient.
 
 **Applied as a drafting ORDER, not just an editing principle (2026-07-14):** assemble the draft from her existing verbatim material FIRST — matching Motivation Bank rows, delivered-letter phrasings, approved summaries and testimonials, `03-framework.md` lines — copying the pieces and adjusting only for context, connectors, and flow. Compose fresh prose only where nothing exists to assemble. Fresh composition calibrated to her voice afterward is the inversion that produces agent-tell letters: nearly every violation family this doctrine bans (AI vocabulary, invented jargon, manufactured openers, recited research) enters through freshly-composed sentences, almost never through her own copied ones. See the letter-writer's Assemble-before-you-compose step.
+
+**Assembly semantics (2026-07-16 — "verbatim" is not "raw"):** her material comes in two classes, and assembly treats them differently.
+- **Finished prose** (a Bank row written as sentences, a delivered-letter phrasing, an approved summary): carry it intact — this is the verbatim-preservation principle exactly as stated above.
+- **Note-form shorthand** (a telegraphic WIWTR jot, a label, a fragment — "Doing good. Win win."): this is *meaning*, not prose. Develop it into a sentence in her voice that preserves her exact words *inside* a grammatical frame wherever possible ("Doing good while doing what I'm best at — that's the win-win I've chased since..."), never paste it raw as if it were a finished sentence. **Confirmed production failure:** a real shipped letter opened its second paragraph with the user's raw note "Doing good. Win win." — verbatim protection applied to shorthand produced a non-sequitur that 16 gatekeeper passes then refused to touch. Verbatim-paste of shorthand is §8's Failure mode A wearing the assembly rule as cover; it is a Gate 2 hard fail, not protected reuse.
+
+**Her spine, her order (2026-07-16):** the letter is ONE argument, and its argumentative spine is the WIWTR points in the order she wrote them — she sequenced her own reasoning; reordering it needs a nameable reason, not a template preference. Proof paragraphs slot INTO that argument (each one substantiating the claim the spine just made), and every paragraph must pick up from the one before it — a thread continued, a question answered, an argument extended. A structurally-valid stack of paragraphs that each pass their own gates but don't follow from each other is a failed letter (Gate 9 discourse-flow check). Before returning any draft, read only the paragraphs' first sentences in sequence: they should read as one person making one case.

@@ -85,6 +85,25 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-16 — Letter-quality restoration: voice inputs back, flow enforced, quotas out
+
+Root-cause investigation of a multi-week cover-letter quality collapse, per the user's direct report ("consistently coming out terrible"). The primary driver was an **unauthorized 2026-06-30 removal** of the pipeline's read of the user's real delivered letters.
+
+**Restorations (per the user's direct instruction)**
+- **Delivered-letters archive read restored in pipeline mode** — the letter-writer's Voice Gate and the humanizer's Voice Calibration Protocol both read 3 real letters again, alongside the durable calibration file. The calibration file supplements the archive; it never replaces it.
+- **Annotated Exemplar restored** to writer-craft §8 (silently dropped in the 2026-07-02 consolidation), reconciled with §1's punctuation bans.
+
+**New features**
+- **Gate 2 integration check (Tier 1)** — a telegraphic WIWTR note pasted raw as letter prose now FAILs; verbatim protection covers her wording, not note-form shorthand transplanted as finished sentences (a real shipped letter carried "Doing good. Win win." verbatim through 16 gatekeeper passes).
+- **Gate 9 discourse-flow check (Tier 2 item 34)** — every paragraph must connect to its predecessor; the WIWTR points form the letter's argumentative spine in the user's own order. Tier 2 count moved 33 → 34.
+- **Assembly semantics + "Her spine, her order" (writer-craft §12)** — her finished prose is carried intact; her shorthand is meaning to develop in her voice, never text to transplant; proof slots into HER argument.
+- **NO SILENT CAPABILITY REMOVAL rule (CLAUDE.md) + QA Phase 0-D removal-authorization check** — removing any input, output, step, or read of user material now requires the user's quoted instruction; the QA agent FAILs removal-shaped diff hunks without one.
+
+**Improvements**
+- **Sentence-rhythm quotas reframed** (writer-craft §4, Gate 7/Tier 2 item 18, humanizer Final Gate items 1-2) — the mechanical "one ≤8-word sentence" floor provably manufactured fragments; rhythm is now judged against the archive's real statistics, and only content-borne fixes are sanctioned.
+- **Coach Option 4 review boundary** — the coach may use `Role summary`/`Keywords` to judge aim but never to direct the writer toward content it has no sanctioned source for; its strongest direction points at the user's own underused or convoluted material.
+- **Voice-calibration file regenerated** (via career-data update-prompt) as an actual statistical linguistic analysis of the 6 delivered letters — replacing an instruction-brief that contradicted current doctrine in two places and contained no analysis.
+
 ### 2026-07-14 — Cover-letter voice bans and pipeline-input content boundary
 
 All from one real shipped letter batch the user rejected outright.

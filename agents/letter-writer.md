@@ -55,7 +55,13 @@ Called by the career-engine-orchestrator after the coach, CV writer, and gatekee
 
 **This runs before the Motivation Bank Gate and Sufficiency Gate, and before any other file is loaded.**
 
-**Pipeline mode (a durable voice-calibration file was resolved before this spawn):** Read `$PIPE/voice-calibration.md`. Your calibration is complete — proceed directly to the Motivation Bank Gate. No archive read needed.
+**Pipeline mode (a durable voice-calibration file was resolved before this spawn):** Read `$PIPE/voice-calibration.md`, **then read real letters from the archive — the calibration file supplements the archive, it never replaces it (restored 2026-07-16, per the user's direct instruction; the 2026-06-30 removal of this read was never authorized):**
+
+1. Read `${CAREER_DATA}/references/delivered-letters/INDEX.md`.
+2. Read 3 letters from the archive — prefer the ones the index notes mark as closest to this role's domain/type; otherwise any 3. If fewer than 3 exist, read all of them.
+3. From those letters, note: how does the opener start — register, directness, the first move? What does a typical sentence look like in length and rhythm? How does she close? Flag proof points or phrasings worth lifting.
+
+The calibration file gives you the statistical fingerprint; the letters give you the actual sound. You need both — drafting from the fingerprint alone is how letters come out grammatically hers and audibly not hers.
 
 **Standalone mode (no `$PIPE/voice-calibration.md` provided):** Run the direct-read path:
 
@@ -66,7 +72,7 @@ Called by the career-engine-orchestrator after the coach, CV writer, and gatekee
 3. From those letters, note: how does the opener start — what is the register, the directness, the first move? What does a typical sentence look like in length and rhythm? How does she close? Also flag any proof points or phrasings worth lifting.
 4. Hold this calibration. You will compare your draft against it before continuing.
 
-**This gate does not complete until calibration is loaded** — from the pre-computed file (pipeline) or from the direct read (standalone). An unreachable archive in standalone mode is a hard stop, not a fallback trigger.
+**This gate does not complete until calibration is loaded** — in pipeline mode that means the pre-computed file AND the 3-letter archive read; in standalone mode, the full direct read. An unreachable archive is a hard stop in both modes, not a fallback trigger (pipeline exception: if the archive is genuinely empty — new user — the calibration file or `03-framework.md` §Voice and tone alone is the legitimate fallback, same as standalone step 1).
 
 ---
 
@@ -99,7 +105,7 @@ MANDATORY: Load all of these before writing a single word.
 
 | File | What it contains |
 |---|---|
-| Voice calibration (see Voice Gate above) | **Pipeline mode:** Read `$PIPE/voice-calibration.md` — a copy of `${CAREER_DATA}/references/voice-calibration-coverletters.md` (the durable, user-maintained six-dimension calibration file) when it exists, else the standalone fallback content; contains the six-dimension calibration and representative phrases. No archive read needed. **Standalone mode:** Read `${CAREER_DATA}/references/delivered-letters/INDEX.md` and ALL letter files in the archive directly (see Voice Gate above). |
+| Voice calibration (see Voice Gate above) | **Pipeline mode:** Read `$PIPE/voice-calibration.md` — a copy of `${CAREER_DATA}/references/voice-calibration-coverletters.md` (the durable, user-maintained six-dimension calibration file) when it exists — **AND 3 real letters from `${CAREER_DATA}/references/delivered-letters/` (via `INDEX.md`); the calibration file never replaces the archive read (Voice Gate above).** **Standalone mode:** Read `${CAREER_DATA}/references/delivered-letters/INDEX.md` and ALL letter files in the archive directly (see Voice Gate above). |
 | `references/01-writing-rules.md` | Source of truth for the user's background. Section 1: fabrication rule — read first. Approved CV summaries, role facts, testimonials, portfolio: see `02-professional-background.md`. |
 | `references/03-framework.md` | **Primary letter-writing material — not background.** Professional philosophy, methodology, voice, and domain narratives. §Professional methodology and POV: each framework sufficient to anchor a letter's strategic argument. §Domain depth: per-vertical narratives. §Voice and tone: voice samples and calibration. |
 | `references/02-professional-background.md` | **Router** — load it first, then follow its table to `background/background-motivation-bank.md` — your **PRIMARY content/voice source** (Motivation Bank Gate above). Select the role-relevant (tag-matched) entries before drafting. The user's verbatim words there beat any constructed alternative. |
@@ -214,7 +220,7 @@ The letter that recites what a role wants is generic. The letter that answers wh
 
 ### Write
 
-**Assemble before you compose — the default drafting mode, not a nice-to-have.** Build the draft out of her existing verbatim material FIRST: the matching Motivation Bank rows, phrasings flagged at the Voice Gate from the delivered-letters archive, approved summaries and testimonials, `03-framework.md` lines, and the guardrail-table framings in `01-writing-rules.md`. Copy the pieces, then adjust only for context, connectors, and flow. Compose fresh prose only where a genuine gap exists between assembled pieces — never as the default mode with her words sprinkled in afterward. This is the Verbatim-preservation principle applied as a drafting order (`skills/writer-craft/SKILL.md` §12): a letter assembled from her own proven sentences starts in her voice, carries almost none of the agent-tell patterns the gates exist to catch, and passes in fewer rounds than freshly-composed prose calibrated after the fact.
+**Assemble before you compose — the default drafting mode, not a nice-to-have.** Build the draft out of her existing verbatim material FIRST: the matching Motivation Bank rows, phrasings flagged at the Voice Gate from the delivered-letters archive, approved summaries and testimonials, `03-framework.md` lines, and the guardrail-table framings in `01-writing-rules.md`. Copy the pieces, then adjust only for context, connectors, and flow. Compose fresh prose only where a genuine gap exists between assembled pieces — never as the default mode with her words sprinkled in afterward. This is the Verbatim-preservation principle applied as a drafting order (`skills/writer-craft/SKILL.md` §12): a letter assembled from her own proven sentences starts in her voice, carries almost none of the agent-tell patterns the gates exist to catch, and passes in fewer rounds than freshly-composed prose calibrated after the fact. **Two boundaries on assembly (§12 Assembly semantics + Her spine, her order — read both before drafting):** (1) her finished prose is carried intact, but her note-form shorthand is meaning to develop in her voice, never a fragment to paste raw; (2) the WIWTR points are the letter's argumentative spine in the order she wrote them, proof slots into that argument, and every paragraph must follow from the one before — assembly builds one flowing case, not a stack of sourced pieces.
 
 **Word count — drafting target:** maximum 320 words for the body, or **250 when `Strategy = Strategic`** (not counting greeting or sign-off; no minimum — canonical rule, see `skills/writer-craft/SKILL.md`). Hit it: aim for the 270–320 band typical of the delivered letters when the content supports it (220–250 for a `Strategic` letter); never pad. **Count mechanically, never by eye or estimate.** A real production run had every letter self-report a word count 20-40 words under the actual figure (one letter self-reported ~313, measured 352) — self-estimation is unreliable at this scale. Before returning output: write the body text (greeting/sign-off excluded) to a scratch file and run `wc -w` on it via the Bash tool; use that number, not a mental tally. (At the gatekeeper, overage is a round-aware advisory, not a hard fail — but you should still land within the applicable cap so the pipeline does not have to loop or defer to the humanizer to trim.)
 
