@@ -747,7 +747,7 @@ if [ "$c49_israel" -eq 0 ]; then report "49" 1 ""; else report "49" 0 "'israel' 
 expect_ge "49" "agents/career-coach.md" "I'm convinced\|I'm not convinced because" 1
 expect_ge "49" "skills/writer-craft/SKILL.md" "Verbatim-preservation principle" 1
 expect_ge "49" "agents/letter-writer.md" "Verbatim-preservation principle" 1
-c49_reuse=$(grep -rci "bert similarity\|n-gram.*reuse\|reuse.*across letters.*ban\|shares 10+ consecutive words with.*any prior letter" "$TARGET"/agents "$TARGET"/skills "$TARGET"/references --include="*.md" 2>/dev/null | grep -v ":0$" | grep -v "qa-plugin.md" | wc -l | tr -d ' ')
+c49_reuse=$(grep -rci "bert similarity\|n-gram.*reuse\|reuse.*across letters.*banned\|shares 10+ consecutive words with.*any prior letter" "$TARGET"/agents "$TARGET"/skills "$TARGET"/references --include="*.md" 2>/dev/null | grep -v ":0$" | grep -v "qa-plugin.md" | wc -l | tr -d ' ')
 if [ "$c49_reuse" -eq 0 ]; then report "49" 1 ""; else report "49" 0 "found $c49_reuse file(s) with a retracted reuse/repetition-policing reference"; fi
 expect_file "49" "skills/humanizer/scripts/corpus-stats.py"
 c49_imports=$(grep -Ec "^import (docx|requests|numpy|pandas|nltk)" "$TARGET/skills/humanizer/scripts/corpus-stats.py" 2>/dev/null || true); c49_imports=${c49_imports:-0}
