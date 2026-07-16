@@ -207,6 +207,13 @@ X is always required. Y is optional when the outcome is specific without a numbe
 
 **Opener source — non-negotiable.** The opener's content and angle come from the user's own words: Why I Want This Role (WIWTR) when present, otherwise the role-matched Motivation Bank entries. Never invented, never derived from the writer's own reading of the JD. Polish for formal writing; do not replace her vocabulary with generic professional language.
 
+**Opener default — her opening bank FIRST, construction last (2026-07-16, per the user's direct instruction: "there's also a bank of openings the stupid writer could choose from, fill in the blanks and move on. it's mind-boggling to me why they never do that").** The opener procedure, in order:
+1. **Her personalized template's Block 1 variants** (`${CAREER_DATA}/references/templates/cover_letter_templates.md`, the coach-selected template's opening bank): pick the variant that fits this role, fill the blanks with this role's specifics from her material, done. These are her own real, previously-delivered sentences — verbatim reuse is sanctioned (the 2026-07-05 rule) and a filled variant passes the pattern-derivation forcing function by definition.
+2. **A delivered-letter opener shape** from the archive (read at the Voice Gate), adapted to this role — same standing.
+3. **Only if neither bank has a fitting shape:** construct via the §9 Use-Case Structures. Novel construction is the FALLBACK, not the default — most of the failed openers this doctrine documents were composed fresh when a bank variant would have worked.
+
+**Plain beats clever (2026-07-16, from a real edit-run opener the user rejected on rhythm, not content).** The opener states the want and the credential plainly; it does not build to an engineered punchline, a clever twist, or a metaphor-flavored flourish. A real letter's opener ended "...is the kind of story that's easy to flatten into a press release. I want to be the one who tells it right." — technically sourced, and still wrong: the manufactured setup-payoff rhythm is agent cleverness, not her register. Her own stated preference for that letter was strictly simpler: the same want + credential, then two plain clauses. When choosing between a plainer and a cleverer rendering of the same content, choose the plainer one — every time.
+
 **Information Sequencing — professional fit leads, personal proof follows.** The opener earns the reader's attention through professional relevance — the role, the fit, the why-now. Personal details, even highly relevant ones, earn more weight mid-letter once the professional case is already established. Never open with personal attachment, fandom, or biographical detail unless the personal fact is itself the professional credential.
 
 **The test for opener-eligible personal content:** is the personal fact the direct qualification for the role, or is it evidence of passion/affinity? If the former, it may lead. If the latter, it belongs in the body, after at least one proof anchor.
@@ -278,7 +285,7 @@ What the three annotations share: her sentences put a person up front, land the 
 
 ## [CL] §9 — Use-Case Structures for the Opener
 
-Named patterns for the opener paragraph. Fill the bracketed slots with the user's actual content — nothing stays as-is from the template. Pattern names in brackets are internal labels only; never write them into the letter.
+**These are the FALLBACK (2026-07-16)** — use them only after §8's opener default found no fitting variant in her personalized template's Block 1 bank or the delivered-letters archive. Named patterns for the opener paragraph. Fill the bracketed slots with the user's actual content — nothing stays as-is from the template. Pattern names in brackets are internal labels only; never write them into the letter.
 
 1. **Direct parallel** — most recent role overlaps this one directly. Move: reaction to the coincidence → causal fragment landing the credential ("Because I was just doing it — as [role] at [Company]...").
 
@@ -351,6 +358,8 @@ Named patterns for the opener paragraph. Fill the bracketed slots with the user'
 - [ ] No paragraph over 4 lines; close is its own paragraph
 
 **Opening (run first):**
+- [ ] Started from her opening bank: a personalized-template Block 1 variant or a delivered-letter opener shape, blanks filled with this role's specifics — or a named reason why no bank variant fit (§8 Opener default)
+- [ ] No engineered punchline, clever twist, or setup-payoff flourish — the plainer rendering won (§8 Plain beats clever)
 - [ ] Traced to WIWTR or role-matched Bank entries — not the JD, not coach output
 - [ ] Role named in the first sentence; company named in paragraph 1
 - [ ] First sentence does not make a market/industry/role claim before the user appears as subject
