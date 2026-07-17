@@ -85,6 +85,11 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-17 — Flagged roles advance status; skipped steps are not a flag
+
+- **Flagged roles now advance Notion status exactly like clean roles** (per the user's report: recently-run roles all stayed `Interested`). Withholding the status left flagged roles in the processing queue, re-running the same roles every day. The flag's visibility stays in halted-roles.json, run-metrics, the chat addendum, and the feedback file.
+- **A flag reason must cite the specific cap clause.** A real run skipped the recruiter review, coach letter review, and humanizer for all three roles "due to session time constraints" and self-flagged them — that is the banned condensed-process move, not a flag. Such a role is an interrupted run to resume, never a flagged delivery.
+
 ### 2026-07-16 — Letter-quality restoration: voice inputs back, flow enforced, quotas out
 
 Root-cause investigation of a multi-week cover-letter quality collapse, per the user's direct report ("consistently coming out terrible"). The primary driver was an **unauthorized 2026-06-30 removal** of the pipeline's read of the user's real delivered letters.
