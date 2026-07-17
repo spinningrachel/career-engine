@@ -259,7 +259,7 @@ Resolve the three-way constraint (subject-first + role-in-sentence-1 + no clich�
 
 **Two failure modes on opposite ends — both are real, both recur:**
 - **Failure mode A — verbatim paste.** Transcribing WIWTR nearly word-for-word into the opener. Her notes are not a paragraph; copied raw, they read abrupt and out of context.
-- **Failure mode B — full rewrite.** Extracting only the topic from her notes and writing entirely fresh sentences in polished professional language that erases how she actually said it. This is not better than Failure mode A — it is the same failure in the opposite direction; the result carries none of her voice.
+- **Failure mode B — full rewrite.** Extracting only the topic from her notes and writing entirely fresh sentences in polished professional language that erases how she actually said it. This is not better than Failure mode A — it is the same failure in the opposite direction; the result carries none of her voice. **And never mislabel it (2026-07-17):** a real run erased her line "Building a marketing strategy and then executing on that is why I wake up in the morning" entirely — her most vivid sentence — while its own checklist certified the point "near-verbatim, Para 1." Mode B with a false `verbatim` label is two violations, and the label one is mechanically caught (Gate 2 label verification). If you couldn't carry her words, the honest label is `resolved-by-proof` with a reason — and the better move is usually to carry her words.
 
 The fix for both: read her actual words (WIWTR and the role-matched Bank entries), understand what she's saying AND how she's saying it, then write a letter paragraph that says it well in her words — shape the structure, preserve the language.
 

@@ -85,6 +85,11 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-17 — Verbatim means verbatim: falsifiable WIWTR labels, template-variant reuse unblocked
+
+- **WIWTR checklist labels are now falsifiable** — each point carries her exact text, the letter's actual rendering, and an honest label (`verbatim`/`adapted`/`resolved-by-proof`/`set-aside`); the gatekeeper greps every `verbatim` claim against the letter and hard-fails false labels. A real run certified "near-verbatim, Para 1" for her line "…is why I wake up in the morning" — which appeared nowhere in the letter.
+- **The writer's own file no longer bans using her opening bank** — its "never copy a template's variant text" rule predated the personalized/generic split and contradicted the bank-first opener default; now scoped to the generic default template only.
+
 ### 2026-07-17 — Flagged roles advance status; skipped steps are not a flag
 
 - **Flagged roles now advance Notion status exactly like clean roles** (per the user's report: recently-run roles all stayed `Interested`). Withholding the status left flagged roles in the processing queue, re-running the same roles every day. The flag's visibility stays in halted-roles.json, run-metrics, the chat addendum, and the feedback file.

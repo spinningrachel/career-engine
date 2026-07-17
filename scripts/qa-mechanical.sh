@@ -700,7 +700,7 @@ expect_ge "46" "skills/career-engine-setup/SKILL.md" "references/templates/" 1
 expect_ge "47" "agents/letter-writer.md" "Step 0.7 — Read the coach's template selection and outline" 1
 expect_ge "47" "agents/letter-writer.md" "You do not choose the template" 1
 expect_ge "47" "agents/letter-writer.md" "Dial Sheet is a hard constraint" 1
-expect_ge "47" "agents/letter-writer.md" "Never copy a template's illustrative variant text verbatim" 1
+expect_ge "47" "agents/letter-writer.md" "never copy its illustrative variant text verbatim" 1
 expect_ge "47" "agents/letter-writer.md" "governs how a known-true metric is phrased, never whether one may be invented" 1
 expect_ge "47" "agents/letter-writer.md" "never overrides the Opener non-negotiable rule" 1
 
