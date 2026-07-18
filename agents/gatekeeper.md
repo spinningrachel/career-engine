@@ -105,7 +105,7 @@ Reply: `FAIL: <n> violations → <OUTPUT_PATH>`
 
 **Round 2+, Tier 1 clean, Tier 2 still <70%:** per the Grading section, this is treated as PASS and deferred to the humanizer — reply `PASS — cover letter [Tier 2: <n>%]` and still write the failing check types to `OUTPUT_PATH` (log only, not a block) so the humanizer has them: `PASS — cover letter [Tier 2: <n>% — deferred to humanizer]`.
 
-Every violation must include a `→ [resolution]` per the resolution format in `skills/gatekeeper-checks/SKILL.md`. List all violations in a single pass, in the file — never in the reply.
+Every violation must include a `→ [resolution]` per the resolution format in `skills/gatekeeper-checks/SKILL.md`. **Since 2026-07-18 (the letter rulebook reduction), the letter-writer no longer carries the full rule catalog — your violation entry is its only window into the rule it broke. Each cover-letter violation therefore states, in the entry itself: the rule (one sentence, quoted or paraphrased from the gate), the offending text, and the concrete fix direction. A bare check-type name with no rule statement leaves the resumed writer guessing.** List all violations in a single pass, in the file — never in the reply.
 
 ### Coach Output Check
 

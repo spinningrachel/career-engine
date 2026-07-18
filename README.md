@@ -85,6 +85,10 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-18 — Letter rulebook reduction: the writer reads 3,600 words, not 16,400
+
+The letter-writer's per-spawn doctrine dropped from ~16,400 words to ~3,600: a new `letter-core` skill (~1,500 words, positive-first — assemble her material, follow the outline, the ten absolutes, a 10-item self-check) plus a rewritten thin agent file. **No rule was removed** — everything else moved to the gatekeeper's enforcement side (see `docs/rule-map-letter-core.md` for the complete rule-by-rule mapping); gate violations now arrive with the rule quoted and a fix direction so the writer never needs the catalog. Rationale: at 16k words, individual rules got probabilistic compliance — the writer wrote defensive, gate-passing prose instead of hers.
+
 ### 2026-07-18 — Opener enforcement goes mechanical: derivation artifact + zero-context test
 
 The bank-first opener default shipped as a checklist item and was ignored on its first night in production (a real letter opened on an abstract riddle matching no bank variant). Two mechanical enforcements:

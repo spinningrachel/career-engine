@@ -650,7 +650,7 @@ expect_ge "41" "skills/writer-craft/SKILL.md" "Satisfy this jointly with the Sub
 # ================================================================
 # Check 42 — Plugin-file-unreachable hard stop present for writer/humanizer agents
 # ================================================================
-expect_ge "42" "agents/letter-writer.md" "writer-craft/SKILL.md.*cannot be read\|cannot be read.*writer-craft" 1
+expect_ge "42" "agents/letter-writer.md" "letter-core/SKILL.md.*cannot be read\|cannot be read.*letter-core" 1
 expect_ge "42" "agents/cv-writer.md" "cannot be read" 1
 expect_ge "42" "agents/humanizer.md" "cannot be read" 1
 
@@ -672,7 +672,7 @@ expect_ge "44" "skills/career-engine-edit/SKILL.md" "letter-writer-agent-id.txt"
 # ================================================================
 # Check 45 — Skills preload, memory, and Agent-tool denial wired on writer-pipeline agents
 # ================================================================
-expect_ge "45" "agents/letter-writer.md" "^  - writer-craft" 1
+expect_ge "45" "agents/letter-writer.md" "^  - letter-core" 1
 expect_ge "45" "agents/humanizer.md" "^  - humanizer" 1
 expect_ge "45" "agents/humanizer.md" "^  - writer-craft" 1
 expect_ge "45" "agents/gatekeeper.md" "^  - gatekeeper-checks" 1
