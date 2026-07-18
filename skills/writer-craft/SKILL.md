@@ -212,6 +212,10 @@ X is always required. Y is optional when the outcome is specific without a numbe
 2. **A delivered-letter opener shape** from the archive (read at the Voice Gate), adapted to this role — same standing.
 3. **Only if neither bank has a fitting shape:** construct via the §9 Use-Case Structures. Novel construction is the FALLBACK, not the default — most of the failed openers this doctrine documents were composed fresh when a bank variant would have worked.
 
+**Record the decision in `$PIPE/opener-derivation.txt` (2026-07-18 — mandatory, mechanically checked at Gate 5; see the letter-writer's Opener derivation artifact rule).** This default shipped as prose and was ignored the same night; the artifact is what makes it stick.
+
+**Zero-context test (2026-07-18):** before accepting any opener, reread sentences 1-2 as a stranger who knows only their own company's name. Every referent must be concrete — named companies, disciplines, artifacts, plain credentials. An abstract stand-in ("the challenge I've spent my career on," "this work") defined only by a riddle-like apposition fails; the reader has no context to decode it (Gate 5's Zero-context check, hard fail).
+
 **Plain beats clever (2026-07-16, from a real edit-run opener the user rejected on rhythm, not content).** The opener states the want and the credential plainly; it does not build to an engineered punchline, a clever twist, or a metaphor-flavored flourish. A real letter's opener ended "...is the kind of story that's easy to flatten into a press release. I want to be the one who tells it right." — technically sourced, and still wrong: the manufactured setup-payoff rhythm is agent cleverness, not her register. Her own stated preference for that letter was strictly simpler: the same want + credential, then two plain clauses. When choosing between a plainer and a cleverer rendering of the same content, choose the plainer one — every time.
 
 **Information Sequencing — professional fit leads, personal proof follows.** The opener earns the reader's attention through professional relevance — the role, the fit, the why-now. Personal details, even highly relevant ones, earn more weight mid-letter once the professional case is already established. Never open with personal attachment, fandom, or biographical detail unless the personal fact is itself the professional credential.
@@ -359,7 +363,8 @@ What the three annotations share: her sentences put a person up front, land the 
 - [ ] No paragraph over 4 lines; close is its own paragraph
 
 **Opening (run first):**
-- [ ] Started from her opening bank: a personalized-template Block 1 variant or a delivered-letter opener shape, blanks filled with this role's specifics — or a named reason why no bank variant fit (§8 Opener default)
+- [ ] Started from her opening bank: a personalized-template Block 1 variant or a delivered-letter opener shape, blanks filled with this role's specifics — or a named reason why no bank variant fit (§8 Opener default) — and `$PIPE/opener-derivation.txt` written recording which
+- [ ] Zero-context test: sentences 1-2 readable by a stranger who knows only the company's name — no abstract stand-in referents (§8)
 - [ ] No engineered punchline, clever twist, or setup-payoff flourish — the plainer rendering won (§8 Plain beats clever)
 - [ ] Traced to WIWTR or role-matched Bank entries — not the JD, not coach output
 - [ ] Role named in the first sentence; company named in paragraph 1

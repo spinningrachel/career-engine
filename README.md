@@ -85,6 +85,12 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-18 — Opener enforcement goes mechanical: derivation artifact + zero-context test
+
+The bank-first opener default shipped as a checklist item and was ignored on its first night in production (a real letter opened on an abstract riddle matching no bank variant). Two mechanical enforcements:
+- **`$PIPE/opener-derivation.txt`** — the letter-writer must record which bank variant the opener fills (or which §9 structure it used and why no variant fit); Gate 5 fails a letter arriving without it, and a named variant the opener doesn't resemble is a false certification.
+- **Zero-context test (Gate 5, hard fail)** — sentences 1-2 must be readable by a stranger who knows only the company's name; abstract stand-ins ("the challenge I've spent my career on") defined only by riddle-like apposition fail.
+
 ### 2026-07-17 — Verbatim means verbatim: falsifiable WIWTR labels, template-variant reuse unblocked
 
 - **WIWTR checklist labels are now falsifiable** — each point carries her exact text, the letter's actual rendering, and an honest label (`verbatim`/`adapted`/`resolved-by-proof`/`set-aside`); the gatekeeper greps every `verbatim` claim against the letter and hard-fails false labels. A real run certified "near-verbatim, Para 1" for her line "…is why I wake up in the morning" — which appeared nowhere in the letter.
