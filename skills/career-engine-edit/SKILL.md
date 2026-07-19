@@ -366,7 +366,9 @@ Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DAT
 
 **Step E8 — Humanizer (cover letter)**
 
-See the Absolute Constraints' non-skippable-humanizer rule (`orchestrator-queue.md`) — this step runs for every role with a cover letter, no exceptions.
+**Doctrine-defined skip condition (2026-07-19, per the user's direct approval of the conditional-humanizer recommendation — this is the step's own sanctioned skip, the one form the Absolute Constraints permit):** read the final pre-humanizer gatekeeper result for this letter. **If it was PASS with Tier 2 = 100% (zero deferred check types), SKIP the humanizer entirely** — log "humanizer skipped — Tier 2 clean" in the revision log and proceed; since the text has not changed after its PASS, the follow-up full gatekeeper re-spawn is also unnecessary — run ONLY the orchestrator's mechanical pre-export checklist (the Bash grep/wc battery) at the next step. **If any Tier 2 items were deferred (Tier 2 < 100%), run the humanizer exactly as below** — that deferral is its designed hand-off. Evidence for this condition: a real 5-role run's humanizer made 2-4 marginal edits on already-clean assembled letters, broke one letter's WIWTR coverage, and silently no-showed on another — on Tier-2-clean letters it costs more than it adds; on deferred-items letters it has a real job.
+
+Otherwise, per the Absolute Constraints. non-skippable-humanizer rule (`orchestrator-queue.md`), this step runs — a time/cost rationale is never a skip; only the Tier-2-clean condition above is.
 
 **Before spawning, snapshot the revert target:** copy `$PIPE/letter-draft.md` (the E7.7-passing text) to a sibling `$PIPE/letter-draft.prehumanizer.md` — the revert target for E8.5. The humanizer edits in place, so this snapshot must be taken first.
 

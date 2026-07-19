@@ -85,6 +85,10 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-19 — Conditional humanizer
+
+Per the user's approval: the humanizer now runs only when the final pre-humanizer gatekeeper pass deferred Tier-2 items to it — its designed hand-off. A letter that passes with Tier 2 = 100% skips the humanizer (and the redundant post-humanizer gatekeeper re-spawn; the mechanical pre-export checks still run). Evidence from a real 5-role run: on already-clean assembled letters the humanizer added 2-4 marginal edits, broke one letter's WIWTR coverage, and silently no-showed on another. Time or cost pressure remains banned as a skip rationale — Tier-2-clean is the only skip condition.
+
 ### 2026-07-19 — Sentence 1 is the plainest sentence in the letter
 
 All three rejected letters in one run failed the same way: the first sentence performed a rhetorical device (a negation setup, a product-paradox aphorism, an echo-intensifier) instead of giving plain context. New rule in letter-core + a Gate 5 hard fail: sentence 1 does exactly two jobs — name the role, state her want/reaction with a plain concrete credential. Devices from her material are welcome from sentence 2 onward.
