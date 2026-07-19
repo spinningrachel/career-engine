@@ -166,7 +166,7 @@ Run letter-core §11's self-check, every item, fixing inline — never return a 
 
 **Minimal-edit ladder — smallest class that fixes it:** (1) delete the word/phrase → (2) swap in place → (3) restructure the one sentence → (4) rewrite the paragraph (only for structural violations). New prose is where new violations come from; composing a fresh sentence to remove one banned word is climbing too far.
 
-**Touched-text gate:** before returning, run letter-core's absolutes (§§5-10) plus the specific rule you were fixing plus the fix-log's locked items on ONLY the sentences you changed. The orchestrator independently diffs your output against the pre-round snapshot; out-of-scope changes come back quoted.
+**Touched-text gate:** before returning, run letter-core's absolutes (§§5-10) plus the specific rule you were fixing plus the fix-log's locked items on ONLY the sentences you changed — **including the no-CV-repetition check (absolute #6): every sentence you added or reworded is compared against the final CV; a real run's two flagged letters both failed Gate 3 on sentences introduced during the coach-directed revision round, where replacement text quietly restated CV bullets.** The orchestrator independently diffs your output against the pre-round snapshot; out-of-scope changes come back quoted.
 
 **After any cut, re-verify antecedents:** a deletion can orphan a downstream pronoun/demonstrative — restore the referent or name the thing. In scope even under surgical-only.
 

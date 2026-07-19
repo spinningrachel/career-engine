@@ -85,6 +85,11 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-19 — Humanizer runs are verified; revision text checked against the CV
+
+- **Humanizer-ran verification** — a real run's humanizer spawn returned empty for one role, left no artifacts, and the pipeline continued silently; that role shipped with zero humanization. Both pipelines now verify the humanizer's status line AND its change-log file exist, re-spawn once on failure, and surface a real error instead of continuing.
+- **Touched-text gate covers CV repetition** — both of the run's flagged letters failed Gate 3 on sentences introduced during the coach-directed revision round; revision rounds now check every added/reworded sentence against the final CV before returning.
+
 ### 2026-07-18 — Letter rulebook reduction: the writer reads 3,600 words, not 16,400
 
 The letter-writer's per-spawn doctrine dropped from ~16,400 words to ~3,600: a new `letter-core` skill (~1,500 words, positive-first — assemble her material, follow the outline, the ten absolutes, a 10-item self-check) plus a rewritten thin agent file. **No rule was removed** — everything else moved to the gatekeeper's enforcement side (see `docs/rule-map-letter-core.md` for the complete rule-by-rule mapping); gate violations now arrive with the rule quoted and a fix direction so the writer never needs the catalog. Rationale: at 16k words, individual rules got probabilistic compliance — the writer wrote defensive, gate-passing prose instead of hers.
