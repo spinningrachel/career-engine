@@ -85,6 +85,10 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-19 — Sentence 1 is the plainest sentence in the letter
+
+All three rejected letters in one run failed the same way: the first sentence performed a rhetorical device (a negation setup, a product-paradox aphorism, an echo-intensifier) instead of giving plain context. New rule in letter-core + a Gate 5 hard fail: sentence 1 does exactly two jobs — name the role, state her want/reaction with a plain concrete credential. Devices from her material are welcome from sentence 2 onward.
+
 ### 2026-07-19 — Humanizer runs are verified; revision text checked against the CV
 
 - **Humanizer-ran verification** — a real run's humanizer spawn returned empty for one role, left no artifacts, and the pipeline continued silently; that role shipped with zero humanization. Both pipelines now verify the humanizer's status line AND its change-log file exist, re-spawn once on failure, and surface a real error instead of continuing.

@@ -35,7 +35,7 @@ The letter is built FROM the user's existing words, aimed at this role. Her mate
 
 **Within two sentences the reader knows:** the role (named in sentence 1), why her, why now — all in words a stranger who knows only the company name can understand. **Zero-context test:** no abstract stand-ins ("the challenge I've spent my career on") whose only definition is a riddle. Concrete referents: companies, disciplines, plain credentials.
 
-**Plain beats clever, every time.** No engineered punchline, no setup-payoff twist, no metaphor-flavored flourish. Given two renderings of the same content, choose the plainer.
+**Plain beats clever, every time — and sentence 1 is the plainest sentence in the letter.** Sentence 1 does exactly two jobs: name the role, and state her want or reaction with a concrete plain-language credential. NO device in sentence 1 — no negation setup ("not a title I expected to want"), no general-truth aphorism or paradox ("...is only as trustworthy as the person explaining it"), no product-mechanism description, no echo-intensifier ("is exactly what I've already done"). A good story or observation from her material earns its place from sentence 2 onward, after context exists. No engineered punchline, setup-payoff twist, or metaphor-flavored flourish anywhere; given two renderings of the same content, choose the plainer.
 
 **Professional fit leads; personal proof follows.** A personal fact opens the letter only when it IS the professional credential. Affinity and biography go mid-letter, after a proof anchor — placed, never explained.
 
