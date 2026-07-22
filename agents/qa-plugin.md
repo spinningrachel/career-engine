@@ -327,7 +327,7 @@ Mechanized: covered by scripts/qa-mechanical.sh (CHECK 16) — run via the Mecha
 
 ### Check 16b — Sentence-balance rule and preference-intake guards present
 
-The humanizer's sentence-length monotony rule (with Final Gate parity) and the voice-preference rule-protection guards must all be present. (Sentence-balance rule lives in `skills/writer-craft/SKILL.md` §4 since the writer-craft consolidation; the humanizer's own Final Gate parity copy lives in `skills/humanizer/SKILL.md` since the humanizer skill split.)
+The humanizer's sentence-length monotony rule (with Final Gate parity) and the voice-preference rule-protection guards must all be present. (Sentence-balance rule lives in `skills/writer-craft/core.md` §4 (context-diet split 2026-07-22) since the writer-craft consolidation; the humanizer's own Final Gate parity copy lives in `skills/humanizer/SKILL.md` since the humanizer skill split.)
 
 Mechanized: covered by scripts/qa-mechanical.sh (CHECK 16b) — run via the Mechanical battery step; do not re-run these greps by hand.
 
@@ -343,7 +343,7 @@ Mechanized: covered by scripts/qa-mechanical.sh (CHECK 17) — run via the Mecha
 
 ### Check 18 — Why I Want This Role voice-preservation rule present (both failure modes)
 
-In `skills/writer-craft/SKILL.md` (relocated during the writer-craft consolidation): verify the file contains both "Failure mode A" and "Failure mode B".
+In `skills/writer-craft/cv.md` (relocated during the writer-craft consolidation; moved to the `cv.md` sub-file in the 2026-07-22 context-diet split): verify the file contains both "Failure mode A" and "Failure mode B".
 
 Mechanized: covered by scripts/qa-mechanical.sh (CHECK 18) — run via the Mechanical battery step; do not re-run these greps by hand.
 
@@ -569,19 +569,19 @@ Mechanized: covered by scripts/qa-mechanical.sh (CHECK 22) — run via the Mecha
 
 Four confirmed regression patterns from live runs. Run on the build.
 
-**strategic-builder rule:** grep `skills/gatekeeper-checks/SKILL.md` and `skills/writer-craft/SKILL.md` (relocated from `skills/cover-letter/SKILL.md`) for the string "strategic builder" — must appear in at least one of them.
+**strategic-builder rule:** grep `skills/gatekeeper-checks/letter-gates.md` and `skills/writer-craft/letter.md` (relocated from `skills/cover-letter/SKILL.md`; moved to sub-files in the 2026-07-22 context-diet split) for the string "strategic builder" — must appear in at least one of them.
 
 Mechanized: covered by scripts/qa-mechanical.sh (CHECK 22c-strategic-builder) — run via the Mechanical battery step; do not re-run these greps by hand.
 
 **FAIL condition:** both counts are 0 (string absent from both files). PASS if either count is >= 1.
 
-**em dash absolute ban prominent:** grep `agents/letter-writer.md` for "em dash" or "em dashes" — must appear. (The ban itself lives in `skills/writer-craft/SKILL.md` §1; this check verifies the agent still surfaces it prominently too — historically via the Mandatory Revision Pass pointer, now via the writer-craft load instruction.)
+**em dash absolute ban prominent:** grep `agents/letter-writer.md` for "em dash" or "em dashes" — must appear. (The ban itself lives in `skills/writer-craft/core.md` §1; this check verifies the agent still surfaces it prominently too — historically via the Mandatory Revision Pass pointer, now via the writer-craft load instruction.)
 
 Mechanized: covered by scripts/qa-mechanical.sh (CHECK 22c-em-dash) — run via the Mechanical battery step; do not re-run these greps by hand.
 
-**FAIL condition:** the `skills/writer-craft/SKILL.md` count is 0. The `agents/letter-writer.md` count is advisory — note it but do not fail solely on it, since the letter-writer may reference the ban only by pointing at the skill.
+**FAIL condition:** the `skills/writer-craft/core.md` count is 0. The `agents/letter-writer.md` count is advisory — note it but do not fail solely on it, since the letter-writer may reference the ban only by pointing at the skill.
 
-**colon ban present:** grep `agents/letter-writer.md` and `skills/writer-craft/SKILL.md` for "colon" in the context of a writing ban — must appear in at least one.
+**colon ban present:** grep `agents/letter-writer.md` and `skills/writer-craft/core.md` for "colon" in the context of a writing ban — must appear in at least one.
 
 Mechanized: covered by scripts/qa-mechanical.sh (CHECK 22c-colon-ban) — run via the Mechanical battery step; do not re-run these greps by hand.
 
@@ -685,7 +685,7 @@ Mechanized: covered by scripts/qa-mechanical.sh (CHECK 57) — run via the Mecha
 
 ### Check 58 — Cover-letter opener pattern #10 re-anchored to §8 sourcing mandate (2026-07-08 fix)
 
-Pattern #10 ("Problem-first observation opener") in `skills/writer-craft/SKILL.md` §9 previously read as license to construct a "professional observation" from the writer's own JD/market analysis. Verify it now explicitly requires the observation to trace to documented WIWTR/Motivation Bank content, with the pattern unavailable when no such content exists.
+Pattern #10 ("Problem-first observation opener") in `skills/writer-craft/letter.md` §9 previously read as license to construct a "professional observation" from the writer's own JD/market analysis. Verify it now explicitly requires the observation to trace to documented WIWTR/Motivation Bank content, with the pattern unavailable when no such content exists.
 
 Mechanized: covered by scripts/qa-mechanical.sh (CHECK 58) — run via the Mechanical battery step; do not re-run these greps by hand.
 
@@ -693,7 +693,7 @@ Mechanized: covered by scripts/qa-mechanical.sh (CHECK 58) — run via the Mecha
 
 ### Check 59 — CV skills-section content contract wired end-to-end (2026-07-08 addition)
 
-New three-way test (skill/knowledge/title) + 3-group cap + de-dup rule in `writer-craft/SKILL.md` §5, enforced by a new hard-fail Gate 5 in the gatekeeper's CV Check, with matching template guidance and a CLAUDE.md cross-file-contract row.
+New three-way test (skill/knowledge/title) + 3-group cap + de-dup rule in `writer-craft/cv.md` §5, enforced by a new hard-fail Gate 5 in the gatekeeper's CV Check, with matching template guidance and a CLAUDE.md cross-file-contract row.
 
 Mechanized: covered by scripts/qa-mechanical.sh (CHECK 59) — run via the Mechanical battery step; do not re-run these greps by hand.
 

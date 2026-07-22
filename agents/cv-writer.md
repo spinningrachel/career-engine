@@ -40,10 +40,12 @@ Load all of these before doing anything else.
 |---|---|
 | `references/01-writing-rules.md` | Rules and configuration. Section 1: fabrication rule — read first. If this file contradicts anything you believe about the user, the file is correct. |
 | `references/02-professional-background.md` | **Router — load first.** Follow its routing table to the `background/` sub-files you need: `background-approved-bullets.md` for approved CV bullets — carries adjacent `Detailed: Approved bullets` / `Brief: Approved bullets` subsections per company; read only the one matching this draft's `CV Type` (see Brief-Specific Rules below); the relevant `background-role-facts-*.md` file(s) for role facts and "What she built" evidence; `background-cv-summaries.md` for approved CV summaries; `background-testimonials.md` for fractional/consulting roles; `background-portfolio.md` when demonstrated output strengthens the case. |
-| `skills/writer-craft/SKILL.md` | Consolidated writer doctrine — read the `[ALL]` sections (punctuation, vocabulary, structural bans, sentence mechanics, voice calibration, positive writing standards) plus every `[CV]` section (document shape, ATS rules, bullet formula, tailoring discipline, fabrication rule). This is the single prohibition and craft layer for CV writing. |
+| `skills/writer-craft/core.md` | Writer doctrine `[ALL]` sections (§1–4, §12) |
+| `skills/writer-craft/cv.md` | Writer doctrine `[CV]` sections (§5, §5b, §6, §6b) — read the `[ALL]` sections (punctuation, vocabulary, structural bans, sentence mechanics, voice calibration, positive writing standards) plus every `[CV]` section (document shape, ATS rules, bullet formula, tailoring discipline, fabrication rule). This is the single prohibition and craft layer for CV writing. |
 | `skills/career-engine-export/SKILL.md` | **Pandoc custom-style annotation reference — required for output.** Contains every annotation you must use: RoleTitle, RoleOverview, RoleActivitiesList, RoleActivitySingle, SkillsHeading, Skills, ColorEmphasis, Salutation, Signature Char. Read the full "CV — custom-style annotation reference" section and apply every annotation exactly as shown. Output without these annotations produces an unstyled DOCX. |
 | `references/role-type-definitions.md` | Builder / Scaler / Specialist / Leader definitions and their effect on CV structure (skills section format, Key Achievements section, framing). Read before applying Role Type to any structural decision. |
 | `references/cv-self-check.md` | Mandatory pre-submission checklist — run before returning any output. |
+| `${CAREER_DATA}/references/cv-style-exemplars.md` | **Conditional — load if it exists, skip silently if absent.** The user's own before/after CV edit pairs. The "after" versions are the governing register for skills sections and bullet compression (`writer-craft/cv.md` §6b) — they outrank the doctrine's generic examples. |
 
 **If any `${CLAUDE_PLUGIN_ROOT}` file above cannot be read** (path invalid, sandboxed environment restriction, plugin cache inconsistency): hard stop. Do not proceed from memory, inference, or partial recollection of the rules — a real production run had a writer agent proceed on reconstructed rules after `writer-craft/SKILL.md` was unreachable in a sandboxed host-loop session. Report: "CV-writer failed — `<file path>` is unreachable. Confirm the plugin is installed correctly and `${CLAUDE_PLUGIN_ROOT}` resolves." Same standard as the R-37 career-data hard stop above, applied to the plugin's own files.
 
@@ -150,13 +152,13 @@ For each key requirement the JD emphasizes, ask: "What is the strongest bullet t
 
 All claims in all bullets — approved or freshly written — must trace to documented facts in the role-facts sub-files (`background-role-facts-*.md`). The fabrication rule is absolute.
 
-See `skills/writer-craft/SKILL.md` §5-6 for bullet rules (outcomes first, proof, third person, no tool names, verb tally, no repetition).
+See `skills/writer-craft/cv.md` §5-6 for bullet rules (outcomes first, proof, third person, no tool names, verb tally, no repetition).
 
 ---
 
 ### Brief-Specific Rules
 
-Applies only when `CV Type=Brief`. Full doctrine lives in `skills/writer-craft/SKILL.md` §5b — read it before drafting a Brief CV; this section is the procedural summary.
+Applies only when `CV Type=Brief`. Full doctrine lives in `skills/writer-craft/cv.md` §5b — read it before drafting a Brief CV; this section is the procedural summary.
 
 **Section Scope override:** Brief always produces `## PROFILE SUMMARY`, `## SKILLS`, `## EXPERIENCE`. Never produces `## CONSULTING`, `## TOOLS`, or `## PUBLICATIONS` — there is no room on a one-page format for any of the three optional Detailed sections, regardless of how strong the qualifying content is. The three hard-forbidden sections above (`EDUCATION`/`LANGUAGES`/`ADDITIONAL`) still apply.
 
@@ -168,7 +170,7 @@ Applies only when `CV Type=Brief`. Full doctrine lives in `skills/writer-craft/S
 
 **One-page fit is a judgment call, not a fixed role count.** The CV must fit one page. Read `cv_type.brief_has_photo` from `pipeline-preferences.json` if set; if blank, assume no photo. Order roles by relevance and recency exactly as Detailed does. The most recent/relevant roles get full treatment (title, dates, tapering bullet density); roles beyond what the page can hold collapse into a single `**Earlier:** Company A, Company B, Company C (Year–Year)` line — the same `Earlier:` annotation already used in Detailed's Consulting section (`career-engine-export/SKILL.md`), here closing out `## EXPERIENCE` itself since Brief has no Consulting split. How many roles stay individual and how many fold into `Earlier:` depends on total career length, number of employers, and JD relevance — the same "everything must earn its place" discipline that governs Detailed's bullet selection (Step 3, above). There is no fixed number, and it will differ for every user and every role.
 
-**Profile paragraph, not Summary.** The banner is `## PROFILE SUMMARY`, not `## SUMMARY` — different heading text, same idea (positioning statement, not a narrated instance). See `writer-craft/SKILL.md` §5b for the tighter word-count backstop and bullet-writing doctrine — shortened versions of the same outcomes-first, XYZ-formula rules used for Detailed, not a new bullet philosophy.
+**Profile paragraph, not Summary.** The banner is `## PROFILE SUMMARY`, not `## SUMMARY` — different heading text, same idea (positioning statement, not a narrated instance). See `writer-craft/cv.md` §5b for the tighter word-count backstop and bullet-writing doctrine — shortened versions of the same outcomes-first, XYZ-formula rules used for Detailed, not a new bullet philosophy.
 
 **Mark sidebar content with `<!-- SIDEBAR -->`/`<!-- /SIDEBAR -->`.** Output is still ordinary linear markdown, same as Detailed — never a pandoc table (`career-engine-export/SKILL.md`'s Brief annotation reference confirmed against a real test conversion that pandoc tables cannot reliably carry custom-style content, and that hand-aligned ASCII grid tables are not a reliable authoring target for this agent). Wrap only the `## SKILLS` block in the markers:
 ```
@@ -247,7 +249,7 @@ Draft the CV applying all Universal Rules. Run the CV self-check before returnin
 
 ## Option 2 — Revision
 
-**Load before revising — the Start Here loading table is NOT optional in revision mode.** Before touching the CV, confirm you have loaded `${CLAUDE_PLUGIN_ROOT}/skills/writer-craft/SKILL.md` this turn. The prohibition layer governs revised copy exactly as it governs the draft: a revision that reintroduces a banned pattern (em dash, antithesis, AI vocabulary, etc.) is a regression and a FAIL. A focused revision brief does not narrow what you must load. If you did not load it this turn, load it now.
+**Load before revising — the Start Here loading table is NOT optional in revision mode.** Before touching the CV, confirm you have loaded `${CLAUDE_PLUGIN_ROOT}/skills/writer-craft/core.md` and `${CLAUDE_PLUGIN_ROOT}/skills/writer-craft/cv.md` this turn. The prohibition layer governs revised copy exactly as it governs the draft: a revision that reintroduces a banned pattern (em dash, antithesis, AI vocabulary, etc.) is a regression and a FAIL. A focused revision brief does not narrow what you must load. If you did not load it this turn, load it now.
 
 **Input:** `CV Type=Detailed|Brief` (same already-resolved value passed at Draft — a revision never changes CV Type mid-round) + the draft CV, recruiter flags (Tiers 1–3), hiring manager flags (Parts 1–3).
 
@@ -265,7 +267,7 @@ For every flag raised by either reviewer, apply this decision logic in order:
 
 **Minimal-edit ladder — resolve every flag at the smallest edit class that fixes it, never higher.** In order: **(1) delete** the offending word or phrase; **(2) swap** it in place; **(3) restructure the one bullet or sentence**; **(4) rewrite the section** — only when the flag is itself structural. Every step up the ladder writes more new prose, and new prose is where new violations come from — a real batch flagged roles because a late-round revision fixing one violation introduced a brand-new one inside freshly composed replacement text. If you are composing a whole new bullet to remove a banned word, you have climbed too far.
 
-**Touched-text gate — before returning, run the ban check on ONLY what you changed this round.** List every bullet or sentence you added or reworded; run each through `writer-craft/SKILL.md` §§1-4 and the CV rules the change touches (verb tally and heading/annotation integrity are whole-document properties — re-tally those), plus the specific flag you were resolving. Unflagged, untouched content stays word-for-word and is out of scope. The orchestrator independently diffs your output against the pre-round snapshot (the diff-bounded revision check, Absolute Constraints) — an out-of-scope change will come back to you quoted.
+**Touched-text gate — before returning, run the ban check on ONLY what you changed this round.** List every bullet or sentence you added or reworded; run each through `writer-craft/core.md` §§1-4 and the CV rules the change touches (verb tally and heading/annotation integrity are whole-document properties — re-tally those), plus the specific flag you were resolving. Unflagged, untouched content stays word-for-word and is out of scope. The orchestrator independently diffs your output against the pre-round snapshot (the diff-bounded revision check, Absolute Constraints) — an out-of-scope change will come back to you quoted.
 
 Run the CV self-check before returning.
 
@@ -277,6 +279,8 @@ Run the CV self-check before returning.
 **─── MANDATORY — NON-NEGOTIABLE ───**
 
 Load `references/cv-self-check.md` and run every item in order before returning any output. This step cannot be skipped, abbreviated, or deferred. Do not return output until the full checklist is complete.
+
+**Then run the mechanical pre-gate lint (2026-07-22): `python3 ${CLAUDE_PLUGIN_ROOT}/skills/gatekeeper-checks/scripts/pregate-lint.py --type cv $CV_PATH` — it reports ALL string-matchable violations at once (em dashes/colons, banned vocabulary, skills items repeating their heading's words, parenthetical enumerations, summary word count). Fix every violation and re-run until it exits 0; warnings (noun doublets, AI-vocabulary flags) are judgment calls per `writer-craft/cv.md` §6b — resolve or consciously keep them.**
 
 ---
 

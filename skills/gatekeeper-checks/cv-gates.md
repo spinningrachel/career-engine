@@ -1,0 +1,124 @@
+# Gatekeeper Check Definitions — CV Check
+
+> Moved verbatim from `skills/gatekeeper-checks/SKILL.md` on 2026-07-22 (context-diet split). Gate numbers are preserved; `SKILL.md` is now the routing file. No gate was changed or removed in the move.
+
+## CV Check
+
+Run Gate 0 (ATS pre-check) first, then Gates 1-5 in order.
+
+**The gatekeeper receives `CV Type=Detailed|Brief` at every CV Check spawn** (the orchestrator's already-resolved value — the gatekeeper never re-derives it). Gates branch only where the thing they check is literally different content between the two types — not by default. Gate 0 and Gate 2 branch (required headings differ; RoleOverview structurally doesn't exist in Brief). Gate 1 uses a different number but the same logic. Gates 3-5 do not branch at all — punctuation, banned vocabulary, sentence mechanics, and Skills-section content quality apply identically regardless of CV type. See each gate below for the specific reasoning.
+
+### Gate 0 — ATS Pre-Check (hard fail)
+
+ATS failures mean the document may never reach a human reader regardless of quality.
+
+**Keyword coverage.** Parse the Keywords property into three tiers (`Critical: ... | Important: ... | Nice-to-have: ...`). **Search each term via `Grep` (case-insensitive) against the actual staged CV file — never a manual read-through.** This is a literal string search, same mechanical-execution standard already mandated for Gate 6's banned-term search and the word-count checks elsewhere in this doctrine ("never estimate, never eyeball"). **Confirmed production failure this closes:** a real Gate 0 check reported "Infrastructure-as-Code (IaC)" as absent from a CV body when the term was present verbatim in the Consulting section — a manual-read miss, not a judgment call — and that false negative was the first domino in a chain that drove the CV's real ATS coverage from 3-of-4 Critical keywords down to 0-of-4 by the final round (the writer kept trying to "fix" a gap that didn't actually exist at round 1, generalizing an already-borderline claim into an unverifiable one in the process). Report each term's exact match count, not just a binary present/absent, so a false "0 hits" is easier to catch on review.
+
+| Tier | Requirement | Action if below threshold |
+|---|---|---|
+| **Critical** | ≥80% must appear | FAIL — list missing terms by name |
+| **Important** | ≥60% must appear | FAIL — list missing terms by name |
+| **Nice-to-have** | No threshold | Advisory only — end-of-pipeline feedback note, not a violation |
+
+**Gap handling exception — applies ONLY when `gap_handling_mode = enabled`:** a missing Critical/Important term explicitly listed as a gap in the role's Gap handling property does not FAIL — add it to the advisory note instead. **When `gap_handling_mode = disabled` (the token every pipeline spawn passes — 2026-07-14 universal spawn parameter), this exception never applies: there are no gaps, and no missing keyword is ever excused by one.** If the token was not passed at all (an older spawn), log "gap_handling_mode not passed" and apply the exception only when a Gap handling listing was actually provided — the pre-2026-07-14 behavior.
+
+**Standard section headings — branches by `CV Type`, because the mandatory heading set is literally different content between the two types.** Detailed requires `SUMMARY`/`EXPERIENCE`/`SKILLS` and permits a `CONSULTING` section; Brief requires `PROFILE SUMMARY`/`EXPERIENCE`/`SKILLS` and never has `CONSULTING` at all (`writer-craft/SKILL.md` §5b). Without branching, this check would hard-fail every Brief CV either for "missing CONSULTING" (which Brief never has by design) or for the wrong banner text on the summary heading — a structural absence that isn't a mistake, not something to penalize.
+
+**Detailed — search the full document (case-insensitive) for "SUMMARY", "EXPERIENCE", "SKILLS":**
+
+| Required | Not acceptable |
+|---|---|
+| SUMMARY or PROFESSIONAL SUMMARY | Profile, About Me, Introduction |
+| EXPERIENCE or WORK EXPERIENCE | Career History, Professional History, Work History |
+| SKILLS | Core Competencies only (without SKILLS anywhere) |
+
+FAIL if EXPERIENCE or SUMMARY headings are absent or substantially renamed.
+
+**Brief — search for "PROFILE SUMMARY", "EXPERIENCE", "SKILLS":**
+
+| Required | Not acceptable |
+|---|---|
+| PROFILE SUMMARY | SUMMARY alone (wrong banner for this type — see `writer-craft/SKILL.md` §5b's naming note), Profile, About Me, Introduction |
+| EXPERIENCE or WORK EXPERIENCE | Career History, Professional History, Work History |
+| SKILLS | Core Competencies only (without SKILLS anywhere) |
+
+FAIL if EXPERIENCE or PROFILE SUMMARY headings are absent or substantially renamed. **Never FAIL a Brief CV for lacking a `CONSULTING` section — Brief structurally never has one.**
+
+**Macro-injected sections — FAIL if present, never FAIL on absence. Applies to both CV types identically — this check doesn't branch.** `## EDUCATION`, `## LANGUAGES`, `## ADDITIONAL` are injected automatically by the Word template (or the shared `static-cv-footer.md` append for Brief) — they must NOT appear in cv-writer's markdown output (duplication risk). FAIL immediately on any hit: "[SECTION] section must not be written — it is part of the Word template and will duplicate." Never FAIL on their absence.
+
+**`## TOOLS` — optional for Detailed, forbidden for Brief.** For Detailed: not a FAIL on absence; if present, must use the literal `## TOOLS` heading — FAIL if present under any other heading name: "TOOLS section uses non-standard heading [heading] — rename to `## TOOLS`." For Brief: FAIL if a `## TOOLS` section appears at all — "TOOLS section is not permitted in a Brief CV — there is no room for it on a one-page format (`writer-craft/SKILL.md` §5b)."
+
+**`## PUBLICATIONS` — optional and rare for Detailed, forbidden for Brief.** Same rule shape as `## TOOLS` above, applied to the newer Publications section: not a FAIL on absence for Detailed. For Brief: FAIL if a `## PUBLICATIONS` section appears at all — "PUBLICATIONS section is not permitted in a Brief CV — there is no room for it on a one-page format (`writer-craft/SKILL.md` §5b), regardless of how strong the qualifying content is."
+
+**ColorEmphasis annotation check.** Scan for the pattern `[^]]{custom-style="ColorEmphasis"}` — i.e. `{custom-style="ColorEmphasis"}` not immediately preceded by `]` (an unbracketed span; pandoc renders the literal annotation string as body text). FAIL every hit: "Unbracketed ColorEmphasis span: `[text here]` — wrap: `[text here]{custom-style=\"ColorEmphasis\"}`."
+
+---
+
+### Gate 1 — Summary (hard fail unless marked advisory)
+
+**Branches only in the word-count number, not the logic — same single-instance-trap check either way.** Applies to `## SUMMARY` (Detailed) or `## PROFILE SUMMARY` (Brief) — same rules below, just a different ceiling.
+
+- No company, client, or conference names — descriptors only (`01-writing-rules.md` §1). **Hard fail.**
+- **Detailed:** ≤120 words, 1 paragraph, ≤4 sentences. **Brief:** the single total-body word-count backstop from `writer-craft/SKILL.md` §5b covers the whole CV (Profile Summary + Skills + Experience combined) rather than a standalone paragraph cap — do not apply the ≤120-word Detailed ceiling to a Brief profile paragraph in isolation. No tool/platform names, consulting client names, or undocumented metrics. **Hard fail.**
+- No motivation language — the summary states capability, not why she wants the job. **Hard fail.**
+- Leads with language most relevant to the hiring manager and role; no specific role required to appear, including the most recent one. Do not FAIL on the absence of any particular role.
+- **Single-instance trap.** For every concrete claim in the summary, count how many times the CV body demonstrates it across different roles. One instance → FAIL: "Summary sentence '[sentence]' implies a repeated pattern but the CV shows only one instance — move the specific detail to a bullet under [role], replace with the breadth claim." A dense, em-dash-stuffed, or bullet-shaped summary sentence is the signal to run this test. **Hard fail.**
+- **Absolute-peak numbers.** A single absolute team-size or growth number (e.g. "a 13-person team," "300% YoY growth") implies sustained state — FAIL unless phrased as a range ("up to 13-person teams"). **Hard fail.**
+- **Roster-level detail.** Listing the specific sub-functions of a team (e.g. "spanning editorial, technical writing, social, product marketing, field") is bullet-level detail — FAIL: "Summary lists specific team functions — abstract to 'multiple competencies' or equivalent scope language; move the roster to a bullet." **Hard fail.**
+- Cliché filler ("comfortable operating across", "proven track record", "passionate about", "results-driven", "dynamic", "extensive experience") — **advisory only; do not FAIL or loop.**
+
+### Gate 2 — Experience (hard fail)
+
+**Branches because RoleOverview and the Consulting split structurally don't exist in Brief — not by default.** The RoleOverview-parity check below counts RoleTitles vs. RoleOverviews and FAILs on a mismatch; Brief has zero RoleOverviews by design (`writer-craft/SKILL.md` §5b), so that specific check is **skipped entirely** for Brief rather than made to fail on a structural absence that isn't a mistake. Likewise, the Consulting-section rules below apply to Detailed only — Brief has no `## CONSULTING` at all, so there's nothing to check there. The remaining rules (no tool names in bullets, target-market claims trace to background) are format-agnostic and apply to both types unchanged.
+
+**Detailed only:**
+- `## EXPERIENCE` = full-time employment only, reverse-chronological by end date.
+- Consulting/fractional work belongs in `## CONSULTING`, never `## EXPERIENCE` — FAIL if found in Experience.
+- Any consulting entry flagged mandatory in `02-professional-background.md` must appear (standalone entry in `## CONSULTING` or a bullet within it) — FAIL if absent entirely.
+- "Earlier:" line is the final entry inside `## EXPERIENCE`, before `## CONSULTING` — FAIL if Earlier appears after CONSULTING.
+- Every named role has a RoleOverview immediately below its RoleTitle — count must match (Earlier: exempt).
+
+**Brief only:**
+- `## EXPERIENCE` is a single flat, reverse-chronological list (no full-time/consulting split — `writer-craft/SKILL.md` §5b). FAIL if a `## CONSULTING` section appears at all.
+- If an `**Earlier:**` line is used, it must be the final line of `## EXPERIENCE` — FAIL if anything follows it.
+- **Do not run the RoleOverview-parity check** — Brief has no RoleOverview line anywhere; this is correct, not a violation.
+
+**Both types:**
+- Claims about target market match `02-professional-background.md` (Role Facts).
+- No tool or technology name of any kind inside experience bullets — blanket ban, even a tool named in the JD, even as an example. Approved bullets from `02-professional-background.md` are the only exemption.
+
+### Gate 3 — Structure (hard fail)
+
+**Does not branch by CV Type.** Punctuation, banned vocabulary, and sentence mechanics are format-agnostic — a Brief CV is held to the same bans as a Detailed one.
+
+- No years on the Earlier line (Education/Languages are script-injected — skip them).
+- No header or label between the SUMMARY banner and the summary text.
+- **No opening verb 3+ times** — common offenders: Built, Led, Developed, Created, Managed, Drove, Owned.
+- **No 4+ word verbatim JD phrases in new bullets** (standard terms like "go-to-market" are fine; approved bullets exempt); quote both phrases when flagging.
+- **No em dash (—) anywhere** — zero exceptions, no carve-outs (not as a list separator, not for asides, not as a colon substitute — the full-width ban per `writer-craft/SKILL.md` §1). **Hard fail.**
+- **No colon (:) anywhere in body copy** — not for role labeling, introducing explanations, before lists, or as an em-dash substitute (`writer-craft/SKILL.md` §1). **Hard fail.**
+- **Soft-skill filler banned as a standalone claim:** "works independently," "self-starter," "takes initiative," "manages own workload," "team player" — FAIL if present without bullet-level substantiation. **Hard fail.**
+- **AI-tell vocabulary** (`writer-craft/SKILL.md` §2): crucial, pivotal, vibrant, showcase/showcasing, tapestry, underscore (verb), landscape (abstract noun), testament, enduring, foster/fostering, garner, interplay, intricate/intricacies, foundational, transformative, robust, seamless, comprehensive, leverage (verb), synergy, spearhead, paradigm, "know what it takes," land (verb). CV-only additions: think outside the box, value add, go-to person, bottom line, big picture, cutting-edge, game-changer, guru, ninja, rockstar, world-class, paradigm shift, scalable, disruptive, innovative, holistic approach, agile. **Advisory — scored, does not independently block.**
+- **Named phrase bans** (`writer-craft/SKILL.md` §2): "that made it land," "behind the [noun]," "at an inflection point," "quietly [verb]ing," "rare" as self-descriptor, "up close," "specialism." **Advisory.**
+
+### Gate 4 — Sentence Mechanics (advisory, scored — flag but do not independently block)
+
+Cross-referenced from `writer-craft/SKILL.md` §3-4; these are style-quality checks, not the hard-fail document-correctness checks above. **Does not branch by CV Type** — same reasoning as Gate 3.
+
+- **False range** ("everything from X to Y" where X/Y are filler, not real endpoints).
+- **Approach-announcement via label** (naming a methodology before demonstrating it — e.g. "My approach is deliberately research-first:").
+- **Contrived tricolon** built to sound impressive (real parallel lists of 4-5 real things pass) — also flag the same sentence opening used 3+ times in a row.
+- **Passive voice** where an active rewrite is available.
+- **Synonym cycling** — rotating synonyms for the same concept instead of repeating the right word.
+- **Filler phrases** left uncut: "in order to," "at this point in time," "it is important to note that," "due to the fact that," "has the ability to," "in the event that."
+
+### Gate 5 — Skills Section Content (hard fail)
+
+A format contract is not a content contract — this gate checks what's actually IN `## SKILLS`, not just whether the heading exists (that's Gate 0). Cross-referenced from `writer-craft/SKILL.md` §5's three-way test. **Hard fail on any of the three:**
+
+- **Knowledge listed as a skill.** A subject-matter/domain area the candidate knows *about*, not a capability she *does* — e.g. "Cybersecurity," "Identity & access management (IAM/PAM)," "Non-human identity (NHI)" as standalone skill-list items. FAIL: "[item] is domain knowledge, not a skill — cut it from `## SKILLS` or move it to Summary/Role-emphasis framing."
+- **Title or role label listed as a skill.** A job title or role descriptor is never a skill — e.g. "Founding Marketer." FAIL: "[item] is a title, not a capability — cut it."
+- **More than 3 skill groups, or cross-group duplication.** FAIL if the section has more than 3 categorized groups, or if the same item (or a clear paraphrase of it) appears in more than one group. Quote both groups and the overlapping item(s): "[group A] and [group B] both claim [overlapping concept] — merge or cut one."
+
+---
+

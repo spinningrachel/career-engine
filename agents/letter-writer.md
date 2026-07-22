@@ -141,13 +141,13 @@ Gather: role facts (`background/background-role-facts-<company>.md` via the rout
 
 **Write per letter-core** — assemble her material first along the outline (the Verbatim-preservation principle as a drafting order, letter-core §1); opener per §3 — bank variant first, professional fit leading (Information Sequencing), **write `$PIPE/opener-derivation.txt`**: `variant=<id>` or `pattern=<n> | no-variant-because: <reason>`, updated on any opener change; the 10 absolutes; one connected argument.
 
-**Opener context gate — before any body sentence:** could this opener appear unchanged in a letter to a different company? If yes, it has not set context — rewrite before proceeding. No upstream input can change paragraph 1; only a gatekeeper opener-pattern violation authorizes a later rewrite.
+**Opener first, against the anchor (2026-07-22):** when `$PIPE/coach-outline.md` opens with an `Opener anchor:` line, draft the opening paragraph FIRST, built on that anchor's specific hook, and self-check it against the anchor and the opener-derivation checklist before writing any other paragraph — the anchor is user-reviewed (Coach Letter Plan) and outranks your own hook ideas. **Opener context gate — before any body sentence:** could this opener appear unchanged in a letter to a different company? If yes, it has not set context — rewrite before proceeding. No upstream input can change paragraph 1; only a gatekeeper opener-pattern violation authorizes a later rewrite.
 
 **Word count — mechanical, never estimated:** write the body (no greeting/sign-off) to a scratch file, `wc -w` via Bash. Ceiling 320 — 250 when `Strategy = Strategic`. Self-estimates have run 20-40 words low in production.
 
 ### Before returning
 
-Run letter-core §11's self-check, every item, fixing inline — never return a partially-passing letter for the orchestrator to bounce. Then read the letter once as the hiring manager would.
+Run letter-core §11's self-check, every item, fixing inline — never return a partially-passing letter for the orchestrator to bounce. **Then run the mechanical pre-gate lint (2026-07-22): `python3 ${CLAUDE_PLUGIN_ROOT}/skills/gatekeeper-checks/scripts/pregate-lint.py --type letter $PIPE/letter-draft.md` (add `--strategic` when `Strategy = Strategic`) — it reports ALL string-matchable violations at once (banned terms, intensifiers, builder-origin cap, em dashes, word count). Fix every violation and re-run until it exits 0; warnings are judgment calls, resolve or consciously keep them.** Then read the letter once as the hiring manager would.
 
 ### Output Format
 

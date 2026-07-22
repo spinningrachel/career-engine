@@ -8,7 +8,16 @@ set -uo pipefail
 TARGET="${1:?usage: qa-mechanical.sh <target-dir>}"
 PASS=0; FAIL=0
 
-cnt()  { grep -c "$1" "$TARGET/$2" 2>/dev/null || true; }   # count in one file (prints 0 on no match/missing file)
+cnt()  { # count in one file (prints 0 on no match/missing file).
+  # Context-diet split (2026-07-22): the two doctrine monoliths became routing files with
+  # verbatim sub-files. A check targeting either SKILL.md means "the skill's doctrine",
+  # so count across the whole skill directory (SKILL.md + sub-files).
+  case "$2" in
+    skills/writer-craft/SKILL.md|skills/gatekeeper-checks/SKILL.md)
+      grep -h -c "$1" "$TARGET/$(dirname "$2")"/*.md 2>/dev/null | awk '{s+=$1} END {print s+0}';;
+    *) grep -c "$1" "$TARGET/$2" 2>/dev/null || true;;
+  esac
+}
 rcnt() { grep -rc "$1" "$TARGET/$2" 2>/dev/null | awk -F: '{s+=$2} END {print s+0}'; }  # recursive total
 
 report() { # id, ok(0/1), detail
@@ -241,7 +250,7 @@ expect_ge "21i" "skills/gatekeeper-checks/SKILL.md" "repetition check skipped" 1
 expect_ge "21i" "skills/gatekeeper-checks/SKILL.md" "Role named in the first sentence" 1
 expect_ge "21i" "skills/writer-craft/SKILL.md" "Proof-point partitioning" 1
 expect_ge "21i" "skills/writer-craft/SKILL.md" "always surfaced" 1
-c21i_stealth=$(grep -ci "stealth" "$TARGET/skills/gatekeeper-checks/SKILL.md" 2>/dev/null || true); c21i_stealth=${c21i_stealth:-0}
+c21i_stealth=$(grep -hci "stealth" "$TARGET/skills/gatekeeper-checks/"*.md 2>/dev/null | awk '{s+=$1} END {print s+0}'); c21i_stealth=${c21i_stealth:-0}
 if [ "$c21i_stealth" -ge 1 ]; then report "21i" 1 ""; else report "21i" 0 "'stealth' (case-insensitive) not found in gatekeeper-checks/SKILL.md"; fi
 
 # ================================================================
@@ -304,8 +313,15 @@ expect_ge "21r" "skills/career-engine-new-application/SKILL.md" "Draft Directory
 # NOTE: the "hiring-manager-reviewer" grep against <build>/agents (a directory,
 # no -r flag) in the source is buggy/mis-scoped — not migrated, see notes file.
 # ================================================================
-expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "Option 4 — Strategic Letter Review" 1
-expect_ge "21s" "skills/career-engine-edit/SKILL.md" "Option 4 — Strategic Letter Review" 1
+# 2026-07-22: per the user's instruction ("the coach doesn't need to be in the application pipelines anymore at all"),
+# the per-role Option 4 review was replaced by gate conformance; assert the replacement is wired in BOTH pipelines
+# and Option 4a remains as the legacy-WIWTR fallback.
+expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "Strategic conformance (coach review removed 2026-07-22)" 1
+expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "Option 4a — Pre-Draft Outline" 1
+expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "COACH LETTER PLAN" 1
+expect_ge "21s" "skills/career-engine-edit/SKILL.md" "Strategic conformance (coach review removed 2026-07-22)" 1
+expect_ge "21s" "skills/career-engine-edit/SKILL.md" "Option 4a — Pre-Draft Outline" 1
+expect_ge "21s" "skills/career-engine-edit/SKILL.md" "COACH LETTER PLAN" 1
 expect_eq0 "21s" "skills/career-engine-new-application/SKILL.md" "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter"
 expect_eq0 "21s" "skills/career-engine-edit/SKILL.md" "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter"
 expect_ge "21s" "agents/career-coach.md" "Option 4" 1
@@ -384,12 +400,12 @@ c22c_sb1=$(cnt "strategic builder" "skills/gatekeeper-checks/SKILL.md"); c22c_sb
 c22c_sb2=$(cnt "strategic builder" "skills/writer-craft/SKILL.md"); c22c_sb2=${c22c_sb2:-0}
 if [ "$c22c_sb1" -ge 1 ] || [ "$c22c_sb2" -ge 1 ]; then report "22c-strategic-builder" 1 ""; else report "22c-strategic-builder" 0 "'strategic builder' absent from both gatekeeper-checks/SKILL.md and writer-craft/SKILL.md"; fi
 
-c22c_ed_wc=$(grep -ci "em dash" "$TARGET/skills/writer-craft/SKILL.md" 2>/dev/null || true); c22c_ed_wc=${c22c_ed_wc:-0}
+c22c_ed_wc=$(grep -hci "em dash" "$TARGET/skills/writer-craft/"*.md 2>/dev/null | awk '{s+=$1} END {print s+0}'); c22c_ed_wc=${c22c_ed_wc:-0}
 if [ "$c22c_ed_wc" -ge 1 ]; then report "22c-em-dash" 1 ""; else report "22c-em-dash" 0 "'em dash'/'em dashes' (case-insensitive) absent from writer-craft/SKILL.md"; fi
 # agents/letter-writer.md count is advisory only per the source check — not asserted here.
 
 c22c_colon_lw=$(grep -ci "colon" "$TARGET/agents/letter-writer.md" 2>/dev/null || true); c22c_colon_lw=${c22c_colon_lw:-0}
-c22c_colon_wc=$(grep -ci "colon" "$TARGET/skills/writer-craft/SKILL.md" 2>/dev/null || true); c22c_colon_wc=${c22c_colon_wc:-0}
+c22c_colon_wc=$(grep -hci "colon" "$TARGET/skills/writer-craft/"*.md 2>/dev/null | awk '{s+=$1} END {print s+0}'); c22c_colon_wc=${c22c_colon_wc:-0}
 if [ "$c22c_colon_lw" -ge 1 ] || [ "$c22c_colon_wc" -ge 1 ]; then report "22c-colon-ban" 1 ""; else report "22c-colon-ban" 0 "'colon' (case-insensitive) absent from both letter-writer.md and writer-craft/SKILL.md"; fi
 
 # ================================================================
@@ -664,8 +680,10 @@ expect_ge "43" "skills/career-engine-edit/SKILL.md" "Do not skip this step becau
 # ================================================================
 expect_ge "44" "skills/career-engine-new-application/SKILL.md" "Capture the returned agent ID" 1
 expect_ge "44" "skills/career-engine-edit/SKILL.md" "Capture the returned agent ID" 1
-expect_ge "44" "skills/career-engine-new-application/SKILL.md" "resume the letter-writer instance\|Resume the letter-writer instance" 3
-expect_ge "44" "skills/career-engine-edit/SKILL.md" "resume the letter-writer instance\|Resume the letter-writer instance" 5
+# min 3→2 (2026-07-22): the Step 5.3 coach-review revision path was removed per the user's instruction
+expect_ge "44" "skills/career-engine-new-application/SKILL.md" "resume the letter-writer instance\|Resume the letter-writer instance" 2
+# min 5→4 (2026-07-22): the Step E7.4 coach-review revision path was removed per the user's instruction
+expect_ge "44" "skills/career-engine-edit/SKILL.md" "resume the letter-writer instance\|Resume the letter-writer instance" 4
 expect_ge "44" "skills/career-engine-new-application/SKILL.md" "letter-writer-agent-id.txt" 1
 expect_ge "44" "skills/career-engine-edit/SKILL.md" "letter-writer-agent-id.txt" 1
 
@@ -753,8 +771,9 @@ expect_file "49" "skills/humanizer/scripts/corpus-stats.py"
 c49_imports=$(grep -Ec "^import (docx|requests|numpy|pandas|nltk)" "$TARGET/skills/humanizer/scripts/corpus-stats.py" 2>/dev/null || true); c49_imports=${c49_imports:-0}
 if [ "$c49_imports" -eq 0 ]; then report "49" 1 ""; else report "49" 0 "corpus-stats.py imports a third-party package ($c49_imports match(es))"; fi
 expect_ge "49" "skills/humanizer/SKILL.md" "corpus-stats.py" 1
-expect_ge "49" "skills/career-engine-new-application/SKILL.md" "Coach pre-draft outline" 1
-expect_ge "49" "skills/career-engine-edit/SKILL.md" "Coach pre-draft outline" 1
+# 2026-07-22: step renamed — letter plan comes from intake's Coach Letter Plan; coach spawn is the legacy fallback
+expect_ge "49" "skills/career-engine-new-application/SKILL.md" "Letter plan (from intake's Coach Letter Plan" 1
+expect_ge "49" "skills/career-engine-edit/SKILL.md" "Letter plan (from intake's Coach Letter Plan" 1
 expect_ge "49" "skills/career-engine-new-application/SKILL.md" "Template selected=" 2
 expect_ge "49" "skills/career-engine-edit/SKILL.md" "Template selected=" 2
 expect_ge "49" "skills/career-engine-new-application/SKILL.md" "SENDMESSAGE_AVAILABLE" 1
@@ -902,6 +921,18 @@ if [ "$c0C_1" -eq 0 ]; then report "0C" 1 ""; else report "0C" 0 "found $c0C_1 e
 if [ "$c0C_2" -eq 0 ]; then report "0C" 1 ""; else report "0C" 0 "found $c0C_2 generation-1 cv-campaign-* reference(s)"; fi
 if [ "$c0C_3" -eq 0 ]; then report "0C" 1 ""; else report "0C" 0 "found $c0C_3 generation-2 application-* reference(s)"; fi
 if [ "$c0C_4" -eq 0 ]; then report "0C" 1 ""; else report "0C" 0 "found $c0C_4 cover-letter-humanizer/voice-analyst reference(s)"; fi
+
+# ================================================================
+# Check 66 — pregate-lint.py exists, is executable, and its selftest passes
+# ================================================================
+PREGATE_SCRIPT="$TARGET/skills/gatekeeper-checks/scripts/pregate-lint.py"
+if [ -f "$PREGATE_SCRIPT" ]; then report "66" 1 ""; else report "66" 0 "pregate-lint.py missing at skills/gatekeeper-checks/scripts/"; fi
+if [ -x "$PREGATE_SCRIPT" ]; then report "66" 1 ""; else report "66" 0 "pregate-lint.py is not executable"; fi
+if python3 "$PREGATE_SCRIPT" --selftest >/dev/null 2>&1; then
+  report "66" 1 ""
+else
+  report "66" 0 "python3 pregate-lint.py --selftest failed"
+fi
 
 echo "qa-mechanical: $PASS passed, $FAIL failed"
 

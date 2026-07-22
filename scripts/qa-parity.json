@@ -36,7 +36,7 @@
           "end": "### 0.9b"
         },
         {
-          "file": "skills/gatekeeper-checks/SKILL.md",
+          "file": "skills/gatekeeper-checks/coach-gates.md",
           "start": "## Coach Output Check"
         },
         {
@@ -113,8 +113,8 @@
       "id": "term-personal-voice",
       "term": "personal-voice exemption",
       "files": [
-        "skills/writer-craft/SKILL.md",
-        "skills/gatekeeper-checks/SKILL.md"
+        "skills/writer-craft/core.md",
+        "skills/gatekeeper-checks/letter-gates.md"
       ]
     },
     {

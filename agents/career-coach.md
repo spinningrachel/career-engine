@@ -200,6 +200,26 @@ Before generating output for any role, read the existing Notion row properties. 
 
 ---
 
+### Letter Plan (template + opener anchor + outline) — 2026-07-22
+
+**Run after Analysis, for every full-research role (Priority 1–4).** You are producing, at intake time, the letter strategy that used to be produced by two per-role coach spawns inside the application pipelines (Option 4a outline + Option 4 review). You have the full research context here — the JD, the company landscape, the culture read — which the mid-pipeline spawns never had. Intake writes this block into the role's `Why I Want This Role` field where the user can review, enrich, or edit it in Notion before any application pipeline runs; the pipelines then follow the user-approved plan verbatim.
+
+**Return as `letter_plan` in your output, exactly this block format:**
+
+```
+[COACH LETTER PLAN — edit any line or delete the block; the letter pipeline follows this plan]
+Template: <selection from the user's cover_letter_templates.md, else the plugin default set>
+Opener anchor: <ONE sentence — the company-specific, non-transferable hook the letter's first paragraph is built on>
+Para 1: <subject>
+Para 2: <subject>
+Para N: close.
+[/COACH LETTER PLAN]
+```
+
+Rules: **Template** — you make this call, not the letter-writer; classification criteria are generic, never hardcoded to one user (same rule as Option 4a). **Opener anchor** — one sentence naming the company-specific hook; it must be non-transferable (fails if it could open a letter to a different company) and must trace to your research or the user's WIWTR/Motivation material, never to invented claims. **Outline** — bare paragraph subjects only, one line per paragraph naming what it is *about*, never how to write it (same rule as Option 4a). Skip for triage-exit roles.
+
+---
+
 ### Why I Want This Role contradiction check
 
 **Run at the end of Analysis, before writing Notion properties.** If the role's Notion row has a `Why I Want This Role` value populated, read it and cross-check it against your own research findings. Flag any specific factual contradictions — cases where the user's framing contradicts what your research established about the company, its product, or its market.
@@ -242,7 +262,7 @@ Do not return the analysis inline — context compression cannot delete a file.
 
 ## Option 4a — Pre-Draft Outline
 
-**When this applies:** Called by the new-application pipeline (before Step 5's letter-writer spawn) and edit pipeline (before Step E7's letter-writer spawn) — before the letter-writer's first draft of a role. No research, no Notion writeback. Read-only except for the two output files below.
+**When this applies (fallback only since 2026-07-22):** Called by the new-application pipeline (before Step 5's letter-writer spawn) and edit pipeline (before Step E7's letter-writer spawn) ONLY when the role's `Why I Want This Role` contains no `[COACH LETTER PLAN` block — i.e. rows intaken before the Letter Plan moved to intake (Option 2). When the block exists, the pipelines parse it instead and this option is not called. Output contract addition: the first line of `$PIPE/coach-outline.md` must be `Opener anchor: <one sentence — company-specific, non-transferable>` followed by the paragraph-subject outline. No research, no Notion writeback. Read-only except for the two output files below.
 
 **Same coach instance as Option 4.** When `$SENDMESSAGE_AVAILABLE` (checked once at the start of the run — see the SendMessage capability note in the relevant pipeline skill), this option and the later Option 4 review run as one resumed coach instance, not two independent spawns — the coach that wrote the outline is the one that later checks whether the writer followed it. When unavailable, each runs as its own fresh spawn instead; the outputs on `$PIPE` still carry everything the later spawn needs.
 
@@ -277,7 +297,7 @@ Do not return the analysis inline — context compression cannot delete a file.
 
 ## Option 4 — Strategic Letter Review
 
-**When this applies:** Called by the new-application pipeline (Step 5.3) and edit pipeline (Step E7.4) after a cover letter draft passes the gatekeeper. No research, no Notion writeback. Read-only except for the output file.
+**When this applies (standalone only since 2026-07-22):** No longer called by the application pipelines — the user moved letter strategy to intake ("the coach doesn't need to be in the application pipelines anymore at all"); strategic conformance is now enforced by the gatekeeper's Cover Letter Check (Gate 5 opener-anchor conformance, Gate 9 outline conformance) against the user-approved Coach Letter Plan. This option remains available for direct user invocation (letter-review mode) on any letter. No research, no Notion writeback. Read-only except for the output file.
 
 **Inputs (passed in the spawn prompt):**
 - Cover letter path (`$PIPE/letter-draft.md`) — read it

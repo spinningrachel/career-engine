@@ -85,6 +85,23 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-22 — Cost reduction and CV content quality
+
+**Context:** measured cost per role tripled June→July 2026 ($104 → $331); this release reverses the drivers.
+
+**New features**
+- **Coach Letter Plan at intake** — the intake coach now writes a `[COACH LETTER PLAN]` block (template + opener anchor + paragraph outline) into each role's Why I Want This Role field, where the user reviews or edits it in Notion before any application run. Both application pipelines parse the user-approved plan instead of spawning the coach. *Authorizing user instruction (quoted):* "during intake is when the coach should enter into WIWTR the actual outline + opener that is recommended and then the user can leave as-is entirely, or add any additional info ... This means the coach doesn't need to be in the application pipelines anymore at all ... and in any case at the very last cuts the coach's role and necessary effort for application pipelines (edit and new of course)."
+- **Pre-gate lint script** (`skills/gatekeeper-checks/scripts/pregate-lint.py`) — writers self-lint all string-matchable violations (banned terms, intensifiers, builder-origin cap, em dashes, word counts, skills-section compression) before returning, so gatekeeper rounds stop burning on mechanical hits. Gatekeeper flow unchanged.
+- **CV compression doctrine** (`writer-craft/cv.md` §6b) — heading-owns-the-category-word, three-level dedup, no doublets/enumerations/padded modifiers, outputs-not-process; sourced from real delivered-CV edit forensics. New optional per-user `cv-style-exemplars.md` (career-data) outranks the generic examples.
+
+**Improvements**
+- **Context-diet split** — `writer-craft/SKILL.md` → `core.md`/`cv.md`/`letter.md`; `gatekeeper-checks/SKILL.md` → `cv-gates.md`/`letter-gates.md`/`coach-gates.md` (verbatim moves, byte-identical reassembly verified). Each agent loads only its sub-files; a CV gatekeeper spawn now reads 2.3k words of gates instead of 13.1k.
+- **Model tiering** — `gatekeeper` and `recruiter-reviewer` run on sonnet via frontmatter (`model: sonnet`); writers/coach/humanizer unchanged.
+- **Cost logging** — `log-token-usage.sh` prices per model (opus/sonnet/haiku/fable), sums per-model, and writes an explicit unavailable status instead of leaving `token_counts: "pending"`.
+
+**Removals (user-authorized, quoted above)**
+- **Per-role coach spawns in application pipelines** — new-application Step 4.99 pre-draft outline spawn (now legacy-WIWTR fallback only), Step 5.3 strategic letter review (replaced by Gate 5 opener-anchor + Gate 9 outline conformance in the gatekeeper's Cover Letter Check), and the edit pipeline's E6.9/E7.4 equivalents. Option 4 remains available for standalone letter-review invocations; Option 4a remains as the legacy fallback. No review capability was silently dropped — conformance moved to a user-approved-input gate.
+
 ### 2026-07-19 — Conditional humanizer
 
 Per the user's approval: the humanizer now runs only when the final pre-humanizer gatekeeper pass deferred Tier-2 items to it — its designed hand-off. A letter that passes with Tier 2 = 100% skips the humanizer (and the redundant post-humanizer gatekeeper re-spawn; the mechanical pre-export checks still run). Evidence from a real 5-role run: on already-clean assembled letters the humanizer added 2-4 marginal edits, broke one letter's WIWTR coverage, and silently no-showed on another. Time or cost pressure remains banned as a skip rationale — Tier-2-clean is the only skip condition.
