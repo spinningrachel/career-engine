@@ -110,7 +110,7 @@ Every violation must include a `→ [resolution]` per the resolution format in t
 
 ### Coach Output Check
 
-Run all checks in `skills/gatekeeper-checks/coach-gates.md`: the fabrication check, the **Field-fit and format checks** (items 1-6), the **mandatory-field presence check** (item 7), the **outreach map structural purity check** (item 8), and the **coach context block over-written check** (item 9). Any one kind of violation is a FAIL.
+Run all checks in `skills/gatekeeper-checks/coach-gates.md`: the fabrication check, the **Field-fit and format checks** (items 1-6; item 4 retired 2026-07-23), the **mandatory-field presence check** (item 7), the **outreach map structural purity check** (item 8), the **search-narrative leakage check** (item 9, 2026-07-23 — replaces the retired coach-context-block check), and the **JD Body / unsanctioned-deliverable / Letter Outline checks** (items 10-12). Any one kind of violation is a FAIL.
 
 If everything passes, reply `PASS` (no file write needed).
 

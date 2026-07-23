@@ -114,11 +114,12 @@ expect_ge "19b" "skills/career-engine-intake/SKILL.md" "url-fetched-via-search" 
 # ================================================================
 c19c_1=$(cnt "Rendering-capable extraction" "skills/career-engine-intake/SKILL.md"); c19c_1=${c19c_1:-0}
 c19c_2=$(cnt "Rendering-capable extraction" "agents/career-coach.md"); c19c_2=${c19c_2:-0}
-c19c_3=$(cnt "Fetched-alternative" "agents/career-coach.md"); c19c_3=${c19c_3:-0}
+# 2026-07-23: the "Fetched-alternative is not a valid option" sentence was replaced by the any-working-URL=Fetched rule
+c19c_3=$(cnt "a JD obtained from ANY working URL is" "agents/career-coach.md"); c19c_3=${c19c_3:-0}
 if [ "$c19c_1" -ge 1 ] && [ "$c19c_2" -ge 1 ] && [ "$c19c_3" -eq 1 ]; then
   report "19c" 1 ""
 else
-  report "19c" 0 "intake=$c19c_1 (need>=1), career-coach=$c19c_2 (need>=1), Fetched-alternative in career-coach=$c19c_3 (need exactly 1)"
+  report "19c" 0 "intake=$c19c_1 (need>=1), career-coach=$c19c_2 (need>=1), any-working-URL-is-Fetched rule in career-coach=$c19c_3 (need exactly 1)"
 fi
 
 # ================================================================
@@ -322,6 +323,10 @@ expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "COACH LETTER PL
 expect_ge "21s" "skills/career-engine-edit/SKILL.md" "Strategic conformance (coach review removed 2026-07-22)" 1
 expect_ge "21s" "skills/career-engine-edit/SKILL.md" "Option 4a — Pre-Draft Outline" 1
 expect_ge "21s" "skills/career-engine-edit/SKILL.md" "COACH LETTER PLAN" 1
+# 2026-07-23: markers renamed to LETTER OUTLINE (legacy COACH LETTER PLAN still recognized on old rows)
+expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "LETTER OUTLINE" 1
+expect_ge "21s" "skills/career-engine-edit/SKILL.md" "LETTER OUTLINE" 1
+expect_ge "21s" "agents/career-coach.md" "\[LETTER OUTLINE" 1
 expect_eq0 "21s" "skills/career-engine-new-application/SKILL.md" "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter"
 expect_eq0 "21s" "skills/career-engine-edit/SKILL.md" "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter"
 expect_ge "21s" "agents/career-coach.md" "Option 4" 1
@@ -479,7 +484,8 @@ expect_ge "35" "skills/database/SKILL.md" "| \`Needs Research\` |" 1
 # Check 35b — Prioritization → intake always-overwrite fix present
 # ================================================================
 c35b=$(grep -ci "\*\*always overwrite" "$TARGET/skills/career-engine-intake/SKILL.md" 2>/dev/null || true); c35b=${c35b:-0}
-if [ "$c35b" -ge 14 ]; then report "35b" 1 ""; else report "35b" 0 "'**always overwrite' (case-insensitive) count is $c35b, need >= 14"; fi
+# 2026-07-23: threshold 14->13 — the location-compatibility always-overwrite bullet was retired with the property
+if [ "$c35b" -ge 13 ]; then report "35b" 1 ""; else report "35b" 0 "'**always overwrite' (case-insensitive) count is $c35b, need >= 13"; fi
 expect_ge "35b" "CLAUDE.md" "Prioritization" 1
 
 # ================================================================
@@ -498,12 +504,14 @@ expect_ge "55-writeback" "skills/career-coach/coach-output.md" "always overwrite
 # ================================================================
 # Check 56 — Coach context block terseness
 # ================================================================
-expect_ge "56" "skills/career-coach/coach-output.md" "Hard cap: 8 words per point" 1
-expect_ge "56" "skills/career-coach/coach-output.md" "Culture as a screen point" 1
-expect_ge "56" "skills/career-coach/coach-output.md" "Closing angle:" 1
-expect_eq0 "56" "skills/career-coach/coach-output.md" "20 words max\|Hard cap: 20 words"
-expect_ge "56" "skills/gatekeeper-checks/SKILL.md" "Coach context block over-written" 1
-expect_ge "56" "agents/gatekeeper.md" "coach context block over-written check.*item 9\|item 9.*coach context" 1
+# 2026-07-23: the coach context block was RETIRED per the user's direct instruction; Check 56 now
+# asserts the retirement landed everywhere the feature used to live, replacing the old terseness greps.
+expect_ge "56" "skills/career-coach/coach-output.md" "RETIRED as a coach-context surface" 1
+expect_eq0 "56" "skills/career-coach/coach-output.md" "Hard cap: 8 words per point\|Culture as a screen point\|Screen 2:"
+expect_ge "56" "skills/gatekeeper-checks/coach-gates.md" "Search-narrative leakage" 1
+expect_ge "56" "agents/gatekeeper.md" "search-narrative leakage check" 1
+expect_eq0 "56" "skills/career-engine-intake/SKILL.md" "Write A — coach context block\|Write B — coaching prompts"
+expect_ge "56" "skills/career-coach/coach-output.md" "wiwtr_questions\` — RETIRED" 1
 
 # ================================================================
 # Check 57 — Strategy=Strategic 250-word cover-letter cap wired everywhere
@@ -772,8 +780,9 @@ c49_imports=$(grep -Ec "^import (docx|requests|numpy|pandas|nltk)" "$TARGET/skil
 if [ "$c49_imports" -eq 0 ]; then report "49" 1 ""; else report "49" 0 "corpus-stats.py imports a third-party package ($c49_imports match(es))"; fi
 expect_ge "49" "skills/humanizer/SKILL.md" "corpus-stats.py" 1
 # 2026-07-22: step renamed — letter plan comes from intake's Coach Letter Plan; coach spawn is the legacy fallback
-expect_ge "49" "skills/career-engine-new-application/SKILL.md" "Letter plan (from intake's Coach Letter Plan" 1
-expect_ge "49" "skills/career-engine-edit/SKILL.md" "Letter plan (from intake's Coach Letter Plan" 1
+# 2026-07-23: step headings renamed with the Letter Outline marker rename
+expect_ge "49" "skills/career-engine-new-application/SKILL.md" "Letter plan (from intake's Letter Outline" 1
+expect_ge "49" "skills/career-engine-edit/SKILL.md" "Letter plan (from intake's Letter Outline" 1
 expect_ge "49" "skills/career-engine-new-application/SKILL.md" "Template selected=" 2
 expect_ge "49" "skills/career-engine-edit/SKILL.md" "Template selected=" 2
 expect_ge "49" "skills/career-engine-new-application/SKILL.md" "SENDMESSAGE_AVAILABLE" 1
@@ -798,7 +807,8 @@ expect_ge "50" "skills/gatekeeper-checks/SKILL.md" "Hiring manager's role" 1
 expect_ge "50" "skills/career-engine-intake/SKILL.md" "Working URL (if different from Job URL)" 1
 expect_ge "50" "skills/career-coach/coach-research.md" "Job URL verification (backstop only)" 1
 expect_ge "50" "skills/career-coach/coach-output.md" "Corrected Job URL" 2
-expect_ge "50" "skills/career-engine-intake/SKILL.md" "write only when a correction is available" 1
+# 2026-07-23: Job URL correction broadened — anchor updated to the new bullet wording
+expect_ge "50" "skills/career-engine-intake/SKILL.md" "write whenever the JD was actually obtained at a different URL" 1
 expect_ge "50" "CLAUDE.md" "Job URL correction" 1
 
 # ================================================================
@@ -855,7 +865,11 @@ expect_ge "65" "references/pipeline-preferences.json" '"cv_type"' 1
 expect_ge "65" "skills/database/SKILL.md" "CV Type" 1
 expect_ge "65" "skills/career-coach/coach-analysis.md" "CV Type Recommendation Matrix" 1
 expect_ge "65" "skills/career-coach/coach-analysis.md" "not from originally-sourced research" 1
-expect_ge "65" "skills/career-coach/coach-output.md" "Recommended CV Type" 1
+# 2026-07-23: CV Type moved out of Role emphasis into its own returned property (write-only-to-empty).
+expect_eq0 "65" "skills/career-coach/coach-output.md" "Recommended CV Type"
+expect_ge "65" "skills/career-coach/coach-output.md" "CV Type:" 1
+expect_ge "65" "skills/career-engine-intake/SKILL.md" "\`CV Type\` — \*\*write-only-to-empty" 1
+expect_ge "65" "skills/gatekeeper-checks/coach-gates.md" "CV Type" 1
 expect_ge "65" "agents/cv-writer.md" "CV Type=Detailed|Brief" 1
 expect_ge "65" "agents/cv-writer.md" "Brief-Specific Rules" 1
 expect_ge "65" "skills/writer-craft/SKILL.md" "§5b" 1

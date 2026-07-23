@@ -14,8 +14,7 @@
   "default_language": "English",
   "gap_handling": "enabled",
   "location_compatibility": {
-    "my_location": "",
-    "database_property": ""
+    "my_location": ""
   },
   "cv_type": {
     "mode": "Detailed",
@@ -51,7 +50,9 @@
     "description": "Company stages (e.g. Seed, Series A/B/C, Public, PE-backed) to prioritize, consider, or deprioritize. Advisory context for the coach, not a hard filter."
   },
   "employment_type_preference": {
-    "preferred": ["Full-time, permanent"],
+    "preferred": [
+      "Full-time, permanent"
+    ],
     "acceptable": [],
     "excluded": [],
     "description": "Employment types to seek, accept, or exclude by default (e.g. contract-to-hire acceptable; pure contract, freelance, part-time, fractional excluded unless requested in a session)."

@@ -198,13 +198,13 @@ Everything outside the markers (`## PROFILE SUMMARY`, `## EXPERIENCE`) is main-c
 - `Relationship type` — Full time / Part time / Temporary / Fractional/Consulting/Freelance. Use this for framing tone only — it does not change CV structure.
 - `Role Type` — drives CV structure and skills section format. See `references/role-type-definitions.md` for structure rules per Role Type.
 
-**Shift framing — check Role emphasis first:** If Role emphasis contains `Shift:` (a function or track shift), this role requires a transfer-credibility argument. Apply shift framing:
+**Shift framing — read the `Capability match` lines (2026-07-23: `Role emphasis` no longer carries `Shift:`/`Step-down:` marker lines — its fixed structure is Emphasis / De-emphasized / Capability match / Likely KPIs, and the shift/step-down detection now arrives through how the coach wrote the `Capability match` lines):** If the `Capability match` lines argue credibility-of-transfer into a function or track outside her documented record (they name a mechanism carrying her capabilities INTO a different function, rather than matching like-for-like), this role requires a transfer-credibility argument. Apply shift framing:
 - Lead with transferable achievements and outcomes — what she demonstrably accomplished that maps to the target function. Concrete results first; label the relevance explicitly if the connection is not obvious.
 - Surface relevant skills and passions from `02-professional-background.md` and `03-framework.md` that apply to the new function. Mine them actively — do not leave the transfer case implicit.
 - Position the CV as "brings [capability] to [function]" — not as a career-transition story, not as an apology for what she lacks. Frame for fit, not narrative.
 - The goal is to make the transfer argument undeniable. A shift CV that buries the transferable proof loses the shortlist.
 
-**Step-down framing — check Role emphasis first:** If Role emphasis begins with `Step-down:`, this role is materially below the user's typical seniority level. Apply step-down framing:
+**Step-down framing — same source (2026-07-23):** If the `Capability match` lines lead with execution capabilities rather than leadership altitude AND the role itself reads materially below the user's documented seniority (the `Emphasis` lines and JD seniority signals vs. her record — an IC execution mandate against a VP-level background), this is a step-down. Apply step-down framing:
 - Lead with execution bullets — what she built, shipped, ran, and delivered hands-on. Numbers and named outputs. No tool names in bullets — this applies even in step-down framing.
 - Suppress strategy and leadership language. Do not surface board presentations, function-building, org design, or budget ownership unless they directly answer a named JD requirement.
 - Summary tone: peer-to-team, not executive. Avoid framing her as "having led" something at scale if the role is an IC execution role.

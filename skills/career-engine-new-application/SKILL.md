@@ -171,7 +171,7 @@ The cover letter receives the **final revised CV** as input. letter-writer uses 
 
 Read the following from Notion for this role:
 
-**Why I Want This Role property** — the user's written motivation for this role, filled in manually in Notion (it may also carry intake's `[COACH LETTER PLAN` block — Step 4.99 extracts and strips that block before any downstream use; "WIWTR content" everywhere below means the stripped text). If populated, pass the full content to the letter-writer as the role-specific content input. **Why I Want This Role is NOT required to produce a letter** — the letter-writer's primary source is the Motivation Bank (`background/background-motivation-bank.md`), and the letter-writer itself decides whether it has enough to write.
+**Why I Want This Role property** — the user's written motivation for this role, filled in manually in Notion (it may also carry intake's `[LETTER OUTLINE` block — legacy rows: `[COACH LETTER PLAN` — Step 4.99 extracts and strips that block before any downstream use; "WIWTR content" everywhere below means the stripped text; rows intaken before 2026-07-23 may also carry a legacy coach-context or `[COACH PROMPTS` block, handled exactly as before). If populated, pass the full content to the letter-writer as the role-specific content input. **Why I Want This Role is NOT required to produce a letter** — the letter-writer's primary source is the Motivation Bank (`background/background-motivation-bank.md`), and the letter-writer itself decides whether it has enough to write.
 
 **Always proceed to Step 5 and spawn the letter-writer for this role — whether or not Why I Want This Role is populated.** Pass the Why I Want This Role value if present; if empty, pass it empty and let the letter-writer's **Sufficiency Gate** decide (write from the role-matched Motivation Bank entries, or skip). **Do NOT pre-skip the letter on an empty Why I Want This Role** — that decision belongs to the letter-writer now.
 
@@ -199,15 +199,15 @@ Read `${CAREER_DATA}/references/voice-calibration-coverletters.md` directly — 
 - **If available:** every "resume" instruction below (letter-writer and career-coach) reuses the same cached instance across all touchpoints for that role.
 - **If unavailable:** log it plainly, once — "this environment can't reuse sub-agents; every revision spawns a fresh writer/coach with full context instead" — and every "resume" instruction below falls back to a fresh spawn with full accumulated context, for the rest of the run, without rediscovering the same fact on every role.
 
-### Step 4.99 — Letter plan (from intake's Coach Letter Plan; coach spawn is fallback only)
+### Step 4.99 — Letter plan (from intake's Letter Outline; coach spawn is fallback only)
 
-**Primary path — no coach spawn (2026-07-22, per the user's instruction: "during intake is when the coach should enter into WIWTR the actual outline + opener that is recommended ... This means the coach doesn't need to be in the application pipelines anymore").** Take the Why I Want This Role content from the Pre-Step 5 read and look for a `[COACH LETTER PLAN` ... `[/COACH LETTER PLAN]` block (written by intake Step 0.9a Write C; the user may have edited any line of it in Notion — **the user's edits are authoritative and are never second-guessed**). If present:
+**Primary path — no coach spawn (2026-07-22, per the user's instruction: "during intake is when the coach should enter into WIWTR the actual outline + opener that is recommended ... This means the coach doesn't need to be in the application pipelines anymore").** Take the Why I Want This Role content from the Pre-Step 5 read and look for a `[LETTER OUTLINE` ... `[/LETTER OUTLINE]` block — or, on rows intaken before the 2026-07-23 rename, the legacy `[COACH LETTER PLAN` ... `[/COACH LETTER PLAN]` markers, handled identically — (written by intake Step 0.9a Write C; the user may have edited any line of it in Notion — **the user's edits are authoritative and are never second-guessed**). If present:
 
 1. Write the block's `Template:` value to `$PIPE/template-selection.txt` — the single token, nothing else.
 2. Write the block's `Opener anchor:` line, followed by its `Para N:` outline lines, to `$PIPE/coach-outline.md` — first line `Opener anchor: <...>`, then the outline verbatim.
 3. **Strip the block (markers included) from the WIWTR content.** Every downstream use of "Why I Want This Role content" in this pipeline — the letter-writer's content input, Gate 2 coverage, Step 7f promotion — means the STRIPPED version (the user's motivation text only). The plan block never reaches the letter-writer as motivation material.
 
-**Fallback — legacy rows only:** if the WIWTR contains no `[COACH LETTER PLAN` block (the role was intaken before 2026-07-22), spawn `career-coach` with **Option 4a — Pre-Draft Outline** (the agent dispatches by this literal heading name — never a slug-style `option=` value, unlike the gatekeeper), passing:
+**Fallback — legacy rows only:** if the WIWTR contains neither a `[LETTER OUTLINE` nor a legacy `[COACH LETTER PLAN` block (the role was intaken before 2026-07-22), spawn `career-coach` with **Option 4a — Pre-Draft Outline** (the agent dispatches by this literal heading name — never a slug-style `option=` value, unlike the gatekeeper), passing:
 - `CAREER_DATA=${CAREER_DATA}`, `gap_handling_mode=$GAP_HANDLING_MODE`
 - `Role summary`, `Strategy`, `Keywords` (from the coach's Step 0.8 output)
 - Why I Want This Role content (from the Pre-Step 5 read) — pass verbatim

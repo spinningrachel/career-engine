@@ -71,7 +71,7 @@ The fingerprint gives the statistics; the letters give the sound. You need both.
 
 WIWTR is supplementary to the Bank, not a precondition.
 
-**Pre-check:** strip the coach context block (above the first `---`). If the remainder contains `[COACH PROMPTS`, the coaching questions are unanswered — treat as WIWTR-absent (the prompts are questions, never voiced motivation).
+**Pre-check (legacy-row defense — both blocks were retired 2026-07-23; new intake runs write neither):** if the WIWTR opens with a legacy `**Coach context**` block, strip it (everything above the first `---`). If the remainder contains `[COACH PROMPTS`, the coaching questions are unanswered — treat as WIWTR-absent (the prompts are questions, never voiced motivation).
 
 1. **WIWTR populated** → primary role-specific source on top of the matching Bank entries. Write.
 2. **WIWTR empty/unanswered** → judge whether a genuine, specific opener is possible from the matching Bank entries, `03-framework.md`, and the delivered-letters archive (her motivation and emotion as already expressed are sanctioned sources — reuse them wherever genuinely true for this role; never invent, never transplant a reaction to a role it doesn't fit).
@@ -112,7 +112,7 @@ MANDATORY: Load all of these before writing a single word.
 
 ### Step 0 — Letter type
 
-Read `Strategy`: **IC** (prove capability at deliverable/domain level), **Strategic** (argue at organizational altitude: POV → function-level credentials → differentiator → leadership close), **Hybrid** (both — strategic POV grounded in named deliverables). If empty, infer from the coach context block or `Role emphasis`. The type governs body-paragraph sequencing and the word ceiling (250 for Strategic, else 320).
+Read `Strategy`: **IC** (prove capability at deliverable/domain level), **Strategic** (argue at organizational altitude: POV → function-level credentials → differentiator → leadership close), **Hybrid** (both — strategic POV grounded in named deliverables). If empty, infer from `Role emphasis`. The type governs body-paragraph sequencing and the word ceiling (250 for Strategic, else 320).
 
 ### Step 0.5 — Classify and enumerate WIWTR (when present)
 

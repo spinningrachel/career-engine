@@ -661,15 +661,15 @@ Mechanized: covered by scripts/qa-mechanical.sh (CHECK 35b) — run via the Mech
 
 ### Check 55 — Intake writeback default flipped to always-overwrite, three named exceptions only (2026-07-07 change)
 
-Step 0.9a's default changed from write-only-to-empty (with a handful of named always-overwrite exceptions) to always-overwrite (with exactly three named write-only-to-empty exceptions: `JD Body`, `Gap handling`, the `wiwtr_questions` WIWTR append). Verify the new default rule, all three exceptions, and the confirmation-pass fix (comparing against the coach's returned value rather than testing emptiness, since most properties can now be non-empty going in) all landed, and that the two stale contradictions this exposed (`coach-output.md`'s leftover "Priority... do not overwrite" line; `Strategy`'s always-overwrite status disagreeing between files) are gone.
+Step 0.9a's default changed from write-only-to-empty (with a handful of named always-overwrite exceptions) to always-overwrite (with exactly three named write-only-to-empty exceptions — since 2026-07-23: `JD Body`, `Gap handling`, `CV Type`; the third slot was the `wiwtr_questions` WIWTR append until that feature's 2026-07-23 retirement). Verify the new default rule, all three exceptions, and the confirmation-pass fix (comparing against the coach's returned value rather than testing emptiness, since most properties can now be non-empty going in) all landed, and that the two stale contradictions this exposed (`coach-output.md`'s leftover "Priority... do not overwrite" line; `Strategy`'s always-overwrite status disagreeing between files) are gone.
 
 Partially mechanized: the grep battery is covered by scripts/qa-mechanical.sh (CHECK 55-writeback); the read-and-confirm portion below still runs manually.
 
 **FAIL condition:** any "must be >= N" count below its stated requirement, or a "must be 0" count is nonzero (for the last check, a nonzero count is only acceptable if every match traces to the `JD Body` bullet — otherwise FAIL).
 
-### Check 56 — Coach context block terseness: short labels, culture as a screen point, optional closing angle (2026-07-07 addition)
+### Check 56 — Coach context block RETIRED; search-narrative leakage check replaces its gate slot (rewritten 2026-07-23)
 
-The coach context block (Screen 1-3, prepended to `Why I Want This Role`) changed from a 20-words-per-criterion cap that its own worked example over-used, to a hard 8-word cap with most points at 1-4 words, an explicit ban on connecting the label back to the candidate's background, culture competing for one of the slots when the company signals it matters, and an optional 4th `Closing angle:` line. Verify the doctrine and its gatekeeper enforcement both landed.
+The coach context block (Screen 1-3, formerly prepended to `Why I Want This Role`) and the `wiwtr_questions`/`[COACH PROMPTS]` feature were both retired 2026-07-23 per the user's direct instruction (context duplication risk; prompts superseded by the Letter Outline). Verify the retirement landed everywhere the features used to live — coach-output.md returns neither block, intake Step 0.9a has no Write A/Write B, coach-gates item 9 is now the search-narrative leakage check (which also FAILs any resurrected legacy block in new output) — and that legacy-row handling (letter-writer pre-check, Write C block replacement) still recognizes old blocks without ever writing new ones.
 
 Mechanized: covered by scripts/qa-mechanical.sh (CHECK 56) — run via the Mechanical battery step; do not re-run these greps by hand.
 

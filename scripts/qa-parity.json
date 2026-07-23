@@ -22,7 +22,8 @@
         "Manager role confirmed",
         "Hiring manager's role",
         "No incumbents in this function",
-        "JD Body"
+        "JD Body",
+        "CV Type"
       ],
       "locations": [
         {
@@ -67,7 +68,8 @@
         "Hiring manager's role",
         "No incumbents in this function",
         "JD Body",
-        "Why I Want This Role"
+        "Why I Want This Role",
+        "CV Type"
       ],
       "locations": [
         {

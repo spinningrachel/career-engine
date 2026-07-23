@@ -85,9 +85,21 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
-### 2026-07-23 — Bug fixes
+### 2026-07-23 — Coach output overhaul + prioritization bug fixes
 
-**Bug fixes** (both from one live prioritization test run)
+**Coach output overhaul** (per the user's direct 11-point instruction after reviewing live coach output)
+- **CV Type finally gets written** — under Variant mode the coach returns a standalone `CV Type` (Detailed/Brief) and intake fills the per-role select when empty (the user's own value always wins). Previously the recommendation hid inside `Role emphasis` and the select stayed empty, so every CV defaulted to Detailed. The recommendation matrix gained two tiebreaks: the geography row beats cross-cutting triggers, and an unknown location defaults to the user's own market.
+- **`Role emphasis` restructured** — fixed four lines every run: Emphasis (what the JD weights most, with evidence) / De-emphasized / Capability match (which of the user's documented capabilities the weighted themes map to, through the company's real GTM/tech) / Likely KPIs. Never strategy, CV type, company facts, confidence ratings, or rank commentary. New generic reference `references/discipline-emphasis-signals.md` anchors the read.
+- **Landscape is business only** — the Career Path section is retired; a `## Location Hypotheses` section (only when the role's location is genuinely unresolved) is the one sanctioned non-business exception.
+- **WIWTR cleanup** — the coach context block and `[COACH PROMPTS]` coaching questions are retired (both duplicated other properties and risked context bloat); the letter plan block is renamed `[LETTER OUTLINE]` (legacy blocks still parsed, never rewritten). The user's own WIWTR content is now never touched except the outline block swap.
+- **Outreach map = heading + table only** — Note angles and Email/WhatsApp sections retired; the engagement hook lives in the table's Why column.
+- **Research effort floor + terse negatives** — `Not identifiable`/`Unknown`/`Unfetchable` are claims of exhaustion, only valid after the full ladder for that field actually ran (First Advertised gains a page-source/mirror-date procedure; JD "unfetchable" requires the mirror-search rungs). Negative results are bare values — no search narrative, no bracketed process notes; a new gatekeeper check fails leakage.
+- **Location never "unclear"** — a new company-operating-locations research dimension is the mandatory fallback before `Unknown`.
+- **Job URL + fetch status** — a JD obtained from any working URL is `Fetched`, and the tracked `Job URL` is repointed to the URL that actually worked.
+- **Israel/location-compatibility property retired** — no agent writes a compatibility verdict anymore; `my_location` survives for sourcing and research.
+
+**Bug fixes** (from one live prioritization test run)
+- **User-automation archival race** — a Notion automation that archives on Priority thresholds could archive a page mid-writeback. All five prioritizer properties + Status now go out in one update call per role; a page archived after its own successful write is reported as user-automation behavior, not an error. Intake writes Priority/Status last for the same reason.
 - **Archived rows excluded from every queue query** — a `New`-status query surfaced two archived pages, which were written to and promoted like live rows. The Notion adapter now drops archived/in-trash rows at query time on every path and prohibits writing to a page not just-seen alive (a success response on an archived-page write is not proof of liveness).
 - **Scores-only mode caller contract** — when role-prioritizer runs without database tools, the calling context does the writeback; the test run's caller improvised, writing coach-owned `Priority Reason` (clobbering prior coach values) and skipping the liveness re-check. The availability gate now binds the caller to Step 3 verbatim: five named properties only, same overwrite semantics, liveness re-check, Status-promotion condition — plus the empty-spawn clarification (no role data + no tools → return the one-line `SCORES-ONLY MODE` status alone).
 

@@ -13,9 +13,9 @@ This file has two jobs: (1) route you to the right sub-file for your current pha
 
 | When | Load | Contains |
 |---|---|---|
-| Every invocation (research phase) | `coach-research.md` | Research dimensions 1–12, location compatibility, screening-fit check, location deep-scan, JD signal analysis, post-research self-check |
-| After research is complete (analysis phase) | `coach-analysis.md` | Notion invocation context, settings pre-flight, Part 0 priority scoring, Part 1 writing guidance, Part 1b JD decoding, Part 2 strategic property definitions, Part 3 patterns |
-| After analysis is complete (output phase) | `coach-output.md` | Output format template, output rules, WIWTR question generation |
+| Every invocation (research phase) | `coach-research.md` | Research dimensions 1–12, screening-fit check, location deep-scan, JD signal analysis, post-research self-check |
+| After research is complete (analysis phase) | `coach-analysis.md` | Notion invocation context, settings pre-flight, Part 0 priority scoring, Part 1 writing guidance, Part 1b JD decoding, Part 2 strategic property definitions (incl. the fixed `Role emphasis` structure and the Variant-mode `CV Type` property), Part 3 patterns |
+| After analysis is complete (output phase) | `coach-output.md` | Output format template, output rules |
 | Non-intake invocations (discovery, setup, preferences) | `coach-modes.md` | Deep Probe Interview Mode — setup Phase 4, career-strategy sessions, preferences updates, LinkedIn strategy |
 
 **On every invocation: load `coach-research.md` now, unless this is a non-intake invocation (setup, preferences update, career-strategy session, deep probe interview) — in that case load `coach-modes.md` now.**
