@@ -327,6 +327,12 @@ expect_ge "21s" "skills/career-engine-edit/SKILL.md" "COACH LETTER PLAN" 1
 expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "LETTER OUTLINE" 1
 expect_ge "21s" "skills/career-engine-edit/SKILL.md" "LETTER OUTLINE" 1
 expect_ge "21s" "agents/career-coach.md" "\[LETTER OUTLINE" 1
+# 2026-07-23: opener anchor is a hook designation, never letter prose (the Reflectiz drafted-anchor defect)
+expect_ge "21s" "agents/career-coach.md" "HOOK DESIGNATION, never letter prose" 1
+expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "anchor prose injection" 1
+expect_ge "21s" "agents/letter-writer.md" "The anchor designates the hook; it is never text" 1
+expect_ge "21s" "skills/gatekeeper-checks/letter-gates.md" "Built ON, never copied FROM" 1
+expect_ge "21s" "agents/career-coach.md" "bare token only" 1
 expect_eq0 "21s" "skills/career-engine-new-application/SKILL.md" "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter"
 expect_eq0 "21s" "skills/career-engine-edit/SKILL.md" "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter"
 expect_ge "21s" "agents/career-coach.md" "Option 4" 1
