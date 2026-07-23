@@ -99,6 +99,11 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 - **Model tiering** — `gatekeeper` and `recruiter-reviewer` run on sonnet via frontmatter (`model: sonnet`); writers/coach/humanizer unchanged.
 - **Cost logging** — `log-token-usage.sh` prices per model (opus/sonnet/haiku/fable), sums per-model, and writes an explicit unavailable status instead of leaving `token_counts: "pending"`.
 
+**Bug fixes**
+- **role-prioritizer environment portability** — the agent's declared Notion tools are server-instance-specific and absent in some sessions (e.g. Cowork VM); it now switches to a scores-only mode (caller runs the adapter I/O) instead of bailing with a blocker.
+- **role-prioritizer Role Summary cap** — the ≤400-char cap is now mechanically verified (`wc -c`) before any write or return; a real run had returned 450–500-char summaries.
+- **role-prioritizer mid-run archival** — pages are re-fetched for liveness and unchanged Status immediately before each writeback; archived/changed pages are skipped and reported instead of written to.
+
 **Removals (user-authorized, quoted above)**
 - **Per-role coach spawns in application pipelines** — new-application Step 4.99 pre-draft outline spawn (now legacy-WIWTR fallback only), Step 5.3 strategic letter review (replaced by Gate 5 opener-anchor + Gate 9 outline conformance in the gatekeeper's Cover Letter Check), and the edit pipeline's E6.9/E7.4 equivalents. Option 4 remains available for standalone letter-review invocations; Option 4a remains as the legacy fallback. No review capability was silently dropped — conformance moved to a user-approved-input gate.
 
