@@ -76,6 +76,24 @@
           "end": "Receive that one returned block"
         }
       ]
+    },
+    {
+      "id": "archived-row-exclusion",
+      "_comment": "2026-07-23 fix: the adapter's archived/in-trash exclusion rule and role-prioritizer's scores-only caller contract cite each other; both files must keep naming the rule. Anchors are literal substrings.",
+      "members": [
+        "archived"
+      ],
+      "locations": [
+        {
+          "file": "skills/database-notion/SKILL.md",
+          "start": "## Rules for all paths"
+        },
+        {
+          "file": "agents/role-prioritizer.md",
+          "start": "## Database-tool availability gate",
+          "end": "## Step 0"
+        }
+      ]
     }
   ],
   "defined_terms": [

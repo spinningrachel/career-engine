@@ -142,6 +142,8 @@ This is Path B step 1 above, also used wherever a skill needs a view URL: one `n
 
 ## Rules for all paths
 
+- **Archived/trashed rows are never queue members (2026-07-23).** Depending on the tool surface, a status query can return pages that are archived or in the trash — a real run's `New`-status query surfaced two archived pages, which were then written to and promoted like live rows. On every path, check each candidate row's archived/in-trash indicator (`archived`/`in_trash` in structured responses on A1/A2; the per-page fetch on Path B) before treating it as a queue member — drop archived rows and name them in the run report, same as non-matching-status rows.
+- **Never write to an archived/trashed page (§4 side of the same rule).** Immediately before writing a page, the caller must have seen it alive in a fetch from this run showing `archived`/`in_trash` false. A write to an archived page skips silently on some tool surfaces (success response, no effect) — a success response is not proof the page was live. Skip the role's writes, report it as `skipped — page archived/trashed`, and never unarchive a page to make a write land.
 - **Never create, update, or modify Notion views.** Do not call `create-database-view`, `update-database-view`, or any equivalent — not as a workaround, not to filter, not to fix misalignment.
 - **On Paths A2 and B, do not Bash/Grep the query result** — process it from the tool response in context. On Path A1 the result arrives through the shell and trimming it there (`python3`/`jq`) is the sanctioned mechanism.
 - Process only rows matching the target status; discard non-matching in memory and log a warning.

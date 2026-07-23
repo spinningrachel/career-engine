@@ -85,6 +85,12 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-23 — Bug fixes
+
+**Bug fixes** (both from one live prioritization test run)
+- **Archived rows excluded from every queue query** — a `New`-status query surfaced two archived pages, which were written to and promoted like live rows. The Notion adapter now drops archived/in-trash rows at query time on every path and prohibits writing to a page not just-seen alive (a success response on an archived-page write is not proof of liveness).
+- **Scores-only mode caller contract** — when role-prioritizer runs without database tools, the calling context does the writeback; the test run's caller improvised, writing coach-owned `Priority Reason` (clobbering prior coach values) and skipping the liveness re-check. The availability gate now binds the caller to Step 3 verbatim: five named properties only, same overwrite semantics, liveness re-check, Status-promotion condition — plus the empty-spawn clarification (no role data + no tools → return the one-line `SCORES-ONLY MODE` status alone).
+
 ### 2026-07-22 — Cost reduction and CV content quality
 
 **Context:** measured cost per role tripled June→July 2026 ($104 → $331); this release reverses the drivers.
