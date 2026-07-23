@@ -863,8 +863,12 @@ expect_ge "54" "references/cover-letter-templates-default.md" "Information Seque
 # ================================================================
 expect_ge "65" "references/pipeline-preferences.json" '"cv_type"' 1
 expect_ge "65" "skills/database/SKILL.md" "CV Type" 1
-expect_ge "65" "skills/career-coach/coach-analysis.md" "CV Type Recommendation Matrix" 1
-expect_ge "65" "skills/career-coach/coach-analysis.md" "not from originally-sourced research" 1
+# 2026-07-23 (second pass): the Recommendation Matrix table was retired per the user ("couldn't possibly be
+# relevant for any user") — replaced by the CV Type judgment principle + cv_type.market_norms config.
+expect_ge "65" "skills/career-coach/coach-analysis.md" "CV Type judgment principle" 1
+expect_ge "65" "skills/career-coach/coach-analysis.md" "market_norms" 1
+expect_eq0 "65" "skills/career-coach/coach-analysis.md" "| Israel | Any |"
+expect_ge "65" "references/pipeline-preferences.json" "market_norms" 1
 # 2026-07-23: CV Type moved out of Role emphasis into its own returned property (write-only-to-empty).
 expect_eq0 "65" "skills/career-coach/coach-output.md" "Recommended CV Type"
 expect_ge "65" "skills/career-coach/coach-output.md" "CV Type:" 1

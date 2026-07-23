@@ -548,7 +548,7 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 Company,Position,Job URL,Status,Priority,JD Body,Why I Want This Role,Role emphasis,JD proof,Keywords,Strategy,Role Type,Relationship type,Gap handling,Role summary,Hiring Manager's Name,Hiring manager's role,Manager role confirmed,Person who Advertised Role (if not Hiring Manager),No incumbents in this function,Landscape,First Advertised,Last Pipeline Run,Link to CV,Draft Directory,CV File Name,Letter File Name,Languages,Edit type,CV Type,Note
 ```
 
-`CV Type` is included regardless of which `cv_type.mode` the user chooses — it's a normal, cheap column to have even when unused (same as `Languages` for a single-language user). It only matters when `cv_type.mode` is `Variant`; the user sets it herself per role, the pipeline never writes to it.
+`CV Type` is included regardless of which `cv_type.mode` the user chooses — it's a normal, cheap column to have even when unused (same as `Languages` for a single-language user). It only matters when `cv_type.mode` is `Variant`; the user sets it herself per role, and since 2026-07-23 the coach fills it when empty at intake (write-only-to-empty — her own value always wins).
 
 3. Tell the user: "Download this file and upload it to Google Sheets (File → Import → Upload). This creates your tracking sheet with all the required columns."
 
@@ -625,6 +625,8 @@ Write to the career-data config (`pipeline-preferences.json` → `cv_type`):
 - If default: copy the plugin's `${CLAUDE_PLUGIN_ROOT}/references/cv-template-brief-default.dotx` into `career-data/references/templates/` as `cv-brief.dotx`.
 
 **If the user provided her own `cv-brief.dotx`** (skip this if she used the plugin default — there's nothing to describe yet): ask, optionally, one time: "Does your Brief template include a photo?" Write the answer to `cv_type.brief_has_photo` (`yes`/`no`, blank if she'd rather not say) in the same config object — optional; `cv-writer` assumes no photo when it's blank.
+
+**If the user chose `Variant`:** ask, optionally, one time: "Do you have your own rules of thumb for when a market or role type gets the short vs. the full CV? (e.g. 'Israeli tech: Brief unless C-suite; US roles: Detailed') — free text, skip if not." Write the answer to `cv_type.market_norms` (empty string if skipped). When populated, this is the authoritative first source for the coach's per-role CV Type recommendation (`coach-analysis.md` → CV Type judgment principle, rule 1) — her own market knowledge, never a plugin-shipped table.
 
 **If `Variant` was chosen:** the per-role `CV Type` field must exist on whichever job-tracking backend was set up above — see the addition to Option A/B/C's instructions in Phase 5 above (the Notion template needs it added manually; the Sheets/other-platform column list already includes it).
 

@@ -245,31 +245,14 @@ CV Type: Detailed | Brief — [one-line rationale]
 
 Intake writes it to the user's per-role `CV Type` select — **write-only-to-empty: the user's own hand-set value always wins and is never overwritten.** When `CV_TYPE_MODE` is `"Detailed"` or `"Brief"`, omit this property entirely. Never place a CV-type recommendation inside `Role emphasis` or any other property.
 
-**Judgment reference — CV Type Recommendation Matrix (below), with two binding tiebreaks (2026-07-23, from a real incoherent rationale):**
-1. **The geography row wins over the cross-cutting triggers.** "Cybersecurity needs ATS keyword density" never overrides a geography row that says strictly 1 page — density is balanced *within* the row's format, not used to escape it.
-2. **Unknown location defaults to the user's own market** (`location_compatibility.my_location`), never to a speculative foreign market. A real run reasoned "location unconfirmed (possibly US, where cyber CVs run longer) → Detailed" for a user whose own market's row says Brief — that inversion is exactly what this tiebreak prohibits.
+**CV Type judgment principle (2026-07-23 — replaces the retired CV Type Recommendation Matrix, per the user: "that looks like a highly personalized matrix which couldn't possibly be relevant for any user").** The matrix was a geography × seniority × vertical lookup table whose rows were admittedly unsourced guesses arranged around one user's scenario — the same failure the Brief CV's `Earlier:` cutoff decision (`CLAUDE.md` → Key design decisions) already names: shared plugin doctrine gets a judgment principle, never a fixed table pretending to be world knowledge. Reason it out per role, in this order:
 
-**Judgment reference — CV Type Recommendation Matrix.** Use this table as a starting point for the recommendation, then adjust for what the specific JD and company actually signal — it is a reference to reason from, not a rigid lookup (the same way the Priority Framework above is applied with judgment, not mechanically). Weigh geography, seniority, and tech vertical together; where they conflict, prioritize geography and vertical over seniority, since screening norms are usually set by market and function before individual seniority nuance.
+1. **The user's own stated norms win.** Read `cv_type.market_norms` from `pipeline-preferences.json` (optional free-text, e.g. "Israeli tech: Brief unless C-suite; US roles: Detailed"). When present and it covers this role's market, it is authoritative — the recommendation applies it and the rationale cites it.
+2. **Otherwise, the target market's screening norms as researched for THIS role** — not recalled generalities. What do this market's and function's recruiters actually screen from? Evidence available in the run: the JD's own length/format cues, the company's other postings, anything research dimension 7/8 surfaced about their hiring process. If the research gives no real signal, say so in the rationale rather than inventing a norm.
+3. **ATS keyword density and seniority adjust within the format, never against the market norm.** A keyword-heavy vertical is handled by denser writing inside the market-appropriate format — density is never a reason to escape to the longer format; seniority nuance never overrides a clear market norm.
+4. **Unknown location defaults to the user's own market** (`location_compatibility.my_location`), never to a speculative foreign market. A real run reasoned "location unconfirmed (possibly US, where cyber CVs run longer) → Detailed" for a user whose own market favors Brief — that inversion is exactly what this rule prohibits.
 
-| Geography | Seniority | Vertical context | Recommended length |
-|---|---|---|---|
-| Israel | Any | Cybersecurity, Deep Tech, AI | Strictly 1 page |
-| US/Canada | Early career | Software Dev, HR Tech, Sales | Strictly 1 page |
-| US/Canada | Mid-Senior (10+ yrs) | Cyber, Cloud, FinTech | 2 pages |
-| US/Global | Specialist | AI Research, Deep Tech | 2-3 pages (Research-CV style) |
-| South Africa | Mid-Senior | FinTech, SaaS, Enterprise | 2 pages (Commonwealth/UK model) |
-| South America (LATAM) | Early-Mid | E-commerce, EdTech, SaaS | 1-2 pages |
-| United Kingdom | Junior-Mid | DevTools, LegalTech, Product | 2 pages |
-| France | Any | High-growth startups | Strictly 1 page |
-| Germany (DACH) | Any | Cyber, Industrial Tech | 2-4 pages |
-| India | Mid-Senior | Data Science, DevOps | 2-3 pages |
-| Any | Associate-VP | Private Equity / M&A | Strictly 1 page |
-
-**Cross-cutting triggers, regardless of geography:** Deep Tech/Infrastructure roles more often justify a second page (system-architecture/project-depth complexity); HR/People/Legal Tech roles skew one-page unless C-suite; Cybersecurity needs enough ATS keyword density to balance against brevity.
-
-**Mapping to this plugin's binary Detailed/Brief system:** the table above is expressed in page counts because it reflects general resume/CV norms; this plugin only has two discrete CV types. "Strictly 1 page" maps to **Brief**; every 2+-page recommendation maps to **Detailed** — Detailed already isn't fixed-length, so a "2-4 pages" signal just confirms the multi-page format is the right call, not a new constraint on it.
-
-**Sourcing caveat — the Israel, South Africa, and South America rows are not from originally-sourced research.** They're inferred from general international recruitment norms and should be treated as a reasonable starting judgment, not an authoritative fact — flag uncertainty in the rationale line when leaning on one of these three rows (e.g. "Brief — Israeli deep-tech norms favor brevity [inferred, not directly sourced]").
+Mapping to the plugin's binary system: a one-page norm → **Brief**; a multi-page norm → **Detailed**. The rationale line names which rule (1–4) decided it.
 
 **`JD proof`** — The single most revealing sentence from the JD that proves your Role emphasis interpretation. Direct quote, verbatim. For the user's reference only — no writing agent reads this field.
 
