@@ -327,19 +327,23 @@ expect_ge "21s" "skills/career-engine-edit/SKILL.md" "COACH LETTER PLAN" 1
 expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "LETTER OUTLINE" 1
 expect_ge "21s" "skills/career-engine-edit/SKILL.md" "LETTER OUTLINE" 1
 expect_ge "21s" "agents/career-coach.md" "\[LETTER OUTLINE" 1
-# 2026-07-23: opener anchor is a hook designation, never letter prose (the Reflectiz drafted-anchor defect)
-expect_ge "21s" "agents/career-coach.md" "HOOK DESIGNATION, never letter prose" 1
-expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "anchor prose injection" 1
-expect_ge "21s" "agents/letter-writer.md" "The anchor designates the hook; it is never text" 1
-expect_ge "21s" "skills/gatekeeper-checks/letter-gates.md" "Built ON, never copied FROM" 1
+# 2026-07-24: the Opener anchor is RETIRED entirely (per the user: "Get rid of the hook. the opener anchor.
+# that's what's causing this mess.") — assert the retirement landed and no live anchor slot survives.
+expect_ge "21s" "agents/career-coach.md" "There is NO \`Opener anchor:\` line" 1
+expect_eq0 "21s" "agents/career-coach.md" "^Opener anchor: <"
+expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "FAIL if the block contains an \`Opener anchor:\` line" 1
+expect_ge "21s" "skills/gatekeeper-checks/letter-gates.md" "Opener-anchor conformance — RETIRED" 1
+expect_ge "21s" "agents/letter-writer.md" "\`Opener anchor:\` is RETIRED" 1
+expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "line .*is DROPPED\|is DROPPED" 1
+expect_ge "21s" "skills/career-engine-edit/SKILL.md" "is DROPPED" 1
 expect_ge "21s" "agents/career-coach.md" "bare token only" 1
 # 2026-07-24: the coach's Opener line is a verbatim bank-variant copy/paste (per the user's direct instruction)
 expect_ge "21s" "agents/career-coach.md" "COPY/PASTE selection, never composition" 1
 expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "not a verbatim bank copy" 1
-expect_ge "21s" "agents/letter-writer.md" "pre-selected bank variant" 1
+expect_ge "21s" "agents/letter-writer.md" "that IS your Block 1 variant selection" 1
 expect_ge "21s" "skills/letter-core/SKILL.md" "the variant is already picked for you" 1
-expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "then its \`Opener:\` line when present" 1
-expect_ge "21s" "skills/career-engine-edit/SKILL.md" "then its \`Opener:\` line when present" 1
+expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "\`Opener:\` line when present" 1
+expect_ge "21s" "skills/career-engine-edit/SKILL.md" "\`Opener:\` line when present" 1
 expect_eq0 "21s" "skills/career-engine-new-application/SKILL.md" "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter"
 expect_eq0 "21s" "skills/career-engine-edit/SKILL.md" "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter"
 expect_ge "21s" "agents/career-coach.md" "Option 4" 1

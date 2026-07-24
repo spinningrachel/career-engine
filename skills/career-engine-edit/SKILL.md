@@ -271,7 +271,7 @@ Read `${CAREER_DATA}/references/voice-calibration-coverletters.md` directly — 
 **Primary path — no coach spawn (2026-07-22, per the user's instruction: "during intake is when the coach should enter into WIWTR the actual outline + opener that is recommended ... cuts the coach's role and necessary effort for application pipelines (edit and new of course)").** Take the Why I Want This Role content from the Step E0 row payload and look for a `[LETTER OUTLINE` ... `[/LETTER OUTLINE]` block — or, on rows intaken before the 2026-07-23 rename, the legacy `[COACH LETTER PLAN` ... `[/COACH LETTER PLAN]` markers, handled identically — (written by intake Step 0.9a Write C; user edits in Notion are authoritative). If present:
 
 1. Write the block's `Template:` value to `$PIPE/template-selection.txt` — the single token, nothing else.
-2. Write the block's `Opener anchor:` line, then its `Opener:` line when present (2026-07-24 — the coach's verbatim bank-variant copy; older blocks lack it), followed by its `Para N:` outline lines, to `$PIPE/coach-outline.md` — first line `Opener anchor: <...>`, then the outline verbatim.
+2. Write the block's `Opener:` line when present (2026-07-24 — the coach's verbatim bank-variant copy; older blocks lack it), followed by its `Para N:` outline lines, to `$PIPE/coach-outline.md`. **A legacy `Opener anchor:` line (blocks written 2026-07-22 → 2026-07-24, before the anchor's retirement) is DROPPED — never copied into `coach-outline.md` and never read for content** (retired 2026-07-24, per the user's direct instruction; it was the confirmed injection vector for coach-composed prose).
 3. **Strip the block (markers included) from the WIWTR content** — every downstream use of "Why I Want This Role content" in this pipeline means the stripped text (the user's motivation only).
 
 **Fallback — legacy rows only:** if the WIWTR contains neither a `[LETTER OUTLINE` nor a legacy `[COACH LETTER PLAN` block, spawn `career-coach` with **Option 4a — Pre-Draft Outline** (the agent dispatches by this literal heading name — never a slug-style `option=` value, unlike the gatekeeper), passing:
@@ -282,9 +282,9 @@ Read `${CAREER_DATA}/references/voice-calibration-coverletters.md` directly — 
 - Company name and role title
 - The user's `references/templates/cover_letter_templates.md` if present (career-data path); note its absence explicitly if not
 
-The coach writes `$PIPE/template-selection.txt` and `$PIPE/coach-outline.md` (first line `Opener anchor: <...>` per the Option 4a output contract) and returns `COACH-OUTLINE: template=<selection> → $PIPE/template-selection.txt, outline written → $PIPE/coach-outline.md` (R-41). Log in the role's delivery: "Letter plan generated in-pipeline (legacy WIWTR — re-run intake to move letter planning into Notion review)." When `$SENDMESSAGE_AVAILABLE`, capture the returned agent ID to `$PIPE/coach-agent-id.txt` (crash-recovery reuse only — the Step E7.4 coach review no longer exists).
+The coach writes `$PIPE/template-selection.txt` and `$PIPE/coach-outline.md` (first line `Opener: <...> (variant <n>)` per the Option 4a output contract — no `Opener anchor:` line, retired 2026-07-24) and returns `COACH-OUTLINE: template=<selection> → $PIPE/template-selection.txt, outline written → $PIPE/coach-outline.md` (R-41). Log in the role's delivery: "Letter plan generated in-pipeline (legacy WIWTR — re-run intake to move letter planning into Notion review)." When `$SENDMESSAGE_AVAILABLE`, capture the returned agent ID to `$PIPE/coach-agent-id.txt` (crash-recovery reuse only — the Step E7.4 coach review no longer exists).
 
-Read `$PIPE/template-selection.txt` after this step — its value is threaded into the gatekeeper spawns at Steps E7.3 and E7.7 below as `Template selected=<value>`, for Gate 9. The letter plan `$PIPE/coach-outline.md` (opener anchor + outline) is likewise passed to those same gatekeeper spawns for Gate 5 opener-anchor conformance and Gate 9 outline conformance.
+Read `$PIPE/template-selection.txt` after this step — its value is threaded into the gatekeeper spawns at Steps E7.3 and E7.7 below as `Template selected=<value>`, for Gate 9. The letter plan `$PIPE/coach-outline.md` (Opener line + outline; no anchor since 2026-07-24) is likewise passed to those same gatekeeper spawns for the opener-variant conformance check and Gate 9 outline conformance.
 
 **Step E7 — Cover letter (initial revision)**
 
@@ -343,7 +343,7 @@ Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DAT
 
 **Step E7.4 — Strategic conformance (coach review removed 2026-07-22)**
 
-The per-role coach review that ran here was removed per the user's instruction ("the coach doesn't need to be in the application pipelines anymore at all ... (edit and new of course)"). Strategic conformance is enforced by the gatekeeper's Cover Letter Check at Steps E7.3 and E7.7: Gate 5 verifies the opening paragraph is built on the letter plan's opener anchor, and Gate 9 verifies the letter follows the plan's outline — the plan being user-approved at intake. **Spawn nothing here; proceed directly to Step E7.7.**
+The per-role coach review that ran here was removed per the user's instruction ("the coach doesn't need to be in the application pipelines anymore at all ... (edit and new of course)"). Strategic conformance is enforced by the gatekeeper's Cover Letter Check at Steps E7.3 and E7.7: the opener-variant conformance check verifies the opener's derivation matches the plan's `Opener:` variant (or logs a substitution reason; the opener-anchor conformance check was retired with the anchor, 2026-07-24), and Gate 9 verifies the letter follows the plan's outline — the plan being user-approved at intake. **Spawn nothing here; proceed directly to Step E7.7.**
 
 **Step E7.7 — Gatekeeper (cover letter check — final)**
 

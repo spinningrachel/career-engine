@@ -89,6 +89,7 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 **Improvements**
 - **`Opener:` line in the Letter Outline** — the coach now recommends an actual opening sentence, produced strictly by copy/paste from the user's own opening bank: the selected template's Block 1 variant reproduced verbatim with only `{ROLE}`/`{COMPANY}` swapped, every other placeholder left for the letter-writer to fill from the user's material. Gate-enforced by a verbatim diff against the templates file; the writer starts from the user-reviewed variant; older outline blocks without the line fall back to the writer's existing bank-first default unchanged.
+- **The Opener anchor is retired entirely** (per the user, after the previous day's tightening proved insufficient: any coach-authored hook line invites composed research prose into the letter path). The outline is now Template / Opener / Para subjects; legacy anchor lines are dropped at extraction and ignored by the writer; the opener-anchor conformance hard-fail is replaced by an opener-variant conformance check. Non-transferability stays enforced by the opener pattern gates and the writer's zero-context test.
 
 ### 2026-07-23 — Coach output overhaul + prioritization bug fixes
 
