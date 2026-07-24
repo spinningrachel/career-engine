@@ -333,15 +333,18 @@ expect_ge "21s" "agents/career-coach.md" "There is NO \`Opener anchor:\` line" 1
 expect_eq0 "21s" "agents/career-coach.md" "^Opener anchor: <"
 expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "FAIL if the block contains an \`Opener anchor:\` line" 1
 expect_ge "21s" "skills/gatekeeper-checks/letter-gates.md" "Opener-anchor conformance — RETIRED" 1
-expect_ge "21s" "agents/letter-writer.md" "\`Opener anchor:\` is RETIRED" 1
+expect_ge "21s" "agents/letter-writer.md" "IGNORED entirely" 1
 expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "line .*is DROPPED\|is DROPPED" 1
 expect_ge "21s" "skills/career-engine-edit/SKILL.md" "is DROPPED" 1
 expect_ge "21s" "agents/career-coach.md" "bare token only" 1
+# 2026-07-24 (second pass): the user's plain-language letter rule is codified verbatim in letter-core §1
+expect_ge "21s" "skills/letter-core/SKILL.md" "exhaustive search of all available insights" 1
+expect_ge "21s" "skills/gatekeeper-checks/letter-gates.md" "Opener source check" 1
 # 2026-07-24: the coach's Opener line is a verbatim bank-variant copy/paste (per the user's direct instruction)
 expect_ge "21s" "agents/career-coach.md" "COPY/PASTE selection, never composition" 1
 expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "not a verbatim bank copy" 1
 expect_ge "21s" "agents/letter-writer.md" "that IS your Block 1 variant selection" 1
-expect_ge "21s" "skills/letter-core/SKILL.md" "the variant is already picked for you" 1
+expect_ge "21s" "skills/letter-core/SKILL.md" "the coach picked it, the user reviewed it in Notion\|picked by the coach and user-reviewed in Notion" 1
 expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "\`Opener:\` line when present" 1
 expect_ge "21s" "skills/career-engine-edit/SKILL.md" "\`Opener:\` line when present" 1
 expect_eq0 "21s" "skills/career-engine-new-application/SKILL.md" "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter"

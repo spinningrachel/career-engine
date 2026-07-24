@@ -217,7 +217,7 @@ Read `${CAREER_DATA}/references/voice-calibration-coverletters.md` directly — 
 
 The coach writes `$PIPE/template-selection.txt` and `$PIPE/coach-outline.md` (first line `Opener: <...> (variant <n>)` per the Option 4a output contract — no `Opener anchor:` line, retired 2026-07-24) and returns `COACH-OUTLINE: template=<selection> → $PIPE/template-selection.txt, outline written → $PIPE/coach-outline.md` (R-41). Log in the role's delivery: "Letter plan generated in-pipeline (legacy WIWTR — re-run intake to move letter planning into Notion review)." When `$SENDMESSAGE_AVAILABLE`, capture the returned agent ID to `$PIPE/coach-agent-id.txt` (crash-recovery reuse only — the Step 5.3 coach review no longer exists).
 
-Read `$PIPE/template-selection.txt` after this step — its value is threaded into the gatekeeper spawns at Steps 5.2 and 5.95 below as `Template selected=<value>`, for Gate 9. The letter plan `$PIPE/coach-outline.md` (Opener line + outline; no anchor since 2026-07-24) is likewise passed to those same gatekeeper spawns for the opener-variant conformance check and Gate 9 outline conformance.
+Read `$PIPE/template-selection.txt` after this step — its value is threaded into the gatekeeper spawns at Steps 5.2 and 5.95 below as `Template selected=<value>`, for Gate 9. The letter plan `$PIPE/coach-outline.md` (Opener line + outline; no anchor since 2026-07-24) is likewise passed to those same gatekeeper spawns for the opener source check and Gate 9 outline conformance.
 
 ### Step 5 — Cover letter (draft)
 
@@ -266,7 +266,7 @@ Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DAT
 
 ### Step 5.3 — Strategic conformance (coach review removed 2026-07-22)
 
-The per-role coach review that ran here was removed per the user's instruction ("the coach doesn't need to be in the application pipelines anymore at all"). Strategic conformance is enforced by the gatekeeper's Cover Letter Check, which Step 5.2 already ran on this letter: the opener-variant conformance check verifies the opener's derivation matches the plan's `Opener:` variant (or logs a substitution reason; the opener-anchor conformance check was retired with the anchor, 2026-07-24), and Gate 9 verifies the letter follows the plan's outline — the plan being user-approved at intake is a stronger authority than a mid-pipeline coach opinion was. **Spawn nothing here.**
+The per-role coach review that ran here was removed per the user's instruction ("the coach doesn't need to be in the application pipelines anymore at all"). Strategic conformance is enforced by the gatekeeper's Cover Letter Check, which Step 5.2 already ran on this letter: the opener source check verifies the opener's derivation matches the plan's `Opener:` variant (or logs a substitution reason; the opener-anchor conformance check was retired with the anchor, 2026-07-24), and Gate 9 verifies the letter follows the plan's outline — the plan being user-approved at intake is a stronger authority than a mid-pipeline coach opinion was. **Spawn nothing here.**
 
 Entry condition unchanged: this point is reached only after Step 5.2's genuine PASS. Step 5.2's cap-exhaustion path still skips the humanizer and routes directly to Step 6 export, delivered flagged per the Absolute Constraints' flag-and-deliver policy.
 

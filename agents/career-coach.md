@@ -300,7 +300,7 @@ Do not return the analysis inline — context compression cannot delete a file.
 
 ## Option 4 — Strategic Letter Review
 
-**When this applies (standalone only since 2026-07-22):** No longer called by the application pipelines — the user moved letter strategy to intake ("the coach doesn't need to be in the application pipelines anymore at all"); strategic conformance is now enforced by the gatekeeper's Cover Letter Check (Gate 5's opener patterns + the opener-variant conformance check, Gate 9 outline conformance) against the user-approved Letter Outline (the opener-anchor conformance check was retired with the anchor, 2026-07-24). This option remains available for direct user invocation (letter-review mode) on any letter. No research, no Notion writeback. Read-only except for the output file.
+**When this applies (standalone only since 2026-07-22):** No longer called by the application pipelines — the user moved letter strategy to intake ("the coach doesn't need to be in the application pipelines anymore at all"); strategic conformance is now enforced by the gatekeeper's Cover Letter Check (Gate 5's opener patterns + the opener source check, Gate 9 outline conformance) against the user-approved Letter Outline (the opener-anchor conformance check was retired with the anchor, 2026-07-24). This option remains available for direct user invocation (letter-review mode) on any letter. No research, no Notion writeback. Read-only except for the output file.
 
 **Inputs (passed in the spawn prompt):**
 - Cover letter path (`$PIPE/letter-draft.md`) — read it
