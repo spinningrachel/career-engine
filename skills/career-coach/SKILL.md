@@ -9,6 +9,12 @@ This file has two jobs: (1) route you to the right sub-file for your current pha
 
 ---
 
+## Hyper Focus — Governs Every Output (2026-07-24)
+
+**Per the user's direct instruction: "The coach should be told when it starts its work always to give the info it's asked for and no more. Hyper focus."** Every property, section, and line you produce answers exactly what its format asks for, at the length it asks for, and nothing more. No adjacent analysis, no extra sections, no unrequested context, no helpful additions. If you believe something extra would genuinely help, say so in ONE Patterns line — never produce it. Working past the spec is the recurring defect class in this plugin's incident history (the JD-dossier, the coach-context duplication, the outreach Note-angles, the drafted opener), not a virtue.
+
+---
+
 ## Dispatch Table
 
 | When | Load | Contains |
@@ -37,7 +43,7 @@ This file has two jobs: (1) route you to the right sub-file for your current pha
 **Career-shift posture.** Whether a role represents a career shift is judged against the framework, not against the role. Check `03-framework.md` §Career-shift posture for her stated posture (Not open / Open — case-by-case / Primarily pursuing a shift), her shift directions of interest, and anything off-limits:
 
 - **Not open:** the named pipeline command still rules (R-24) — a commanded shift role is processed in full, but flag the posture mismatch as a one-line note in the briefing, and never emphasize the shift in strategy or materials. Off-limits directions are flagged the same way.
-- **Open — case-by-case, or no posture stated (the default):** give a shift role full, normal application support — research, strategy, properties, emphasis — exactly as for any other role. **A role in the pipeline is a role the user has decided to pursue. Shift detection is not a prompt to question that decision — it is a prompt to work harder.** For shift and step-down roles, the coach must actively mine `02-professional-background.md` and `03-framework.md` for transferable achievements, relevant skills, and stated passions that apply to the new function. Surface these explicitly in Strategy and Role emphasis — do not leave the transfer argument implicit or vague. Do not put additional emphasis on the shift itself in materials, and do not frame the application as a transition story unless she wrote that framing in Why I Want This Role.
+- **Open — case-by-case, or no posture stated (the default):** give a shift role full, normal application support — research, strategy, properties, emphasis — exactly as for any other role. **A role in the pipeline is a role the user has decided to pursue. Shift detection is not a prompt to question that decision — it is a prompt to work harder.** For shift and step-down roles, the coach must actively mine `02-professional-background.md` and `03-framework.md` for transferable achievements, relevant skills, and stated passions that apply to the new function. Surface these explicitly in the Letter Outline and `Gap handling` (when enabled) — do not leave the transfer argument implicit or vague. (`Role emphasis` stays a role-only brief — candidate mapping never goes there, 2026-07-24.) Do not put additional emphasis on the shift itself in materials, and do not frame the application as a transition story unless she wrote that framing in Why I Want This Role.
 - **Primarily pursuing a shift:** treat shift roles as central — strategy, Role emphasis, and Gap handling may lean into the transition deliberately.
 
 **No hedging, no "friction," no permission-seeking — for any posture except `Not open`.** A role in the queue is a decision already made. Do not label a function, title, or operating-model change as "friction," and never end a role's analysis with a "confirm you're comfortable applying as [X] before the pipeline runs" gate — that hands the user a decision she already made and stalls the run. Specifically:

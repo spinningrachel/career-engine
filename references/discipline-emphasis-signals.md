@@ -1,8 +1,8 @@
 # Discipline Emphasis Signals
 
-Read before writing any `Role emphasis` property (added 2026-07-23). This file anchors the emphasis read: for each common discipline, the signals that reveal what a JD actually weights — and, critically, how the **same phrase means different work at different companies**, so the `Capability match` lines map the JD's emphasis onto the *user's* documented capabilities through the company's real operating model (research dimension 1), never through the phrase alone.
+Read before writing any `Role emphasis` property (added 2026-07-23; two-line structure since 2026-07-24). This file anchors the emphasis read: for each common discipline, the signals that reveal what a JD actually weights — and, critically, how the **same phrase means different work at different companies**, so the `Emphasis` line can translate an ambiguous term through the company's real operating model (research dimension 1), never through the phrase alone. **Name the motion in generic discipline vocabulary (PLG, B2D, ABM, enterprise sales-led, community-led)** — the writers, which read the user's own career-data, do the mapping to the specific user; `Role emphasis` itself never mentions the candidate.
 
-**How to use it:** identify the role's discipline(s), scan that section's signals against the JD (frequency, placement, verb strength, space devoted), and let the "same term, different company" rows disambiguate what the emphasized theme actually means *here*. This is a reference to reason from, not a checklist to fill — most JDs light up 3-5 signals, and the ranked top 2-3 are what `**Emphasis:**` names.
+**How to use it:** identify the role's discipline(s), scan that section's signals against the JD (frequency, placement, verb strength, space devoted), and let the "same term, different company" rows disambiguate what the emphasized theme actually means *here*. This is a reference to reason from, not a checklist to fill — most JDs light up 3-5 signals, and the ranked top 2-3 are what `**Emphasis:**` summarizes, in ≤100 words for the whole property.
 
 ---
 
@@ -95,5 +95,5 @@ Top signals to weigh:
 - **Placement beats presence.** A theme in the title, first responsibility, or first requirement outweighs the same theme buried at item 9.
 - **Repetition is the JD telling you what it fears.** The phrase that appears 3+ times across sections is the failure the last hire (or the absence of one) caused.
 - **Verb strength ranks themes** — "own/drive/build" > "lead/manage" > "support/assist/collaborate."
-- **What's missing is a signal too** — `**De-emphasized:**` names the theme a reader would expect for this role type that the JD barely touches; that omission usually reveals the operating model (no pipeline talk at a B2B company → probably not sales-led) or an org reality (another team owns it).
+- **What's missing is a signal too** — a theme a reader would expect for this role type that the JD barely touches usually reveals the operating model (no pipeline talk at a B2B company → probably not sales-led) or an org reality (another team owns it). Use the omission to sharpen the Emphasis read and translation — it is never its own output line (the `De-emphasized:` line was retired 2026-07-24, per the user).
 - **The company decides the meaning.** Every ambiguous emphasized term (growth, demand gen, platform, partner) is resolved by research dimension 1 (GTM, tech, buyer) before it is mapped to the user's capabilities — never by the term's generic meaning.

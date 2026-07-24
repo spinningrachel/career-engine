@@ -340,6 +340,14 @@ expect_ge "21s" "agents/career-coach.md" "bare token only" 1
 # 2026-07-24 (second pass): the user's plain-language letter rule is codified verbatim in letter-core §1
 expect_ge "21s" "skills/letter-core/SKILL.md" "exhaustive search of all available insights" 1
 expect_ge "21s" "skills/gatekeeper-checks/letter-gates.md" "Opener source check" 1
+# 2026-07-24 (third pass): Role emphasis reduced to two lines (Emphasis + Likely KPIs), <=100 words, per the user;
+# capability-mapping and de-emphasis retired; hyper-focus standing rule added.
+expect_ge "21s" "skills/career-coach/coach-analysis.md" "exactly these TWO labeled lines" 1
+expect_ge "21s" "skills/career-coach/coach-analysis.md" "max 100 words\|≤100 words" 1
+expect_eq0 "21s" "skills/career-coach/coach-analysis.md" "^\*\*Capability match:\*\*\|^\*\*De-emphasized:\*\*"
+expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "fixed two-line structure" 1
+expect_ge "21s" "skills/career-coach/SKILL.md" "Hyper Focus — Governs Every Output" 1
+expect_ge "21s" "agents/career-coach.md" "Hyper focus" 1
 # 2026-07-24: the coach's Opener line is a verbatim bank-variant copy/paste (per the user's direct instruction)
 expect_ge "21s" "agents/career-coach.md" "COPY/PASTE selection, never composition" 1
 expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "not a verbatim bank copy" 1
