@@ -85,6 +85,11 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-24 — Coach recommends the opening by copy/paste, never composition
+
+**Improvements**
+- **`Opener:` line in the Letter Outline** — the coach now recommends an actual opening sentence, produced strictly by copy/paste from the user's own opening bank: the selected template's Block 1 variant reproduced verbatim with only `{ROLE}`/`{COMPANY}` swapped, every other placeholder left for the letter-writer to fill from the user's material. Gate-enforced by a verbatim diff against the templates file; the writer starts from the user-reviewed variant; older outline blocks without the line fall back to the writer's existing bank-first default unchanged.
+
 ### 2026-07-23 — Coach output overhaul + prioritization bug fixes
 
 **Coach output overhaul** (per the user's direct 11-point instruction after reviewing live coach output)

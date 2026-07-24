@@ -31,7 +31,7 @@ The letter is built FROM the user's existing words, aimed at this role. Her mate
 
 ## 3. The opener
 
-**Default: her opening bank.** Pick the fitting Block 1 variant from her `cover_letter_templates.md` (coach-selected template), fill the blanks with this role's specifics, done. Second choice: adapt a delivered-letter opener shape. Only if neither fits, construct from the structures below — and record the decision either way in `$PIPE/opener-derivation.txt` (`variant=<id>` or `pattern=<n> | no-variant-because: <reason>`).
+**Default: her opening bank.** Pick the fitting Block 1 variant from her `cover_letter_templates.md` (coach-selected template), fill the blanks with this role's specifics, done. **When the coach's outline carries an `Opener: <...> (variant <n>)` line (2026-07-24), the variant is already picked for you — user-reviewed in Notion; start from it** (substitute another bank variant only when it can't be truthfully filled from her material, logged). Second choice: adapt a delivered-letter opener shape. Only if neither fits, construct from the structures below — and record the decision either way in `$PIPE/opener-derivation.txt` (`variant=<id>` or `pattern=<n> | no-variant-because: <reason>`).
 
 **Within two sentences the reader knows:** the role (named in sentence 1), why her, why now — all in words a stranger who knows only the company name can understand. **Zero-context test:** no abstract stand-ins ("the challenge I've spent my career on") whose only definition is a riddle. Concrete referents: companies, disciplines, plain credentials.
 

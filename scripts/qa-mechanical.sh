@@ -333,6 +333,13 @@ expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "anchor prose injectio
 expect_ge "21s" "agents/letter-writer.md" "The anchor designates the hook; it is never text" 1
 expect_ge "21s" "skills/gatekeeper-checks/letter-gates.md" "Built ON, never copied FROM" 1
 expect_ge "21s" "agents/career-coach.md" "bare token only" 1
+# 2026-07-24: the coach's Opener line is a verbatim bank-variant copy/paste (per the user's direct instruction)
+expect_ge "21s" "agents/career-coach.md" "COPY/PASTE selection, never composition" 1
+expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "not a verbatim bank copy" 1
+expect_ge "21s" "agents/letter-writer.md" "pre-selected bank variant" 1
+expect_ge "21s" "skills/letter-core/SKILL.md" "the variant is already picked for you" 1
+expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "then its \`Opener:\` line when present" 1
+expect_ge "21s" "skills/career-engine-edit/SKILL.md" "then its \`Opener:\` line when present" 1
 expect_eq0 "21s" "skills/career-engine-new-application/SKILL.md" "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter"
 expect_eq0 "21s" "skills/career-engine-edit/SKILL.md" "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter"
 expect_ge "21s" "agents/career-coach.md" "Option 4" 1
