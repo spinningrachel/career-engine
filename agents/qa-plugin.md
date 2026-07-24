@@ -36,6 +36,16 @@ Claude invokes you after completing any of the following:
 - Updating references/ files
 - Repackaging the .plugin files
 - Any structural change to the plugin directory
+- **Every push or merge request (2026-07-24, per the user's direct instruction — mandatory, never skipped because QA already ran on individual edits).** In this mode: run the FULL check set over the branch's cumulative diff against the merge target (not just the last session's edits), and additionally run the **docs-sync pass** below.
+
+### Docs-sync pass (push/merge invocations — always)
+
+Report, as findings for the invoking session to fix (you never make changes yourself):
+1. **`README.md`** — every section (not just the changelog) checked against current doctrine: stale feature descriptions, retired mechanisms still described as live, missing entries for shipped behavior. Changelog rules still apply (prior entries are frozen — a stale claim inside an old dated entry is history, not a finding).
+2. **`CLAUDE.md`** — cross-file contracts, glossary, and key design decisions checked for rows/entries the branch's changes made wrong or incomplete (superseded rows need ⚠ notes, not silent accuracy rot).
+3. **The GitHub Wiki** (`<repo>.wiki.git` — the invoking session clones it and provides the path, or you clone it read-only) — every page checked against current doctrine; name each stale/wrong/orphaned passage and what the fix is (update, rewrite, or delete).
+
+The invoking session applies all necessary updates, changes, and deletions — including committing and pushing wiki fixes — and re-verifies with you before anything is pushed. A push/merge with an unresolved docs-sync finding is a FAIL.
 
 ---
 
