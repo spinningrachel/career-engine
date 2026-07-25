@@ -209,11 +209,13 @@ Per the user's direct instruction ("the Coach Prompts that were supposed to be c
 [LETTER OUTLINE — edit any line or delete the block; the letter pipeline follows this plan]
 Template: <selection from the user's cover_letter_templates.md, else the plugin default set>
 Opener: <verbatim Block 1 variant of the selected template — pure copy/paste; swap ONLY {ROLE} and {COMPANY}; every other placeholder left untouched> (variant <n>)
-Para 1: <subject>
 Para 2: <subject>
+Para 3: <subject>
 Para N: close.
 [/LETTER OUTLINE]
 ```
+
+**There is NO `Para 1:` line (2026-07-24, from the user's first live outline: its `Para 1: reaction to the first-PMM role, why now` merely re-described the Opener above it — a second, freehand spec for the same paragraph, inviting the writer to pad her copied sentence with composed "reaction" prose: "I'm worried I'll find myself deleting unnecessary badly written slop from the rest of every single opening para").** The `Opener:` line IS paragraph 1's complete spec — the selected template's own Block 1 governs the opening paragraph's remaining 1–2 sentences, and the writer fills them from her material. Paragraph subjects start at `Para 2:`. Never emit a `Para 1:` line.
 
 **⛔ There is NO `Opener anchor:` line — retired 2026-07-24, per the user's direct instruction ("Get rid of the hook. the opener anchor. that's what's causing this mess."), one day after its hook-designation tightening failed to survive contact: the anchor slot itself kept inviting composed research prose into the letter path (the Reflectiz "$22M... and I want to be the first marketing executive who..." incident). Never emit one, under any name.** The opening's company-specificity comes from the writer filling the `Opener:` variant's slots with HER material for THIS role, checked by the writer's own zero-context/non-transferability gate and Gate 5's opener patterns — not from a coach-supplied hook line.
 
@@ -288,11 +290,12 @@ Do not return the analysis inline — context compression cannot delete a file.
 
 2. **The outline** (`$PIPE/coach-outline.md`) — a bare list of paragraph subjects only. Not a writing angle, not supporting evidence, not "important facts to include" — one line per paragraph naming its focus and nothing else. **This outline is delivered to the letter-writer as its structural spine (restored 2026-07-16, per the user's direct instruction) and doubles as your own Option 4 review rubric** — which is exactly why it must stay bare subjects: anything richer would smuggle research content past the writer's input contract. Example shape (not a template to copy, just illustrating the level of detail — a subject name, never the content itself):
    ```
-   Para 1: reaction to the role, why now.
+   Opener: <verbatim Block 1 variant, only {ROLE}/{COMPANY} swapped> (variant <n>)
    Para 2: belief about [domain] work.
    Para 3: [Company]-specific proof — [named project].
    Para 4: close.
    ```
+   (No `Para 1:` line, same rule as the intake Letter Plan — the Opener line IS paragraph 1's spec; subjects start at Para 2.)
    The outline names what each paragraph is *about*, never how to write it. As of 2026-07-16 (per the user's direct instruction) it is delivered to the letter-writer as its structural spine — the writer follows its paragraph order and fills each subject with her material — and it doubles as your own review rubric for Option 4 (Strategic Letter Review), where you check whether the finished letter lands the intended subjects well. **`gap_handling_mode` is passed on every pipeline spawn, including yours: when `disabled`, the outline and the Option 4 letter review contain ZERO gap enumeration, gap acknowledgment, or gap-framing directives — there are no gaps for this run, and a review note that asks the writer to "address" one is a violation of the run's own configuration.**
 
 **Return (one line only — R-41):**

@@ -348,6 +348,10 @@ expect_eq0 "21s" "skills/career-coach/coach-analysis.md" "^\*\*Capability match:
 expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "fixed two-line structure" 1
 expect_ge "21s" "skills/career-coach/SKILL.md" "Hyper Focus — Governs Every Output" 1
 expect_ge "21s" "agents/career-coach.md" "Hyper focus" 1
+# 2026-07-24 (fourth pass): no Para 1 line in the Letter Outline — the Opener line IS paragraph 1's spec
+expect_ge "21s" "agents/career-coach.md" "There is NO \`Para 1:\` line" 1
+expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "FAIL if the block contains a \`Para 1:\` line" 1
+expect_ge "21s" "skills/letter-core/SKILL.md" "bounded by the template's own Block 1" 1
 # 2026-07-24: the coach's Opener line is a verbatim bank-variant copy/paste (per the user's direct instruction)
 expect_ge "21s" "agents/career-coach.md" "COPY/PASTE selection, never composition" 1
 expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "not a verbatim bank copy" 1
