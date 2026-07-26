@@ -352,6 +352,12 @@ expect_ge "21s" "agents/career-coach.md" "Hyper focus" 1
 expect_ge "21s" "agents/career-coach.md" "There is NO \`Para 1:\` line" 1
 expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "FAIL if the block contains a \`Para 1:\` line" 1
 expect_ge "21s" "skills/letter-core/SKILL.md" "bounded by the template's own Block 1" 1
+# 2026-07-24 (fifth pass): Opener verbatim hard gate — letter text diffed against the outline's Opener line
+expect_ge "21s" "skills/gatekeeper-checks/letter-gates.md" "checks the LETTER TEXT, not just the log" 1
+expect_ge "21s" "agents/letter-writer.md" "Paste it as your opening VERBATIM" 1
+expect_ge "21s" "skills/letter-core/SKILL.md" "paste it verbatim as the opening" 1
+expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "Opener verbatim check" 1
+expect_ge "21s" "skills/career-engine-edit/SKILL.md" "Opener verbatim check" 1
 # 2026-07-24: the coach's Opener line is a verbatim bank-variant copy/paste (per the user's direct instruction)
 expect_ge "21s" "agents/career-coach.md" "COPY/PASTE selection, never composition" 1
 expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "not a verbatim bank copy" 1
