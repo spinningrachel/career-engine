@@ -79,9 +79,9 @@ every directory now, even ones that hold only one or two files today.
 career-data/
 ├── SKILL.md
 ├── career-data-marker.json
-├── pipeline-preferences.json
 └── references/
     ├── _STRUCTURE-DO-NOT-CHANGE.md      ← the structure contract; preserve section structure
+    ├── pipeline-preferences.json        ← per-install config; ALWAYS here, never at the skill root (2026-07-24 fix — this tree used to draw it at root, contradicting the structure contract and every runtime read; skills built from the old tree have it at root and runtime falls back to that location)
     ├── 01-writing-rules.md
     ├── 02-professional-background.md    ← router (see background/ below)
     ├── 03-framework.md                  ← positioning/voice, +methodology router (see framework/ below)
