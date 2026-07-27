@@ -3,6 +3,8 @@ name: humanizer
 description: Complete doctrine for the humanizer agent — the final-stage editing pass that removes AI writing patterns from a gatekeeper-approved cover letter. Contains the R-37/R-41 mechanics, the input contract, the six-step editing procedure, the Quantitative Final Gate, and the voice calibration protocol (pipeline vs standalone). Relocated from `skills/writer-craft/SKILL.md` §12-13 (Humanizer Mechanics and Voice Calibration Protocol) — that content was humanizer-specific and not used by cv-writer or letter-writer, the writer-craft skill's other two consumers.
 ---
 
+> **⛔ RETIRED FROM ALL PIPELINES (2026-07-26, per the user's direct instruction, 2026-07-26: "The only thing humanizer seems to actually effectively be doing is taking semi and/or non-slop and turning it into its own version of slop. Not helpful. give the gatekeeper the quantitative checks and get rid of humanizer").** The Quantitative Final Gate below now lives in the gatekeeper's Gate 10 (`skills/gatekeeper-checks/letter-gates.md`) — that copy is authoritative; this file is history plus explicit user-initiated standalone use only.
+
 # Humanizer — Doctrine and Procedure
 
 This is the humanizer agent's complete pattern list and procedure. The agent file (`agents/humanizer.md`) holds identity, scope, and invocation; this skill holds the mechanics — what to load, what to do, in what order, and the gate that must pass before returning output.

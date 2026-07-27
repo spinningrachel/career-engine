@@ -37,7 +37,7 @@ The letter is built FROM the user's existing words, aimed at this role. Her mate
 
 **The opening paragraph is bounded by the template's own Block 1 — the filled Opener sentence plus at most the 1–2 further sentences the selected Block 1 shape itself calls for, each from her material (2026-07-24, per the user: "I'm worried I'll find myself deleting unnecessary badly written slop from the rest of every single opening para").** The outline never adds subjects to paragraph 1 — its paragraph subjects start at `Para 2:`, and a legacy outline's `Para 1:` line that re-describes the Opener is a duplicate spec: ignore it (it authorizes nothing beyond Block 1's own bounds). Never pad the opening with composed reaction, context-setting, or "why now" prose the Block 1 shape didn't ask for — if Block 1 is satisfied in two sentences, paragraph 1 is done in two sentences.
 
-**Within two sentences the reader knows:** the role (named in sentence 1), why her, why now — all in words a stranger who knows only the company name can understand. **Zero-context test:** no abstract stand-ins ("the challenge I've spent my career on") whose only definition is a riddle. Concrete referents: companies, disciplines, plain credentials.
+**Within two sentences the reader knows:** the role (named in sentence 1), why her, why now — all in words a stranger who knows only the company name can understand. **Context test:** no abstract stand-ins ("the challenge I've spent my career on") whose only definition is a riddle. Concrete referents: companies, disciplines, plain credentials.
 
 **Plain beats clever, every time — and sentence 1 is the plainest sentence in the letter.** Sentence 1 does exactly two jobs: name the role, and state her want or reaction with a concrete plain-language credential. NO device in sentence 1 — no negation setup ("not a title I expected to want"), no general-truth aphorism or paradox ("...is only as trustworthy as the person explaining it"), no product-mechanism description, no echo-intensifier ("is exactly what I've already done"). A good story or observation from her material earns its place from sentence 2 onward, after context exists. No engineered punchline, setup-payoff twist, or metaphor-flavored flourish anywhere; given two renderings of the same content, choose the plainer.
 
@@ -55,7 +55,7 @@ The letter is built FROM the user's existing words, aimed at this role. Her mate
 9. **Anticipated question** — name the reader's likely question without apology; answer with proof.
 10. **Problem-first** — HER documented observation (from WIWTR/Bank only), she is the subject of sentence 1.
 11. **Value claim** — name what they need, pivot to her confident claim ("I'm a strategic builder..."), name how.
-12. **Plain want** — "I want [Role] at [Company] because [a real, non-transferable, role-relevant reason from her material]," then 1-2 plain clauses. The reason must be in the same sentence and concrete; a hollow or biographical-non-sequitur because-clause disqualifies it.
+12. **Plain want** — "I want [Role] at [Company] because [a real, role-relevant reason from her material]," then 1-2 plain clauses. The reason must be in the same sentence and concrete; a hollow or biographical-non-sequitur because-clause disqualifies it.
 
 ### Annotated exemplar — the sentence mechanics to mirror
 

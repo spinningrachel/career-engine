@@ -73,7 +73,7 @@ Layer 1 (universal mechanics) and Layer 2 (per-user parameters) embedded. Layer 
 **Dials (maximums — no minimums; a shorter letter is never a violation):** {MAX_WORDS} words (default ≤320; ≤250 when `Strategy = Strategic` — see Shared Invariants → Length), up to {SENTENCE_COUNT_MAX} sentences (default ≤18), contractions light (default ≤1 per 100w), exclamations 0–1 beyond greeting, numerals up to {NUMERAL_COUNT_MAX} (default ≤8, for metrics readers).
 
 ## Block 1 — Opening (2–3 sentences)
-Within the first two sentences the reader knows why this person, this company, right now. The context must be non-transferable. Professional fit leads; personal proof follows — a personal detail may open only when it is itself the professional credential, never merely evidence of affinity (see Information Sequencing, `skills/writer-craft/SKILL.md` §8).
+Within the first two sentences the reader knows why this person, this company, right now. The context (role and company) is stated plainly; reusable structure across letters is fine — no reader sees the other letters (2026-07-26, per the user). Professional fit leads; personal proof follows — a personal detail may open only when it is itself the professional credential, never merely evidence of affinity (see Information Sequencing, `skills/writer-craft/SKILL.md` §8).
 
 **Variants:**
 1. `Thanks to {REFERRER} for flagging the {ROLE} role. The timing is perfect, and I am a {SELF_LABEL} {IDENTITY_IDIOM}.`
@@ -234,7 +234,7 @@ Commitment or desire statement. One exclamation maximum.
 - [ ] Banned-vocabulary scan clean per your personal voice calibration file
 - [ ] Attribution-safe phrasings used exactly (no overstating, no vague nouns)
 - [ ] Every claim traces to documented background or your own words; nothing repeats your CV
-- [ ] Opener is non-transferable to any other company
+- [ ] Opener names the role and the company within two sentences
 - [ ] Philosophy precedes proof; max one triad; one identity idiom
 - [ ] For founding/build-from-scratch: {STRATEGIC_LABEL} appears exactly once
 - [ ] JD culture/About text answered; bonus lines answered where honest; operational bullets skipped

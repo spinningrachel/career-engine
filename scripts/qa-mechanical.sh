@@ -418,8 +418,9 @@ expect_ge "21v" "skills/career-engine-orchestrator/orchestrator-queue.md" "This 
 expect_ge "21v" "skills/career-engine-new-application/SKILL.md" "custom-style-wrapped text is never eligible" 1
 expect_eq0 "21v" "skills/career-engine-edit/SKILL.md" "mechanical and unambiguous"
 expect_ge "21v" "skills/career-engine-orchestrator/orchestrator-queue.md" "non-skippable-humanizer rule" 1
-expect_ge "21v" "skills/career-engine-new-application/SKILL.md" "non-skippable-humanizer rule" 1
-expect_ge "21v" "skills/career-engine-edit/SKILL.md" "non-skippable-humanizer rule" 1
+# 2026-07-26: humanizer RETIRED from both pipelines per the user; the non-skippable rule survives only as history in orchestrator-queue
+expect_ge "21v" "skills/career-engine-new-application/SKILL.md" "Humanizer — RETIRED" 1
+expect_ge "21v" "skills/career-engine-edit/SKILL.md" "Humanizer — RETIRED" 1
 expect_ge "21v" "skills/career-engine-new-application/SKILL.md" "PIPE_FILESYSTEM_AVAILABLE" 1
 expect_ge "21v" "skills/career-engine-edit/SKILL.md" "PIPE_FILESYSTEM_AVAILABLE" 1
 expect_ge "21v" "skills/career-engine-new-application/SKILL.md" "PIPE-CANARY" 1
@@ -558,13 +559,14 @@ expect_ge "57" "skills/writer-craft/SKILL.md" "Strategy = Strategic\`, where the
 expect_ge "57" "agents/letter-writer.md" "≤250 when \`Strategy = Strategic\`\|250 when \`Strategy = Strategic\`" 1
 expect_ge "57" "skills/gatekeeper-checks/SKILL.md" "Strategy = Strategic" 3
 c57_multi1=$(grep -c "Strategy\` (the coach's Step 0.8 output\|Strategy\` (from the Step E0 row payload\|Strategy\` (from the coach properties verified in Step E1\|Strategy\` (same as Step" "$TARGET/skills/career-engine-new-application/SKILL.md" "$TARGET/skills/career-engine-edit/SKILL.md" 2>/dev/null | awk -F: '{s+=$2} END{print s+0}')
-if [ "$c57_multi1" -ge 6 ]; then report "57" 1 ""; else report "57" 0 "Strategy-param spawn-site phrasing combined count is $c57_multi1, need >= 6"; fi
+if [ "$c57_multi1" -ge 4 ]; then report "57" 1 ""; else report "57" 0 "Strategy-param spawn-site phrasing combined count is $c57_multi1, need >= 4 (two final-gatekeeper spawns retired with the humanizer, 2026-07-26)"; fi
 expect_ge "57" "skills/career-engine-new-application/SKILL.md" "Strategy = Strategic" 1
 expect_ge "57" "skills/career-engine-edit/SKILL.md" "Strategy = Strategic" 1
 expect_ge "57" "references/cover-letter-templates-default.md" "Strategy = Strategic" 4
 expect_ge "57" "references/cover-letter-templates-default.md" "I wrote the day I saw the" 1
-c57_multi2=$(grep -c "the humanizer's only inputs are the letter, the career-data path, and the voice-calibration file" "$TARGET/skills/career-engine-new-application/SKILL.md" "$TARGET/skills/career-engine-edit/SKILL.md" 2>/dev/null | awk -F: '{s+=$2} END{print s+0}')
-if [ "$c57_multi2" -ge 2 ]; then report "57" 1 ""; else report "57" 0 "humanizer-input-boundary phrasing combined count is $c57_multi2, need >= 2"; fi
+# 2026-07-26: humanizer retired — the input-boundary phrasing left the pipelines with its spawns; assert the retirement instead
+c57_multi2=$(grep -c "Humanizer — RETIRED" "$TARGET/skills/career-engine-new-application/SKILL.md" "$TARGET/skills/career-engine-edit/SKILL.md" 2>/dev/null | awk -F: '{s+=$2} END{print s+0}')
+if [ "$c57_multi2" -ge 2 ]; then report "57" 1 ""; else report "57" 0 "humanizer-retirement marker combined count is $c57_multi2, need >= 2"; fi
 expect_ge "57" "skills/career-engine-new-application/SKILL.md" "same parameters as the Step 5.2 spawn above" 1
 expect_ge "57" "skills/career-engine-edit/SKILL.md" "same parameters as the Step E7.3 spawn above\|same parameters as the Step E7.7 spawn above" 2
 
