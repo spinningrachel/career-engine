@@ -422,6 +422,9 @@ expect_ge "21v" "skills/career-engine-orchestrator/orchestrator-queue.md" "non-s
 expect_ge "21v" "skills/career-engine-new-application/SKILL.md" "Humanizer — RETIRED" 1
 expect_ge "21v" "skills/career-engine-edit/SKILL.md" "Humanizer — RETIRED" 1
 expect_ge "21v" "skills/career-engine-new-application/SKILL.md" "PIPE_FILESYSTEM_AVAILABLE" 1
+# 2026-07-27: capability-claim refusal anti-pattern (the "built for Claude Code" Cowork refusal)
+expect_ge "21v" "skills/career-engine-orchestrator/orchestrator-queue.md" "refusing to run on an unverified capability claim" 1
+expect_ge "21v" "skills/career-engine-orchestrator/orchestrator-queue.md" "Cowork is a first-class runtime" 1
 expect_ge "21v" "skills/career-engine-edit/SKILL.md" "PIPE_FILESYSTEM_AVAILABLE" 1
 expect_ge "21v" "skills/career-engine-new-application/SKILL.md" "PIPE-CANARY" 1
 expect_ge "21v" "skills/career-engine-orchestrator/orchestrator-queue.md" "Manual-relay rule" 1
