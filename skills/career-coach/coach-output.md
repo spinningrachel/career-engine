@@ -51,7 +51,7 @@ Return findings in this exact structure for every role received.
   - **Likely KPIs:** <one comma-list line; target-model set for a transition>
 - **CV Type:** <Detailed | Brief — one-line rationale> — **only when `CV_TYPE_MODE == "Variant"`; omit entirely otherwise.** Its own property (2026-07-23): intake writes it to the user's per-role `CV Type` select, write-only-to-empty — never a line inside `Role emphasis`.
 - **JD proof:** "<verbatim quote>"
-- **Keywords:** Critical: <terms> | Important: <terms> | Nice-to-have: <terms>
+- **Keywords:** Critical: <terms> | Important: <terms> | Nice-to-have: <terms> | Unmatched: <only terms with no career-data basis, with the update-or-accept note — omit the segment when all terms matched (2026-07-28)>
 - **Strategy:** `IC` | `Strategic` | `Hybrid`
 - **Company Stage:** <stage> [HIGH/LOW]
 - **Role Type:** <types>
