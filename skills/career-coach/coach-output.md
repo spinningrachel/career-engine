@@ -56,7 +56,7 @@ Return findings in this exact structure for every role received.
 - **Company Stage:** <stage> [HIGH/LOW]
 - **Role Type:** <types>
 - **Relationship type:** <type>
-- **Gap handling:** <[Gap]: [handling] — one line per gap, or N/A>
+- **Gap handling:** <[Gap]: [handling] — one line per gap, or N/A; omitted when gap handling is disabled> <PLUS, in BOTH modes (2026-07-28): `Keyword gap: [term] — no career-data basis; update career-data and re-run intake, or expect this at screen.` — one line per Unmatched keyword, omitted when all keywords matched>
 - **Location:** <verbatim from posting, e.g. "Tel Aviv, Israel / Hybrid" | Remote | Unknown> — the role's stated location. `Unknown` is permitted only after the dimension-9 operating-footprint fallback ran; when `Unknown`, `Landscape` must carry a `## Location Hypotheses` section (see below).
 - **Date first advertised:** <date | estimated range | Unknown> [HIGH/LOW]
 - **Remote compatibility:** <value>

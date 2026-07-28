@@ -429,6 +429,11 @@ expect_ge "21v" "skills/career-engine-orchestrator/orchestrator-queue.md" "Cowor
 expect_ge "21v" "skills/career-coach/coach-analysis.md" "Career-data match check" 1
 expect_ge "21v" "skills/gatekeeper-checks/cv-gates.md" "Unmatched:\` keywords are OUT OF SCOPE" 1
 expect_ge "21v" "skills/gatekeeper-checks/coach-gates.md" "Unmatched:" 1
+# 2026-07-28 (second pass): Keyword gap line in Gap handling, both modes, per the user
+expect_ge "21v" "skills/career-coach/coach-analysis.md" "Keyword gap:" 1
+expect_ge "21v" "skills/career-coach/coach-output.md" "Keyword gap:" 1
+expect_ge "21v" "skills/gatekeeper-checks/coach-gates.md" "Keyword gap:" 1
+expect_ge "21v" "skills/career-engine-intake/SKILL.md" "Keyword gap:" 1
 expect_ge "21v" "skills/career-engine-edit/SKILL.md" "PIPE_FILESYSTEM_AVAILABLE" 1
 expect_ge "21v" "skills/career-engine-new-application/SKILL.md" "PIPE-CANARY" 1
 expect_ge "21v" "skills/career-engine-orchestrator/orchestrator-queue.md" "Manual-relay rule" 1
@@ -542,7 +547,8 @@ expect_ge "35b" "CLAUDE.md" "Prioritization" 1
 # ================================================================
 expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "Rule: always overwrite" 1
 expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "Exceptions — these three remain write-only-to-empty" 1
-expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "Gap handling\` — \*\*write-only-to-empty exception\*\*" 1
+# 2026-07-28: bullet reworded — write-only-to-empty now scoped to gap-handling content (Keyword gap line is replace-own-line)
+expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "Gap handling\` — \*\*write-only-to-empty exception for gap-handling content\*\*" 1
 expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "so \"is it empty?\" is the wrong test" 1
 expect_eq0 "55-writeback" "skills/career-coach/coach-output.md" "do not overwrite\. The user decides"
 expect_ge "55-writeback" "skills/career-coach/coach-output.md" "always overwrite; call out big swings" 1
