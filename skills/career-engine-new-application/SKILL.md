@@ -186,7 +186,7 @@ Read the following from Notion for this role:
 Read `${CAREER_DATA}/references/voice-calibration-coverletters.md` directly — no agent spawn.
 
 - **If it exists:** copy its content to `$PIPE/voice-calibration.md`. Proceed to Step 5.
-- **If it does not exist** (new user, or the user has not yet applied the update-prompt that delivers it): this is not an error — do not hard-stop. Proceed to Step 5 without creating `$PIPE/voice-calibration.md`. The letter-writer and humanizer both fall back to their standalone Voice Gate / calibration protocol (read the delivered-letters archive directly, or `03-framework.md` §Voice and tone if the archive is also empty).
+- **If it does not exist** (new user, or the user has not yet applied the update-prompt that delivers it): this is not an error — do not hard-stop. Proceed to Step 5 without creating `$PIPE/voice-calibration.md`. The letter-writer falls back to its standalone Voice Gate (read the delivered-letters archive directly, or `03-framework.md` §Voice and tone if the archive is also empty; the humanizer was retired 2026-07-26).
 
 **Either way, the letter-writer ALSO reads real letters from the delivered-letters archive at its Voice Gate (restored 2026-07-16, per the user's direct instruction; the humanizer was retired 2026-07-26).** The calibration file is a supplement to the archive, never a substitute — do not describe it to any spawned agent as making the archive read unnecessary.
 
@@ -268,7 +268,7 @@ Spawn `gatekeeper` with `option=cover-letter`, passing `CAREER_DATA=${CAREER_DAT
 
 The per-role coach review that ran here was removed per the user's instruction ("the coach doesn't need to be in the application pipelines anymore at all"). Strategic conformance is enforced by the gatekeeper's Cover Letter Check, which Step 5.2 already ran on this letter: the opener source check verifies the opener's derivation matches the plan's `Opener:` variant (or logs a substitution reason; the opener-anchor conformance check was retired with the anchor, 2026-07-24), and Gate 9 verifies the letter follows the plan's outline — the plan being user-approved at intake is a stronger authority than a mid-pipeline coach opinion was. **Spawn nothing here.**
 
-Entry condition unchanged: this point is reached only after Step 5.2's genuine PASS. Step 5.2's cap-exhaustion path still skips the humanizer and routes directly to Step 6 export, delivered flagged per the Absolute Constraints' flag-and-deliver policy.
+Entry condition unchanged: this point is reached only after Step 5.2's genuine PASS. Step 5.2's cap-exhaustion path routes directly to Step 6 (the humanizer is retired) export, delivered flagged per the Absolute Constraints' flag-and-deliver policy.
 
 After this step, copy `$PIPE/letter-draft.md` to `$PIPE/letter-final.md`, `/tmp/<cl_filename>.md`, and the output backup path:
 

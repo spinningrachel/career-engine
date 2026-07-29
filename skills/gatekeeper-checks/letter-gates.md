@@ -196,7 +196,7 @@ The letter must SHOW with specifics, not TELL with confident-sounding sentences 
 
 A short letter with no padding is not a violation of anything in this gate — there is no floor on any of these.
 
-**Optional: real computed ceilings instead of the template's generic defaults.** `skills/humanizer/scripts/corpus-stats.py` (a generic, standard-library-only script — see `skills/humanizer/SKILL.md`) can compute the user's own sentence-length, contraction-rate, and numeral-density figures from her `${CAREER_DATA}/references/delivered-letters/` archive when one exists. When available, compare the draft against those real, per-user figures instead of the template's generic dial-sheet defaults — the template's defaults remain the fallback when no archive exists.
+**Optional: real computed ceilings instead of the template's generic defaults.** `skills/humanizer/scripts/corpus-stats.py` (a generic stats script — it lives under the retired humanizer skill's directory but is itself active and sanctioned) (a generic, standard-library-only script — see `skills/humanizer/SKILL.md`) can compute the user's own sentence-length, contraction-rate, and numeral-density figures from her `${CAREER_DATA}/references/delivered-letters/` archive when one exists. When available, compare the draft against those real, per-user figures instead of the template's generic dial-sheet defaults — the template's defaults remain the fallback when no archive exists.
 
 ---
 

@@ -253,7 +253,7 @@ Spawn `gatekeeper` with `option=cv`, passing `CAREER_DATA=${CAREER_DATA}`, `gap_
 Read `${CAREER_DATA}/references/voice-calibration-coverletters.md` directly — no agent spawn.
 
 - **If it exists:** copy its content to `$PIPE/voice-calibration.md`. Proceed to Step E7.
-- **If it does not exist** (new user, or the user has not yet applied the update-prompt that delivers it): this is not an error — do not hard-stop. Proceed to Step E7 without creating `$PIPE/voice-calibration.md`. The letter-writer and humanizer both fall back to their standalone Voice Gate / calibration protocol (read the delivered-letters archive directly, or `03-framework.md` §Voice and tone if the archive is also empty).
+- **If it does not exist** (new user, or the user has not yet applied the update-prompt that delivers it): this is not an error — do not hard-stop. Proceed to Step E7 without creating `$PIPE/voice-calibration.md`. The letter-writer falls back to its standalone Voice Gate (read the delivered-letters archive directly, or `03-framework.md` §Voice and tone if the archive is also empty; the humanizer was retired 2026-07-26).
 
 **Either way, the letter-writer ALSO reads real letters from the delivered-letters archive at its Voice Gate (restored 2026-07-16, per the user's direct instruction).** The calibration file is a supplement to the archive, never a substitute — do not describe it to any spawned agent as making the archive read unnecessary.
 
