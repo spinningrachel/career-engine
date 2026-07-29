@@ -215,7 +215,7 @@ Before reading anything, ask:
 
 **If at least 3 letters were stored,** ask the user directly — wait for their reply before proceeding:
 
-> "Want me to generate your voice calibration file now? It's a one-time analysis of your delivered letters that the letter-writer and humanizer read at pipeline run time instead of re-reading the archive from scratch each run — saves every future run that step. Optional: the pipeline works fine without it (both agents fall back to reading the archive directly). Say yes and I'll run the methodology in `references/voice-calibration-method.md` and write the result to `references/voice-calibration-coverletters.md`."
+> "Want me to generate your voice calibration file now? It's a one-time analysis of your delivered letters that the letter-writer reads at pipeline run time instead of re-reading the archive from scratch each run — saves every future run that step. Optional: the pipeline works fine without it (both agents fall back to reading the archive directly). Say yes and I'll run the methodology in `references/voice-calibration-method.md` and write the result to `references/voice-calibration-coverletters.md`."
 
 If yes: run the methodology now and write the file. If no, or fewer than 3 letters were stored: skip this — the user (or a future session) can generate it later using the same methodology reference.
 
@@ -906,7 +906,7 @@ The main pipeline. Picks up all roles in your tracking database with Status = `I
 4. Recruiter review — evaluates the CV
 5. Cover letter writer — writes the letter (if Why I Want This Role is filled in)
 6. Cover letter gatekeeper + recruiter review
-7. Humanizer — removes AI writing patterns from the letter
+7. (Retired 2026-07-26) Humanizer — its quantitative checks now run inside the gatekeeper (Gate 10)
 8. Export — produces DOCX files
 
 **Edit pipeline** (`/career-engine --edit`)

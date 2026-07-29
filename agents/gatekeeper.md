@@ -92,14 +92,14 @@ Tier 2 ([n]% — not scored, Tier 1 failed first):
 ```
 Reply: `FAIL: <n> violations → <OUTPUT_PATH>`
 
-**If Tier 1 is clean and Tier 2 ≥70%:** reply `PASS — cover letter [Tier 2: <n>%]` (short enough to carry in the reply itself — no violations to write to a file, though any failing Tier 2 check types below 100% should still be logged if the pipeline is on round 2+ and deferring them to the humanizer — see below).
+**If Tier 1 is clean and Tier 2 ≥70%:** reply `PASS — cover letter [Tier 2: <n>%]` (short enough to carry in the reply itself — no violations to write to a file, though any failing Tier 2 check types below 100% should still be logged if the pipeline is on round 2+ and logging them for the user's feedback file (humanizer retired 2026-07-26) — see below).
 
 **If Tier 1 is clean and Tier 2 <70%:** write to `OUTPUT_PATH`:
 ```
 FAIL — cover letter [Tier 2: <n>%]
 Return to: letter-writer (option=revision)
 
-Tier 2 failing check types ([n] of 34, <n>%):
+Tier 2 failing check types ([n] of 35, <n>%):
 - [check type name] "[offending text]" → [resolution]
 ```
 Reply: `FAIL: <n> violations → <OUTPUT_PATH>`
