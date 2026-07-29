@@ -85,6 +85,16 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-07-29 — Career-shift scoring, prioritizer fetch discipline, First Advertised reliability
+
+**New features**
+- **Requirements-coverage Priority scoring (intake-only, per the user)** — a role deliberately added outside the user's usual function (a career-shift option) is scored on how much of the JD's requirements her documented background credibly covers: hard MUSTs weighed separately (a genuinely-missing MUST caps the tier and is named in `Priority Reason`), remaining coverage maps to tiers, domain/geography adjust ±1 tier, and the title itself never scores. The user-specific calibration ships to career-data `01-writing-rules.md` §1 via update-prompt; the generic principle lives in `coach-analysis.md` Part 0 and the coach's triage step. Prioritization applies the base framework without it.
+
+**Bug fixes**
+- **Prioritizer no-JD gate keyed to "usable JD text in hand," never a status label** — a live run marked a role `LinkedIn-blocked` without exhausting the universal fallback ladder, then scored Priority, composed a Role Summary from the job title alone, and promoted it to `Needs Research`. `LinkedIn-blocked` is now writable only after the full ladder failed on a LinkedIn URL, and behaves exactly like `Unfetchable`: no score, no summary, no promotion.
+- **Prioritizer Role Summary content self-check** — the same run's summary carried a candidate reference, location info, and a fit verdict, all banned by the summary content rule; a 3-item self-check now runs before every write alongside the mechanical char count.
+- **`First Advertised` is an earliest-wins merge and never ends empty (per the user)** — the old always-overwrite + clear-to-empty semantics left ~40% of researched roles blank and wrote impossible dates (roles "first advertised" after their own creation, i.e. re-post artifacts). Now: candidates later than `Entry Created On` are discarded, the write is the earliest of existing value and candidate, a populated date is never cleared or moved later, an empty field falls back to the row's creation date as a `[LOW]` upper bound, and the coach may not return `Unknown` when any source showed a posting age.
+
 ### 2026-07-28 — Keyword-gap warnings and runtime discipline
 
 **Improvements**
