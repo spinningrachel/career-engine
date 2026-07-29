@@ -159,6 +159,26 @@
       ]
     },
     {
+      "id": "term-requirements-coverage",
+      "_comment": "2026-07-29: intake-only requirements-coverage Priority scoring per the user's direct instruction — title/function mismatch never floors a score; hard MUSTs cap the tier; coverage of remaining requirements maps to tiers. User calibration lives in career-data 01-writing-rules.md §1 (outside the repo); the plugin-side generic principle is coach-analysis.md Part 0. Prioritization explicitly applies the base framework WITHOUT it.",
+      "term": "requirements-coverage subsection",
+      "files": [
+        "skills/career-coach/coach-analysis.md",
+        "agents/career-coach.md",
+        "agents/role-prioritizer.md",
+        "skills/role-prioritizer/SKILL.md"
+      ]
+    },
+    {
+      "id": "term-earliest-wins",
+      "_comment": "2026-07-29: First Advertised write semantics — earliest-wins merge with creation-date fallback, per the user, replacing always-overwrite + clear-to-empty. Procedure lives in intake Step 0.9a; the coach's date procedure references the merge.",
+      "term": "earliest-wins",
+      "files": [
+        "skills/career-engine-intake/SKILL.md",
+        "skills/career-coach/coach-analysis.md"
+      ]
+    },
+    {
       "id": "term-letter-writer-input-contract",
       "_comment": "2026-07-14: the letter-writer receives exactly three content inputs (final CV, Role emphasis, WIWTR) plus identity and routing tokens. Cited across both pipelines, writer-craft, gatekeeper-checks, recruiter-reviewer, career-coach, qa-plugin. Canonical statement lives in new-application Step 5 and the agent file.",
       "term": "letter-writer input contract",

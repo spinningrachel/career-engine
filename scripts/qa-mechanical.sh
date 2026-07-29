@@ -536,7 +536,9 @@ expect_ge "35" "skills/database/SKILL.md" "| \`Needs Research\` |" 1
 # ================================================================
 c35b=$(grep -ci "\*\*always overwrite" "$TARGET/skills/career-engine-intake/SKILL.md" 2>/dev/null || true); c35b=${c35b:-0}
 # 2026-07-23: threshold 14->13 — the location-compatibility always-overwrite bullet was retired with the property
-if [ "$c35b" -ge 13 ]; then report "35b" 1 ""; else report "35b" 0 "'**always overwrite' (case-insensitive) count is $c35b, need >= 13"; fi
+# 2026-07-29: threshold 13->12 — First Advertised moved from always-overwrite to the earliest-wins merge, per the user
+if [ "$c35b" -ge 12 ]; then report "35b" 1 ""; else report "35b" 0 "'**always overwrite' (case-insensitive) count is $c35b, need >= 12"; fi
+expect_ge "35b" "skills/career-engine-intake/SKILL.md" "earliest-wins" 2
 expect_ge "35b" "CLAUDE.md" "Prioritization" 1
 
 # ================================================================

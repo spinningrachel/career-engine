@@ -42,6 +42,14 @@ Is this role an open application, unsolicited application, or speculative applic
 
 **Step 2 — Standard scoring (only if Step 1 did not apply):**
 1. Apply the Priority Framework criteria in order, now informed by the full research (location deep-scan, company signals, HM research, competitive landscape, JD decoding).
+
+   **Requirements-coverage scoring — title/function mismatch never floors a score (intake-only, 2026-07-29, per the user's direct instruction).** The user's `01-writing-rules.md` §1 carries a requirements-coverage subsection; apply it whenever a role's function or title sits outside the user's usual target scope. The generic principle, for any user of this plugin:
+   - **The role being in the tracker is the intent signal.** A user deliberately adds roles outside her usual function because a career shift is an option. The framework's job is fit *measurement*, never scope *policing* — "this isn't a [target-function] role" is not, by itself, a demotion.
+   - **Split the JD's requirements into hard MUSTs vs. everything else.** Hard MUSTs are explicit: "must have," mandatory years-in-X, named certifications, languages, clearance, work authorization.
+   - **A hard MUST genuinely absent from the user's documented background caps the tier:** one missing peripheral MUST → cap at Fourth; a missing MUST central to the role, or multiple missing → Fifth. `Priority Reason` names the missing MUST explicitly. Missing MUSTs are never silently averaged into the coverage percentage.
+   - **Score the remaining requirements as coverage** of the user's documented background (`02` and its background files — documented evidence only, the fabrication rules apply to scoring as much as to writing): roughly ≥80% covered → Second or better, 60–79% → Third, 40–59% → Fourth, <40% → Fifth.
+   - **Domain fit and geography adjust the coverage tier by at most one tier in either direction.** The framework's hard floors (open application, crypto, structural geography) are unchanged and still absolute.
+   - This methodology is **intake-only**: the Prioritization pipeline applies the base framework without it (no background read there) and its provisional score is always overwritten here.
 2. **Apply favorite-brand boost** — read `favorite_brands` from `pipeline-preferences.json`. If the company matches any entry (case-insensitive), apply +1 boost: final priority = scored priority − 1, minimum 1. Append "(+1 favorite brand)" to `Priority Reason`. Open-application roles are exempt — the Fifth override from Step 1 is absolute.
 3. Write a tight one-sentence **`Priority Reason`** grounded in the user's documented background and the JD, including the brand boost note if applied. This is the final `Priority Reason` for Notion.
 4. Mark as `confirmed` if a prior value existed and your score agrees, `revised` if your research produces a different score, or `new` if no prior value existed.
@@ -330,6 +338,8 @@ If the specific AI category (e.g., conversational AI, NLP, voice agents) is not 
 2. **Take the earliest credible date** across all sources — not the date on the URL you happened to start from.
 3. Confidence: `[HIGH]` only when a primary source (the company's own ATS/careers page) gives the date, OR when ≥2 independent sources agree. `[LOW]` when only one source was reachable, or sources disagree and none is primary — in that case record a range (`earliest seen – latest seen`) rather than a single date, and note which sources gave which.
 4. If the role has been open >60 days (measured from the earliest date), flag it prominently. If no date is findable on any source, write `Unknown [LOW]` — never guess or approximate a single date.
+5. **Mechanical effort floor (2026-07-29 — a real audit found ~40% of researched roles blank, alongside the confirmed lazy-negative pattern):** if ANY source seen this run displayed a posting age of any kind — LinkedIn "posted X days/weeks ago", a board timestamp, a URL date parameter — `Unknown` is prohibited: compute the calendar date and return it `[LOW]`. `Unknown` is only permitted when every source consulted showed no date signal at all, and the Research confidence check block names those sources.
+6. Intake merges your value **earliest-wins** against the existing property (`career-engine-intake/SKILL.md` Step 0.9a): a populated date is never cleared and never moved later, and an empty field falls back to the row's creation date. Your job is only this run's earliest credible candidate — never return a value shaped to "correct" a prior date to something later.
 
 **`Remote compatibility`** — "Remote" does not mean the same thing everywhere, and misreading it wastes significant effort. Classify against `USER_LOCATION_COUNTRY` (`01-writing-rules.md` §8):
 
