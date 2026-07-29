@@ -8,7 +8,16 @@ set -uo pipefail
 TARGET="${1:?usage: qa-mechanical.sh <target-dir>}"
 PASS=0; FAIL=0
 
-cnt()  { grep -c "$1" "$TARGET/$2" 2>/dev/null || true; }   # count in one file (prints 0 on no match/missing file)
+cnt()  { # count in one file (prints 0 on no match/missing file).
+  # Context-diet split (2026-07-22): the two doctrine monoliths became routing files with
+  # verbatim sub-files. A check targeting either SKILL.md means "the skill's doctrine",
+  # so count across the whole skill directory (SKILL.md + sub-files).
+  case "$2" in
+    skills/writer-craft/SKILL.md|skills/gatekeeper-checks/SKILL.md)
+      grep -h -c "$1" "$TARGET/$(dirname "$2")"/*.md 2>/dev/null | awk '{s+=$1} END {print s+0}';;
+    *) grep -c "$1" "$TARGET/$2" 2>/dev/null || true;;
+  esac
+}
 rcnt() { grep -rc "$1" "$TARGET/$2" 2>/dev/null | awk -F: '{s+=$2} END {print s+0}'; }  # recursive total
 
 report() { # id, ok(0/1), detail
@@ -105,11 +114,12 @@ expect_ge "19b" "skills/career-engine-intake/SKILL.md" "url-fetched-via-search" 
 # ================================================================
 c19c_1=$(cnt "Rendering-capable extraction" "skills/career-engine-intake/SKILL.md"); c19c_1=${c19c_1:-0}
 c19c_2=$(cnt "Rendering-capable extraction" "agents/career-coach.md"); c19c_2=${c19c_2:-0}
-c19c_3=$(cnt "Fetched-alternative" "agents/career-coach.md"); c19c_3=${c19c_3:-0}
+# 2026-07-23: the "Fetched-alternative is not a valid option" sentence was replaced by the any-working-URL=Fetched rule
+c19c_3=$(cnt "a JD obtained from ANY working URL is" "agents/career-coach.md"); c19c_3=${c19c_3:-0}
 if [ "$c19c_1" -ge 1 ] && [ "$c19c_2" -ge 1 ] && [ "$c19c_3" -eq 1 ]; then
   report "19c" 1 ""
 else
-  report "19c" 0 "intake=$c19c_1 (need>=1), career-coach=$c19c_2 (need>=1), Fetched-alternative in career-coach=$c19c_3 (need exactly 1)"
+  report "19c" 0 "intake=$c19c_1 (need>=1), career-coach=$c19c_2 (need>=1), any-working-URL-is-Fetched rule in career-coach=$c19c_3 (need exactly 1)"
 fi
 
 # ================================================================
@@ -241,7 +251,7 @@ expect_ge "21i" "skills/gatekeeper-checks/SKILL.md" "repetition check skipped" 1
 expect_ge "21i" "skills/gatekeeper-checks/SKILL.md" "Role named in the first sentence" 1
 expect_ge "21i" "skills/writer-craft/SKILL.md" "Proof-point partitioning" 1
 expect_ge "21i" "skills/writer-craft/SKILL.md" "always surfaced" 1
-c21i_stealth=$(grep -ci "stealth" "$TARGET/skills/gatekeeper-checks/SKILL.md" 2>/dev/null || true); c21i_stealth=${c21i_stealth:-0}
+c21i_stealth=$(grep -hci "stealth" "$TARGET/skills/gatekeeper-checks/"*.md 2>/dev/null | awk '{s+=$1} END {print s+0}'); c21i_stealth=${c21i_stealth:-0}
 if [ "$c21i_stealth" -ge 1 ]; then report "21i" 1 ""; else report "21i" 0 "'stealth' (case-insensitive) not found in gatekeeper-checks/SKILL.md"; fi
 
 # ================================================================
@@ -304,8 +314,57 @@ expect_ge "21r" "skills/career-engine-new-application/SKILL.md" "Draft Directory
 # NOTE: the "hiring-manager-reviewer" grep against <build>/agents (a directory,
 # no -r flag) in the source is buggy/mis-scoped — not migrated, see notes file.
 # ================================================================
-expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "Option 4 — Strategic Letter Review" 1
-expect_ge "21s" "skills/career-engine-edit/SKILL.md" "Option 4 — Strategic Letter Review" 1
+# 2026-07-22: per the user's instruction ("the coach doesn't need to be in the application pipelines anymore at all"),
+# the per-role Option 4 review was replaced by gate conformance; assert the replacement is wired in BOTH pipelines
+# and Option 4a remains as the legacy-WIWTR fallback.
+expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "Strategic conformance (coach review removed 2026-07-22)" 1
+expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "Option 4a — Pre-Draft Outline" 1
+expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "COACH LETTER PLAN" 1
+expect_ge "21s" "skills/career-engine-edit/SKILL.md" "Strategic conformance (coach review removed 2026-07-22)" 1
+expect_ge "21s" "skills/career-engine-edit/SKILL.md" "Option 4a — Pre-Draft Outline" 1
+expect_ge "21s" "skills/career-engine-edit/SKILL.md" "COACH LETTER PLAN" 1
+# 2026-07-23: markers renamed to LETTER OUTLINE (legacy COACH LETTER PLAN still recognized on old rows)
+expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "LETTER OUTLINE" 1
+expect_ge "21s" "skills/career-engine-edit/SKILL.md" "LETTER OUTLINE" 1
+expect_ge "21s" "agents/career-coach.md" "\[LETTER OUTLINE" 1
+# 2026-07-24: the Opener anchor is RETIRED entirely (per the user: "Get rid of the hook. the opener anchor.
+# that's what's causing this mess.") — assert the retirement landed and no live anchor slot survives.
+expect_ge "21s" "agents/career-coach.md" "There is NO \`Opener anchor:\` line" 1
+expect_eq0 "21s" "agents/career-coach.md" "^Opener anchor: <"
+expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "FAIL if the block contains an \`Opener anchor:\` line" 1
+expect_ge "21s" "skills/gatekeeper-checks/letter-gates.md" "Opener-anchor conformance — RETIRED" 1
+expect_ge "21s" "agents/letter-writer.md" "IGNORED entirely" 1
+expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "line .*is DROPPED\|is DROPPED" 1
+expect_ge "21s" "skills/career-engine-edit/SKILL.md" "is DROPPED" 1
+expect_ge "21s" "agents/career-coach.md" "bare token only" 1
+# 2026-07-24 (second pass): the user's plain-language letter rule is codified verbatim in letter-core §1
+expect_ge "21s" "skills/letter-core/SKILL.md" "exhaustive search of all available insights" 1
+expect_ge "21s" "skills/gatekeeper-checks/letter-gates.md" "Opener source check" 1
+# 2026-07-24 (third pass): Role emphasis reduced to two lines (Emphasis + Likely KPIs), <=100 words, per the user;
+# capability-mapping and de-emphasis retired; hyper-focus standing rule added.
+expect_ge "21s" "skills/career-coach/coach-analysis.md" "exactly these TWO labeled lines" 1
+expect_ge "21s" "skills/career-coach/coach-analysis.md" "max 100 words\|≤100 words" 1
+expect_eq0 "21s" "skills/career-coach/coach-analysis.md" "^\*\*Capability match:\*\*\|^\*\*De-emphasized:\*\*"
+expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "fixed two-line structure" 1
+expect_ge "21s" "skills/career-coach/SKILL.md" "Hyper Focus — Governs Every Output" 1
+expect_ge "21s" "agents/career-coach.md" "Hyper focus" 1
+# 2026-07-24 (fourth pass): no Para 1 line in the Letter Outline — the Opener line IS paragraph 1's spec
+expect_ge "21s" "agents/career-coach.md" "There is NO \`Para 1:\` line" 1
+expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "FAIL if the block contains a \`Para 1:\` line" 1
+expect_ge "21s" "skills/letter-core/SKILL.md" "bounded by the template's own Block 1" 1
+# 2026-07-24 (fifth pass): Opener verbatim hard gate — letter text diffed against the outline's Opener line
+expect_ge "21s" "skills/gatekeeper-checks/letter-gates.md" "checks the LETTER TEXT, not just the log" 1
+expect_ge "21s" "agents/letter-writer.md" "Paste it as your opening VERBATIM" 1
+expect_ge "21s" "skills/letter-core/SKILL.md" "paste it verbatim as the opening" 1
+expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "Opener verbatim check" 1
+expect_ge "21s" "skills/career-engine-edit/SKILL.md" "Opener verbatim check" 1
+# 2026-07-24: the coach's Opener line is a verbatim bank-variant copy/paste (per the user's direct instruction)
+expect_ge "21s" "agents/career-coach.md" "COPY/PASTE selection, never composition" 1
+expect_ge "21s" "skills/gatekeeper-checks/coach-gates.md" "not a verbatim bank copy" 1
+expect_ge "21s" "agents/letter-writer.md" "that IS your Block 1 variant selection" 1
+expect_ge "21s" "skills/letter-core/SKILL.md" "the coach picked it, the user reviewed it in Notion\|picked by the coach and user-reviewed in Notion" 1
+expect_ge "21s" "skills/career-engine-new-application/SKILL.md" "\`Opener:\` line when present" 1
+expect_ge "21s" "skills/career-engine-edit/SKILL.md" "\`Opener:\` line when present" 1
 expect_eq0 "21s" "skills/career-engine-new-application/SKILL.md" "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter"
 expect_eq0 "21s" "skills/career-engine-edit/SKILL.md" "recruiter-reviewer.*cover-letter\|option=cover-letter.*recruiter"
 expect_ge "21s" "agents/career-coach.md" "Option 4" 1
@@ -359,9 +418,22 @@ expect_ge "21v" "skills/career-engine-orchestrator/orchestrator-queue.md" "This 
 expect_ge "21v" "skills/career-engine-new-application/SKILL.md" "custom-style-wrapped text is never eligible" 1
 expect_eq0 "21v" "skills/career-engine-edit/SKILL.md" "mechanical and unambiguous"
 expect_ge "21v" "skills/career-engine-orchestrator/orchestrator-queue.md" "non-skippable-humanizer rule" 1
-expect_ge "21v" "skills/career-engine-new-application/SKILL.md" "non-skippable-humanizer rule" 1
-expect_ge "21v" "skills/career-engine-edit/SKILL.md" "non-skippable-humanizer rule" 1
+# 2026-07-26: humanizer RETIRED from both pipelines per the user; the non-skippable rule survives only as history in orchestrator-queue
+expect_ge "21v" "skills/career-engine-new-application/SKILL.md" "Humanizer — RETIRED" 1
+expect_ge "21v" "skills/career-engine-edit/SKILL.md" "Humanizer — RETIRED" 1
 expect_ge "21v" "skills/career-engine-new-application/SKILL.md" "PIPE_FILESYSTEM_AVAILABLE" 1
+# 2026-07-27: capability-claim refusal anti-pattern (the "built for Claude Code" Cowork refusal)
+expect_ge "21v" "skills/career-engine-orchestrator/orchestrator-queue.md" "refusing to run on an unverified capability claim" 1
+expect_ge "21v" "skills/career-engine-orchestrator/orchestrator-queue.md" "Cowork is a first-class runtime" 1
+# 2026-07-28: Unmatched-keyword segment (the Jazz DLP thrash fix)
+expect_ge "21v" "skills/career-coach/coach-analysis.md" "Career-data match check" 1
+expect_ge "21v" "skills/gatekeeper-checks/cv-gates.md" "Unmatched:\` keywords are OUT OF SCOPE" 1
+expect_ge "21v" "skills/gatekeeper-checks/coach-gates.md" "Unmatched:" 1
+# 2026-07-28 (second pass): Keyword gap line in Gap handling, both modes, per the user
+expect_ge "21v" "skills/career-coach/coach-analysis.md" "Keyword gap:" 1
+expect_ge "21v" "skills/career-coach/coach-output.md" "Keyword gap:" 1
+expect_ge "21v" "skills/gatekeeper-checks/coach-gates.md" "Keyword gap:" 1
+expect_ge "21v" "skills/career-engine-intake/SKILL.md" "Keyword gap:" 1
 expect_ge "21v" "skills/career-engine-edit/SKILL.md" "PIPE_FILESYSTEM_AVAILABLE" 1
 expect_ge "21v" "skills/career-engine-new-application/SKILL.md" "PIPE-CANARY" 1
 expect_ge "21v" "skills/career-engine-orchestrator/orchestrator-queue.md" "Manual-relay rule" 1
@@ -384,12 +456,12 @@ c22c_sb1=$(cnt "strategic builder" "skills/gatekeeper-checks/SKILL.md"); c22c_sb
 c22c_sb2=$(cnt "strategic builder" "skills/writer-craft/SKILL.md"); c22c_sb2=${c22c_sb2:-0}
 if [ "$c22c_sb1" -ge 1 ] || [ "$c22c_sb2" -ge 1 ]; then report "22c-strategic-builder" 1 ""; else report "22c-strategic-builder" 0 "'strategic builder' absent from both gatekeeper-checks/SKILL.md and writer-craft/SKILL.md"; fi
 
-c22c_ed_wc=$(grep -ci "em dash" "$TARGET/skills/writer-craft/SKILL.md" 2>/dev/null || true); c22c_ed_wc=${c22c_ed_wc:-0}
+c22c_ed_wc=$(grep -hci "em dash" "$TARGET/skills/writer-craft/"*.md 2>/dev/null | awk '{s+=$1} END {print s+0}'); c22c_ed_wc=${c22c_ed_wc:-0}
 if [ "$c22c_ed_wc" -ge 1 ]; then report "22c-em-dash" 1 ""; else report "22c-em-dash" 0 "'em dash'/'em dashes' (case-insensitive) absent from writer-craft/SKILL.md"; fi
 # agents/letter-writer.md count is advisory only per the source check — not asserted here.
 
 c22c_colon_lw=$(grep -ci "colon" "$TARGET/agents/letter-writer.md" 2>/dev/null || true); c22c_colon_lw=${c22c_colon_lw:-0}
-c22c_colon_wc=$(grep -ci "colon" "$TARGET/skills/writer-craft/SKILL.md" 2>/dev/null || true); c22c_colon_wc=${c22c_colon_wc:-0}
+c22c_colon_wc=$(grep -hci "colon" "$TARGET/skills/writer-craft/"*.md 2>/dev/null | awk '{s+=$1} END {print s+0}'); c22c_colon_wc=${c22c_colon_wc:-0}
 if [ "$c22c_colon_lw" -ge 1 ] || [ "$c22c_colon_wc" -ge 1 ]; then report "22c-colon-ban" 1 ""; else report "22c-colon-ban" 0 "'colon' (case-insensitive) absent from both letter-writer.md and writer-craft/SKILL.md"; fi
 
 # ================================================================
@@ -463,7 +535,8 @@ expect_ge "35" "skills/database/SKILL.md" "| \`Needs Research\` |" 1
 # Check 35b — Prioritization → intake always-overwrite fix present
 # ================================================================
 c35b=$(grep -ci "\*\*always overwrite" "$TARGET/skills/career-engine-intake/SKILL.md" 2>/dev/null || true); c35b=${c35b:-0}
-if [ "$c35b" -ge 14 ]; then report "35b" 1 ""; else report "35b" 0 "'**always overwrite' (case-insensitive) count is $c35b, need >= 14"; fi
+# 2026-07-23: threshold 14->13 — the location-compatibility always-overwrite bullet was retired with the property
+if [ "$c35b" -ge 13 ]; then report "35b" 1 ""; else report "35b" 0 "'**always overwrite' (case-insensitive) count is $c35b, need >= 13"; fi
 expect_ge "35b" "CLAUDE.md" "Prioritization" 1
 
 # ================================================================
@@ -474,7 +547,8 @@ expect_ge "35b" "CLAUDE.md" "Prioritization" 1
 # ================================================================
 expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "Rule: always overwrite" 1
 expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "Exceptions — these three remain write-only-to-empty" 1
-expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "Gap handling\` — \*\*write-only-to-empty exception\*\*" 1
+# 2026-07-28: bullet reworded — write-only-to-empty now scoped to gap-handling content (Keyword gap line is replace-own-line)
+expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "Gap handling\` — \*\*write-only-to-empty exception for gap-handling content\*\*" 1
 expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "so \"is it empty?\" is the wrong test" 1
 expect_eq0 "55-writeback" "skills/career-coach/coach-output.md" "do not overwrite\. The user decides"
 expect_ge "55-writeback" "skills/career-coach/coach-output.md" "always overwrite; call out big swings" 1
@@ -482,12 +556,14 @@ expect_ge "55-writeback" "skills/career-coach/coach-output.md" "always overwrite
 # ================================================================
 # Check 56 — Coach context block terseness
 # ================================================================
-expect_ge "56" "skills/career-coach/coach-output.md" "Hard cap: 8 words per point" 1
-expect_ge "56" "skills/career-coach/coach-output.md" "Culture as a screen point" 1
-expect_ge "56" "skills/career-coach/coach-output.md" "Closing angle:" 1
-expect_eq0 "56" "skills/career-coach/coach-output.md" "20 words max\|Hard cap: 20 words"
-expect_ge "56" "skills/gatekeeper-checks/SKILL.md" "Coach context block over-written" 1
-expect_ge "56" "agents/gatekeeper.md" "coach context block over-written check.*item 9\|item 9.*coach context" 1
+# 2026-07-23: the coach context block was RETIRED per the user's direct instruction; Check 56 now
+# asserts the retirement landed everywhere the feature used to live, replacing the old terseness greps.
+expect_ge "56" "skills/career-coach/coach-output.md" "RETIRED as a coach-context surface" 1
+expect_eq0 "56" "skills/career-coach/coach-output.md" "Hard cap: 8 words per point\|Culture as a screen point\|Screen 2:"
+expect_ge "56" "skills/gatekeeper-checks/coach-gates.md" "Search-narrative leakage" 1
+expect_ge "56" "agents/gatekeeper.md" "search-narrative leakage check" 1
+expect_eq0 "56" "skills/career-engine-intake/SKILL.md" "Write A — coach context block\|Write B — coaching prompts"
+expect_ge "56" "skills/career-coach/coach-output.md" "wiwtr_questions\` — RETIRED" 1
 
 # ================================================================
 # Check 57 — Strategy=Strategic 250-word cover-letter cap wired everywhere
@@ -496,13 +572,14 @@ expect_ge "57" "skills/writer-craft/SKILL.md" "Strategy = Strategic\`, where the
 expect_ge "57" "agents/letter-writer.md" "≤250 when \`Strategy = Strategic\`\|250 when \`Strategy = Strategic\`" 1
 expect_ge "57" "skills/gatekeeper-checks/SKILL.md" "Strategy = Strategic" 3
 c57_multi1=$(grep -c "Strategy\` (the coach's Step 0.8 output\|Strategy\` (from the Step E0 row payload\|Strategy\` (from the coach properties verified in Step E1\|Strategy\` (same as Step" "$TARGET/skills/career-engine-new-application/SKILL.md" "$TARGET/skills/career-engine-edit/SKILL.md" 2>/dev/null | awk -F: '{s+=$2} END{print s+0}')
-if [ "$c57_multi1" -ge 6 ]; then report "57" 1 ""; else report "57" 0 "Strategy-param spawn-site phrasing combined count is $c57_multi1, need >= 6"; fi
+if [ "$c57_multi1" -ge 4 ]; then report "57" 1 ""; else report "57" 0 "Strategy-param spawn-site phrasing combined count is $c57_multi1, need >= 4 (two final-gatekeeper spawns retired with the humanizer, 2026-07-26)"; fi
 expect_ge "57" "skills/career-engine-new-application/SKILL.md" "Strategy = Strategic" 1
 expect_ge "57" "skills/career-engine-edit/SKILL.md" "Strategy = Strategic" 1
 expect_ge "57" "references/cover-letter-templates-default.md" "Strategy = Strategic" 4
 expect_ge "57" "references/cover-letter-templates-default.md" "I wrote the day I saw the" 1
-c57_multi2=$(grep -c "the humanizer's only inputs are the letter, the career-data path, and the voice-calibration file" "$TARGET/skills/career-engine-new-application/SKILL.md" "$TARGET/skills/career-engine-edit/SKILL.md" 2>/dev/null | awk -F: '{s+=$2} END{print s+0}')
-if [ "$c57_multi2" -ge 2 ]; then report "57" 1 ""; else report "57" 0 "humanizer-input-boundary phrasing combined count is $c57_multi2, need >= 2"; fi
+# 2026-07-26: humanizer retired — the input-boundary phrasing left the pipelines with its spawns; assert the retirement instead
+c57_multi2=$(grep -c "Humanizer — RETIRED" "$TARGET/skills/career-engine-new-application/SKILL.md" "$TARGET/skills/career-engine-edit/SKILL.md" 2>/dev/null | awk -F: '{s+=$2} END{print s+0}')
+if [ "$c57_multi2" -ge 2 ]; then report "57" 1 ""; else report "57" 0 "humanizer-retirement marker combined count is $c57_multi2, need >= 2"; fi
 expect_ge "57" "skills/career-engine-new-application/SKILL.md" "same parameters as the Step 5.2 spawn above" 1
 expect_ge "57" "skills/career-engine-edit/SKILL.md" "same parameters as the Step E7.3 spawn above\|same parameters as the Step E7.7 spawn above" 2
 
@@ -550,22 +627,23 @@ expect_ge "62" "agents/cv-writer.md" "PUBLICATIONS\` is optional and rarely used
 expect_ge "62" "agents/cv-writer.md" "PUBLICATIONS\` section:" 1
 
 # ================================================================
+# Check 63 (counts moved 34->35 on 2026-07-28: Gate 10 quantitative voice metrics became Tier 2 item 35)
 # Check 63 — Gate 5 pattern-derivation forcing function, Tier 2, bumps checklist to 33 (34 since 2026-07-16 discourse-flow addition)
 # ================================================================
 expect_ge "63" "skills/writer-craft/SKILL.md" "Pattern-derivation forcing function" 1
 expect_ge "63" "skills/writer-craft/SKILL.md" "would this sentence's structure work as a direct answer to" 1
 expect_ge "63" "skills/gatekeeper-checks/SKILL.md" "Pattern-derivation forcing function — Tier 2, not Tier 1" 1
 expect_ge "63" "skills/gatekeeper-checks/SKILL.md" "33. Novel opener construction passes the direct-answer test" 1
-expect_ge "63" "skills/gatekeeper-checks/SKILL.md" "34 distinct, named check types" 1
+expect_ge "63" "skills/gatekeeper-checks/SKILL.md" "35 distinct, named check types" 1
 expect_eq0 "63" "skills/gatekeeper-checks/SKILL.md" "32 distinct, named check types"
 c63_all32=$(grep -Ec "all 32\b" "$TARGET/skills/gatekeeper-checks/SKILL.md" 2>/dev/null || true); c63_all32=${c63_all32:-0}
 if [ "$c63_all32" -eq 0 ]; then report "63" 1 ""; else report "63" 0 "'all 32' (word boundary) found $c63_all32 time(s) in gatekeeper-checks/SKILL.md, must be 0"; fi
-expect_ge "63" "skills/gatekeeper-checks/SKILL.md" "check types passed ÷ 34" 1
-expect_ge "63" "agents/gatekeeper.md" "\[n\] of 34" 1
+expect_ge "63" "skills/gatekeeper-checks/SKILL.md" "check types passed ÷ 35" 1
+expect_ge "63" "agents/gatekeeper.md" "\[n\] of 35" 1
 expect_eq0 "63" "agents/gatekeeper.md" "\[n\] of 32"
-expect_ge "63" "CLAUDE.md" "34 named, binary check types" 1
+expect_ge "63" "CLAUDE.md" "35 named, binary check types" 1
 expect_eq0 "63" "CLAUDE.md" "32 named, binary check types"
-expect_ge "63" "CLAUDE.md" "34-item checklist" 1
+expect_ge "63" "CLAUDE.md" "35-item checklist" 1
 expect_eq0 "63" "CLAUDE.md" "32-item checklist"
 
 # ================================================================
@@ -664,8 +742,10 @@ expect_ge "43" "skills/career-engine-edit/SKILL.md" "Do not skip this step becau
 # ================================================================
 expect_ge "44" "skills/career-engine-new-application/SKILL.md" "Capture the returned agent ID" 1
 expect_ge "44" "skills/career-engine-edit/SKILL.md" "Capture the returned agent ID" 1
-expect_ge "44" "skills/career-engine-new-application/SKILL.md" "resume the letter-writer instance\|Resume the letter-writer instance" 3
-expect_ge "44" "skills/career-engine-edit/SKILL.md" "resume the letter-writer instance\|Resume the letter-writer instance" 5
+# min 3→2 (2026-07-22): the Step 5.3 coach-review revision path was removed per the user's instruction
+expect_ge "44" "skills/career-engine-new-application/SKILL.md" "resume the letter-writer instance\|Resume the letter-writer instance" 2
+# min 5→4 (2026-07-22): the Step E7.4 coach-review revision path was removed per the user's instruction
+expect_ge "44" "skills/career-engine-edit/SKILL.md" "resume the letter-writer instance\|Resume the letter-writer instance" 4
 expect_ge "44" "skills/career-engine-new-application/SKILL.md" "letter-writer-agent-id.txt" 1
 expect_ge "44" "skills/career-engine-edit/SKILL.md" "letter-writer-agent-id.txt" 1
 
@@ -753,8 +833,10 @@ expect_file "49" "skills/humanizer/scripts/corpus-stats.py"
 c49_imports=$(grep -Ec "^import (docx|requests|numpy|pandas|nltk)" "$TARGET/skills/humanizer/scripts/corpus-stats.py" 2>/dev/null || true); c49_imports=${c49_imports:-0}
 if [ "$c49_imports" -eq 0 ]; then report "49" 1 ""; else report "49" 0 "corpus-stats.py imports a third-party package ($c49_imports match(es))"; fi
 expect_ge "49" "skills/humanizer/SKILL.md" "corpus-stats.py" 1
-expect_ge "49" "skills/career-engine-new-application/SKILL.md" "Coach pre-draft outline" 1
-expect_ge "49" "skills/career-engine-edit/SKILL.md" "Coach pre-draft outline" 1
+# 2026-07-22: step renamed — letter plan comes from intake's Coach Letter Plan; coach spawn is the legacy fallback
+# 2026-07-23: step headings renamed with the Letter Outline marker rename
+expect_ge "49" "skills/career-engine-new-application/SKILL.md" "Letter plan (from intake's Letter Outline" 1
+expect_ge "49" "skills/career-engine-edit/SKILL.md" "Letter plan (from intake's Letter Outline" 1
 expect_ge "49" "skills/career-engine-new-application/SKILL.md" "Template selected=" 2
 expect_ge "49" "skills/career-engine-edit/SKILL.md" "Template selected=" 2
 expect_ge "49" "skills/career-engine-new-application/SKILL.md" "SENDMESSAGE_AVAILABLE" 1
@@ -779,7 +861,8 @@ expect_ge "50" "skills/gatekeeper-checks/SKILL.md" "Hiring manager's role" 1
 expect_ge "50" "skills/career-engine-intake/SKILL.md" "Working URL (if different from Job URL)" 1
 expect_ge "50" "skills/career-coach/coach-research.md" "Job URL verification (backstop only)" 1
 expect_ge "50" "skills/career-coach/coach-output.md" "Corrected Job URL" 2
-expect_ge "50" "skills/career-engine-intake/SKILL.md" "write only when a correction is available" 1
+# 2026-07-23: Job URL correction broadened — anchor updated to the new bullet wording
+expect_ge "50" "skills/career-engine-intake/SKILL.md" "write whenever the JD was actually obtained at a different URL" 1
 expect_ge "50" "CLAUDE.md" "Job URL correction" 1
 
 # ================================================================
@@ -834,9 +917,17 @@ expect_ge "54" "references/cover-letter-templates-default.md" "Information Seque
 # ================================================================
 expect_ge "65" "references/pipeline-preferences.json" '"cv_type"' 1
 expect_ge "65" "skills/database/SKILL.md" "CV Type" 1
-expect_ge "65" "skills/career-coach/coach-analysis.md" "CV Type Recommendation Matrix" 1
-expect_ge "65" "skills/career-coach/coach-analysis.md" "not from originally-sourced research" 1
-expect_ge "65" "skills/career-coach/coach-output.md" "Recommended CV Type" 1
+# 2026-07-23 (second pass): the Recommendation Matrix table was retired per the user ("couldn't possibly be
+# relevant for any user") — replaced by the CV Type judgment principle + cv_type.market_norms config.
+expect_ge "65" "skills/career-coach/coach-analysis.md" "CV Type judgment principle" 1
+expect_ge "65" "skills/career-coach/coach-analysis.md" "market_norms" 1
+expect_eq0 "65" "skills/career-coach/coach-analysis.md" "| Israel | Any |"
+expect_ge "65" "references/pipeline-preferences.json" "market_norms" 1
+# 2026-07-23: CV Type moved out of Role emphasis into its own returned property (write-only-to-empty).
+expect_eq0 "65" "skills/career-coach/coach-output.md" "Recommended CV Type"
+expect_ge "65" "skills/career-coach/coach-output.md" "CV Type:" 1
+expect_ge "65" "skills/career-engine-intake/SKILL.md" "\`CV Type\` — \*\*write-only-to-empty" 1
+expect_ge "65" "skills/gatekeeper-checks/coach-gates.md" "CV Type" 1
 expect_ge "65" "agents/cv-writer.md" "CV Type=Detailed|Brief" 1
 expect_ge "65" "agents/cv-writer.md" "Brief-Specific Rules" 1
 expect_ge "65" "skills/writer-craft/SKILL.md" "§5b" 1
@@ -902,6 +993,18 @@ if [ "$c0C_1" -eq 0 ]; then report "0C" 1 ""; else report "0C" 0 "found $c0C_1 e
 if [ "$c0C_2" -eq 0 ]; then report "0C" 1 ""; else report "0C" 0 "found $c0C_2 generation-1 cv-campaign-* reference(s)"; fi
 if [ "$c0C_3" -eq 0 ]; then report "0C" 1 ""; else report "0C" 0 "found $c0C_3 generation-2 application-* reference(s)"; fi
 if [ "$c0C_4" -eq 0 ]; then report "0C" 1 ""; else report "0C" 0 "found $c0C_4 cover-letter-humanizer/voice-analyst reference(s)"; fi
+
+# ================================================================
+# Check 66 — pregate-lint.py exists, is executable, and its selftest passes
+# ================================================================
+PREGATE_SCRIPT="$TARGET/skills/gatekeeper-checks/scripts/pregate-lint.py"
+if [ -f "$PREGATE_SCRIPT" ]; then report "66" 1 ""; else report "66" 0 "pregate-lint.py missing at skills/gatekeeper-checks/scripts/"; fi
+if [ -x "$PREGATE_SCRIPT" ]; then report "66" 1 ""; else report "66" 0 "pregate-lint.py is not executable"; fi
+if python3 "$PREGATE_SCRIPT" --selftest >/dev/null 2>&1; then
+  report "66" 1 ""
+else
+  report "66" 0 "python3 pregate-lint.py --selftest failed"
+fi
 
 echo "qa-mechanical: $PASS passed, $FAIL failed"
 

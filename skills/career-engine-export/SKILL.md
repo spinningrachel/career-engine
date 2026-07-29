@@ -172,7 +172,7 @@ This gives a plain-text word count of the full rendered document (including all 
 - **1050–1350 words** — likely 2 dense pages; proceed but flag in the chat summary: "CV word count at [N] — confirm 2-page fit before sending."
 - **Over 1350 words** — likely over 2 pages. Return to cv-writer with: "CV plain-text word count is [N] after DOCX conversion, indicating likely overflow beyond 2 pages. Cut bullets from the lowest-priority roles to bring body word count under 1000."
 
-**Brief:** apply the single total-body word-count backstop ceiling from `writer-craft/SKILL.md` §5b instead (a one-page target, not a 2-page one — do not apply Detailed's thresholds above to a Brief CV). If over the ceiling, return to cv-writer with: "Brief CV plain-text word count is [N] after DOCX conversion, over the one-page backstop ceiling — fold more roles into the `Earlier:` line or tighten bullet density (`writer-craft/SKILL.md` §5b's one-page-fit judgment principle)."
+**Brief:** apply the single total-body word-count backstop ceiling from `writer-craft/cv.md` §5b instead (a one-page target, not a 2-page one — do not apply Detailed's thresholds above to a Brief CV). If over the ceiling, return to cv-writer with: "Brief CV plain-text word count is [N] after DOCX conversion, over the one-page backstop ceiling — fold more roles into the `Earlier:` line or tighten bullet density (`writer-craft/SKILL.md` §5b's one-page-fit judgment principle)."
 
 After cv-writer returns a revised draft, re-run the full export protocol from Step 2. One revision pass only — if still over threshold after one pass, proceed and flag in the chat summary.
 
@@ -440,7 +440,7 @@ SKILLS
 
 ## PROFILE SUMMARY
 
-[Example — your profile paragraph, tighter than Detailed's summary; see writer-craft/SKILL.md §5b for the word-count backstop]
+[Example — your profile paragraph, tighter than Detailed's summary; see writer-craft/cv.md §5b for the word-count backstop]
 
 ## EXPERIENCE
 
@@ -491,7 +491,7 @@ All cover letters are limited to a single page, maximum 320 words with no minimu
 
 ### Voice constraints
 
-**Load `skills/writer-craft/SKILL.md` before writing any cover letter.** It defines writing mechanics, letter structure, use-case patterns, forbidden phrases, forbidden structures, and fabrication traps. Non-negotiable.
+**Load `skills/writer-craft/letter.md` before writing any cover letter.** It defines writing mechanics, letter structure, use-case patterns, forbidden phrases, forbidden structures, and fabrication traps. Non-negotiable.
 
 Every claim about the company must be traceable to the JD or brief. Do not infer the company's strategy, culture, or operating model from category signals. If a sentence about them cannot be sourced, cut it or rewrite it as an observation about the role.
 

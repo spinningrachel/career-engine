@@ -164,7 +164,7 @@ All agent steps are stateless and safe to re-run. They produce the same class of
 | 1 — cv-writer draft | Yes | Overwrites previous draft |
 | 1.5 / 4.5 / 5.2 / 5.95 — gatekeeper | Yes | Pure check, no side effects |
 | 2 — recruiter-reviewer | Yes | Pure review, no side effects |
-| 5.3 — coach strategic letter review | Yes | Pure review, no side effects |
+| 5.3 — strategic conformance (coach review removed 2026-07-22; enforced by Gates 5/9 in Step 5.2's gatekeeper check) | Yes | No spawn, no side effects |
 | 4 — cv-writer revision | Yes | Overwrites draft; markdown backup re-saved |
 | 5 — letter-writer draft | Yes | Overwrites previous draft |
 | 6 — DOCX export | Yes | Overwrites existing DOCX files (harmless if content unchanged) |

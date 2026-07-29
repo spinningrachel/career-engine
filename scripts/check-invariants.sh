@@ -35,7 +35,9 @@ for opt in cv cover-letter coach-output; do
 done
 
 # Contract: key OUTPUT_PATH filenames present in new-application pipeline
-for fname in 'gatekeeper-cv' 'gatekeeper-cl' 'recruiter-cv.md' 'coach-letter-review.md'; do
+# 2026-07-22: coach-letter-review.md removed from the pipeline (coach review replaced by Gate 5/9
+# conformance per the user's instruction); coach-outline.md is the letter-plan file both paths produce.
+for fname in 'gatekeeper-cv' 'gatekeeper-cl' 'recruiter-cv.md' 'coach-outline.md'; do
   grep -q "$fname" "$REPO/skills/career-engine-new-application/SKILL.md" \
     || fail "Pipeline file '$fname' missing from new-application SKILL.md"
 done

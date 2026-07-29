@@ -215,7 +215,7 @@ Before reading anything, ask:
 
 **If at least 3 letters were stored,** ask the user directly — wait for their reply before proceeding:
 
-> "Want me to generate your voice calibration file now? It's a one-time analysis of your delivered letters that the letter-writer and humanizer read at pipeline run time instead of re-reading the archive from scratch each run — saves every future run that step. Optional: the pipeline works fine without it (both agents fall back to reading the archive directly). Say yes and I'll run the methodology in `references/voice-calibration-method.md` and write the result to `references/voice-calibration-coverletters.md`."
+> "Want me to generate your voice calibration file now? It's a one-time analysis of your delivered letters that the letter-writer reads at pipeline run time instead of re-reading the archive from scratch each run — saves every future run that step. Optional: the pipeline works fine without it (both agents fall back to reading the archive directly). Say yes and I'll run the methodology in `references/voice-calibration-method.md` and write the result to `references/voice-calibration-coverletters.md`."
 
 If yes: run the methodology now and write the file. If no, or fewer than 3 letters were stored: skip this — the user (or a future session) can generate it later using the same methodology reference.
 
@@ -548,7 +548,7 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 Company,Position,Job URL,Status,Priority,JD Body,Why I Want This Role,Role emphasis,JD proof,Keywords,Strategy,Role Type,Relationship type,Gap handling,Role summary,Hiring Manager's Name,Hiring manager's role,Manager role confirmed,Person who Advertised Role (if not Hiring Manager),No incumbents in this function,Landscape,First Advertised,Last Pipeline Run,Link to CV,Draft Directory,CV File Name,Letter File Name,Languages,Edit type,CV Type,Note
 ```
 
-`CV Type` is included regardless of which `cv_type.mode` the user chooses — it's a normal, cheap column to have even when unused (same as `Languages` for a single-language user). It only matters when `cv_type.mode` is `Variant`; the user sets it herself per role, the pipeline never writes to it.
+`CV Type` is included regardless of which `cv_type.mode` the user chooses — it's a normal, cheap column to have even when unused (same as `Languages` for a single-language user). It only matters when `cv_type.mode` is `Variant`; the user sets it herself per role, and since 2026-07-23 the coach fills it when empty at intake (write-only-to-empty — her own value always wins).
 
 3. Tell the user: "Download this file and upload it to Google Sheets (File → Import → Upload). This creates your tracking sheet with all the required columns."
 
@@ -626,6 +626,8 @@ Write to the career-data config (`pipeline-preferences.json` → `cv_type`):
 
 **If the user provided her own `cv-brief.dotx`** (skip this if she used the plugin default — there's nothing to describe yet): ask, optionally, one time: "Does your Brief template include a photo?" Write the answer to `cv_type.brief_has_photo` (`yes`/`no`, blank if she'd rather not say) in the same config object — optional; `cv-writer` assumes no photo when it's blank.
 
+**If the user chose `Variant`:** ask, optionally, one time: "Do you have your own rules of thumb for when a market or role type gets the short vs. the full CV? (e.g. 'Israeli tech: Brief unless C-suite; US roles: Detailed') — free text, skip if not." Write the answer to `cv_type.market_norms` (empty string if skipped). When populated, this is the authoritative first source for the coach's per-role CV Type recommendation (`coach-analysis.md` → CV Type judgment principle, rule 1) — her own market knowledge, never a plugin-shipped table.
+
 **If `Variant` was chosen:** the per-role `CV Type` field must exist on whichever job-tracking backend was set up above — see the addition to Option A/B/C's instructions in Phase 5 above (the Notion template needs it added manually; the Sheets/other-platform column list already includes it).
 
 ---
@@ -673,15 +675,11 @@ Ask: "Should the pipeline run gap analysis for every role? Gap handling identifi
 
 If you're not sure, leave it enabled. You can always turn it off per-role when it isn't relevant."
 
-**Location compatibility (optional)**
-Ask: "Do you want the coach to track whether each role is compatible with your location? If yes, tell me:
-1. Your location (city, country, or region — e.g. 'Israel', 'Germany', 'EU')
-2. The name of the Notion property where you want this recorded (e.g. 'Israel Compatibility', 'Location Compatibility', or whatever you've named it in your database)
+**Your location (recommended)**
+Ask: "What's your location (city, country, or region — e.g. 'Israel', 'Germany', 'EU')? This feeds job sourcing, the coach's location research, and the CV-format recommendation for roles with unclear locations."
 
-If you don't have this property in your database or don't need it, skip this — the coach will simply not check location compatibility."
-
-- If the user provides both values: write `location_compatibility: {"my_location": "<value>", "database_property": "<value>"}` to the config.
-- If the user skips: write `location_compatibility: {"my_location": "", "database_property": ""}` (the default from the plugin template — both empty means the check is skipped at runtime).
+- Write `location_compatibility: {"my_location": "<value>"}` to the config (empty string if skipped).
+- **The compatibility-verdict property is retired (2026-07-23, per the user's direct instruction)** — do not ask for or write a `database_property` key; no agent writes a location-compatibility verdict to the tracker anymore. Older configs carrying `database_property`/legacy `notion_property` are simply ignored at runtime.
 
 **Favorite brands (optional).** Ask: "Do you have any companies you'd like to always prioritize one tier higher than the coach would normally score? If yes, list them. You can update this list at any time." Write the list to `favorite_brands` as a JSON array of strings. Empty array = no boost applied.
 
@@ -712,7 +710,7 @@ Write the answers into `target_titles` (array, priority order), `remote_preferen
 
 **Rule: user-specified sites in `preferred_job_sites` and `local_job_sites` always take priority over plugin defaults. The plugin's built-in site list is a fallback, not a directive.**
 
-- Write the gap-handling choice, location compatibility, favorite brands, job site preferences, and sourcing preferences **alongside** every other key set in this phase — one career-data config file (readable everywhere, survives upgrades). The complete file (R-38):
+- Write the gap-handling choice, your location (`my_location`), favorite brands, job site preferences, and sourcing preferences **alongside** every other key set in this phase — one career-data config file (readable everywhere, survives upgrades). The complete file (R-38):
   ```json
   {
     "gap_handling": "enabled",
@@ -729,8 +727,7 @@ Write the answers into `target_titles` (array, priority order), `remote_preferen
     "output_dir_prefix": "applications",
     "default_language": "English",
     "location_compatibility": {
-      "my_location": "<city/country/region, or empty to skip>",
-      "database_property": "<property/field name in your tracker, or empty to skip>"
+      "my_location": "<city/country/region, or empty to skip>"
     },
     "cv_type": {
       "mode": "<Detailed | Brief | Variant>",
@@ -753,7 +750,7 @@ Write the answers into `target_titles` (array, priority order), `remote_preferen
     }
   }
   ```
-  (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted; `location_compatibility` both keys empty = check skipped; `favorite_brands` empty array = no boost.) **Required for any run:** `output_folder`; **also required when a database backend is configured:** `database_id`. **`cv_type.mode` is always explicitly asked and written during setup** (see "CV Type" above) — never left to the JSON default; `brief_has_photo` stays optional. **Every other key is optional** — a run completes without it and the config-health notice lists what is empty/missing. There is no `cv_template` or `word_templates_path` key (R-38, 2026-07-04 fix) — CV/cover-letter/Hebrew templates resolve by fixed filename from `career-data/references/templates/`, never a config lookup. Write the `database_*` names on a fresh setup; the pipeline still reads the legacy `notion_database_id`/`notion_needs_editing_view_url`/`notion_property` names for older configs. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop only if a *required* key is missing. Never substitute any of these into plugin files.
+  (`gap_handling` is `"enabled"`/`"disabled"`; `output_dir_prefix` defaults to `"applications"` if omitted; `location_compatibility.my_location` empty = location context skipped; a `database_property` key in an older config is ignored — the verdict property was retired 2026-07-23; `favorite_brands` empty array = no boost.) **Required for any run:** `output_folder`; **also required when a database backend is configured:** `database_id`. **`cv_type.mode` is always explicitly asked and written during setup** (see "CV Type" above) — never left to the JSON default; `brief_has_photo` stays optional. **Every other key is optional** — a run completes without it and the config-health notice lists what is empty/missing. There is no `cv_template` or `word_templates_path` key (R-38, 2026-07-04 fix) — CV/cover-letter/Hebrew templates resolve by fixed filename from `career-data/references/templates/`, never a config lookup. Write the `database_*` names on a fresh setup; the pipeline still reads the legacy `notion_database_id`/`notion_needs_editing_view_url`/`notion_property` names for older configs. The orchestrator and standalone entry skills resolve every `{{CONFIG}}` placeholder from this file and stop only if a *required* key is missing. Never substitute any of these into plugin files.
   (or `"disabled"`, matching the user's choice). Preserve any other keys already present in the file.
 - Apply the **Writing personal data** rule: in Claude Code write `career-data` directly; in Cowork stage the change and emit the Appendix-A handoff (`references/career-data-skill-handoff.md`). Refresh the `career-data` backup export after a direct write.
 - Do NOT write this preference to `~/.claude/settings.json` — that location is reachable only from the user's own machine and silently falls back to the default everywhere else. The pipeline still reads it as a legacy fallback, but `career-data` is the authority.
@@ -909,7 +906,7 @@ The main pipeline. Picks up all roles in your tracking database with Status = `I
 4. Recruiter review — evaluates the CV
 5. Cover letter writer — writes the letter (if Why I Want This Role is filled in)
 6. Cover letter gatekeeper + recruiter review
-7. Humanizer — removes AI writing patterns from the letter
+7. (Retired 2026-07-26) Humanizer — its quantitative checks now run inside the gatekeeper (Gate 10)
 8. Export — produces DOCX files
 
 **Edit pipeline** (`/career-engine --edit`)

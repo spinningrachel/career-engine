@@ -22,7 +22,8 @@
         "Manager role confirmed",
         "Hiring manager's role",
         "No incumbents in this function",
-        "JD Body"
+        "JD Body",
+        "CV Type"
       ],
       "locations": [
         {
@@ -36,7 +37,7 @@
           "end": "### 0.9b"
         },
         {
-          "file": "skills/gatekeeper-checks/SKILL.md",
+          "file": "skills/gatekeeper-checks/coach-gates.md",
           "start": "## Coach Output Check"
         },
         {
@@ -67,13 +68,32 @@
         "Hiring manager's role",
         "No incumbents in this function",
         "JD Body",
-        "Why I Want This Role"
+        "Why I Want This Role",
+        "CV Type"
       ],
       "locations": [
         {
           "file": "skills/career-engine-intake/SKILL.md",
           "start": "Delegate the per-page property fetch",
           "end": "Receive that one returned block"
+        }
+      ]
+    },
+    {
+      "id": "archived-row-exclusion",
+      "_comment": "2026-07-23 fix: the adapter's archived/in-trash exclusion rule and role-prioritizer's scores-only caller contract cite each other; both files must keep naming the rule. Anchors are literal substrings.",
+      "members": [
+        "archived"
+      ],
+      "locations": [
+        {
+          "file": "skills/database-notion/SKILL.md",
+          "start": "## Rules for all paths"
+        },
+        {
+          "file": "agents/role-prioritizer.md",
+          "start": "## Database-tool availability gate",
+          "end": "## Step 0"
         }
       ]
     }
@@ -113,8 +133,8 @@
       "id": "term-personal-voice",
       "term": "personal-voice exemption",
       "files": [
-        "skills/writer-craft/SKILL.md",
-        "skills/gatekeeper-checks/SKILL.md"
+        "skills/writer-craft/core.md",
+        "skills/gatekeeper-checks/letter-gates.md"
       ]
     },
     {
@@ -199,7 +219,7 @@
       "alternates": [
         "same parameters as"
       ],
-      "min_sites": 34
+      "min_sites": 29
     }
   ],
   "pipe_closure": {

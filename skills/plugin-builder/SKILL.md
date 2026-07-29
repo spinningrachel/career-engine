@@ -72,7 +72,7 @@ A half-wired agent is worse than no agent — it will silently fail at runtime.
 
 ## Before Editing an Existing Agent or Skill
 
-**Letter pipeline files require special care.** `letter-writer.md`, `cv-writer.md`, `writer-craft/SKILL.md`, `gatekeeper-checks/SKILL.md`, `gatekeeper.md`, `humanizer.md`, and `humanizer/SKILL.md` require full read-before-edit and explicit rule-removal confirmation from the user before any rule is deleted or weakened.
+**Letter pipeline files require special care.** `letter-writer.md`, `cv-writer.md`, `writer-craft/SKILL.md` (and its `core.md`/`cv.md`/`letter.md` sub-files), `gatekeeper-checks/SKILL.md` (and its `cv-gates.md`/`letter-gates.md`/`coach-gates.md` sub-files), `gatekeeper.md`, `humanizer.md`, and `humanizer/SKILL.md` require full read-before-edit and explicit rule-removal confirmation from the user before any rule is deleted or weakened.
 
 1. Read the file you are editing in full, not just the section you intend to change.
 2. Check the regression table in `CLAUDE.md` for any row that mentions this file. Read the "Confirmed fix" column — your change must not undo it.
@@ -118,6 +118,11 @@ Confirm `career-engine.plugin` was produced and its timestamp is current. Do not
 ---
 
 ## PR Checklist
+
+**⛔ Push/merge gate (2026-07-24, per the user's direct instruction: "make sure the qa agent also always runs when I ask you to push and merge, and when it runs in this case, it always traces, fixes and then ALSO ALWAYS checks the README, Claude.md and Wiki in the repo and makes all necessary updates, changes, deletions, etc.").** Every push or merge request triggers, before anything is pushed:
+1. **The full QA gate** — all three layers (`scripts/qa-mechanical.sh` + parity, the diff-scoped sweep, the semantic passes including trace-a-run), even if QA already ran earlier in the session on individual edits — the pre-push pass covers the branch's whole cumulative diff against the merge target.
+2. **Every finding fixed** (by the main session, per the usual division: the QA agent reports, the session fixes, QA re-verifies).
+3. **The docs-sync pass — always, not only when the diff looks doc-relevant:** check `README.md` (including the changelog), `CLAUDE.md` (cross-file contracts, glossary, key design decisions), and the **GitHub Wiki** (`<repo>.wiki.git` — clone it, review every page against current doctrine) for anything the branch's changes made stale, wrong, or missing — and apply all necessary updates, changes, and deletions before the push. Wiki edits are committed and pushed to the wiki repo as part of the same session.
 
 Any user may open a PR. Before committing:
 

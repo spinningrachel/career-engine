@@ -25,11 +25,11 @@ Before any analysis, determine the gap handling mode in this order:
 3. **Last-resort fallback** — only if career-data is unreachable: `~/.claude/settings.json`, then `${CLAUDE_PLUGIN_ROOT}/references/pipeline-preferences.json` (the **blank template**, which always ships the default — never the authority).
 4. **Default** — if no source yields a value, use `enabled`.
 
-- If the value is `"disabled"` (or the key is absent and you were invoked with "no gap handling" in the prompt): set a session flag `GAP_HANDLING = disabled`. **Disabling gap handling kills the gap-analysis behavior EVERYWHERE — not just the `Gap handling` property.** Specifically: skip all gap analysis in Part 2; do NOT populate the `Gap handling` property at all (do not write `N/A`); and **the coach context block's transfer/credibility line must NOT enumerate gaps, name "the X real gaps," catalog what she lacks, or do any gap framing.** A disabled feature that still parks gap analysis in the transfer note has leaked — that is the seam this rule closes. The transfer line may still state the one-line credibility-of-transfer argument (an affirmative "her [X] transfers because [Y]"), but never a gap inventory.
+- If the value is `"disabled"` (or the key is absent and you were invoked with "no gap handling" in the prompt): set a session flag `GAP_HANDLING = disabled`. **Disabling gap handling kills the gap-analysis behavior EVERYWHERE — not just the `Gap handling` property.** Specifically: skip all gap analysis in Part 2; do NOT populate the `Gap handling` property with gap-handling content (do not write `N/A`) — **the ONE sanctioned exception, in both modes (per the user's direct instruction, 2026-07-28: "even when gap handling = false we should actually put this info in the Gap Handling property. It stands out there, and it's most logical... it's related to gap handling, but in a way that anyone/everyone should care"): the labeled `Keyword gap:` warning line(s) from the Keywords career-data match check, which is data hygiene addressed to the USER (update career-data or accept the screen gap), never candidate-gap framing, and never letter/CV content;** and **no other output — the Letter Outline, `Patterns` — may enumerate gaps, name "the X real gaps," catalog what she lacks, or do any gap framing.** A disabled feature that still parks gap analysis somewhere else has leaked — that is the seam this rule closes. The Letter Outline may still carry the affirmative credibility-of-transfer argument ("her [X] transfers because [Y]"), but never a gap inventory.
 - If the value is `"enabled"` or the key is absent (default): set `GAP_HANDLING = enabled`. Proceed normally.
 - A per-role override always wins: if the user included "no gap handling" in their prompt for this run, treat as disabled for this run only.
 
-**Same pre-flight, same order, for `cv_type_mode`:** when invoked by intake, the spawn prompt passes `cv_type_mode` (read from `pipeline-preferences.json` → `cv_type.mode`). Use it directly; do not re-read the config file yourself. If it is missing from the spawn prompt (standalone invocation), Read `pipeline-preferences.json` yourself via the same career-data resolution as above, and default to `"Detailed"` if the key is absent. Set a session flag `CV_TYPE_MODE = <value>`. This flag governs whether `Role emphasis` gets the appended CV-type recommendation clause below — only when `CV_TYPE_MODE == "Variant"`.
+**Same pre-flight, same order, for `cv_type_mode`:** when invoked by intake, the spawn prompt passes `cv_type_mode` (read from `pipeline-preferences.json` → `cv_type.mode`). Use it directly; do not re-read the config file yourself. If it is missing from the spawn prompt (standalone invocation), Read `pipeline-preferences.json` yourself via the same career-data resolution as above, and default to `"Detailed"` if the key is absent. Set a session flag `CV_TYPE_MODE = <value>`. This flag governs whether the standalone `CV Type` property is returned (Part 2 below) — only when `CV_TYPE_MODE == "Variant"`.
 
 ### Part 0 — Priority scoring (full research roles)
 
@@ -91,14 +91,14 @@ Why does this role exist? What breaks if it goes unfilled? What does the hire ne
 **Layer 4 — Seniority signals (what level this role actually is)**
 Titles are unreliable. Read seniority from: required years of experience, whether the role owns budget, has direct reports, sets strategy vs. executes it, reports to C-suite vs. middle management. A "Senior Manager" with no direct reports and execution-heavy responsibilities is an IC role with a flattering title. A "Specialist" who owns P&L and presents to board is a leadership role. Identify the real level — it governs how the CV and letter are framed.
 
-**Step-down identification — critical:** If the role's actual level is materially below the user's documented seniority (e.g., an IC execution role when she has been a VP, or a manager role when she has led functions), flag it explicitly in Role emphasis as: `Step-down: [reason — e.g., execution IC role vs. her VP-level background]`. This signals to the cv-writer to lead with execution and suppress strategy/leadership framing. Do not obscure or soften this — naming it is how the CV gets written correctly.
+**Step-down identification — critical:** If the role's actual level is materially below the user's documented seniority (e.g., an IC execution role when she has been a VP, or a manager role when she has led functions), name it in `Patterns` as `Step-down: [reason — e.g., execution IC role vs. her VP-level background]` and let it shape the Letter Outline's paragraph subjects. **It is never written as a line inside `Role emphasis`** (2026-07-23 — rank/step commentary is banned there; `Role Type` carries the shape; the writers read career-data themselves and derive the framing from the role-vs-record comparison). Do not obscure or soften the detection itself — naming it in Patterns is how the documents get framed correctly.
 
 **Operating-model transition identification — run this alongside step-down detection; it is a separate axis.** Compare the operating model this role sits in (from dimension 1 — GTM and business model) against the operating model(s) the user's record sits in (`02-professional-background.md` Role Facts, `03-framework.md` §Domain depth). If they differ on the **B2B ↔ B2C / enterprise ↔ consumer / sales-led ↔ product-led** axis, this is an operating-model transition — *even when the function and the seniority match*.
 
 This is not a step-down and not a function shift. Do not collapse it into either — the handling is different:
-- **Name it** in `Role emphasis` and `Patterns`: `Operating-model transition: [from] → [to] — [the axis that differs]` (e.g., `enterprise B2B → mass-market B2C`).
-- **Name the KPI shift.** The metric set changes with the model: adoption, activation, usage, retention, virality for consumer; pipeline, ACV, win-rate, sales-cycle for enterprise. State the target model's KPIs so the writers frame toward them and not toward the model the user is leaving.
-- **Mine for transferable, model-correct evidence.** Actively pull from `02`/`03` any genuinely consumer/audience-facing work — DTC or app products, marketplaces, freelance/creator surfaces, consumer segmentation, community, localization, channel-fit by cohort or market — and surface it in `Gap handling` and the coach context block as the credibility-of-transfer proof. Reframe real evidence; never invent it (see the understanding-vs-experience rule in research dimension 6).
+- **Name it** in `Patterns`: `Operating-model transition: [from] → [to] — [the axis that differs]` (e.g., `enterprise B2B → mass-market B2C`). Never as a line inside `Role emphasis` (rank/transition commentary is banned there, 2026-07-23) — the transition instead shapes `Role emphasis` implicitly, through the Emphasis line's operating-model translation and the target-model `Likely KPIs`.
+- **Name the KPI shift.** The metric set changes with the model: adoption, activation, usage, retention, virality for consumer; pipeline, ACV, win-rate, sales-cycle for enterprise. State the target model's KPIs in `Likely KPIs` so the writers frame toward them and not toward the model the user is leaving.
+- **Mine for transferable, model-correct evidence.** Actively pull from `02`/`03` any genuinely consumer/audience-facing work — DTC or app products, marketplaces, freelance/creator surfaces, consumer segmentation, community, localization, channel-fit by cohort or market — and surface it in `Gap handling` (when enabled) and the Letter Outline as the credibility-of-transfer proof. Reframe real evidence; never invent it (see the understanding-vs-experience rule in research dimension 6).
 - **Flag the wrong-model competence** so the writers do not lead with it: enterprise pipeline/ACV proof buried lower for a consumer role, and vice versa.
 
 **Layer 5 — Compensation and culture signals**
@@ -117,7 +117,7 @@ The JD title and responsibilities describe the role the company *advertised*. Th
 - **GTM reality says it really owns:** what the role actually drives, given how the company makes money and goes to market today.
 - **Does NOT own:** the scope the title implies but the reality excludes — the thing the candidate would wrongly position toward without this reconciliation.
 
-Where the two diverge, the **reality governs** `Role emphasis` and the coach context block. This is document framing only — it shapes what the materials lead with, nothing beyond the document stage.
+Where the two diverge, the **reality governs** `Role emphasis` and the Letter Outline. This is document framing only — it shapes what the materials lead with, nothing beyond the document stage.
 
 *Worked example (generic):* a "Head of GTM" title at a consumer app implies pipeline and revenue ownership; the GTM reality (consumer adoption and community, monetization owned elsewhere) means the role really owns audience growth and retention and does NOT own an enterprise sales motion. A letter that leads with ACV and pipeline answers the wrong brief. When the title and the reality agree, say so in one line and move on — the reconciliation is cheap and is run for every role.
 
@@ -134,9 +134,9 @@ After reading all six layers, classify the role into one of three mandate types.
 | **Fixer** | "optimize," "streamline," "turn around," "drive efficiencies," "evaluate existing architecture," "reduce churn" | Something is broken — margins down, churn high, tech debt crushing, or function never established cleanly. Hire is the surgical corrective force. | Diagnostic skills, cutting waste, managing change resistance, rapid stabilization, proof of turning around a broken function |
 | **Maintainer** | "govern," "sustain," "protect market share," "standardize," "mature," "harden," "scale what works" | The business engine works well but is getting too big for current infrastructure. No cowboy needed — steady hand to harden and scale reliably. | Risk management, governance, operational maturity models, long-term sustainable yield |
 
-Surface the mandate type in `Role emphasis` (one line: `Mandate type: Builder / Fixer / Maintainer — [one-line reason]`). It informs the letter's lead, the CV's foreground proof, and the coaching questions you generate for the user.
+Surface the mandate type in `Patterns` (one line: `Mandate type: Builder / Fixer / Maintainer — [one-line reason]`) and let it inform the Emphasis read and the Letter Outline. It is never a line inside `Role emphasis` (2026-07-23 — the property carries the emphasis read itself, not classification labels).
 
-**Jargon Decoder — corporate phrases and their operational reality.** When any of these phrases appear in the JD, decode them before proceeding to `Role emphasis` and the coach context block. Surface the decoded reality in `Culture` and `Patterns`.
+**Jargon Decoder — corporate phrases and their operational reality.** When any of these phrases appear in the JD, decode them before proceeding to `Role emphasis`. Surface the decoded reality in `Culture` and `Patterns`.
 
 | JD says | Operational reality | Strategic use |
 |---|---|---|
@@ -169,13 +169,13 @@ Surface this reading in `Role emphasis`, and let it guide the `Strategy` letter-
 |---|---|
 | `Priority` | Numeric urgency/fit rank (1 = highest). The sort handle; the *why* lives in `Priority Reason`. |
 | `Priority Reason` | One sentence justifying the score — name the driver(s) and any reason it isn't higher. |
-| `Role emphasis` | An interpretive read of what will matter most to succeed: the real mandate (not the responsibilities), where the job sits in the company's moment, special constraints, and the most-likely/implied KPIs. Conditionally carries an appended CV-type recommendation when `CV_TYPE_MODE == "Variant"` — see below. |
+| `Role emphasis` | A paraphrased and/or directly quoted summary of what's most important in the role (with the operating-model translation of any ambiguous term, in generic discipline vocabulary) plus the likely KPIs. Exactly two labeled lines, ≤100 words. Never strategy, capability mapping, de-emphasis, CV type, company facts, confidence tags, or rank commentary. |
+| `CV Type` | Variant mode only — the coach's Detailed/Brief call for this role, written by intake to the user's per-role `CV Type` select (write-only-to-empty; the user's hand-set value always wins). |
 | `Role summary` | The plain-language "what the job is in practice" — scope, stage, ownership areas, constraints (solo, budget), business timing. The version you'd tell a friend. ≤400 chars. |
 | `Landscape` | A structured market + company + product brief: snapshot (location, size, founders), product (what it is, how it works), buyers/personas, GTM motion, funding/stage, org context, competitive frame. |
 | `Keywords` | A prioritized requirements map from the JD — Critical / Important / Nice-to-have, hard-capped. For ATS targeting, proof-point selection, and go/no-go on a missing "Critical". |
 | `Strategy` | Letter-type Select — `IC` / `Strategic` / `Hybrid`. Sets the cover-letter structure only. |
 | `Company Stage` | Maturity label — Seed / Series A–C / Public / PE-backed / Stealth / Other. |
-| `[Country] Compatibility` | Whether the role is realistically workable from the user's location — Yes / Remote-maybe / No. |
 | `Role Type` | Multi-select shape — Builder (0→1, first hire) / Scaler (growth, existing motion) / Leader (team/org ownership) / Specialist (narrow lane). |
 | `Relationship type` | Full time / Part time / Temporary / Fractional. |
 | `Gap handling` | The material gaps and how to handle each (max 3), or `N/A`. |
@@ -203,74 +203,62 @@ If `GAP_HANDLING = disabled` (set in the Settings pre-flight), leave `Gap handli
 
 ---
 
-**⛔ KEYSTONE — analysis properties describe the ROLE and the COMPANY, never the candidate.** `Role emphasis`, `Landscape`, `Culture`, `Role summary`, `Company Stage`, and every research-derived property answer *"what is this role / company / market?"* — objectively, as a recruiter-grade intelligence brief. They must NOT name the candidate, reference "her letter," describe what she must do, or carry letter strategy. **Candidate-facing framing lives in exactly three places: the coach context block (prepended to `Why I Want This Role`), `Gap handling`, and the `Strategy` select — nowhere else.** If you catch yourself writing the candidate's name, "she/her," or "the letter" inside a role/company property, you have leaked framing into the wrong field: cut it and move it to the coach context block.
+**⛔ KEYSTONE — analysis properties describe the ROLE and the COMPANY, never the candidate — no exceptions (restored 2026-07-24; the short-lived `Capability match` exception was retired with that section, per the user: "it should NOT cite mapping to user's capabilities").** `Role emphasis`, `Landscape`, `Culture`, `Role summary`, `Company Stage`, and every research-derived property answer *"what is this role / company / market?"* — objectively, as a recruiter-grade intelligence brief. They must NOT name the candidate, reference "her letter," describe what she must do, or carry letter strategy. **Candidate-facing framing lives in exactly three places: `Gap handling`, the `Strategy` select, and the Letter Outline — nowhere else.** If you catch yourself writing the candidate's name or "the letter" inside any role/company property, you have leaked framing into the wrong field: cut it.
 
 ---
 
 **⛔ KEYSTONE — returned values are scannable briefs, not essays.** Every text property the coach produces must be **formatted to scan AND tight.** This is mandatory, not cosmetic.
 - **Format (mirror the `Landscape` sectioned style):** use **bold labels**, a **blank line between distinct topics**, and **bullets** for any list. Never a single dense paragraph.
 - **Brevity:** say it in the fewest words that carry the signal — cut throat-clearing, hedges, qualifiers, and restatement.
-- **Hard caps:** `Role emphasis` → **Mandate** ≤2 short sentences, **Likely KPIs** one line (a comma list, not prose), each on its own line with a blank line between; `Culture` → 2–3 one-line bullets, blank-line-separated; `Keywords` → ≤9 total (Critical ≤4 / Important ≤3 / Nice-to-have ≤2); `Priority Reason` → one sentence; `Role summary` → ≤400 chars; each `Landscape` bullet → one line. When in doubt, cut.
+- **Hard caps:** `Role emphasis` → exactly the two labeled lines (**Emphasis**, **Likely KPIs** one comma-list line), blank line between them, ≤100 words total; `Culture` → 2–3 one-line bullets, blank-line-separated; `Keywords` → ≤9 total (Critical ≤4 / Important ≤3 / Nice-to-have ≤2); `Priority Reason` → one sentence; `Role summary` → ≤400 chars; each `Landscape` bullet → one line. When in doubt, cut.
 
 ---
 
-**Likely KPIs (always produced — a required part of the `Role emphasis` property, plus a one-line echo in the coach context block for the letter-writer).** State, as one bullet, the metric set this role is actually measured on — for **every** role, **including when the JD names no targets at all.** When the JD is silent, do not skip it: infer the KPIs from the role's scope, the company's GTM and business model (research dimension 1), and market research. A consumer-adoption role is measured on activation, usage, retention, and engagement; an enterprise GTM role on pipeline, ACV, win-rate, and sales-cycle; a community/UGC role adds contribution and active-contributor metrics. For an operating-model transition, give the **target-model** KPIs, not the model the user is leaving. Tag `[LOW]` when inferred with no JD or market confirmation; never leave it blank.
+**Likely KPIs (always produced — a required part of the `Role emphasis` property).** State, as one line, the metric set this role is actually measured on — for **every** role, **including when the JD names no targets at all.** When the JD is silent, do not skip it: infer the KPIs from the role's scope, the company's GTM and business model (research dimension 1), and market research. A consumer-adoption role is measured on activation, usage, retention, and engagement; an enterprise GTM role on pipeline, ACV, win-rate, and sales-cycle; a community/UGC role adds contribution and active-contributor metrics. For an operating-model transition, give the **target-model** KPIs, not the model the user is leaving. Never leave it blank — and never tag it: confidence tags do not appear anywhere in `Role emphasis` (2026-07-23); an inferred KPI set is simply stated (research is hypothesis by nature).
 
 ---
 
-**`Role emphasis`** — the real mandate beneath the job title **and the metrics that mandate is judged on.** About the ROLE, not the candidate. **Format it for scanning, the way `Landscape` is formatted — short labeled lines, never a wall of prose:**
+**`Role emphasis`** — **restructured again 2026-07-24, per the user's direct instruction: "the emphasis should literally only be a paraphrased and/or directly quoted summary of what's most important in the role... In reality it should have: Emphasis: / Likely KPIs: / And that's it. And the length should be max 100 words."**
 
-Write a **blank line between each labeled line** so it scans:
+**Load `${CLAUDE_PLUGIN_ROOT}/references/discipline-emphasis-signals.md` before writing this property** — it maps common disciplines to the signals that reveal what a JD actually weights, so the emphasis read is anchored instead of improvised.
+
+**Fixed structure — identical every run, exactly these TWO labeled lines, blank line between them, ≤100 words total (count before returning):**
 ```
-**Mandate:** ≤2 short sentences — the business problem (what breaks if this role goes unfilled 6 months).
+**Emphasis:** a paraphrased and/or directly quoted summary of what's most important in the role — the JD's most-weighted themes, translated through the company's real operating model where a term is ambiguous.
 
-**Likely KPIs:** one line — the metric set the role is measured on (comma list, not prose); target-model set for a transition. [HIGH/LOW]
-
-**Step-down / transition:** one line — ONLY if step-down or operating-model-transition detection fired; otherwise omit this line entirely.
-```
-
-**The Mandate names a business problem, not a task list.** Ask: what breaks if this role goes unfilled for 6 months? "Manage social media channels and create content calendars" is a task list — it fails. "Own the company's voice in a crowded SaaS market where brand trust is the primary conversion driver — no established playbook, build it from scratch" is a Mandate. Never restate the JD's responsibilities in different words; never produce a list of verbs; **never put letter strategy, coaching notes, or anything addressed to the candidate here** — that is the coach context block's job.
-
-For Specialist / practitioner roles (IC contributor, no direct reports), explicitly state all three:
-- **Reporting line:** Who does this role report to?
-- **Team context:** Founding role (build from scratch) or joining an established team?
-- **IC ownership scope:** What does this person own vs. oversee vs. collaborate on?
-
-**CV-type recommendation — only when `CV_TYPE_MODE == "Variant"` (set in the Settings pre-flight above).** When the user's config defers the CV-format decision to per-role choice, append a final line to `Role emphasis` (below the Mandate/Likely KPIs/Step-down lines, still inside the same property — this is not a separate field):
-
-```
-**Recommended CV Type:** Detailed | Brief — [one-line rationale].
+**Likely KPIs:** one line — comma list, target-model set for a transition.
 ```
 
-When `CV_TYPE_MODE` is `"Detailed"` or `"Brief"`, omit this line entirely — `Role emphasis` looks exactly as it does without this feature. This recommendation is advisory only: it does not write to the user's own per-role `CV Type` database field (`skills/database/SKILL.md` — user-owned, agents never write it); it exists so the user has a reasoned suggestion to act on.
+**The operating-model translation lives INSIDE the Emphasis line, in generic discipline terms — it is role description, not candidate mapping.** The user's own kept example of what belongs: *"Xata is a product-led, developer-bought Postgres/AI-infrastructure tool → 'demand gen' here means organic developer growth (content, SEO/AI-search, community, launches)."* Name the motion in standard discipline vocabulary — PLG, B2D, ABM, enterprise sales-led, community-led — so any user's writers (which read that user's career-data) can map it to their own background. That naming is the ENTIRE bridge to the candidate: this property never mentions the user, her capabilities, or what "maps to" her — the writers do that mapping themselves.
 
-**Judgment reference — CV Type Recommendation Matrix.** Use this table as a starting point for the recommendation, then adjust for what the specific JD and company actually signal — it is a reference to reason from, not a rigid lookup (the same way the Priority Framework above is applied with judgment, not mechanically). Weigh geography, seniority, and tech vertical together; where they conflict, prioritize geography and vertical over seniority, since screening norms are usually set by market and function before individual seniority nuance.
+**⛔ NEVER in this property (2026-07-23 bans, tightened 2026-07-24):** letter strategy or any strategy content ("It should NEVER include strategy. NEVER."); a `De-emphasized`/non-emphasis line ("it should NOT cite... non-emphasis"); any capability mapping or candidate reference of any kind ("it should NOT cite mapping to user's capabilities" — the 2026-07-23 `Capability match` section is retired); a CV Type recommendation (its own property); company facts beyond the one-clause operating-model translation (`Landscape` owns them); confidence ratings; step-up/step-down/rank commentary (step-down/transition findings route to `Patterns`, `Gap handling` when enabled, and the Letter Outline — never here). Never restate the JD's responsibilities as a task list — summarize what is MOST important, which is a selection, not an inventory.
 
-| Geography | Seniority | Vertical context | Recommended length |
-|---|---|---|---|
-| Israel | Any | Cybersecurity, Deep Tech, AI | Strictly 1 page |
-| US/Canada | Early career | Software Dev, HR Tech, Sales | Strictly 1 page |
-| US/Canada | Mid-Senior (10+ yrs) | Cyber, Cloud, FinTech | 2 pages |
-| US/Global | Specialist | AI Research, Deep Tech | 2-3 pages (Research-CV style) |
-| South Africa | Mid-Senior | FinTech, SaaS, Enterprise | 2 pages (Commonwealth/UK model) |
-| South America (LATAM) | Early-Mid | E-commerce, EdTech, SaaS | 1-2 pages |
-| United Kingdom | Junior-Mid | DevTools, LegalTech, Product | 2 pages |
-| France | Any | High-growth startups | Strictly 1 page |
-| Germany (DACH) | Any | Cyber, Industrial Tech | 2-4 pages |
-| India | Mid-Senior | Data Science, DevOps | 2-3 pages |
-| Any | Associate-VP | Private Equity / M&A | Strictly 1 page |
+For Specialist / practitioner roles (IC contributor, no direct reports), the reporting line / founding-vs-established context / ownership scope belong in the Emphasis summary only when the JD itself makes them central — woven in, never appended as extra sections, always within the 100 words.
 
-**Cross-cutting triggers, regardless of geography:** Deep Tech/Infrastructure roles more often justify a second page (system-architecture/project-depth complexity); HR/People/Legal Tech roles skew one-page unless C-suite; Cybersecurity needs enough ATS keyword density to balance against brevity.
+**`CV Type`** — **its own returned property, only when `CV_TYPE_MODE == "Variant"` (2026-07-23, per the user: "coach isn't updating CV Type at all — very bad — so every CV is still always the original default, long version but that's not always the right choice" / "that has its own Select property").** Return:
 
-**Mapping to this plugin's binary Detailed/Brief system:** the table above is expressed in page counts because it reflects general resume/CV norms; this plugin only has two discrete CV types. "Strictly 1 page" maps to **Brief**; every 2+-page recommendation maps to **Detailed** — Detailed already isn't fixed-length, so a "2-4 pages" signal just confirms the multi-page format is the right call, not a new constraint on it.
+```
+CV Type: Detailed | Brief — [one-line rationale]
+```
 
-**Sourcing caveat — the Israel, South Africa, and South America rows are not from originally-sourced research.** They're inferred from general international recruitment norms and should be treated as a reasonable starting judgment, not an authoritative fact — flag uncertainty in the rationale line when leaning on one of these three rows (e.g. "Brief — Israeli deep-tech norms favor brevity [inferred, not directly sourced]").
+Intake writes it to the user's per-role `CV Type` select — **write-only-to-empty: the user's own hand-set value always wins and is never overwritten.** When `CV_TYPE_MODE` is `"Detailed"` or `"Brief"`, omit this property entirely. Never place a CV-type recommendation inside `Role emphasis` or any other property.
+
+**CV Type judgment principle (2026-07-23 — replaces the retired CV Type Recommendation Matrix, per the user: "that looks like a highly personalized matrix which couldn't possibly be relevant for any user").** The matrix was a geography × seniority × vertical lookup table whose rows were admittedly unsourced guesses arranged around one user's scenario — the same failure the Brief CV's `Earlier:` cutoff decision (`CLAUDE.md` → Key design decisions) already names: shared plugin doctrine gets a judgment principle, never a fixed table pretending to be world knowledge. Reason it out per role, in this order:
+
+1. **The user's own stated norms win.** Read `cv_type.market_norms` from `pipeline-preferences.json` (optional free-text, e.g. "Israeli tech: Brief unless C-suite; US roles: Detailed"). When present and it covers this role's market, it is authoritative — the recommendation applies it and the rationale cites it.
+2. **Otherwise, the target market's screening norms as researched for THIS role** — not recalled generalities. What do this market's and function's recruiters actually screen from? Evidence available in the run: the JD's own length/format cues, the company's other postings, anything research dimension 7/8 surfaced about their hiring process. If the research gives no real signal, say so in the rationale rather than inventing a norm — and since the `CV Type` return is still mandatory under Variant mode, recommend `Detailed` in that no-signal case (the pipeline's own empty-field default, so the recommendation never invents a norm the honest answer is "unknown" for).
+3. **ATS keyword density and seniority adjust within the format, never against the market norm.** A keyword-heavy vertical is handled by denser writing inside the market-appropriate format — density is never a reason to escape to the longer format; seniority nuance never overrides a clear market norm.
+4. **Unknown location defaults to the user's own market** (`location_compatibility.my_location`), never to a speculative foreign market. A real run reasoned "location unconfirmed (possibly US, where cyber CVs run longer) → Detailed" for a user whose own market favors Brief — that inversion is exactly what this rule prohibits.
+
+Mapping to the plugin's binary system: a one-page norm → **Brief**; a multi-page norm → **Detailed**. The rationale line names which rule (1–4) decided it.
 
 **`JD proof`** — The single most revealing sentence from the JD that proves your Role emphasis interpretation. Direct quote, verbatim. For the user's reference only — no writing agent reads this field.
 
 ---
 
-**`Keywords`** — a tight, prioritized requirements map from the JD. **Hard-capped — too many keywords muddies ATS targeting and bloats downstream context.** Three tiers, format `Critical: [terms] | Important: [terms] | Nice-to-have: [terms]`.
+**`Keywords`** — a tight, prioritized requirements map from the JD. **Hard-capped — too many keywords muddies ATS targeting and bloats downstream context.** Three tiers plus a warning segment, format `Critical: [terms] | Important: [terms] | Nice-to-have: [terms] | Unmatched: [term] (no career-data basis — update career-data and re-run intake, or expect this gap at screen)`.
+
+**Career-data match check — run before returning Keywords (per the user's direct suggestion, 2026-07-28, after a real run thrashed to its revision cap over the unfillable "DLP" keyword: "these are the keywords, but they don't match your career-data so either update your career-data or remove the keyword in order to avoid major issues").** For every Critical and Important term, verify a documented basis exists in career-data (`02` role facts / approved bullets, `03` §Domain depth) — a capability the CV could honestly evidence, not necessarily the verbatim term. A term with NO documented basis is NEVER listed under Critical or Important: move it to the `Unmatched:` segment (outside the ≤9 cap; keep it short) and add a Patterns line naming it: `Keyword gap — [Company]: [term] gates this screen but has no basis in career-data — update career-data (then re-run intake) or leave it; the pipeline will not chase Unmatched terms.` This is the user's review point: she either enriches career-data (a re-run then reclassifies the term into its real tier) or knowingly applies with the gap. **Dual surface (per the user's direct instruction, 2026-07-28: "even when gap handling = false we should actually put this info in the Gap Handling property. It stands out there, and it's most logical... it's related to gap handling, but in a way that anyone/everyone should care"): also return the same warning as a labeled line for the `Gap handling` property — `Keyword gap: [term] — no career-data basis; update career-data and re-run intake, or expect this at screen.` — written in BOTH gap-handling modes.** The Keywords `Unmatched:` segment stays the machine-read anchor (Gate 0 keys off it); the `Gap handling` line is the human-read surface. The pipeline side is enforced at Gate 0: Unmatched terms are excluded from ATS coverage thresholds and no agent may direct a writer to add one — chasing an undocumented keyword is fabrication pressure, the exact thrash this closes.
 
 **Hard caps — count before writing, never exceed:** Critical ≤4 · Important ≤3 · Nice-to-have ≤2 (**total ≤9**). Keep only the terms that actually gate the screen; drop the rest. Each term is an exact phrase from, or directly derivable from, the JD — never a paraphrase, never padding.
 
@@ -380,7 +368,7 @@ If the specific AI category (e.g., conversational AI, NLP, voice agents) is not 
 
 **`Role summary`** — A compressed summary of the JD itself. Not about the user. This property serves as the JD proxy for all downstream agents — they read this instead of the full JD body.
 
-**⛔ The #1 defect here is bleeding fit/gap/title analysis into this field.** Role summary describes the **job only**. If a sentence mentions the candidate, her fit, her seniority or title, a title she "hasn't held," a gap, or the word "transferable," it does not belong here — it belongs in `Priority Reason` or the coach context block.
+**⛔ The #1 defect here is bleeding fit/gap/title analysis into this field.** Role summary describes the **job only**. If a sentence mentions the candidate, her fit, her seniority or title, a title she "hasn't held," a gap, or the word "transferable," it does not belong here — it belongs in `Priority Reason`.
 
 **Hard limit: 400 characters total including spaces.** Count before writing.
 

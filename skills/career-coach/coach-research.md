@@ -1,12 +1,16 @@
 # Career Coach — Research Phase
 
-Load this file first for every coach invocation that requires role research (Option 2 intake, Option 1 inline). It covers all six research dimensions, location compatibility, screening fit, the location deep-scan, JD signal analysis, and the post-research self-check.
+Load this file first for every coach invocation that requires role research (Option 2 intake, Option 1 inline). It covers the research dimensions, screening fit, the location deep-scan, JD signal analysis, and the post-research self-check.
 
 ---
 
 ## Research Phase
 
 **Research standard:** Research comprehensively — the output is distilled but the research itself must be thorough. The bar: if a competent human recruiter spending 20 minutes on LinkedIn and Google could have found it, you should find it. Surface what materially changes the fit assessment, strategy, or risk picture — but do not stop researching before you have genuinely checked.
+
+**⛔ Effort floor — a negative answer is a claim of exhaustion, not of first failure (2026-07-23, from a real pattern the user confirmed: "almost every single time, I find the information that it couldn't, and it doesn't prove to take much time either").** The recurring lazy negatives: team existence unchecked, hiring manager "no idea," `First Advertised` unknown, JD "unfetchable." Each of these values has a defined ladder in this file or `coach-analysis.md`; you may return the negative ONLY after every rung of that ladder actually ran. `Unfetchable` in particular: the same role routinely appears on multiple boards — the mirror search rungs (careers page, board mirrors, exact-title search) must each run before that word is permitted. The internal record of what you tried belongs in the Research confidence check block only.
+
+**⛔ Terse negatives — the bare value, never the story (2026-07-23, per the user: "'not identifiable' is enough — WHY do I need the whole story?").** In every returned property value, a negative result is the bare value: `Not identifiable`, `Unknown`, `None found`. No search narrative, no bracketed process notes, no "despite checking X, Y and Z," no hedging clause. The Research confidence check block is the only sanctioned place to enumerate what was attempted. This also caps the note-and-bracket habit generally: brackets in property values are reserved for the defined `[HIGH]`/`[LOW]` tags where a property's own format specifies them — nothing else.
 
 **Research principles:**
 - Keep research objective and evidence-led. Conclusions must be traceable to a named source. Do not interpolate, speculate, or fill gaps with assumptions.
@@ -62,8 +66,8 @@ Synthesise into 2–3 specific, sourced observations. Name the source inline (e.
 **8. Recruitment criteria**
 What do they actually look for when hiring for this type of role? Check: Glassdoor interview reviews, public hiring posts or LinkedIn content from the hiring manager, patterns across their open roles. Aim for 2–3 specific criteria beyond what the JD states explicitly.
 
-**9. Career path**
-Where does this role typically go? LinkedIn alumni search for this company if possible. For the sector broadly: what's the standard trajectory from this role type and seniority? One or two sentences.
+**9. Company operating locations (2026-07-23 — replaces the retired Career Path dimension, per the user: "Landscape is business only" / "go figure out how and where the company operates").**
+Where does this company actually operate? Offices and HQ (company site footer, About page, LinkedIn company page Locations), where its team members actually sit (LinkedIn People tab country distribution), and its hiring pattern (do its other open roles carry consistent location tags?). Cheap, always available, and it is the mandatory fallback before `Location` is ever reported as unclear: a role whose own posting is location-ambiguous inherits a working hypothesis from where the company demonstrably operates. Feeds the Location & eligibility deep-scan and, when the role's location remains genuinely unresolved after it, the `## Location Hypotheses` section of `Landscape` (the one sanctioned non-business Landscape section — see `coach-output.md`).
 
 **10. Hiring manager and team research**
 
@@ -75,7 +79,7 @@ The LinkedIn MCP is the strongest tool for this step, but its absence is **not**
 2. If a hiring manager is found, run `get_person_profile(linkedin_username, sections="experience,education,posts")`. Extract: current title, tenure at this company, background before this company, any recent posts about hiring priorities or team direction.
 3. Run `get_company_employees(company_name, keywords="[relevant function keyword for the role]")`. Skim demographics — team size, seniority distribution, recent hires.
 4. Produce a 3–5 line Hiring Manager and Team snapshot. Include: HM background relevance, tenure signal (new HM = flux; long-tenure = established culture), any public statements about what they value, team composition signal.
-5. This snapshot feeds directly into `Role emphasis` and the coach context block framing, and informs the `Strategy` letter-type selection.
+5. This snapshot feeds directly into `Role emphasis` and the Letter Outline, and informs the `Strategy` letter-type selection.
 
 **If the LinkedIn MCP is not connected — web-OSINT fallback (run it; do not skip):**
 
@@ -107,7 +111,7 @@ Goal: identify the 2–3 people most worth contacting at this company, decide wh
 1. Use `search_people` to find employees at the company in the function adjacent to the role (e.g. `search_people(keywords="[function keyword]", company="[company name]")`).
 2. For each candidate advocate: check degree of connection, mutual count, country, and recent activity via `get_person_profile`.
 3. For the HM (already profiled in dimension 10): verify LinkedIn reachability (public profile present, no InMail-only restriction signal).
-4. For each actionable contact (HM candidate + selected advocate only): identify 1–2 specific note angles — something genuine from their profile, their company's recent direction, or the user's actual background that gives them a reason to engage. Note angles must be specific enough to write a 2-sentence LinkedIn note from; skip generic observations ("we both care about marketing").
+4. For each actionable contact (HM candidate + selected advocate only): identify ONE specific engagement hook — something genuine from their profile, their company's recent direction, or the user's actual background that gives them a reason to engage — for the table's `Why` column. Specific enough to write a 2-sentence LinkedIn note from; skip generic observations ("we both care about marketing"). **(2026-07-23, per the user: "I ONLY want the table with recommended people and the relevant data there" — the hook lives in the table's `Why` cell; there is no separate Note-angles section and no Email/WhatsApp section anymore.)**
 
 **Confidence labels:**
 - `[HIGH]` — named, profile confirmed, degree and mutuals verified
@@ -118,23 +122,9 @@ Goal: identify the 2–3 people most worth contacting at this company, decide wh
 
 ---
 
-### Location Compatibility
+### Location Compatibility — RETIRED (2026-07-23, per the user's direct instruction: "I'd like to completely cancel and remove the useless Israel Compatibility property")
 
-Read `location_compatibility` from `${CAREER_DATA}/references/pipeline-preferences.json` before any location analysis. Two keys:
-- `my_location` — the user's location (e.g. `"Israel"`, `"Germany"`, `"EU"`). Used to assess whether a role is compatible.
-- `database_property` (legacy `notion_property`) — the name of the database field/property to write the result to (e.g. `"Israel Compatibility"`, `"Location Compatibility"`). May be any property name the user has set up in their tracker.
-
-If either key is absent or empty: **skip all location compatibility checks and writes** — do not write any location property to the database.
-
-**Result values** (written to the property named in `database_property`):
-- `Yes` — worldwide confirmed, no stated restrictions, OR fully remote with no geographic restriction in the JD or any research source. **Absence of explicit Israel confirmation is not a restriction.** Remote = Yes unless a positive restriction signal is found.
-- `Remote-maybe` — remote-advertised but carries a positive restriction signal worth investigating: a timezone mandate, work-authorization language, EOR status unknown, or other geographic qualifier that *might* affect `my_location` but is not conclusive. This value means "worth a one-line check" — not a yellow light on fit.
-- `No` — on-site outside `my_location`, or remote with a hard geographic restriction (e.g., "must hold US work authorization", "US residents only") that structurally excludes `my_location` with no identified exception path.
-
-**Default is `Yes`, not ambiguity.** Only downgrade if a positive restriction signal exists.
-
-- During **Quick Triage** (Step 2c): derive from JD text scan only — no active research. Fully remote with no stated restriction → `Yes`. A geographic qualifier in the text → `Remote-maybe`. A structural exclusion → `No`.
-- During **deep research** (Part 0 / Location deep-scan below): refine using multi-source evidence. The deep-scan result supersedes the triage result (write-only-to-empty rule still applies — if already written in triage, check whether the deep-scan conflicts and update accordingly).
+The per-install location-compatibility verdict property (`location_compatibility.database_property`, legacy `notion_property` — e.g. "Israel Compatibility") is retired: the coach no longer produces a Yes/Remote-maybe/No compatibility verdict and intake no longer writes any such property. `location_compatibility.my_location` **survives** — it still feeds the Location & eligibility deep-scan below, the outreach advocate selection, and `source-open-roles` sourcing. The deep-scan's location findings still flow into Priority scoring (Part 0's remote-geography weighting) and the `Location` property; they just no longer produce a separate compatibility verdict field.
 
 ---
 
@@ -177,8 +167,8 @@ Sources often say different things, and the disagreement is the most useful data
 
 1. **Scan for restriction signals across all sources:** stated location requirements, timezone mandates, work-authorization language, and crucially the REASON given for any restriction. "Primarily EST timezone for healthy overlap with European business hours" restricts very differently than "must hold US work authorization": the first is a rationale the user's location may satisfy better than the stated geography does; the second is structural.
 2. **Check exception paths** when a restriction signal exists: does the company hire through an EOR (Deel, Remote.com, Oyster)? Does it already hire in `my_location` or nearby? Does the stated rationale actually hold against `my_location`?
-3. **Output a Location block** in the research findings: sources and versions checked (name each, and say explicitly whether a second independent version was found), restriction signal found (or "none"), exception-path evidence (or "none found"), a confidence tag — `[HIGH]` only when ≥2 independent versions/sources agree; `[LOW]` when only one version was reachable or sources conflict and the conflict could not be resolved — and, when a restriction exists with a plausible path, a suggested ask-first action: a 2-line note to the named recruiter or People contact. A `[LOW]` location result is a "confirm before relying on it" flag, not a fit downgrade. This block feeds Priority scoring (Part 0) and `Role emphasis`.
-4. **Update location compatibility result** if the deep-scan finding differs from the triage assessment.
+3. **Output a Location block** in the research findings: sources and versions checked (name each, and say explicitly whether a second independent version was found), restriction signal found (or "none"), exception-path evidence (or "none found"), a confidence tag — `[HIGH]` only when ≥2 independent versions/sources agree; `[LOW]` when only one version was reachable or sources conflict and the conflict could not be resolved — and, when a restriction exists with a plausible path, a suggested ask-first action: a 2-line note to the named recruiter or People contact. A `[LOW]` location result is a "confirm before relying on it" flag, not a fit downgrade. This block feeds Priority scoring (Part 0).
+4. **"Unclear" is not a permitted terminal answer without dimension 9 (2026-07-23, per the user: "even if the role itself isn't clear — go figure out how and where the company operates").** Before reporting the role's location as unclear/ambiguous, run research dimension 9 (company operating locations) and derive a working hypothesis from where the company demonstrably operates. If the posting itself stays ambiguous: write the best supported value to `Location` when one source pattern clearly dominates, or write `Unknown` to `Location` AND return a `## Location Hypotheses` section for `Landscape` (see `coach-output.md`) carrying the operating-footprint-derived hypotheses. Never return a bare "location unclear" with no hypotheses.
 
 ---
 
@@ -219,7 +209,9 @@ This feeds into Priority scoring and `Role emphasis`.
 
 Step 0.5's fetch ladder already runs before you ever see this role, and it already captures a `Working URL` when the original Job URL failed and a fallback rung succeeded on a different URL. **This is a backstop for what that ladder didn't catch, not a repeat of it** — do not re-run the fetch ladder yourself.
 
-If, during your own research above, you independently notice that the original Job URL is stale, dead, or points at a materially different version of the role (e.g. a since-edited posting, a redirect to a generic careers page, or a listing that has clearly moved), **and** your research turned up a different URL you can confirm is the same role at the same company (matched on title and company, same standard the fetch ladder itself requires) — return it as `Corrected Job URL`. Omit this field entirely when the original URL was fine, or when you have no confirmed match for the same role; do not guess or substitute a similar-but-different posting.
+If, during your own research above, you independently notice that the original Job URL is stale, dead, or points at a materially different version of the role (e.g. a since-edited posting, a redirect to a generic careers page, or a listing that has clearly moved), **and** your research turned up a different URL you can confirm is the same role at the same company (matched on title and company, same standard the fetch ladder itself requires) — return it as `Corrected Job URL`. Omit this field when the original URL was fine, or when you have no confirmed match for the same role; do not guess or substitute a similar-but-different posting.
+
+**Broadened standard (2026-07-23, per the user: "when the coach does need to fetch from a different URL, then the coach should remove the existing Job URL and add in the one that works").** "Genuinely broken" is no longer the bar. Whenever the JD you actually worked from was obtained at a URL *different* from the saved `Job URL` — whether the ladder fell through, the original was auth-walled, or your own research surfaced the working version — return that working URL as `Corrected Job URL`. Same-role confirmation (title + company match) still required; intake remains the sole writer. The point: the tracked link must be the one agents can actually fetch, so every later pipeline event starts from a working URL.
 
 ### Post-research self-check
 
