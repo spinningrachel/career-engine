@@ -96,6 +96,35 @@
           "end": "## Step 0"
         }
       ]
+    },
+    {
+      "id": "jd-fetch-markers",
+      "_comment": "2026-08-12 (Anecdotes run): the two new Step 0.45/0.5 fetch markers must appear in every site that branches on a marker, or a no-JD or dead-cached role silently takes the live-fetch path. Sites: Step 0.5's marker list + JD Body write rule, Step 0.8 coach-complete JD Body condition, Step 0.9a confirmation pass, and the gatekeeper's presence check.",
+      "members": [
+        "no-public-jd",
+        "url-dead-cached-jd"
+      ],
+      "locations": [
+        {
+          "file": "skills/career-engine-intake/SKILL.md",
+          "start": "## Step 0.45",
+          "end": "## Step 0.6"
+        },
+        {
+          "file": "skills/career-engine-intake/SKILL.md",
+          "start": "## Step 0.8 — Career coach",
+          "end": "## Step 0.8.5"
+        },
+        {
+          "file": "skills/career-engine-intake/SKILL.md",
+          "start": "### 0.9a — Write coach outputs",
+          "end": "### 0.9b"
+        },
+        {
+          "file": "skills/gatekeeper-checks/coach-gates.md",
+          "start": "## Coach Output Check"
+        }
+      ]
     }
   ],
   "defined_terms": [
@@ -185,6 +214,27 @@
       "files": [
         "skills/career-engine-new-application/SKILL.md",
         "agents/letter-writer.md"
+      ]
+    },
+    {
+      "id": "term-user-note-precedence",
+      "_comment": "2026-08-12 (Anecdotes run): the user's own first-hand notes outrank any scraped posting. queue.md carries them under this exact heading; intake Step 0.45 writes it, the coach reads it, Coach Output Check item 13 enforces it. Renaming the heading in one file silently disables the gate.",
+      "term": "USER-STATED ROLE FACTS",
+      "files": [
+        "skills/career-engine-intake/SKILL.md",
+        "skills/career-coach/SKILL.md",
+        "skills/gatekeeper-checks/coach-gates.md"
+      ]
+    },
+    {
+      "id": "term-jd-liveness",
+      "_comment": "2026-08-12 (Anecdotes run): a cache-capable extractor proves a posting existed, never that it is live. Step 0.5 defines the check, coach-research.md carries the coach-side rule, Coach Output Check item 14 enforces it, role-prioritizer inherits it.",
+      "term": "liveness check",
+      "files": [
+        "skills/career-engine-intake/SKILL.md",
+        "skills/career-coach/coach-research.md",
+        "skills/gatekeeper-checks/coach-gates.md",
+        "agents/role-prioritizer.md"
       ]
     }
   ],

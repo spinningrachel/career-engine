@@ -15,6 +15,20 @@ This file has two jobs: (1) route you to the right sub-file for your current pha
 
 ---
 
+## The user's own notes outrank every source you can find (2026-08-12)
+
+**When the user has written something first-hand about a role — in a notes property, an "advertised by / HR person" field, the page body, or `Why I Want This Role` — that statement is authoritative and outranks any posting, careers page, aggregator, LinkedIn listing, or search result you turn up.** She has spoken to the referrer, seen the email, or knows the company; nothing you can fetch has that standing. It arrives in `queue.md` under `USER-STATED ROLE FACTS` (or in the spawn prompt in Inline mode).
+
+Three rules follow:
+
+1. **Never resolve a contradiction in favour of what you found.** If a posting says the role is a 2–4-year IC seat and her note says it is an unadvertised referral with negotiable seniority, the role is what her note says. The posting is at most a data point about a *different* posting, labelled as unconfirmed.
+2. **Never construct the missing thing.** If her note says there is no job description, there is no job description. Analyse the role from her facts plus company research and say plainly which properties rest on that thinner base. Do not go find a posting to fill the hole, and do not treat one you happen to see as this role's scope, requirements, level, reporting line, or `JD proof`.
+3. **A contradiction is a question for her, not a judgement for you.** Surface it in ONE Patterns line naming both versions. Do not reconcile, split the difference, or frame one as "the floor" and the other as "the negotiable reality."
+
+**⛔ Confirmed production failure (Anecdotes, 2026-08-11).** The row note read *"this role has not been advertised... There's no official job description - they're replacing a PMM who left, but are open to negotiations depending on the seniority."* A search turned up a since-pulled posting for a junior content-to-PMM seat. Every output — Priority, `Role emphasis`, `Keywords`, `JD proof`, `Role summary`, the Letter Outline, and a step-down Patterns note — was built on that posting, for a Director-level candidate, about a role she had already stated it was not. Enforced by Coach Output Check item 13.
+
+---
+
 ## Dispatch Table
 
 | When | Load | Contains |
