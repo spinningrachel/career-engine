@@ -85,6 +85,17 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-08-12 — User notes govern, and fetched JDs must be live
+
+**Bug fixes**
+- **The user's own notes now outrank anything the pipeline finds** — a new intake **Step 0.45** reads every user-authored note before the fetch ladder runs. A note saying the role is unadvertised, referral-only, or has no job description stops the ladder entirely (`no-public-jd`); any other first-hand note is written into `queue.md` under `USER-STATED ROLE FACTS (authoritative)`. No agent may resolve a note-vs-posting contradiction in the posting's favour — the posting is labelled unconfirmed, barred from deriving any strategic property, and surfaced to the user as a question. **Was broken:** a real run captured the note *"this role has not been advertised... There's no official job description"* verbatim, then instructed the coach to "treat the public JD as the posted scope," and built Priority, `Role emphasis`, `Keywords`, `JD proof`, `Role summary` and the Letter Outline on a junior posting the user had already said was not this role. Capturing a note was never the same as obeying it, and nothing made it authoritative.
+- **A fetched JD must be live, not cached** — Step 0.5 gains a mandatory liveness check: whenever a rendering-capable or index-backed extractor (Exa, Tavily, any crawl tool, any search snippet) returns JD content, the URL is re-resolved this run with a non-caching fetcher. A redirect to a careers index, a site root, or a 404 means the posting was **pulled** and the extractor served cache — the role is marked `url-dead-cached-jd`, is never `Fetched`, never writes `JD Body`, never yields a Job URL correction, and is flagged as possibly closed. The rationalization "the direct URL serves content while the index omits the role, so this is off-index hiring" is prohibited. **Was broken:** plain `WebFetch` returned the careers index (the live truth) and was logged as a failed fetch; Exa then returned a full JD from cache on the same URL and was accepted as proof the page resolved. The dead URL was written into a previously empty `Job URL` field as a "correction."
+- **Two new gatekeeper Coach Output Checks (items 13-14)** enforce both rules before anything reaches the tracker; `$PIPE/queue.md` is now passed to the gatekeeper so they are runnable. The intake capture list (which now collects the page body, not just properties), the Step 0b data-quality skip (which no longer drops a note-only referral role before the new gate can see it), the coach's own fallback fetch ladder and careers-page cross-check, `role-prioritizer`, `career-engine-edit`, and the QA parity manifest were all brought into line.
+
+**Improvements**
+- **A role with no Job URL is no longer dropped on a technicality** — Step 0.5 rule 3 previously marked any row with no URL and no `JD Body` as `needs-fetch` and dropped it, even though the company and title it carries are everything the ladder's search rungs need. Those rungs now run (under the full match guard and the new liveness check); the drop happens only if they find nothing. Unreachable for a `no-public-jd` role, by design.
+- **Two new Step 0.9b briefing lines** surface what the fixes catch: roles whose posting was pulled, and unresolved note-vs-posting contradictions — the latter asked as a plain question rather than decided by the run.
+
 ### 2026-07-29 — Career-shift scoring, prioritizer fetch discipline, First Advertised reliability
 
 **New features**
