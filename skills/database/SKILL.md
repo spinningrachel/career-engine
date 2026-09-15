@@ -21,12 +21,12 @@ Status is the single property that drives what the pipeline does with a role. Th
 | `New` | user (manual add, or any future sourcing pipeline) | True entry point — where a role sits immediately after being added, before Prioritization has touched it. Not yet triaged: no JD fetch, no location read, no priority score. **This is what the Prioritization pipeline fetches by default.** |
 | `Needs Research` | user, or Prioritization pipeline (on completion) | Being researched before a decision to apply. **NOT handled by the CV-writing pipeline.** Use the intake pipeline (`--coach-skills`) to research Needs Research roles. That pipeline runs the career coach, writes strategic properties, and promotes Needs Research roles to Researched. (Renamed from `Hold` — same meaning, same trigger, purely a label change.) |
 | `Interested` | user | The user has decided to apply. **This is what the New Application pipeline fetches.** Move a role from Needs Research → Interested (or add directly as Interested) when a CV and cover letter need to be produced. Intake does not process Interested roles — it only processes Needs Research roles. |
-| `Needs editing` | user | Queued for the editing pipeline. Pipeline starts from existing outputs — does not run fresh. |
+| `Needs Editing` | user | Queued for the editing pipeline. Pipeline starts from existing outputs — does not run fresh. |
 | `CV Ready for Review` | pipeline (on completion) | Pipeline finished; the user needs to review before sending. |
 | `Applied` | user | Sent. |
 | `Researched` | intake pipeline (on completion) | Coach has run market intelligence — competitive landscape, priority scoring, strategic properties. Role is ready for the user to decide whether to move to Interested. |
 
-**Pipeline reads:** Prioritization reads `New` (default) or `Needs Research` (on explicit request, e.g. to refresh a stale Priority before running full intake). Intake reads `Needs Research` (renamed from `Hold`). New Application reads `Interested`. Editing reads `Needs editing`. All other statuses — including `Researched` — are ignored by those pipelines.
+**Pipeline reads:** Prioritization reads `New` (default) or `Needs Research` (on explicit request, e.g. to refresh a stale Priority before running full intake). Intake reads `Needs Research` (renamed from `Hold`). New Application reads `Interested`. Editing reads `Needs Editing`. All other statuses — including `Researched` — are ignored by those pipelines.
 
 **The upstream pipelines are separate:**
 - Prioritization → cheap triage of **New** roles (optionally **Needs Research** roles on request) → sets Status to **Needs Research**

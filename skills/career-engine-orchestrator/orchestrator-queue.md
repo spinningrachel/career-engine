@@ -170,7 +170,7 @@ Load these skills in order before doing anything else. Do not begin processing u
 
 1. `database` — Status values, Priority values, and property ownership rules (backend-neutral pipeline concepts). Load before Step O1.
 2. `career-engine-new-application` — Steps 1 through 7: per-role CV writing, gatekeeper checks, reviews, cover letter (letter-writer), HM cover letter review, DOCX export (including Step 6H Hebrew), Notion writeback
-3. `career-engine-edit` — Steps E0 through E10: editing pipeline for `Needs editing` roles; starts from existing Notion row content, not from scratch
+3. `career-engine-edit` — Steps E0 through E10: editing pipeline for `Needs Editing` roles; starts from existing Notion row content, not from scratch
 4. `career-engine-export` — DOCX template styles, pandoc commands, file naming, `/tmp → output folder` copy protocol, page count verification
 
 ## Property Ownership
@@ -281,13 +281,13 @@ Run `career-engine-new-application` Steps 1 through 7 for each role in queue ord
 
 **Carry all resolved config vars into every role's execution.** The preflight set `$OUTPUT_FOLDER`, `$DRAFT_DIR_URL_BASE`, `$CV_TEMPLATE`, `$CV_TEMPLATE_BRIEF`, `$DEFAULT_LANGUAGE`, `$OUTPUT_DIR_PREFIX`, `$CAREER_DATA`, and `$NOTION_DATABASE_ID`. These must remain in scope through every step of new-application — including Step 7a (which builds the Draft Directory URL from `$DRAFT_DIR_URL_BASE`) and Step 6 (which uses `$CV_TEMPLATE`/`$CV_TEMPLATE_BRIEF`, selected per role by `career-engine-export/SKILL.md`'s CV-Type-conditional logic, and `$OUTPUT_FOLDER`). If any of these is unset when a step needs it, stop and report rather than silently defaulting or skipping.
 
-**Within this pipeline (New Applications), which track a role runs is determined by the user's chat command**, not by a Notion property she sets per-role — all `Interested` roles default to the standard cv pipeline unless the user specifies otherwise in chat. This orchestrator's Step O1 only ever fetches `Interested`-status roles, so `Needs editing` never appears as a live branch inside this per-role loop.
+**Within this pipeline (New Applications), which track a role runs is determined by the user's chat command**, not by a Notion property she sets per-role — all `Interested` roles default to the standard cv pipeline unless the user specifies otherwise in chat. This orchestrator's Step O1 only ever fetches `Interested`-status roles, so `Needs Editing` never appears as a live branch inside this per-role loop.
 
 | Pipeline | What runs | Deliverables |
 |---|---|---|
 | `New Applications` (default) | cv pipeline — Steps 1 through 7 per role, then orchestrator Step 8 once | CV DOCX + cover letter DOCX + feedback MD |
 | `--now` | fast track — see `orchestrator-modes.md` | CV DOCX + feedback MD + cover letter DOCX only if Why I Want This Role content is provided in chat |
-| `Needs editing` *(reference only — not a branch of this loop)* | career-engine-edit (separate skill, separate entry point) — Steps E0 through E10 | Updated CV DOCX + updated cover letter DOCX; starts from existing Notion outputs, not from scratch. Listed here for orientation only: this pipeline is invoked directly when the user says "edit CVs" or similar — it is never reached by this orchestrator's `Interested`-only Step O1 fetch, regardless of what Status a role happens to carry. |
+| `Needs Editing` *(reference only — not a branch of this loop)* | career-engine-edit (separate skill, separate entry point) — Steps E0 through E10 | Updated CV DOCX + updated cover letter DOCX; starts from existing Notion outputs, not from scratch. Listed here for orientation only: this pipeline is invoked directly when the user says "edit CVs" or similar — it is never reached by this orchestrator's `Interested`-only Step O1 fetch, regardless of what Status a role happens to carry. |
 
 The JD for each role was already in Notion (`JD Body`) when fetched in Step O1. Pass it directly to per-role sub-agents — do not re-fetch.
 

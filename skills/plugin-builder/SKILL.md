@@ -98,20 +98,10 @@ Do not write "regression checks: N/A." Every edit touches at least one file; eve
 After QA passes, rebuild the plugin:
 
 ```bash
-cd <repo-root>
-python3 -c "
-import zipfile, os
-exclude = {'.git', 'docs', '.mcpb-cache', '.claude', '__pycache__', '.DS_Store', '.in_use'}
-with zipfile.ZipFile('career-engine.plugin', 'w', zipfile.ZIP_STORED) as zf:
-    for root, dirs, files in os.walk('.'):
-        dirs[:] = [d for d in dirs if d not in exclude]
-        for file in files:
-            if file in exclude or file.endswith('.plugin'):
-                continue
-            zf.write(os.path.join(root, file), os.path.join(root, file)[2:])
-print('Done.')
-"
+bash scripts/build-plugin.sh
 ```
+
+That is the whole build (2026-08-12 — it replaced a hand-copied `python3 -c` snippet, which had already drifted out of sync with `CLAUDE.md`'s copy: this file's version was missing the `update-prompt-*.md` and `session.jsonl` exclusions entirely, so a build run from these instructions would have zipped personal files straight into the shipped artifact). The script scans the tree, builds, then re-opens the finished zip and scans **what actually ships** — and refuses to leave you a shippable artifact if any of the three steps trips. See CLAUDE.md → Packaging and → Personal data never enters this repo.
 
 Confirm `career-engine.plugin` was produced and its timestamp is current. Do not report the session complete until the rebuilt `.plugin` exists.
 

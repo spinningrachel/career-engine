@@ -175,7 +175,7 @@ For all other unscored roles:
 
 Once the JD is obtained, lock down the full verbatim text before any analysis. Write to Notion for freshly fetched roles only (skip for `content-exists`):
 - `JD Body` — full verbatim JD text, cleaned of navigation chrome
-- `JD Fetch Status` — `Fetched`, `LinkedIn-blocked`, or `Unfetchable`
+- `JD Fetch Status` — `Fetched`, `LinkedIn-blocked`, `Unfetchable`, or `Manual-entry` (the user pasted the JD in herself, evidenced by a populated `JD Body` you did not just fetch). This list must stay in parity with `skills/career-coach/coach-analysis.md`'s; it omitted `Manual-entry` until 2026-08-13, which made a legitimate value look invalid. Always validate against the database's own schema option list before writing — a user's tracker may carry extra options this list does not name. **`Manual-entry` is coach-only, deliberately absent from `agents/role-prioritizer.md`'s three-value list** — Prioritization is a non-interactive cheap-triage pass with no mechanism for the user to paste JD text in mid-run, so it never has grounds to distinguish a manual paste from a fetch; when its `content-exists` reuse path finds an already-populated `JD Body` of unknown origin, it leaves `JD Fetch Status` as-is rather than overwriting it to `Fetched` (see `role-prioritizer.md` Step 2 item 5).
 
 ### Analysis
 
@@ -405,4 +405,6 @@ ISSUES: none
 
 **Output:** A complete update prompt the user can paste into Claude Chat or Claude Code, using the same structure as the pipeline-generated update prompts (defined in `skills/career-engine-new-application/SKILL.md` Step 7f). The fixed context block is identical every time. The variable content block describes exactly what to add, modify, or correct — with the target file, target section, and the verbatim content to write. Include the dual-environment note: if the user runs both Chat and Code (or Cowork), they must paste the prompt in each environment separately.
 
-**No Notion writeback. No direct file writes.**
+**Where the file goes (2026-08-12, per the user: "this kind of stuff should never ever be stored here").** An update prompt carries her personal career data, so it is written to `<output_folder>/_career-data-updates/update-prompt-<topic>-<YYYYMMDD>.md` — `output_folder` resolved from `${CAREER_DATA}/references/pipeline-preferences.json` (R-37). **Never write it inside the plugin repo, under `${CLAUDE_PLUGIN_ROOT}`, or to the current working directory** — in a plugin-development session the working directory IS the repo, which is how three of these accumulated at its root. If `output_folder` cannot be resolved, ask her where to put the file rather than defaulting to cwd. Full rule: `${CLAUDE_PLUGIN_ROOT}/references/career-data-update-prompt-format.md`.
+
+**No Notion writeback. No direct file writes** (to career-data — the update prompt itself is this mode's own output file, written to the path above).

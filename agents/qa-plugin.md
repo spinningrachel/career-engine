@@ -243,13 +243,43 @@ Check that:
 
 ---
 
-### Check 6e — No personal output files tracked in the repo
+### Check 6e — No personal data anywhere in the repo (scanner-backed since 2026-08-12)
 
-Update-prompt files and any other pipeline-generated output with personal content must never be committed to the repo. Scan the working tree and the git index:
+Run the scanner first — it is the same one the pre-commit hook and the build script use, so a discrepancy between them is itself a finding:
 
 ```bash
-# Untracked personal output files in the working tree
-find <repo-root> -maxdepth 1 -name "update-prompt-*.md" 2>/dev/null
+bash <repo-root>/scripts/scan-personal-data.sh
+```
+
+It detects the *shape* of personal data (home paths, real emails, 32-hex tracker IDs, LinkedIn profile URLs, iCloud paths, access-bearing share links) plus stray `update-prompt-*.md` anywhere in the tree, with an allowlist for genuinely-public values.
+
+**Also verify the guards themselves are in place** — the leak history is a history of guards being absent, not of the rule being unknown:
+
+```bash
+# Layer 1 — the PreToolUse block hook is wired and executable
+grep -q "block-personal-data-writes.sh" <repo-root>/hooks/hooks.json && test -x <repo-root>/scripts/block-personal-data-writes.sh
+
+# Layer 2 — pre-commit calls the scanner, and is actually installed in THIS clone
+grep -q "scan-personal-data.sh" <repo-root>/scripts/check-invariants.sh
+test -e <repo-root>/.git/hooks/pre-commit
+
+# Layer 3 — the build script exists and is the documented build in both places
+test -x <repo-root>/scripts/build-plugin.sh
+grep -q "build-plugin.sh" <repo-root>/CLAUDE.md <repo-root>/skills/plugin-builder/SKILL.md
+```
+
+**FAIL** if the scanner reports anything, if any guard above is missing, or if `CLAUDE.md` and `skills/plugin-builder/SKILL.md` document different build commands (they drifted once — plugin-builder's copy was missing the `update-prompt-*.md` exclusion entirely).
+
+Report a missing `.git/hooks/pre-commit` as a finding even though it is local-only and not committable — it was missing from the maintainer's own clone throughout the period when personal files were accumulating, and the fix is one command:
+`ln -sf ../../scripts/check-invariants.sh .git/hooks/pre-commit`
+
+Then the legacy explicit checks, which stay because they name the exact failure that shipped:
+
+```bash
+# Untracked personal output files anywhere in the repo — not just the root.
+# The ban covers the whole repo; -maxdepth 1 only ever covered its root, so a write
+# into references/ or skills/ was banned by doctrine and invisible to this check.
+find <repo-root> -name "update-prompt-*.md" -not -path "*/.git/*" 2>/dev/null
 
 # Tracked in git index (catches files that were committed and not yet removed)
 git -C <repo-root> ls-files "update-prompt-*.md"
@@ -1113,7 +1143,7 @@ This is the closest achievable equivalent to a sandboxed execution. You cannot c
 - All coach properties: empty
 
 **Edit trace role:**
-- Same as above, but Status: Needs editing, Edit type: (not set)
+- Same as above, but Status: Needs Editing, Edit type: (not set)
 
 **Orchestrator trace queue:**
 - 5 roles: AlphaCo (P1), BetaInc (P1), GammaSoft (P1), DeltaCorp (P2), EpsilonAI (P2)

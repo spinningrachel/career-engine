@@ -49,6 +49,17 @@ if ! python3 "$REPO/scripts/qa-parity.py" "$REPO" >/dev/null 2>&1; then
   fail "qa-parity relational checks failed — diagnose with: python3 scripts/qa-parity.py ."
 fi
 
+# Personal-data guard (second of three layers; the PreToolUse hook is the first and
+# the QA agent's scan is the third). Scans the staged set plus the whole working tree
+# for stray personal output files. This is the layer that catches a personal value
+# written by something the hook does not see — a shell heredoc, a script, a git mv.
+if ! bash "$REPO/scripts/scan-personal-data.sh" --staged >/dev/null 2>&1; then
+  fail "personal data detected in staged files — diagnose with: bash scripts/scan-personal-data.sh --staged"
+fi
+if ! bash "$REPO/scripts/scan-personal-data.sh" >/dev/null 2>&1; then
+  fail "personal data detected in the working tree — diagnose with: bash scripts/scan-personal-data.sh"
+fi
+
 if [ ${#ERRORS[@]} -gt 0 ]; then
   echo "❌ Invariant check failed — fix before committing:"
   printf '  - %s\n' "${ERRORS[@]}"

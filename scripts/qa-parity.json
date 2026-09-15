@@ -125,6 +125,36 @@
           "start": "## Coach Output Check"
         }
       ]
+    },
+    {
+      "id": "startup-jobs-tools",
+      "members": [
+        "mcp__startup-jobs__search_jobs",
+        "mcp__startup-jobs__get_job",
+        "mcp__startup-jobs__list_countries"
+      ],
+      "locations": [
+        {
+          "file": "agents/source-open-roles.md",
+          "start": "tools: Read",
+          "end": "# Source Open Roles"
+        },
+        {
+          "file": "references/job-sourcing-mcp-registry.md"
+        },
+        {
+          "file": "skills/source-open-roles/SKILL.md",
+          "start": "### Startup / tech sites",
+          "skip_members": [
+            "mcp__startup-jobs__list_countries"
+          ]
+        },
+        {
+          "file": "CONNECTORS.md",
+          "start": "### startup.jobs MCP"
+        }
+      ],
+      "_comment": "2026-09-10: every startup-jobs MCP tool named as in-use anywhere (Site Catalog, registry, CONNECTORS.md) must also appear in the agent's own tools: frontmatter grant — a subagent's tool access is a static allowlist, so a tool named everywhere but there can never actually be called. This is the exact gap the first QA pass on this feature caught. SKILL.md's Site Catalog row only needs the two fetch tools (search_jobs/get_job) — the canary name itself is deliberately generic there (see the Job-Sourcing MCP Registry section), named explicitly only in the agent frontmatter, the registry's Canary column, and CONNECTORS.md."
     }
   ],
   "defined_terms": [
@@ -236,6 +266,38 @@
         "skills/gatekeeper-checks/coach-gates.md",
         "agents/role-prioritizer.md"
       ]
+    },
+    {
+      "id": "term-adhoc-update-prompt-path",
+      "_comment": "2026-08-12: ad-hoc career-data update prompts carry personal data and go to <output_folder>/_career-data-updates/, never the plugin repo or cwd. The literal directory name is cited by the format file (source of truth), all three ad-hoc generators, and the CLAUDE.md contract row — renaming it in one place silently breaks the others.",
+      "term": "_career-data-updates",
+      "files": [
+        "references/career-data-update-prompt-format.md",
+        "agents/career-coach.md",
+        "agents/source-open-roles.md",
+        "skills/career-engine-setup/SKILL.md",
+        "CLAUDE.md"
+      ]
+    },
+    {
+      "id": "term-job-sourcing-mcp-wired-in",
+      "term": "Wired-in",
+      "files": [
+        "references/job-sourcing-mcp-registry.md",
+        "skills/source-open-roles/SKILL.md",
+        "agents/source-open-roles.md",
+        "CLAUDE.md"
+      ],
+      "_comment": "2026-09-10: the job-sourcing MCP registry's four-part Wired-in definition (confirmed tool name + recorded Canary + Site Catalog gate + tools: frontmatter grant, canary included) must be restated consistently, not just mention the word — this is a presence tripwire, not a semantic check; a QA judgment pass still has to verify the definitions actually agree. Canonical definition lives in references/job-sourcing-mcp-registry.md's 'Two statuses'."
+    },
+    {
+      "id": "term-manual-entry-coach-only",
+      "term": "Manual-entry",
+      "files": [
+        "agents/career-coach.md",
+        "skills/career-coach/coach-analysis.md"
+      ],
+      "_comment": "2026-09-15: JD Fetch Status's Manual-entry value must stay defined in both coach-side files (added 2026-08-13, once already missed from one of the two). Deliberately NOT required in agents/role-prioritizer.md — that agent's three-value list (Fetched/LinkedIn-blocked/Unfetchable) is correct as-is; Prioritization has no interactive path to produce Manual-entry. See career-coach.md's parity note."
     }
   ],
   "context_sets": [

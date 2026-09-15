@@ -76,7 +76,7 @@ If a `state.json` exists in the most recent run folder and a role is marked `com
 
 **When to process from scratch:** If no `state.json` exists, or a role does not appear in it as `completed`, run the full pipeline for that role from the beginning. `Interested` roles not in `state.json` always run fresh.
 
-`Needs editing` → always run the editing pipeline using whatever is in the Notion entry. state.json is not used for the editing pipeline.
+`Needs Editing` → always run the editing pipeline using whatever is in the Notion entry. state.json is not used for the editing pipeline.
 
 ---
 
