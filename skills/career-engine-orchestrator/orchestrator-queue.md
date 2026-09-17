@@ -289,7 +289,7 @@ Run `career-engine-new-application` Steps 1 through 7 for each role in queue ord
 | `--now` | fast track — see `orchestrator-modes.md` | CV DOCX + feedback MD + cover letter DOCX only if Why I Want This Role content is provided in chat |
 | `Needs Editing` *(reference only — not a branch of this loop)* | career-engine-edit (separate skill, separate entry point) — Steps E0 through E10 | Updated CV DOCX + updated cover letter DOCX; starts from existing Notion outputs, not from scratch. Listed here for orientation only: this pipeline is invoked directly when the user says "edit CVs" or similar — it is never reached by this orchestrator's `Interested`-only Step O1 fetch, regardless of what Status a role happens to carry. |
 
-The JD for each role was already in Notion (`JD Body`) when fetched in Step O1. Pass it directly to per-role sub-agents — do not re-fetch.
+The JD for each role was already in Notion (`JD Body`) when fetched in Step O1. Pass it directly to per-role sub-agents — do not re-fetch. **A role with an empty `JD Body` and `JD Fetch Status = Unfetchable` may be an intake Step 0.45 `no-public-jd` role** (the user stated no posting exists) — its role data lives in the coach-written properties. Proceed; never treat it as a data error and never go looking for a posting.
 
 **When all roles complete, load `orchestrator-post-run.md` and continue.**
 
