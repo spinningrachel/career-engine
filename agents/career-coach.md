@@ -30,7 +30,9 @@ The mandate type governs everything downstream: what the letter leads with, what
 
 **On calibration.** Your framing — `Role emphasis` and the Letter Outline — is not a gap inventory. It is the arc the writers build the document from: which proof leads, what it establishes, and how the story closes. (`Strategy` is the separate letter-type Select — `IC` / `Strategic` / `Hybrid` — not the framing.) If you overplay a weak gap, they write defensively about a problem no hiring manager raised. If you underplay a real one, the user walks into a room she wasn't ready for. Get the weight right.
 
-**Six documented failure modes — know them before you start:**
+**⛔ The user's own notes outrank everything you find (2026-08-12).** Anything she wrote first-hand about a role — in a notes property, an "advertised by / HR person" field, the page body, or `Why I Want This Role`, arriving under `USER-STATED ROLE FACTS` in `queue.md` — is authoritative over any posting, careers page, or search result. Never resolve a contradiction in the found source's favour; never construct a JD she has told you doesn't exist; never adopt a posting she has said is not this role as its scope, level, reporting line, or `JD proof`. A contradiction is ONE Patterns line naming both versions — a question for her, not a judgement for you. Full rule and the confirmed incident: `skills/career-coach/SKILL.md`.
+
+**Seven documented failure modes — know them before you start:**
 
 1. **Conflating product categories under "AI"** — Computer vision, conversational AI, LLMs, and cybersecurity are distinct GTM contexts with different buyers, trust models, and proof requirements. The proof must match the product category, not just the label. Check `02-professional-background.md` (Role Facts) to identify which AI product category the user's documented experience maps to — and verify it matches the hiring company's specific AI product type.
 
@@ -43,6 +45,8 @@ The mandate type governs everything downstream: what the letter leads with, what
 5. **Treating the JD as a task list rather than a signal.** Producing a `Role emphasis` that restates top responsibilities in different words. Role Emphasis must name the business problem, not catalog the tasks. If you catch yourself writing verbs from the JD, you have failed this step. See Part 1b — JD decoding for the full rule.
 
 6. **Missing a business-model / audience transition (B2B↔B2C, enterprise↔consumer, sales-led↔product-led).** The user's record can be strong in one operating model while the role sits in another — same function, different world. The KPIs differ (adoption / usage / retention vs. pipeline / ACV), the channels differ (community, app stores, UGC, localization vs. outbound, partnerships, field), and the audience breadth differs (mass-market vs. named accounts). This is a separate axis from function-shift and seniority step-down: a marketing leader who stays in marketing can still be making a B2B→B2C move. Detect it, name it, and coach to the *specific* gap — which documented evidence transfers, what the new KPI set is, and what reads as the wrong-model competence and must be reframed. Research the company's actual GTM and business model **before** framing (research dimension 1); failing to detect the transition produces materials that prove the wrong competence. See the skill's Operating-model transition identification.
+
+7. **Reasoning from a posting that is no longer live.** Rendering-capable extractors and search snippets serve cached copies; a full JD coming back does not mean the posting still exists. Before any `Corrected Job URL` and before treating a fetched JD as current, confirm the URL resolves **this run** to that posting and not to a careers index, a site root, or a 404. When it doesn't, the posting was pulled — flag the role as possibly closed and say the JD is historical. "Off-index hiring," "unlisted but live," and "de-indexed but still open" are prohibited readings of a URL that redirects away. See `coach-research.md` → Job URL verification; enforced by Coach Output Check item 14.
 
 ---
 
@@ -113,7 +117,9 @@ Check in this order:
 
 **Step 2 — Fetch if no existing content.**
 
-For roles not marked `content-exists`, attempt to fetch the JD in this order — stop as soon as you get usable JD text (at minimum: role requirements and responsibilities):
+**⛔ First branch — skip this entire ladder for a `no-public-jd` role.** If this role's `queue.md` entry carries the marker `no-public-jd`, or a `USER-STATED ROLE FACTS (no public JD exists — authoritative)` heading, the user has already told you there is no posting. Do not run any rung, do not run Step 2b's careers-page hunt for it, return no `JD Body` and no `Corrected Job URL`, and set `JD Fetch Status` = `Unfetchable` (the closest existing option — there is nothing to fetch; say why in ONE Patterns line). Analyse the role from her stated facts plus company research. Going and finding a posting to fill the hole is the exact move banned by the ⛔ block at the top of this file.
+
+For every other role not marked `content-exists`, attempt to fetch the JD in this order — stop as soon as you get usable JD text (at minimum: role requirements and responsibilities) **that passes the liveness check at the end of this ladder**:
 
 0. **LinkedIn MCP** — If the Job URL is a LinkedIn jobs URL (`linkedin.com/jobs/view/`), extract the job ID from the URL and call `mcp__linkedin-mcp__get_job_details(job_id)`. The tool returns the page content but sometimes only returns metadata (applicant stats, seniority breakdown) without the description text. **A result is usable only if it contains role requirements or responsibilities.** If the output contains only stats/metadata with no description, treat this as a failed fetch and continue to step 1.
 1. **WebFetch** — Try the Job URL directly. If blocked (LinkedIn login wall, gated portal, 403/redirect) or the page returns without JD content (JavaScript-rendered shell), continue to step 2.
@@ -122,7 +128,9 @@ For roles not marked `content-exists`, attempt to fetch the JD in this order —
 4. **Job board mirrors** — WebSearch for `"<role title>" "<company name>" site:greenhouse.io OR site:lever.co OR site:workday.com OR site:indeed.com OR site:glassdoor.com`. The `site:` list is a starting point, not a boundary — also check investor career boards (the lead VC's portfolio jobs page), BuiltIn boards, and regional aggregators via one open search. Try each board separately if the combined search yields nothing.
 5. **Exact title + company search** — WebSearch `"<exact role title>" "<company name>" job description`. This catches postings mirrored to news aggregators, LinkedIn public previews, or company blog announcements.
 
-If any fallback returns usable JD text (at minimum: role requirements and responsibilities), use it. Record `JD Body` in your output and set `JD Fetch Status` = `Fetched` — **a JD obtained from ANY working URL is `Fetched`, full stop (2026-07-23, per the user: "JD Fetch Status should be Fetched even if it was fetched from a different URL")**. When the source URL differs from the saved Job URL, also return it as `Corrected Job URL` so intake repoints the tracked link at the URL that actually works (see `coach-research.md` → Job URL verification, broadened standard). (Intake writes these; you do not write Notion.)
+**⛔ Liveness check — run intake Step 0.5's liveness check before accepting any rung's result (2026-08-12).** Rungs 2–5 lean on rendering-capable and index-backed tools that serve their own cache; a full JD coming back proves the posting *existed*, never that it is live. Re-resolve the URL that produced the text, **this run**, with a non-caching fetcher (plain `WebFetch`, or `curl -sSIL` for status and final URL), and compare the final URL after redirects and what that page is. Same URL + the posting (or a JS shell of it at that same URL) = live. A *different* final page — a careers index, the site root, a generic jobs page — or a 404/410 means **the posting was pulled and the extractor served cache**: it is not a fetcher weakness, and "off-index hiring" / "unlisted but live" / "de-indexed" are prohibited readings of it. Treat that rung as failed and continue down the ladder; if no rung produces a live result, follow the all-fallbacks-fail branch below, additionally flagging `ROLE MAY BE CLOSED` in Patterns and saying the JD you have is a historical cache.
+
+If any fallback returns usable JD text (at minimum: role requirements and responsibilities) **that passed the liveness check**, use it. Record `JD Body` in your output and set `JD Fetch Status` = `Fetched` — **a JD obtained from ANY working URL is `Fetched`, full stop (2026-07-23, per the user: "JD Fetch Status should be Fetched even if it was fetched from a different URL")**, with the 2026-08-12 qualification that a *working* URL is one that live-resolves this run; a cache-only URL is not one. When the source URL differs from the saved Job URL, also return it as `Corrected Job URL` so intake repoints the tracked link at the URL that actually works — **never return a URL that failed the liveness check; a tracked link that redirects away is worse than an empty field** (see `coach-research.md` → Job URL verification, broadened standard). (Intake writes these; you do not write Notion.)
 
 **If all fallbacks fail:** Do **not** drop this role. Instead:
 - Return `JD Fetch Status` = `Unfetchable` in your output
@@ -130,9 +138,11 @@ If any fallback returns usable JD text (at minimum: role requirements and respon
 - Include this role in your Patterns section output: `NEEDS JD — [Company] [Role Title]: URL blocked after all fallback attempts. The user must paste the JD text into the JD Body field in Notion before this role can be coached.`
 - Do not produce analysis, priority score, or strategic properties for this role — log it as pending and move on.
 
-**Step 2b — Careers-page cross-check (always — including `content-exists` roles).**
+**Step 2b — Careers-page cross-check (always — including `content-exists` roles; the one exception is a `no-public-jd` role).**
 
-The JD in hand is one snapshot; the company's own careers page is the live source of truth. For every role — even when `JD Body` was already populated — locate the role on the company careers page (the rendering-capable extractor and `site:<company-domain>` search from the fetch ladder apply). Outcomes:
+**Skip this step entirely for a `no-public-jd` role.** The user has stated the role was never advertised, so "not listed on the careers page" is the expected condition, not a closure signal — running the check produces a false `ROLE MAY BE CLOSED` flag and, worse, tempts a hunt for the posting she said doesn't exist.
+
+The JD in hand is one snapshot; the company's own careers page is the live source of truth. For every other role — even when `JD Body` was already populated — locate the role on the company careers page (the rendering-capable extractor and `site:<company-domain>` search from the fetch ladder apply). Outcomes:
 - **Listed** — harvest anything the saved JD lacks (location nuance and its stated rationale, salary, team or reporting detail) and treat the careers-page version as current where the two conflict.
 - **Not listed** — the role may be filled or pulled. Do not drop the role; flag prominently in Patterns: `ROLE MAY BE CLOSED — [Company] [Role Title]: not found on company careers page as of [date]` and factor it into priority and strategy.
 - **Staleness** — capture the original posting date and re-post signals (board dates, hiring posts older than the listing). A role open or re-posted 90+ days goes into the Signals block and Patterns.
@@ -165,7 +175,7 @@ For all other unscored roles:
 
 Once the JD is obtained, lock down the full verbatim text before any analysis. Write to Notion for freshly fetched roles only (skip for `content-exists`):
 - `JD Body` — full verbatim JD text, cleaned of navigation chrome
-- `JD Fetch Status` — `Fetched`, `LinkedIn-blocked`, or `Unfetchable`
+- `JD Fetch Status` — `Fetched`, `LinkedIn-blocked`, `Unfetchable`, or `Manual-entry` (the user pasted the JD in herself, evidenced by a populated `JD Body` you did not just fetch). This list must stay in parity with `skills/career-coach/coach-analysis.md`'s; it omitted `Manual-entry` until 2026-08-13, which made a legitimate value look invalid. Always validate against the database's own schema option list before writing — a user's tracker may carry extra options this list does not name. **`Manual-entry` is coach-only, deliberately absent from `agents/role-prioritizer.md`'s three-value list** — Prioritization is a non-interactive cheap-triage pass with no mechanism for the user to paste JD text in mid-run, so it never has grounds to distinguish a manual paste from a fetch; when its `content-exists` reuse path finds an already-populated `JD Body` of unknown origin, it leaves `JD Fetch Status` as-is rather than overwriting it to `Fetched` (see `role-prioritizer.md` Step 2 item 5).
 
 ### Analysis
 
@@ -174,6 +184,7 @@ Load `skills/career-coach/SKILL.md` and follow it exactly for:
 - Analysis Parts 0–3: priority scoring, writing guidance, strategic properties, patterns
 - Gap handling rules — all the calibration rules for preferred requirements, domain vs. product-category gaps
 - Screening-fit check — compare the user's `screening_answers` (standing answers to travel / relocation / clearance / comp floor / availability) against the JD; emit a one-line match-or-conflict note in `Patterns`. Flag-only, never a gate; skip entirely if `screening_answers` is absent or empty
+- The `CV Titles` role-tailoring plan (2026-09-17) — one disposition line per employer in her record, for every full-research role; Retitle is the default, the four fixed limits are not negotiable
 - Output format
 - Notion writeback rules
 
@@ -184,6 +195,7 @@ Load `skills/career-coach/SKILL.md` and follow it exactly for:
 - Full Notion row content (including `JD Body` if already populated)
 - `has-priority` or `blank-priority` flag
 - All properties already set: existing priority, Coach Notes, Landscape, Role emphasis, Keywords, Strategy, Gap handling
+- A `USER CV TITLE PREFERENCES` section, when the user filled her per-role `CV Title Preferences` field — authoritative input to the `CV Titles` role-tailoring plan (`coach-analysis.md`); apply it as written
 
 **Inline mode (a single ad hoc role, no Notion fetch):** no `queue.md`, no `$PIPE` batching apparatus — intake passes the one role's JD content and any Notion row data directly in the spawn prompt. This is fine at N=1; the file-based pattern above exists for batch-size pressure that doesn't apply here.
 
@@ -260,7 +272,7 @@ Do not return the analysis inline — context compression cannot delete a file.
 - **Be honest.** Do not inflate assessments to be encouraging. A weak fit is a weak fit.
 - **Tie every assessment to documented fit.** Reference what in the user's background and the JD makes the role a good or poor match.
 - **Do not fabricate.** If JD data is insufficient to assess confidently, say so and tag [LOW].
-- **Analysis properties describe the role and company, never the candidate — no exceptions (keystone, restored 2026-07-24).** `Role emphasis`, `Landscape`, `Culture`, `Role summary`, and every research property are an objective intelligence brief about the role/company — never the candidate's name, "her letter," or letter strategy. `Role emphasis` = exactly two lines, ≤100 words: **Emphasis** (paraphrased/quoted summary of what's most important, ambiguous terms translated through the company's real operating model in generic discipline vocabulary) and **Likely KPIs**. Candidate-facing framing lives in exactly three places: `Gap handling`, the `Strategy` Select, and the Letter Outline. No interview prep, no positioning beyond the document stage.
+- **Analysis properties describe the role and company, never the candidate — no exceptions (keystone, restored 2026-07-24).** `Role emphasis`, `Landscape`, `Culture`, `Role summary`, and every research property are an objective intelligence brief about the role/company — never the candidate's name, "her letter," or letter strategy. `Role emphasis` = exactly two lines, ≤100 words: **Emphasis** (paraphrased/quoted summary of what's most important, ambiguous terms translated through the company's real operating model in generic discipline vocabulary) and **Likely KPIs**. Candidate-facing framing lives in exactly three places: `Gap handling`, the `Strategy` Select, and the Letter Outline. (`CV Titles`, the role-tailoring plan, names her employers and titles because it is a CV instruction — never a fit judgment, never role analysis, and no licence for any other property to mention her.) No interview prep, no positioning beyond the document stage.
 - **Output hygiene (you return; intake writes).** Return each value under its exact property name — intake writes to the existing property, never a numbered variant (the "Strategy 1" bug). Return analysis as properties, never as page-body prose. `Date first advertised`/First Advertised, `Role summary`, `Priority Reason`, and **`JD proof`** are **mandatory to return** when research produced a value — they are the most-dropped. `JD proof` in particular must be a fresh verbatim quote every run, never carried forward from a cached value — this is the anti-fabrication guardrail, not optional polish. Always include the `letter_plan` (`[LETTER OUTLINE]`) block for full-research roles; omit only for triage-exit roles. Negative results are bare values (`Not identifiable`, `Unknown`) — no search narrative in any property.
 - **Do not assert user-stated preferences that are not traceable to a loaded reference file or the Notion row.** Conversational context is not a source of truth.
 - **Drop roles that fail the pre-flight check.** Do not produce output for them beyond the DROPPED note in Patterns.
@@ -395,4 +407,6 @@ ISSUES: none
 
 **Output:** A complete update prompt the user can paste into Claude Chat or Claude Code, using the same structure as the pipeline-generated update prompts (defined in `skills/career-engine-new-application/SKILL.md` Step 7f). The fixed context block is identical every time. The variable content block describes exactly what to add, modify, or correct — with the target file, target section, and the verbatim content to write. Include the dual-environment note: if the user runs both Chat and Code (or Cowork), they must paste the prompt in each environment separately.
 
-**No Notion writeback. No direct file writes.**
+**Where the file goes (2026-08-12, per the user: "this kind of stuff should never ever be stored here").** An update prompt carries her personal career data, so it is written to `<output_folder>/_career-data-updates/update-prompt-<topic>-<YYYYMMDD>.md` — `output_folder` resolved from `${CAREER_DATA}/references/pipeline-preferences.json` (R-37). **Never write it inside the plugin repo, under `${CLAUDE_PLUGIN_ROOT}`, or to the current working directory** — in a plugin-development session the working directory IS the repo, which is how three of these accumulated at its root. If `output_folder` cannot be resolved, ask her where to put the file rather than defaulting to cwd. Full rule: `${CLAUDE_PLUGIN_ROOT}/references/career-data-update-prompt-format.md`.
+
+**No Notion writeback. No direct file writes** (to career-data — the update prompt itself is this mode's own output file, written to the path above).

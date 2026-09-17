@@ -19,7 +19,7 @@ loads only the check it was asked to run. Gate numbers are preserved verbatim.
 
 | Sub-file | Check | Load when the spawn prompt says |
 |---|---|---|
-| `cv-gates.md` | CV Check (Gates 0–5) | "CV Check" |
+| `cv-gates.md` | CV Check (Gates 0–6) | "CV Check" |
 | `letter-gates.md` | Cover Letter Check (Gates 1–9 + Grading and Pass Threshold) | "Cover Letter Check" |
 | `coach-gates.md` | Coach Output Check | "Coach Output Check" |
 

@@ -1,4 +1,4 @@
-# Writer Craft — [CV] CV Rules (§5, §5b, §6)
+# Writer Craft — [CV] CV Rules (§5, §5b, §5c, §6, §6b)
 
 > Moved verbatim from `skills/writer-craft/SKILL.md` on 2026-07-22 (context-diet split). Section numbers (§) are preserved from the consolidated doctrine; `SKILL.md` is now the routing file. No rule was changed or removed in the move.
 
@@ -54,6 +54,41 @@ The one-page, two-column condensed CV Type. Correctness rules for this shape onl
 **Approved bullets — read the Brief-labeled subsection, never derive from Detailed's.** `background-approved-bullets.md` carries adjacent `Detailed: Approved bullets` / `Brief: Approved bullets` subsections per company. Read only `Brief: Approved bullets` when drafting this CV Type. If that subsection is empty (not yet curated for this company), write fresh bullets from the role-facts files — same fabrication discipline as always, never lengthen or split a Detailed bullet into a "Brief version" as a substitute for reading the actual Brief-curated content.
 
 **Bullet-writing doctrine — same rules as §6, shorter.** Brief reuses Detailed's outcomes-first, XYZ-formula content rules (§6, below) exactly — no new bullet philosophy, just tighter word budgets per bullet given the space constraint.
+
+---
+
+## [CV] §5c — Role Tailoring: titles, folded roles, level (applies to both Detailed and Brief)
+
+Added 2026-09-17, per the user's direct instruction after peer feedback on a real application: "Each CV is tailored for the relevant role... For all roles with any related experience, the role title should be adjusted to match the role the person is applying to. All other roles should be skipped and/or should take up far less space in the CV... we do need to be careful to not cross the line from tailoring to lying or hiding."
+
+**The premise.** The CV is an argument that this person has already done this job. Assume she has the right experience; the CV's work is to make that visible in ten seconds. A title that names a different function makes a recruiter stop reading before the bullets can prove anything.
+
+**The role-tailoring plan governs.** During intake the coach writes a per-role plan to the `CV Titles` property (the user reviews and may edit it in her tracker; her ad-hoc wishes live in her own `CV Title Preferences` field). The pipeline hands both to you as `CV_TITLES_PATH`. **When a plan is present, execute it verbatim** — every title, every disposition, the stated level. Never re-derive, soften, or second-guess it: a plan the user has seen is hers. **When no plan is present** (a role researched before this feature, an inline run), derive one yourself with the test below and state it at the top of `cv-changes.md` or, on a draft, in your one-line summary.
+
+**Four dispositions — one per employer in her record, every employer accounted for:**
+
+| Disposition | When | What appears |
+|---|---|---|
+| **Retitle** — the default | Her role facts show the target function was real, substantial work in that role (a recurring responsibility with documented outputs, not a one-off) | The target role's title, or its nearest truthful variant, in place of the recorded title |
+| **Descriptor** | Some documented work in the target function, but it was not the substance of the role — the usual career-shift case | The recorded title with the target function appended: `Recorded Title (Target Function)` |
+| **Keep** | The recorded title already reads as the target function, or the user asked for it | The recorded title, unchanged. A Keep always carries a stated reason |
+| **Fold** | No documented work that answers this role | No entry. The employer is named in the aggregation line (below) |
+
+**Do not be timid.** Retitle is the default, not the exception. Titles are employer-assigned labels that vary wildly between companies for identical work; aligning one to the work she actually did is tailoring. Between Retitle and Descriptor, choose Retitle when the facts show the function as a standing part of the job. Between Descriptor and Fold, choose Descriptor when the role can supply even two bullets that answer the JD. Use everything around the title creatively as well: the RoleOverview line, bullet selection and order, the summary's first noun phrase (§6b).
+
+**The line between tailoring and lying — four fixed limits, no exceptions:**
+1. **Never above her real level.** A retitle may match or sit below the seniority of the recorded title, never above it. Manager never becomes Director; an IC never becomes Head of.
+2. **Employer names and dates never change.** Not rounded, not merged, not stretched to close a gap.
+3. **A title must describe work the role facts document.** If the only support is an inference, it is a Descriptor at most. If there is none, it is a Fold. Creativity lives in framing, never in the facts.
+4. **Nothing is hidden.** Every employer in her record appears, as an entry or by name in the aggregation line. Dropping an employer silently is hiding; folding it by name with a pointer to the full history is not. An entry her career-data flags as mandatory stays mandatory (§5).
+
+**Level — write down to the role, never up.** The plan's `Level:` line names the level the target role reads at. When that is below her record, the whole CV drops to it: titles lowered to the target level where a Retitle applies, execution bullets first, and leadership scope (team size, budget, board exposure, function-building, org design) suppressed unless it answers a named JD requirement. The summary speaks peer-to-team. An over-senior CV for a junior seat reads as a flight risk and loses the shortlist faster than an under-framed one.
+
+**The aggregation line carries the folded roles.** One line, the existing `Earlier:` convention (§5, §5b), same position and styling. When every folded employer predates the oldest full entry, the bold prefix is `Earlier:`. When any folded employer is more recent than that, the prefix is `Additional experience:` instead, because "Earlier" would be false. Never both lines. The line names the folded employers, in whatever form her career-data already uses for her `Earlier:` line (employer alone, or recorded title and employer), and closes by pointing at the full history: "Full history on LinkedIn" when her career-data holds a LinkedIn profile, otherwise "Full history on request."
+
+**Her own structure rules outrank this section.** Where her career-data states CV structure rules of its own — which roles earn a standalone slot, entries flagged mandatory, how a given employer may be placed, the form of her `Earlier:` line — those rules govern, and the plan is executed inside them.
+
+**Bullets follow the same cut.** Inside a kept role, only work that answers this role survives (§6 Tailoring and dedupe discipline). A retitled role whose bullets still describe the old function contradicts its own title; the bullets are what make the title true.
 
 ---
 

@@ -41,10 +41,11 @@ Load all of these before doing anything else.
 | `references/01-writing-rules.md` | Rules and configuration. Section 1: fabrication rule — read first. If this file contradicts anything you believe about the user, the file is correct. |
 | `references/02-professional-background.md` | **Router — load first.** Follow its routing table to the `background/` sub-files you need: `background-approved-bullets.md` for approved CV bullets — carries adjacent `Detailed: Approved bullets` / `Brief: Approved bullets` subsections per company; read only the one matching this draft's `CV Type` (see Brief-Specific Rules below); the relevant `background-role-facts-*.md` file(s) for role facts and "What she built" evidence; `background-cv-summaries.md` for approved CV summaries; `background-testimonials.md` for fractional/consulting roles; `background-portfolio.md` when demonstrated output strengthens the case. |
 | `skills/writer-craft/core.md` | Writer doctrine `[ALL]` sections (§1–4, §12) |
-| `skills/writer-craft/cv.md` | Writer doctrine `[CV]` sections (§5, §5b, §6, §6b) — read the `[ALL]` sections (punctuation, vocabulary, structural bans, sentence mechanics, voice calibration, positive writing standards) plus every `[CV]` section (document shape, ATS rules, bullet formula, tailoring discipline, fabrication rule). This is the single prohibition and craft layer for CV writing. |
+| `skills/writer-craft/cv.md` | Writer doctrine `[CV]` sections (§5, §5b, §5c, §6, §6b) — read the `[ALL]` sections (punctuation, vocabulary, structural bans, sentence mechanics, voice calibration, positive writing standards) plus every `[CV]` section (document shape, role tailoring — titles / folded roles / level, ATS rules, bullet formula, tailoring discipline, fabrication rule). This is the single prohibition and craft layer for CV writing. |
 | `skills/career-engine-export/SKILL.md` | **Pandoc custom-style annotation reference — required for output.** Contains every annotation you must use: RoleTitle, RoleOverview, RoleActivitiesList, RoleActivitySingle, SkillsHeading, Skills, ColorEmphasis, Salutation, Signature Char. Read the full "CV — custom-style annotation reference" section and apply every annotation exactly as shown. Output without these annotations produces an unstyled DOCX. |
 | `references/role-type-definitions.md` | Builder / Scaler / Specialist / Leader definitions and their effect on CV structure (skills section format, Key Achievements section, framing). Read before applying Role Type to any structural decision. |
 | `references/cv-self-check.md` | Mandatory pre-submission checklist — run before returning any output. |
+| `CV_TITLES_PATH` (`$PIPE/cv-titles.md`) | **The role-tailoring plan for this role** — the coach's `CV Titles` plan plus the user's own `CV Title Preferences`, written by the pipeline's Step 0.titles / E0.titles. If the spawn did not pass the path, look for `cv-titles.md` beside `CV_PATH`. Absent or marked `PLAN: none` → derive the plan yourself per `writer-craft/cv.md` §5c. |
 | `${CAREER_DATA}/references/cv-style-exemplars.md` | **Conditional — load if it exists, skip silently if absent.** The user's own before/after CV edit pairs. The "after" versions are the governing register for skills sections and bullet compression (`writer-craft/cv.md` §6b) — they outrank the doctrine's generic examples. |
 
 **If any `${CLAUDE_PLUGIN_ROOT}` file above cannot be read** (path invalid, sandboxed environment restriction, plugin cache inconsistency): hard stop. Do not proceed from memory, inference, or partial recollection of the rules — a real production run had a writer agent proceed on reconstructed rules after `writer-craft/SKILL.md` was unreachable in a sandboxed host-loop session. Report: "CV-writer failed — `<file path>` is unreachable. Confirm the plugin is installed correctly and `${CLAUDE_PLUGIN_ROOT}` resolves." Same standard as the R-37 career-data hard stop above, applied to the plugin's own files.
@@ -126,6 +127,16 @@ A summary implies pattern. A hiring manager reads a summary sentence and assumes
 
 What moved from the summary to bullets: the specific headcounts as absolutes, the roster of functions, the second team's composition.
 
+### Role Tailoring Plan (both CV Types)
+
+Doctrine: `skills/writer-craft/cv.md` §5c — read it before writing any role entry. Procedure:
+
+1. Read `CV_TITLES_PATH`. The user's `CV Title Preferences` block, when present, outranks the coach's plan line for the same employer.
+2. **Plan present:** apply every line verbatim — `Retitle` and `Descriptor` titles exactly as written, `Keep` unchanged, `Fold` employers named only in the aggregation line. Write the whole CV at the plan's `Level:`.
+3. **Plan absent (`PLAN: none`, or no file):** derive one disposition per employer in her record using §5c's test and four fixed limits, then write from it. Record the derived plan in your summary line (draft) or at the top of `cv-changes.md` (revision).
+4. Every employer in `02-professional-background.md`'s role record ends up either as an entry or named in the aggregation line. Count them before returning.
+5. A revision round never changes the plan. A reviewer flag that asks for a different title, or for a folded role to return, is left unaddressed (Option 2, Decision 3) — the plan is the user's to edit, in her tracker.
+
 ### Experience Rules (Detailed only)
 
 See **Brief-Specific Rules** below for Brief's flat, non-Consulting-split Experience structure.
@@ -168,7 +179,7 @@ Applies only when `CV Type=Brief`. Full doctrine lives in `skills/writer-craft/c
 
 **Approved bullets — read the Brief-labeled subsection.** `background-approved-bullets.md` carries two adjacent subsections per company: `Detailed: Approved bullets` and `Brief: Approved bullets`. For a Brief CV, read only the `Brief: Approved bullets` subsection — do not derive Brief bullets from the Detailed subsection by shortening them on the fly. If the Brief subsection is empty for a company (not yet curated), write fresh bullets from the role-facts files directly, same fabrication discipline as always.
 
-**One-page fit is a judgment call, not a fixed role count.** The CV must fit one page. Read `cv_type.brief_has_photo` from `pipeline-preferences.json` if set; if blank, assume no photo. Order roles by relevance and recency exactly as Detailed does. The most recent/relevant roles get full treatment (title, dates, tapering bullet density); roles beyond what the page can hold collapse into a single `**Earlier:** Company A, Company B, Company C (Year–Year)` line — the same `Earlier:` annotation already used in Detailed's Consulting section (`career-engine-export/SKILL.md`), here closing out `## EXPERIENCE` itself since Brief has no Consulting split. How many roles stay individual and how many fold into `Earlier:` depends on total career length, number of employers, and JD relevance — the same "everything must earn its place" discipline that governs Detailed's bullet selection (Step 3, above). There is no fixed number, and it will differ for every user and every role.
+**One-page fit is a judgment call, not a fixed role count.** The CV must fit one page. Read `cv_type.brief_has_photo` from `pipeline-preferences.json` if set; if blank, assume no photo. Order roles by relevance and recency exactly as Detailed does. The most recent/relevant roles get full treatment (title, dates, tapering bullet density); roles beyond what the page can hold collapse into a single `**Earlier:** Company A, Company B, Company C` line (no years — CV Check Gate 3) — the same `Earlier:` annotation already used in Detailed's Consulting section (`career-engine-export/SKILL.md`), here closing out `## EXPERIENCE` itself since Brief has no Consulting split. How many roles stay individual and how many fold into `Earlier:` depends on total career length, number of employers, and JD relevance — the same "everything must earn its place" discipline that governs Detailed's bullet selection (Step 3, above). There is no fixed number, and it will differ for every user and every role.
 
 **Profile paragraph, not Summary.** The banner is `## PROFILE SUMMARY`, not `## SUMMARY` — different heading text, same idea (positioning statement, not a narrated instance). See `writer-craft/cv.md` §5b for the tighter word-count backstop and bullet-writing doctrine — shortened versions of the same outcomes-first, XYZ-formula rules used for Detailed, not a new bullet philosophy.
 
@@ -204,10 +215,11 @@ Everything outside the markers (`## PROFILE SUMMARY`, `## EXPERIENCE`) is main-c
 - Position the CV as "brings [capability] to [function]" — not as a career-transition story, not as an apology for what she lacks. Frame for fit, not narrative.
 - The goal is to make the transfer argument undeniable. A shift CV that buries the transferable proof loses the shortlist.
 
-**Step-down framing — same self-derived comparison (2026-07-24):** If the role reads materially below the user's documented seniority (the Emphasis line's mandate and KPIs vs. her record — an IC execution mandate against a VP-level background), this is a step-down. Apply step-down framing:
+**Step-down framing — the plan's `Level:` line decides it when a role-tailoring plan is present (`writer-craft/cv.md` §5c, 2026-09-17); otherwise the same self-derived comparison (2026-07-24):** If the role reads materially below the user's documented seniority (the Emphasis line's mandate and KPIs vs. her record — an IC execution mandate against a VP-level background), this is a step-down. Apply step-down framing:
 - Lead with execution bullets — what she built, shipped, ran, and delivered hands-on. Numbers and named outputs. No tool names in bullets — this applies even in step-down framing.
 - Suppress strategy and leadership language. Do not surface board presentations, function-building, org design, or budget ownership unless they directly answer a named JD requirement.
 - Summary tone: peer-to-team, not executive. Avoid framing her as "having led" something at scale if the role is an IC execution role.
+- Titles drop with the rest: where the plan retitles a role, the retitle sits at the target level, never above her recorded one.
 - The goal is fit, not flattery. An overframed CV for a step-down role signals mismatch and loses the shortlist faster than an under-framed one.
 
 **`## TOOLS` section:** Include for Specialist and Builder roles only if the JD explicitly discusses tools or platform proficiency. Select relevant categories from `01-writing-rules.md` Section 8. Omit for Leader and Scaler roles regardless of JD content. Omit for any role type if the JD does not mention tools.
@@ -220,13 +232,15 @@ Everything outside the markers (`## PROFILE SUMMARY`, `## EXPERIENCE`) is main-c
 
 ## Option 1 — Draft
 
-**Input:** `CV Type=Detailed|Brief` (the orchestrator's already-resolved value — never re-derive it from config or the database here) + Structured JD + coach output: `Role emphasis`, `Keywords`, `Strategy`.
+**Input:** `CV Type=Detailed|Brief` (the orchestrator's already-resolved value — never re-derive it from config or the database here) + `CV_TITLES_PATH` (the role-tailoring plan) + Structured JD + coach output: `Role emphasis`, `Keywords`, `Strategy`.
 
 **Output:** Initial draft CV
 
 Before writing, confirm `CV Type`, then read the coach output and record — **in this order**:
 
 0. **CV Type** — `Detailed` or `Brief`. Governs section scope, approved-bullets source, and structure for the rest of this draft (see Section Scope and Brief-Specific Rules above).
+
+0.5. **Role-tailoring plan** — read `CV_TITLES_PATH` (see Role Tailoring Plan above). It fixes each role's title and disposition and the level the CV is written at, before any bullet is chosen.
 
 1. **Role emphasis** — **Read this first and treat it as the brief.** The real mandate beneath the job title. This tells you what the hiring manager actually needs from whoever fills this role. Before selecting a single bullet, ask: "What does the hiring manager need to see proven in this CV?" Role emphasis is the answer. Every section of the CV — summary, bullet selection, skills framing — should be answerable to what Role emphasis identified. If a bullet doesn't address the mandate Role emphasis describes, it is a weak choice regardless of how impressive it looks in isolation.
 
@@ -251,7 +265,7 @@ Draft the CV applying all Universal Rules. Run the CV self-check before returnin
 
 **Load before revising — the Start Here loading table is NOT optional in revision mode.** Before touching the CV, confirm you have loaded `${CLAUDE_PLUGIN_ROOT}/skills/writer-craft/core.md` and `${CLAUDE_PLUGIN_ROOT}/skills/writer-craft/cv.md` this turn. The prohibition layer governs revised copy exactly as it governs the draft: a revision that reintroduces a banned pattern (em dash, antithesis, AI vocabulary, etc.) is a regression and a FAIL. A focused revision brief does not narrow what you must load. If you did not load it this turn, load it now.
 
-**Input:** `CV Type=Detailed|Brief` (same already-resolved value passed at Draft — a revision never changes CV Type mid-round) + the draft CV, recruiter flags (Tiers 1–3), hiring manager flags (Parts 1–3).
+**Input:** `CV Type=Detailed|Brief` (same already-resolved value passed at Draft — a revision never changes CV Type mid-round) + `CV_TITLES_PATH` (the same plan the draft was written from — a revision never changes it) + the draft CV, recruiter flags (Tiers 1–3), hiring manager flags (Parts 1–3).
 
 **Output:** Final CV and revision log.
 

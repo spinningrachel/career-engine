@@ -6,6 +6,21 @@ Use this format because it is the one Chat reliably understands: it establishes 
 
 ---
 
+## ⛔ Where a generated prompt is written — never the plugin repo, never the working directory (2026-08-12, per the user: "this kind of stuff should never ever be stored here")
+
+**A generated update prompt contains the user's personal career data. It is written to `output_folder` — never to `${CLAUDE_PLUGIN_ROOT}`, never to the plugin repo, and never to the current working directory (which, in a plugin-development session, IS the repo).**
+
+- **Pipeline-generated prompts** (new-application Step 7f, edit Step E10.5) already do this correctly: `<output_folder>/<company_dir>/update-prompt-<company>-<monYYYY>.md`.
+- **Ad-hoc prompts** — the career coach's Option 6 career-data-update mode, `source-open-roles`' preferences prompt, a setup run, or any hand-generated one — have no company directory, so write to `<output_folder>/_career-data-updates/update-prompt-<topic>-<YYYYMMDD>.md`. Resolve `output_folder` from `${CAREER_DATA}/references/pipeline-preferences.json` (R-37) exactly as every other pipeline does. If it cannot be resolved, ask the user where to put the file — do not default to the working directory.
+- **Setup is the named exception to that resolution, not a violation of it.** A setup run is what *creates* `pipeline-preferences.json`, so at Phase 4 there is often no `output_folder` to read — asking the user is the **expected** path there, not the fallback branch. Never let an unresolvable key become a reason to default to the working directory; that is the exact failure this rule exists to prevent, arriving at the one moment it is most likely to fire.
+- **Never `Write` a file whose name starts with `update-prompt-` to a path inside the plugin repo,** whatever the reason.
+
+**Why this is a hard rule, not tidiness: a prompt written here has already shipped, twice.** Files like this accumulate at the repo root whenever an ad-hoc session defaults to cwd, and the guards against them are weaker than they look. The packaging script zips the working tree, so it sees untracked files; its `update-prompt-*.md` filter is the only build barrier, and that filter is itself a later fix, added after a real leak. `.gitignore` covers git and GitHub, a different surface entirely, with no effect on the build. The QA repo scan is a detector — it reports and waits for a human, so it prevents nothing on its own. Two barriers on two surfaces plus one detector, all of them downstream of a write that should never happen. The same reasoning as R-37: personal data has one home, and the shared build is not it.
+
+**Do not write the file and rely on a filter to catch it.** Every guard above exists because one of them has already failed in production.
+
+---
+
 ## Template
 
 ```

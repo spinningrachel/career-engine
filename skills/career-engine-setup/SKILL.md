@@ -410,7 +410,7 @@ Say: "These are the topics worth seeding first — each one deserves an honest, 
 
 **4. Hand the user the OPENING of a career-data update prompt.** Generate it now in the canonical update-prompt format (`career-engine/references/career-data-update-prompt-format.md`) — same Chat/Code path as every other career-data edit. It targets `background/background-motivation-bank.md` and **appends rows** to the `| Tags | Motivation |` table (append-only; never rewrite, reorder, or delete existing rows; never change the two-column layout). Pre-seed one row per suggested tag (and any the user added) with the **Tags** cell filled and the **Motivation** cell left as a fill-in slot. Make clear the user types their verbatim answers into the Motivation cells **before** sending the prompt to Chat (or applying it in Code). Substitute the user's chosen/adapted tags; keep the table's existing seed row intact (append below it).
 
-Present it as one copyable block, led by the four-step Phase 0 visual in Cowork (or written directly in Code):
+Present it as one copyable block, led by the four-step Phase 0 visual in Cowork (or written directly in Code). **If you write it to a file (2026-08-12): `<output_folder>/_career-data-updates/update-prompt-motivation-bank-<YYYYMMDD>.md`. Never inside the plugin repo, under `${CLAUDE_PLUGIN_ROOT}`, or in the current working directory — the prompt carries her personal answers. Setup is the one place where `output_folder` may not exist yet, since this run is what creates `pipeline-preferences.json`: asking her where to put it is the expected path here, not a fallback. If she has already given an output folder earlier in this setup run, use that.** Full rule at the top of `references/career-data-update-prompt-format.md`.
 
 ```
 career-data update prompt — background/background-motivation-bank.md — seed Motivation Bank
@@ -482,6 +482,8 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
    **[Duplicate the Notion template →](https://abounding-trouser-bce.notion.site/13a6d072845047c0a99cfeb6b201091b?v=843875fd750c4a9d884b298748a4d331&pvs=143)**
    Click Duplicate, add it to your workspace, then come back."
 
+   **If the user would rather not open the shared Notion link** — some people prefer not to duplicate a stranger's public page into their workspace, or want to inspect the schema first — offer the CSV instead: `${CLAUDE_PLUGIN_ROOT}/references/job-applications-template.csv`. It is a superset of the pipeline's required schema — every column the pipeline reads or writes, plus a handful of optional contact/referral-tracking columns some users find useful (`Connection's Email`, `HR / Recruiter Contact`, `Related Emails`, etc.) — with ten fictional example rows. In Notion: **Import → CSV**, pick the file, then set the column types Notion cannot infer (`Status` → Status; `Priority`, `Company Stage`, `CV Type`, `Relationship type`, `Source`, `JD Fetch Status`, `Manager role confirmed`, `Edit type` → Select; `Role Type`, `Languages`, `Message Channel with My Connection` → Multi-select; `Job URL`, `Draft Directory` → URL; the date columns → Date). Then delete the ten example rows. Everything downstream is identical — the pipeline reads the schema at run start either way.
+
 2. Once they confirm it's set up, ask:
    - "Paste your database ID." (the 32-character string from the Notion URL — `notion.so/[workspace]/DATABASE_ID?v=...`)
    - Then say: "Now paste the URL for each of these views — open each one in your browser and copy the full URL from the address bar. You can skip any you haven't set up yet (the pipeline will find them automatically, but pasting them now eliminates a large background fetch every run that can cause early context compaction)."
@@ -533,6 +535,7 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 6. Say: "**Important:** Do not rename the columns in your Notion database. The pipeline writes to them by exact name — renaming breaks the integration silently."
 
 7. **CV Type property — only relevant if Variant mode is chosen later in this phase.** The duplicated template likely does not include this property yet, since it's new. Once the CV Type question below (under "Document templates") is answered, if the answer was `Variant`, come back here and say: "Since you chose to let each role decide its CV format, add a **Select** property to your Notion database named exactly `CV Type`, with two options: `Detailed` and `Brief`. You set this per role yourself — the pipeline reads it, never writes to it." Skip this step entirely if `Detailed` or `Brief` was chosen instead — there's nothing to add.
+8. **Role-tailoring properties — always.** The duplicated template may predate these two. Say: "Add two **Text** properties to your database, named exactly `CV Titles` and `CV Title Preferences`. `CV Titles` is where the career coach writes its plan for how each of your past job titles should read on the CV for that specific role, and which unrelated roles fold into one line — you can review and edit it before any CV is written. `CV Title Preferences` is yours alone: anything you want to say about your titles for that role. Nothing ever writes to it." A tracker without them still works — the CV writer then makes those calls itself.
 
 ---
 
@@ -545,7 +548,7 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 2. Write a CSV file to `/tmp/career-engine-tracker.csv` containing only the header row with all required columns in order:
 
 ```
-Company,Position,Job URL,Status,Priority,JD Body,Why I Want This Role,Role emphasis,JD proof,Keywords,Strategy,Role Type,Relationship type,Gap handling,Role summary,Hiring Manager's Name,Hiring manager's role,Manager role confirmed,Person who Advertised Role (if not Hiring Manager),No incumbents in this function,Landscape,First Advertised,Last Pipeline Run,Link to CV,Draft Directory,CV File Name,Letter File Name,Languages,Edit type,CV Type,Note
+Company,Position,Job URL,Status,Priority,Priority Reason,JD Body,JD Fetch Status,Why I Want This Role,Role emphasis,JD proof,Keywords,Strategy,Role Type,Relationship type,Gap handling,Role summary,Hiring Manager's Name,Hiring manager's role,Manager role confirmed,Person who Advertised Role (if not Hiring Manager),No incumbents in this function,Landscape,Culture,Company Stage,Location,First Advertised,Last Pipeline Run,Link to CV,Draft Directory,CV File Name,Letter File Name,Languages,Edit type,CV Type,CV Titles,CV Title Preferences,Note
 ```
 
 `CV Type` is included regardless of which `cv_type.mode` the user chooses — it's a normal, cheap column to have even when unused (same as `Languages` for a single-language user). It only matters when `cv_type.mode` is `Variant`; the user sets it herself per role, and since 2026-07-23 the coach fills it when empty at intake (write-only-to-empty — her own value always wins).
@@ -559,8 +562,10 @@ Before giving this prompt to the user, substitute `{{USER_DEFAULT_LANGUAGE}}` an
 ```
 Set up data validation (dropdown lists) on the following columns in my Google Sheet named "career-engine-tracker":
 
-- Column "Status": allow only these exact values: New, Needs Research, Interested, CV Ready for Review, Applied, Researched, Needs editing
-- Column "Priority": allow only these exact values: Highest, First, Second, Third, Fourth, Fifth
+- Column "Status": allow only these exact values: New, Needs Research, Interested, CV Ready for Review, Applied, Researched, Needs Editing
+- Column "Priority": allow only these exact values: 1, 2, 3, 4, 5, 6 (the pipeline writes the number, never a word label)
+- Column "JD Fetch Status": allow only these exact values: Fetched, LinkedIn-blocked, Unfetchable, Manual-entry
+- Column "Company Stage": allow only these exact values: Seed, Series A, Series B, Series C, Public, PE-backed, N/A
 - Column "Role Type": allow multiple selections from: Builder, Scaler, Specialist, Leader
 - Column "Relationship type": allow only these exact values: Full time, Part time, Temporary, Fractional/Consulting/Freelance
 - Column "Manager role confirmed": allow only these exact values: Yes, No; this is only a hypothesis
@@ -589,11 +594,13 @@ These values must match exactly — they are hard-coded in the pipeline that rea
 ```
 Create a database/table with the following columns. Do not rename them — they are referenced by exact name by an external pipeline.
 
-Columns: Company, Position, Job URL, Status, Priority, JD Body, Why I Want This Role, Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, Gap handling, Role summary, Hiring Manager's Name, Hiring manager's role, Manager role confirmed, Person who Advertised Role (if not Hiring Manager), No incumbents in this function, Landscape, First Advertised, Last Pipeline Run, Link to CV, Draft Directory, CV File Name, Letter File Name, Languages, Edit type, CV Type, Note
+Columns: Company, Position, Job URL, Status, Priority, Priority Reason, JD Body, JD Fetch Status, Why I Want This Role, Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, Gap handling, Role summary, Hiring Manager's Name, Hiring manager's role, Manager role confirmed, Person who Advertised Role (if not Hiring Manager), No incumbents in this function, Landscape, Culture, Company Stage, Location, First Advertised, Last Pipeline Run, Link to CV, Draft Directory, CV File Name, Letter File Name, Languages, Edit type, CV Type, CV Titles, CV Title Preferences, Note
 
 Select column values (must match exactly):
-- Status: New | Needs Research | Interested | CV Ready for Review | Applied | Researched | Needs editing
-- Priority: Highest | First | Second | Third | Fourth | Fifth
+- Status: New | Needs Research | Interested | CV Ready for Review | Applied | Researched | Needs Editing
+- Priority: 1 | 2 | 3 | 4 | 5 | 6 (the pipeline writes the number, never a word label)
+- JD Fetch Status: Fetched | LinkedIn-blocked | Unfetchable | Manual-entry
+- Company Stage: Seed | Series A | Series B | Series C | Public | PE-backed | N/A
 - Role Type (multi-select): Builder | Scaler | Specialist | Leader
 - Relationship type: Full time | Part time | Temporary | Fractional/Consulting/Freelance
 - Manager role confirmed: Yes | No; this is only a hypothesis

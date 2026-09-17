@@ -23,7 +23,8 @@
         "Hiring manager's role",
         "No incumbents in this function",
         "JD Body",
-        "CV Type"
+        "CV Type",
+        "CV Titles"
       ],
       "locations": [
         {
@@ -69,7 +70,9 @@
         "No incumbents in this function",
         "JD Body",
         "Why I Want This Role",
-        "CV Type"
+        "CV Type",
+        "CV Titles",
+        "CV Title Preferences"
       ],
       "locations": [
         {
@@ -96,6 +99,65 @@
           "end": "## Step 0"
         }
       ]
+    },
+    {
+      "id": "jd-fetch-markers",
+      "_comment": "2026-08-12 (Anecdotes run): the two new Step 0.45/0.5 fetch markers must appear in every site that branches on a marker, or a no-JD or dead-cached role silently takes the live-fetch path. Sites: Step 0.5's marker list + JD Body write rule, Step 0.8 coach-complete JD Body condition, Step 0.9a confirmation pass, and the gatekeeper's presence check.",
+      "members": [
+        "no-public-jd",
+        "url-dead-cached-jd"
+      ],
+      "locations": [
+        {
+          "file": "skills/career-engine-intake/SKILL.md",
+          "start": "## Step 0.45",
+          "end": "## Step 0.6"
+        },
+        {
+          "file": "skills/career-engine-intake/SKILL.md",
+          "start": "## Step 0.8 — Career coach",
+          "end": "## Step 0.8.5"
+        },
+        {
+          "file": "skills/career-engine-intake/SKILL.md",
+          "start": "### 0.9a — Write coach outputs",
+          "end": "### 0.9b"
+        },
+        {
+          "file": "skills/gatekeeper-checks/coach-gates.md",
+          "start": "## Coach Output Check"
+        }
+      ]
+    },
+    {
+      "id": "startup-jobs-tools",
+      "members": [
+        "mcp__startup-jobs__search_jobs",
+        "mcp__startup-jobs__get_job",
+        "mcp__startup-jobs__list_countries"
+      ],
+      "locations": [
+        {
+          "file": "agents/source-open-roles.md",
+          "start": "tools: Read",
+          "end": "# Source Open Roles"
+        },
+        {
+          "file": "references/job-sourcing-mcp-registry.md"
+        },
+        {
+          "file": "skills/source-open-roles/SKILL.md",
+          "start": "### Startup / tech sites",
+          "skip_members": [
+            "mcp__startup-jobs__list_countries"
+          ]
+        },
+        {
+          "file": "CONNECTORS.md",
+          "start": "### startup.jobs MCP"
+        }
+      ],
+      "_comment": "2026-09-10: every startup-jobs MCP tool named as in-use anywhere (Site Catalog, registry, CONNECTORS.md) must also appear in the agent's own tools: frontmatter grant — a subagent's tool access is a static allowlist, so a tool named everywhere but there can never actually be called. This is the exact gap the first QA pass on this feature caught. SKILL.md's Site Catalog row only needs the two fetch tools (search_jobs/get_job) — the canary name itself is deliberately generic there (see the Job-Sourcing MCP Registry section), named explicitly only in the agent frontmatter, the registry's Canary column, and CONNECTORS.md."
     }
   ],
   "defined_terms": [
@@ -186,6 +248,78 @@
         "skills/career-engine-new-application/SKILL.md",
         "agents/letter-writer.md"
       ]
+    },
+    {
+      "id": "term-user-note-precedence",
+      "_comment": "2026-08-12 (Anecdotes run): the user's own first-hand notes outrank any scraped posting. queue.md carries them under this exact heading; intake Step 0.45 writes it, the coach reads it, Coach Output Check item 13 enforces it. Renaming the heading in one file silently disables the gate.",
+      "term": "USER-STATED ROLE FACTS",
+      "files": [
+        "skills/career-engine-intake/SKILL.md",
+        "skills/career-coach/SKILL.md",
+        "skills/gatekeeper-checks/coach-gates.md"
+      ]
+    },
+    {
+      "id": "term-jd-liveness",
+      "_comment": "2026-08-12 (Anecdotes run): a cache-capable extractor proves a posting existed, never that it is live. Step 0.5 defines the check, coach-research.md carries the coach-side rule, Coach Output Check item 14 enforces it, role-prioritizer inherits it.",
+      "term": "liveness check",
+      "files": [
+        "skills/career-engine-intake/SKILL.md",
+        "skills/career-coach/coach-research.md",
+        "skills/gatekeeper-checks/coach-gates.md",
+        "agents/role-prioritizer.md"
+      ]
+    },
+    {
+      "id": "term-adhoc-update-prompt-path",
+      "_comment": "2026-08-12: ad-hoc career-data update prompts carry personal data and go to <output_folder>/_career-data-updates/, never the plugin repo or cwd. The literal directory name is cited by the format file (source of truth), all three ad-hoc generators, and the CLAUDE.md contract row — renaming it in one place silently breaks the others.",
+      "term": "_career-data-updates",
+      "files": [
+        "references/career-data-update-prompt-format.md",
+        "agents/career-coach.md",
+        "agents/source-open-roles.md",
+        "skills/career-engine-setup/SKILL.md",
+        "CLAUDE.md"
+      ]
+    },
+    {
+      "id": "term-job-sourcing-mcp-wired-in",
+      "term": "Wired-in",
+      "files": [
+        "references/job-sourcing-mcp-registry.md",
+        "skills/source-open-roles/SKILL.md",
+        "agents/source-open-roles.md",
+        "CLAUDE.md"
+      ],
+      "_comment": "2026-09-10: the job-sourcing MCP registry's four-part Wired-in definition (confirmed tool name + recorded Canary + Site Catalog gate + tools: frontmatter grant, canary included) must be restated consistently, not just mention the word — this is a presence tripwire, not a semantic check; a QA judgment pass still has to verify the definitions actually agree. Canonical definition lives in references/job-sourcing-mcp-registry.md's 'Two statuses'."
+    },
+    {
+      "id": "term-manual-entry-coach-only",
+      "term": "Manual-entry",
+      "files": [
+        "agents/career-coach.md",
+        "skills/career-coach/coach-analysis.md"
+      ],
+      "_comment": "2026-09-15: JD Fetch Status's Manual-entry value must stay defined in both coach-side files (added 2026-08-13, once already missed from one of the two). Deliberately NOT required in agents/role-prioritizer.md — that agent's three-value list (Fetched/LinkedIn-blocked/Unfetchable) is correct as-is; Prioritization has no interactive path to produce Manual-entry. See career-coach.md's parity note."
+    },
+    {
+      "id": "term-role-tailoring-plan",
+      "_comment": "2026-09-17, per the user's direct instruction: each CV is tailored to one role — titles aligned (Retitle default / Descriptor / Keep / Fold), unrelated employers folded by name into the aggregation line, the whole CV written at the target role's level, inside four fixed honesty limits. The coach writes the plan (CV Titles) at intake; the user's own CV Title Preferences field is never written by any agent; both pipelines resolve it once (Step 0.titles / E0.titles) into $PIPE/cv-titles.md; cv-writer executes verbatim; Gate 6 and coach-gates item 15 enforce. Every file below must keep naming the plan.",
+      "term": "role-tailoring plan",
+      "files": [
+        "skills/writer-craft/cv.md",
+        "skills/career-coach/coach-analysis.md",
+        "skills/career-coach/coach-output.md",
+        "agents/career-coach.md",
+        "agents/cv-writer.md",
+        "agents/gatekeeper.md",
+        "agents/recruiter-reviewer.md",
+        "skills/gatekeeper-checks/coach-gates.md",
+        "skills/career-engine-intake/SKILL.md",
+        "skills/career-engine-new-application/SKILL.md",
+        "skills/career-engine-edit/SKILL.md",
+        "skills/database/SKILL.md"
+      ]
     }
   ],
   "context_sets": [
@@ -209,7 +343,7 @@
     },
     {
       "id": "gk-cv-spawn-params",
-      "_comment": "Every gatekeeper option=cv spawn paragraph must carry CAREER_DATA and the resolved CV Type (single-resolution-point contract).",
+      "_comment": "Every gatekeeper option=cv spawn paragraph must carry CAREER_DATA and the resolved CV Type (single-resolution-point contract). 2026-09-17: also the role-tailoring plan path (CV_TITLES_PATH) — Gate 6 checks the CV against it.",
       "trigger": "option=cv`",
       "files": [
         "skills/career-engine-new-application/SKILL.md",
@@ -218,7 +352,8 @@
       "require": [
         "CAREER_DATA=${CAREER_DATA}",
         "CV Type",
-        "gap_handling_mode"
+        "gap_handling_mode",
+        "CV_TITLES_PATH"
       ],
       "alternates": [
         "same parameters as"

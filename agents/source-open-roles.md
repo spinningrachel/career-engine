@@ -1,7 +1,7 @@
 ---
 name: source-open-roles
 description: Sources open roles across LinkedIn, remote boards, startup boards, general job boards, and freelance platforms. Scores results against saved preferences, deduplicates against the Notion database, and returns a ranked list of roles worth adding to the pipeline.
-tools: Read, Write, Bash, WebSearch, WebFetch, mcp__linkedin-mcp__search_jobs, mcp__linkedin-mcp__get_job_details, mcp__linkedin-mcp__get_company_profile, mcp__1cb44f76-c627-45b2-8050-35e78e7f15c8__upwork_search_freelancers, mcp__140d3f8f-6ad4-4b39-9df9-84514cae0207__search_jobs, mcp__notionApi__API-query-data-source, mcp__5cd94b8e-1498-421b-bc5d-1bbb07682cf7__notion-query-database-view
+tools: Read, Write, Bash, WebSearch, WebFetch, mcp__linkedin-mcp__search_jobs, mcp__linkedin-mcp__get_job_details, mcp__linkedin-mcp__get_company_profile, mcp__1cb44f76-c627-45b2-8050-35e78e7f15c8__upwork_search_freelancers, mcp__140d3f8f-6ad4-4b39-9df9-84514cae0207__search_jobs, mcp__notionApi__API-query-data-source, mcp__5cd94b8e-1498-421b-bc5d-1bbb07682cf7__notion-query-database-view, mcp__startup-jobs__search_jobs, mcp__startup-jobs__get_job, mcp__startup-jobs__list_countries
 ---
 
 # Source Open Roles
@@ -47,6 +47,7 @@ Load before any search begins:
 |---|---|
 | `skills/source-open-roles/SKILL.md` | Search mode definitions, full site catalog with fetch methods, scoring rubric, deduplication rules, exclusion rules |
 | `${CLAUDE_PLUGIN_ROOT}/references/locale-job-boards.md` | Per-country starter catalog of local boards (ATS, VC portfolio boards, aggregators) for **Tier 5 — Locale boards**. Match the user's country row; fall back to the generic row |
+| `${CLAUDE_PLUGIN_ROOT}/references/job-sourcing-mcp-registry.md` | Known job-sourcing MCP servers — which site each covers, connect command, wired-in vs. candidate. Drives the Site Catalog's per-server gates and the run header's unconnected-server suggestion |
 | `${CAREER_DATA}/references/pipeline-preferences.json` | The single source of truth for every sourcing preference: `target_titles`, `title_variants` (the variant set Keyword Expansion searches), `remote_preference`, `exclusion_patterns`, `default_search_time_range`, `seniority_floor`, `target_function`, `industry_fit`, `company_stage_fit`, `employment_type_preference`, `coaching_prioritization`, `location_compatibility.my_location`, `preferred_job_sites`, `local_job_sites`, `database_id`, and `screening_answers` (a populated field that conflicts with a JD down-ranks + labels the role, never excludes it; `compensation_floor` doubles as the salary floor — there is no separate min-salary field). Skip `screening_answers` entirely if absent or empty |
 
 ---
@@ -71,18 +72,21 @@ Read `${CAREER_DATA}/references/pipeline-preferences.json`. Every sourcing prefe
 3. Read `${CLAUDE_PLUGIN_ROOT}/references/locale-job-boards.md`, find the user's country row, and propose a locale-board shortlist, if `preferred_job_sites`/`local_job_sites` are empty.
 4. Show everything proposed to the user; let them edit.
 5. Database ID — first check `pipeline-preferences.json` → `database_id` (legacy `notion_database_id`); if set, use it and do not ask. Only if the main config has no database id, ask: "Your job-tracking database ID? (in Notion, the UUID in the database URL after the last `/`). Or 'skip' to disable deduplication."
-6. **Do not write `career-data` directly** (R-37 / single-build): emit a **career-data update-prompt** (canonical `references/career-data-update-prompt-format.md` format) that writes every confirmed value into its `pipeline-preferences.json` field (`target_titles`, `title_variants`, `remote_preference`, `exclusion_patterns`, `default_search_time_range`, `location_compatibility.my_location`, `preferred_job_sites`, `local_job_sites`, `database_id` if provided). The user applies it via Chat → repackage → reinstall.
+6. **Do not write `career-data` directly** (R-37 / single-build): emit a **career-data update-prompt** (canonical `references/career-data-update-prompt-format.md` format) that writes every confirmed value into its `pipeline-preferences.json` field (`target_titles`, `title_variants`, `remote_preference`, `exclusion_patterns`, `default_search_time_range`, `location_compatibility.my_location`, `preferred_job_sites`, `local_job_sites`, `database_id` if provided). The user applies it via Chat → repackage → reinstall. **Where the file goes (2026-08-12):** if you write the prompt to disk rather than printing it in chat, it goes to `<output_folder>/_career-data-updates/update-prompt-sourcing-prefs-<YYYYMMDD>.md` — `output_folder` resolved from `${CAREER_DATA}/references/pipeline-preferences.json` (R-37), asking the user if it cannot be resolved. **Never write it inside the plugin repo, under `${CLAUDE_PLUGIN_ROOT}`, or to the current working directory** — it carries her personal data. Full rule at the top of `references/career-data-update-prompt-format.md`.
 7. For *this* run, proceed with the proposed (in-memory) values so the run isn't blocked while the seed is applied.
 
 This single gate covers both a brand-new sourcing user and an existing user whose config predates this field set — the only difference is how much is already populated.
 
 **Gate 2 — Mode resolution**
 
-Resolve the search mode per the rules in `SKILL.md`. Display before searching:
+Resolve the search mode per the rules in `SKILL.md`. Before displaying the run header, run the **wired-in MCP connection check**: for each Wired-in row in `job-sourcing-mcp-registry.md` relevant to this run's tiers/sites, attempt its listed canary tool call once (e.g. startup.jobs: `mcp__startup-jobs__list_countries` with no arguments — cheap, read-only, side-effect-free). A successful response means connected (the Site Catalog's per-site gate will prefer that server in Step 2); a tool-not-found or connection error means not connected. Do this once per row per run, never per-search.
+
+Display before searching:
 
 > **Sourcing with:**
 > Titles: [list] | Variants: [expanded variant set used this run] | Mode: [mode] | Time range: [value] | Remote: [value]
 > Sources: [list of sites being searched this run, including any Tier 5 locale boards]
+> Also available: [server] — connect with '[command]' for structured [site] results. *(only if the connection check above found a relevant, unconnected Wired-in server this run; omit the line entirely otherwise — never suggest a Candidate row — it isn't granted in this agent's `tools:` frontmatter, so it has no canary to check)*
 
 ---
 
