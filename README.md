@@ -85,6 +85,23 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-09-17 — Role-tailored CVs: aligned titles, folded roles, matched level
+
+**New features**
+- **Every CV is now tailored to one role, including its job titles.** Per the user's direct instruction, after a peer reviewing a real application told her to strip the CV of everything unrelated to the role and align every title to it: "For all roles with any related experience, the role title should be adjusted to match the role the person is applying to. All other roles should be skipped and/or should take up far less space in the CV... we do need to be careful to not cross the line from tailoring to lying or hiding." Each past employer gets one of four dispositions — **Retitle** (the default, when the role facts show the target function was real, standing work there), **Descriptor** (the recorded title with the target function appended, the usual career-shift case), **Keep** (always with a reason), or **Fold** (no entry; the employer is named in one aggregation line that points to the full history).
+- **Four fixed limits keep tailoring from becoming lying or hiding:** a title never rises above the recorded title's seniority; employer names and dates never change; a title must describe work the role facts document; and every employer in the record appears, as an entry or by name in the aggregation line.
+- **The coach writes the plan during intake** — a new `CV Titles` property: a `Level:` line naming the level the target role reads at, then one line per employer. The user reviews and can edit it in her tracker before any CV is written; the cv-writer executes whatever the field holds, verbatim. Per the user: "some of this work should be offloaded during intake maybe to ensure the coach is monitoring."
+- **`CV Title Preferences` — a new field that belongs to the user alone.** Her own per-role wishes about her titles. No agent ever writes it; the coach and the cv-writer both treat it as authoritative, and it outranks the coach's line for the same employer.
+- **Junior roles get a CV written down to their level.** Per the user: "if the role is more junior than I am, then dumb down the CV as much as possible." Retitles drop to the target level, execution bullets lead, and leadership scope comes out of the summary.
+- **The aggregation line can be honest about recency.** Folded roles join the existing `Earlier:` line; when a folded employer is more recent than the oldest full entry, the prefix becomes `Additional experience:` instead. Never both lines.
+
+**Improvements**
+- **Over-caution is now a checked defect, not only over-reach.** Per the user: "I don't want the coach to be overly careful either." The Coach Output Check fails a `Keep` with no reason, and a `Keep`/`Fold` where the role facts plainly document standing work in the target function.
+- **The plan's titles are exempt from the CV gatekeeper's honesty judgments** — the coach's plan was checked before it was written, and the user has had it in her tracker since. The new CV Check Gate 6 checks conformance to the plan, unchanged employers and dates, that nothing is hidden, and that a retitled entry's bullets actually show the titled function. With no plan on file (an older role, an inline run), the cv-writer derives one itself and Gate 6 checks its titles against the four limits instead.
+- **The recruiter reviewer no longer flags the feature as a flaw** — a folded role, a short history, or a title that differs from another source is never an elimination risk.
+
+**Migration note for existing trackers:** add two text properties named exactly `CV Titles` and `CV Title Preferences`. A tracker without them still runs — intake says so once, and the cv-writer makes the title calls itself.
+
 ### 2026-09-15 — Job-sourcing MCP registry, personal-data guard, and CSV tracker template
 
 **New features**

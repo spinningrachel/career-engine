@@ -535,6 +535,7 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 6. Say: "**Important:** Do not rename the columns in your Notion database. The pipeline writes to them by exact name — renaming breaks the integration silently."
 
 7. **CV Type property — only relevant if Variant mode is chosen later in this phase.** The duplicated template likely does not include this property yet, since it's new. Once the CV Type question below (under "Document templates") is answered, if the answer was `Variant`, come back here and say: "Since you chose to let each role decide its CV format, add a **Select** property to your Notion database named exactly `CV Type`, with two options: `Detailed` and `Brief`. You set this per role yourself — the pipeline reads it, never writes to it." Skip this step entirely if `Detailed` or `Brief` was chosen instead — there's nothing to add.
+8. **Role-tailoring properties — always.** The duplicated template may predate these two. Say: "Add two **Text** properties to your database, named exactly `CV Titles` and `CV Title Preferences`. `CV Titles` is where the career coach writes its plan for how each of your past job titles should read on the CV for that specific role, and which unrelated roles fold into one line — you can review and edit it before any CV is written. `CV Title Preferences` is yours alone: anything you want to say about your titles for that role. Nothing ever writes to it." A tracker without them still works — the CV writer then makes those calls itself.
 
 ---
 
@@ -547,7 +548,7 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
 2. Write a CSV file to `/tmp/career-engine-tracker.csv` containing only the header row with all required columns in order:
 
 ```
-Company,Position,Job URL,Status,Priority,Priority Reason,JD Body,JD Fetch Status,Why I Want This Role,Role emphasis,JD proof,Keywords,Strategy,Role Type,Relationship type,Gap handling,Role summary,Hiring Manager's Name,Hiring manager's role,Manager role confirmed,Person who Advertised Role (if not Hiring Manager),No incumbents in this function,Landscape,Culture,Company Stage,Location,First Advertised,Last Pipeline Run,Link to CV,Draft Directory,CV File Name,Letter File Name,Languages,Edit type,CV Type,Note
+Company,Position,Job URL,Status,Priority,Priority Reason,JD Body,JD Fetch Status,Why I Want This Role,Role emphasis,JD proof,Keywords,Strategy,Role Type,Relationship type,Gap handling,Role summary,Hiring Manager's Name,Hiring manager's role,Manager role confirmed,Person who Advertised Role (if not Hiring Manager),No incumbents in this function,Landscape,Culture,Company Stage,Location,First Advertised,Last Pipeline Run,Link to CV,Draft Directory,CV File Name,Letter File Name,Languages,Edit type,CV Type,CV Titles,CV Title Preferences,Note
 ```
 
 `CV Type` is included regardless of which `cv_type.mode` the user chooses — it's a normal, cheap column to have even when unused (same as `Languages` for a single-language user). It only matters when `cv_type.mode` is `Variant`; the user sets it herself per role, and since 2026-07-23 the coach fills it when empty at intake (write-only-to-empty — her own value always wins).
@@ -593,7 +594,7 @@ These values must match exactly — they are hard-coded in the pipeline that rea
 ```
 Create a database/table with the following columns. Do not rename them — they are referenced by exact name by an external pipeline.
 
-Columns: Company, Position, Job URL, Status, Priority, Priority Reason, JD Body, JD Fetch Status, Why I Want This Role, Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, Gap handling, Role summary, Hiring Manager's Name, Hiring manager's role, Manager role confirmed, Person who Advertised Role (if not Hiring Manager), No incumbents in this function, Landscape, Culture, Company Stage, Location, First Advertised, Last Pipeline Run, Link to CV, Draft Directory, CV File Name, Letter File Name, Languages, Edit type, CV Type, Note
+Columns: Company, Position, Job URL, Status, Priority, Priority Reason, JD Body, JD Fetch Status, Why I Want This Role, Role emphasis, JD proof, Keywords, Strategy, Role Type, Relationship type, Gap handling, Role summary, Hiring Manager's Name, Hiring manager's role, Manager role confirmed, Person who Advertised Role (if not Hiring Manager), No incumbents in this function, Landscape, Culture, Company Stage, Location, First Advertised, Last Pipeline Run, Link to CV, Draft Directory, CV File Name, Letter File Name, Languages, Edit type, CV Type, CV Titles, CV Title Preferences, Note
 
 Select column values (must match exactly):
 - Status: New | Needs Research | Interested | CV Ready for Review | Applied | Researched | Needs Editing

@@ -597,7 +597,7 @@ expect_ge "58" "skills/writer-craft/SKILL.md" "this pattern is not available for
 expect_ge "59" "skills/writer-craft/SKILL.md" "three-way test" 1
 expect_ge "59" "skills/writer-craft/SKILL.md" "Cap: 3 skill groups maximum" 1
 expect_ge "59" "skills/gatekeeper-checks/SKILL.md" "Gate 5 — Skills Section Content" 1
-expect_ge "59" "skills/gatekeeper-checks/SKILL.md" "Gates 1-5 in order" 1
+expect_ge "59" "skills/gatekeeper-checks/SKILL.md" "Gates 1-6 in order" 1
 expect_eq0 "59" "CLAUDE.md" "Gate 0-4 for CV Check"
 expect_ge "59" "references/background/background-cross-cutting-skills.md" "three-way test" 1
 expect_ge "59" "CLAUDE.md" "CV skills-section content contract" 1
@@ -1007,6 +1007,32 @@ if python3 "$PREGATE_SCRIPT" --selftest >/dev/null 2>&1; then
 else
   report "66" 0 "python3 pregate-lint.py --selftest failed"
 fi
+
+# ================================================================
+# Check 70 — Role-tailoring plan (CV Titles) wired end-to-end (2026-09-17, per the user's
+# direct instruction: titles aligned to the target role, unrelated roles folded, level matched —
+# inside fixed honesty limits; coach proposes at intake, user-owned preferences field)
+# ================================================================
+expect_ge "70" "skills/writer-craft/cv.md" "§5c — Role Tailoring" 1
+expect_ge "70" "skills/writer-craft/cv.md" "Never above her real level" 1
+expect_ge "70" "skills/writer-craft/cv.md" "Nothing is hidden" 1
+expect_ge "70" "skills/writer-craft/cv.md" "Do not be timid" 1
+expect_ge "70" "skills/career-coach/coach-analysis.md" "Retitle — the default" 1
+expect_ge "70" "skills/career-coach/coach-analysis.md" "USER CV TITLE PREFERENCES" 1
+expect_ge "70" "skills/career-coach/coach-output.md" "CV Titles:" 1
+expect_ge "70" "skills/gatekeeper-checks/coach-gates.md" "Over-caution is a defect too" 1
+expect_ge "70" "skills/gatekeeper-checks/cv-gates.md" "Gate 6 — Role Tailoring" 1
+expect_ge "70" "skills/gatekeeper-checks/cv-gates.md" "exempt from every honesty judgment" 1
+expect_ge "70" "agents/cv-writer.md" "CV_TITLES_PATH" 1
+expect_ge "70" "agents/gatekeeper.md" "CV_TITLES_PATH" 1
+expect_ge "70" "agents/recruiter-reviewer.md" "CV_TITLES_PATH" 1
+expect_ge "70" "skills/career-engine-new-application/SKILL.md" "Step 0.titles" 1
+expect_ge "70" "skills/career-engine-edit/SKILL.md" "Step E0.titles" 1
+expect_ge "70" "skills/career-engine-intake/SKILL.md" "Never write \`CV Title Preferences\`" 1
+expect_ge "70" "skills/database/SKILL.md" "No agent ever writes it" 1
+expect_ge "70" "skills/career-engine-setup/SKILL.md" "CV Title Preferences" 3
+expect_ge "70" "references/job-applications-template.csv" "CV Titles,CV Title Preferences" 1
+expect_ge "70" "references/cv-self-check.md" "Role tailoring" 1
 
 echo "qa-mechanical: $PASS passed, $FAIL failed"
 

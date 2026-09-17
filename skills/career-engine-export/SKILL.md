@@ -384,10 +384,10 @@ Use for company name in RoleTitle — ONE word or phrase per line, maximum:
 ### Earlier line (collapsed older roles)
 
 ```markdown
-**Earlier:** Senior marketing and content roles across B2B SaaS, media, and agency — full details on LinkedIn.
+**Earlier:** [Company A], [Company B], [Company C]. Full history on LinkedIn.
 ```
 
-Plain `Normal` style paragraph. "Earlier:" is bolded with standard markdown `**bold**`. For Brief, this line closes out `## EXPERIENCE` directly (there is no `## CONSULTING` to sit between it and the rest of the document) — see the Brief annotation reference below.
+Plain `Normal` style paragraph. "Earlier:" is bolded with standard markdown `**bold**`. **The same line carries the roles the role-tailoring plan folds (`writer-craft/cv.md` §5c):** when any folded employer is more recent than the oldest full entry, the bold prefix is `**Additional experience:**` instead — same paragraph, same position, same styling, never both lines. (`assemble_brief_cv.py` treats the one top-level paragraph inside `## EXPERIENCE` as this line whatever its prefix, so no script change is involved.) For Brief, this line closes out `## EXPERIENCE` directly (there is no `## CONSULTING` to sit between it and the rest of the document) — see the Brief annotation reference below.
 
 ---
 
@@ -460,7 +460,7 @@ Head of [Function] | [Company Name]{custom-style="ColorEmphasis"} | Location
 [Example — a second bullet for the same role, still its own RoleActivitySingle div, never a RoleActivitiesList bullet]
 :::
 
-**Earlier:** [Company A], [Company B], [Company C] ([Year]–[Year])
+**Earlier:** [Company A], [Company B], [Company C]. Full history on LinkedIn.
 ```
 
 **RoleTitle no longer carries a date for Brief** — it is `Title | Company | Location` only (Detailed's RoleTitle is unaffected and still ends with the date range). The date is its own `RoleActivitySingle` div, immediately after `RoleTitle` and before the first bullet — this is the line `assemble_brief_cv.py` recognizes as the date (the first `RoleActivitySingle` div after a `RoleTitle`) and routes into the narrow date column; every `RoleActivitySingle` div after it is a bullet, routed to the wide title-and-bullets column instead.

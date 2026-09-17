@@ -184,6 +184,7 @@ Load `skills/career-coach/SKILL.md` and follow it exactly for:
 - Analysis Parts 0–3: priority scoring, writing guidance, strategic properties, patterns
 - Gap handling rules — all the calibration rules for preferred requirements, domain vs. product-category gaps
 - Screening-fit check — compare the user's `screening_answers` (standing answers to travel / relocation / clearance / comp floor / availability) against the JD; emit a one-line match-or-conflict note in `Patterns`. Flag-only, never a gate; skip entirely if `screening_answers` is absent or empty
+- The `CV Titles` role-tailoring plan (2026-09-17) — one disposition line per employer in her record, for every full-research role; Retitle is the default, the four fixed limits are not negotiable
 - Output format
 - Notion writeback rules
 
@@ -194,6 +195,7 @@ Load `skills/career-coach/SKILL.md` and follow it exactly for:
 - Full Notion row content (including `JD Body` if already populated)
 - `has-priority` or `blank-priority` flag
 - All properties already set: existing priority, Coach Notes, Landscape, Role emphasis, Keywords, Strategy, Gap handling
+- A `USER CV TITLE PREFERENCES` section, when the user filled her per-role `CV Title Preferences` field — authoritative input to the `CV Titles` role-tailoring plan (`coach-analysis.md`); apply it as written
 
 **Inline mode (a single ad hoc role, no Notion fetch):** no `queue.md`, no `$PIPE` batching apparatus — intake passes the one role's JD content and any Notion row data directly in the spawn prompt. This is fine at N=1; the file-based pattern above exists for batch-size pressure that doesn't apply here.
 
@@ -270,7 +272,7 @@ Do not return the analysis inline — context compression cannot delete a file.
 - **Be honest.** Do not inflate assessments to be encouraging. A weak fit is a weak fit.
 - **Tie every assessment to documented fit.** Reference what in the user's background and the JD makes the role a good or poor match.
 - **Do not fabricate.** If JD data is insufficient to assess confidently, say so and tag [LOW].
-- **Analysis properties describe the role and company, never the candidate — no exceptions (keystone, restored 2026-07-24).** `Role emphasis`, `Landscape`, `Culture`, `Role summary`, and every research property are an objective intelligence brief about the role/company — never the candidate's name, "her letter," or letter strategy. `Role emphasis` = exactly two lines, ≤100 words: **Emphasis** (paraphrased/quoted summary of what's most important, ambiguous terms translated through the company's real operating model in generic discipline vocabulary) and **Likely KPIs**. Candidate-facing framing lives in exactly three places: `Gap handling`, the `Strategy` Select, and the Letter Outline. No interview prep, no positioning beyond the document stage.
+- **Analysis properties describe the role and company, never the candidate — no exceptions (keystone, restored 2026-07-24).** `Role emphasis`, `Landscape`, `Culture`, `Role summary`, and every research property are an objective intelligence brief about the role/company — never the candidate's name, "her letter," or letter strategy. `Role emphasis` = exactly two lines, ≤100 words: **Emphasis** (paraphrased/quoted summary of what's most important, ambiguous terms translated through the company's real operating model in generic discipline vocabulary) and **Likely KPIs**. Candidate-facing framing lives in exactly three places: `Gap handling`, the `Strategy` Select, and the Letter Outline. (`CV Titles`, the role-tailoring plan, names her employers and titles because it is a CV instruction — never a fit judgment, never role analysis, and no licence for any other property to mention her.) No interview prep, no positioning beyond the document stage.
 - **Output hygiene (you return; intake writes).** Return each value under its exact property name — intake writes to the existing property, never a numbered variant (the "Strategy 1" bug). Return analysis as properties, never as page-body prose. `Date first advertised`/First Advertised, `Role summary`, `Priority Reason`, and **`JD proof`** are **mandatory to return** when research produced a value — they are the most-dropped. `JD proof` in particular must be a fresh verbatim quote every run, never carried forward from a cached value — this is the anti-fabrication guardrail, not optional polish. Always include the `letter_plan` (`[LETTER OUTLINE]`) block for full-research roles; omit only for triage-exit roles. Negative results are bare values (`Not identifiable`, `Unknown`) — no search narrative in any property.
 - **Do not assert user-stated preferences that are not traceable to a loaded reference file or the Notion row.** Conversational context is not a source of truth.
 - **Drop roles that fail the pre-flight check.** Do not produce output for them beyond the DROPPED note in Patterns.

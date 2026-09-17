@@ -179,6 +179,7 @@ Surface this reading in `Role emphasis`, and let it guide the `Strategy` letter-
 | `Priority Reason` | One sentence justifying the score — name the driver(s) and any reason it isn't higher. |
 | `Role emphasis` | A paraphrased and/or directly quoted summary of what's most important in the role (with the operating-model translation of any ambiguous term, in generic discipline vocabulary) plus the likely KPIs. Exactly two labeled lines, ≤100 words. Never strategy, capability mapping, de-emphasis, CV type, company facts, confidence tags, or rank commentary. |
 | `CV Type` | Variant mode only — the coach's Detailed/Brief call for this role, written by intake to the user's per-role `CV Type` select (write-only-to-empty; the user's hand-set value always wins). |
+| `CV Titles` | The role-tailoring plan — one line naming the level the target role reads at, then one disposition line per employer in her record (Retitle / Descriptor / Keep / Fold). The cv-writer executes it verbatim; the user reviews and may edit it in her tracker. |
 | `Role summary` | The plain-language "what the job is in practice" — scope, stage, ownership areas, constraints (solo, budget), business timing. The version you'd tell a friend. ≤400 chars. |
 | `Landscape` | A structured market + company + product brief: snapshot (location, size, founders), product (what it is, how it works), buyers/personas, GTM motion, funding/stage, org context, competitive frame. |
 | `Keywords` | A prioritized requirements map from the JD — Critical / Important / Nice-to-have, hard-capped. For ATS targeting, proof-point selection, and go/no-go on a missing "Critical". |
@@ -211,7 +212,7 @@ If `GAP_HANDLING = disabled` (set in the Settings pre-flight), leave `Gap handli
 
 ---
 
-**⛔ KEYSTONE — analysis properties describe the ROLE and the COMPANY, never the candidate — no exceptions (restored 2026-07-24; the short-lived `Capability match` exception was retired with that section, per the user: "it should NOT cite mapping to user's capabilities").** `Role emphasis`, `Landscape`, `Culture`, `Role summary`, `Company Stage`, and every research-derived property answer *"what is this role / company / market?"* — objectively, as a recruiter-grade intelligence brief. They must NOT name the candidate, reference "her letter," describe what she must do, or carry letter strategy. **Candidate-facing framing lives in exactly three places: `Gap handling`, the `Strategy` select, and the Letter Outline — nowhere else.** If you catch yourself writing the candidate's name or "the letter" inside any role/company property, you have leaked framing into the wrong field: cut it.
+**⛔ KEYSTONE — analysis properties describe the ROLE and the COMPANY, never the candidate — no exceptions (restored 2026-07-24; the short-lived `Capability match` exception was retired with that section, per the user: "it should NOT cite mapping to user's capabilities").** `Role emphasis`, `Landscape`, `Culture`, `Role summary`, `Company Stage`, and every research-derived property answer *"what is this role / company / market?"* — objectively, as a recruiter-grade intelligence brief. They must NOT name the candidate, reference "her letter," describe what she must do, or carry letter strategy. **(One further, differently-shaped property names her record: `CV Titles`, the role-tailoring plan, added 2026-09-17 per the user's direct instruction — a CV instruction listing her employers and titles, never a fit judgment, and never analysis of the role. It is not an exception to this keystone for any other property.)** **Candidate-facing framing lives in exactly three places: `Gap handling`, the `Strategy` select, and the Letter Outline — nowhere else.** If you catch yourself writing the candidate's name or "the letter" inside any role/company property, you have leaked framing into the wrong field: cut it.
 
 ---
 
@@ -250,6 +251,39 @@ CV Type: Detailed | Brief — [one-line rationale]
 ```
 
 Intake writes it to the user's per-role `CV Type` select — **write-only-to-empty: the user's own hand-set value always wins and is never overwritten.** When `CV_TYPE_MODE` is `"Detailed"` or `"Brief"`, omit this property entirely. Never place a CV-type recommendation inside `Role emphasis` or any other property.
+
+**`CV Titles`** — **the role-tailoring plan, returned for every full-research role (2026-09-17, per the user's direct instruction after peer feedback on a real application: "For all roles with any related experience, the role title should be adjusted to match the role the person is applying to. All other roles should be skipped and/or should take up far less space in the CV... we do need to be careful to not cross the line from tailoring to lying or hiding." / "some of this work should be offloaded during intake maybe to ensure the coach is monitoring").** You read her role record anyway to score coverage (Part 0); this property turns that read into the plan the cv-writer executes. Return exactly:
+
+```
+CV Titles:
+Level: <the level the target role reads at, in plain words — e.g. "Senior IC, no reports" / "Director, small team">
+<Employer>: Retitle → <title as it should appear> | basis: <one role fact, ≤15 words>
+<Employer>: Descriptor → <recorded title> (<target function>) | basis: <one role fact, ≤15 words>
+<Employer>: Keep → <recorded title> | reason: <≤15 words>
+<Employer>: Fold
+```
+
+One line per employer in her role record (`02-professional-background.md` and its `background-role-facts-*.md` files), every employer accounted for, in the record's own order. Nothing else — no commentary, no strategy, no summary advice (Hyper Focus).
+
+**The four dispositions:**
+- **Retitle — the default.** Her role facts show the target function was real, substantial work in that role: a standing responsibility with documented outputs, not a one-off. The title becomes the target role's title or its nearest truthful variant.
+- **Descriptor.** Some documented work in the target function, but it was not the substance of the role — the usual career-shift case. The recorded title stays and the target function is appended in parentheses.
+- **Keep.** The recorded title already reads as the target function, or the user asked for it. Always carries a reason.
+- **Fold.** No documented work that answers this role. The cv-writer names the employer in the aggregation line and gives it no entry.
+
+**Do not be timid.** Titles are employer-assigned labels that differ between companies for identical work; aligning one to the work she actually did is tailoring, and the user has explicitly asked not to be protected from it ("I don't want the coach to be overly careful either"). Between Retitle and Descriptor, choose Retitle whenever the facts show the function as a standing part of the job. Between Descriptor and Fold, choose Descriptor whenever the role can supply even two bullets that answer this JD. A `Keep` with no reason, or a plan that is mostly `Keep`, is the over-caution defect.
+
+**The fixed limits — where tailoring would become lying or hiding:**
+1. **Never above her recorded level.** A retitle matches or sits below the recorded title's seniority. When the target role is junior to her record, retitles drop to the target level — state that level on the `Level:` line and write every retitle at it. The user's instruction: "if the role is more junior than I am, then dumb down the CV as much as possible."
+2. **Employer names and dates are never touched** — they are not part of this property at all.
+3. **Every `basis:` is a fact from her role record.** If the only support is inference, the disposition is Descriptor at most; if there is none, Fold. For a career shift, put the creativity into which documented work you surface as the basis — never into the facts themselves. When nothing supports more, fall back to what her career-data says.
+4. **Every employer appears on a line.** A missing employer is a hidden employer.
+
+**The user's own `CV Title Preferences` are authoritative.** When `queue.md` carries a `USER CV TITLE PREFERENCES` section for the role (her own per-role field), apply it as written — a title she states for an employer is that employer's line, marked `| basis: user-stated`, exempt from the limits above (it is her statement about her own title). Standing preferences in her career-data (`01-writing-rules.md`) apply the same way.
+
+**Her own CV structure rules outrank the plan.** Where her career-data states structure rules of its own (roles that always get a standalone slot, entries flagged mandatory, how a given employer may be placed), never `Fold` against them.
+
+**This is a CV instruction, never a fit judgment.** No gap language, no "she lacks", no fit verdicts — a Fold says nothing about her, only about this CV's space.
 
 **CV Type judgment principle (2026-07-23 — replaces the retired CV Type Recommendation Matrix, per the user: "that looks like a highly personalized matrix which couldn't possibly be relevant for any user").** The matrix was a geography × seniority × vertical lookup table whose rows were admittedly unsourced guesses arranged around one user's scenario — the same failure the Brief CV's `Earlier:` cutoff decision (`CLAUDE.md` → Key design decisions) already names: shared plugin doctrine gets a judgment principle, never a fixed table pretending to be world knowledge. Reason it out per role, in this order:
 

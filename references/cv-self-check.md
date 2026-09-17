@@ -47,6 +47,14 @@ Run every item in order before returning output. The gatekeeper runs the same ch
 - [ ] Each employer is described using only the approved target market from `01-writing-rules.md` Section 1
 - [ ] No opening verb appears 3 or more times across all bullets — tally and fix before returning
 
+## Role tailoring (`writer-craft/cv.md` §5c)
+
+- [ ] `CV_TITLES_PATH` was read. Plan present: every title matches its plan line exactly (the user's `CV Title Preferences` line wins for the same employer); every `Fold` employer has no entry. Plan absent: one disposition derived per employer and stated in the summary line / `cv-changes.md`
+- [ ] No title sits above the recorded title's seniority; no employer name or date differs from the role record
+- [ ] Every employer in the role record appears as an entry or by name in the aggregation line — count them
+- [ ] Every retitled or descriptor entry has at least one bullet showing the titled function
+- [ ] When the plan's `Level:` is below her record: execution bullets lead, leadership scope is out of the Summary
+
 ## Tools section
 
 - [ ] If the Role Type is Specialist or Builder AND the JD mentions tools or platform proficiency: `## TOOLS` section is present with a relevant selection from `01-writing-rules.md` Section 8
@@ -55,6 +63,7 @@ Run every item in order before returning output. The gatekeeper runs the same ch
 ## Earlier
 
 - [ ] No years on the Earlier line
+- [ ] The aggregation line's bold prefix is `Earlier:` only when every folded employer predates the oldest full entry — otherwise `Additional experience:`; never both lines. It names every folded employer and closes with the full-history pointer (§5c)
 - [ ] Earlier line appears as the last entry inside `## EXPERIENCE`, immediately before the `## CONSULTING` section header — not after CONSULTING
 
 ## Header

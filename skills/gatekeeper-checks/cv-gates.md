@@ -4,9 +4,9 @@
 
 ## CV Check
 
-Run Gate 0 (ATS pre-check) first, then Gates 1-5 in order.
+Run Gate 0 (ATS pre-check) first, then Gates 1-6 in order.
 
-**The gatekeeper receives `CV Type=Detailed|Brief` at every CV Check spawn** (the orchestrator's already-resolved value — the gatekeeper never re-derives it). Gates branch only where the thing they check is literally different content between the two types — not by default. Gate 0 and Gate 2 branch (required headings differ; RoleOverview structurally doesn't exist in Brief). Gate 1 uses a different number but the same logic. Gates 3-5 do not branch at all — punctuation, banned vocabulary, sentence mechanics, and Skills-section content quality apply identically regardless of CV type. See each gate below for the specific reasoning.
+**The gatekeeper receives `CV Type=Detailed|Brief` at every CV Check spawn** (the orchestrator's already-resolved value — the gatekeeper never re-derives it). Gates branch only where the thing they check is literally different content between the two types — not by default. Gate 0 and Gate 2 branch (required headings differ; RoleOverview structurally doesn't exist in Brief). Gate 1 uses a different number but the same logic. Gates 3-6 do not branch at all — punctuation, banned vocabulary, sentence mechanics, Skills-section content quality, and role-tailoring conformance apply identically regardless of CV type. See each gate below for the specific reasoning.
 
 ### Gate 0 — ATS Pre-Check (hard fail)
 
@@ -86,6 +86,7 @@ FAIL if EXPERIENCE or PROFILE SUMMARY headings are absent or substantially renam
 - **Do not run the RoleOverview-parity check** — Brief has no RoleOverview line anywhere; this is correct, not a violation.
 
 **Both types:**
+- **The aggregation line may carry either bold prefix — `Earlier:` or `Additional experience:` (`writer-craft/cv.md` §5c) — and every rule above that names the "Earlier" line applies to whichever is used.** FAIL if both appear, or if `Earlier:` is used while a folded employer is more recent than the oldest full entry.
 - Claims about target market match `02-professional-background.md` (Role Facts).
 - No tool or technology name of any kind inside experience bullets — blanket ban, even a tool named in the JD, even as an example. Approved bullets from `02-professional-background.md` are the only exemption.
 
@@ -122,5 +123,21 @@ A format contract is not a content contract — this gate checks what's actually
 - **Title or role label listed as a skill.** A job title or role descriptor is never a skill — e.g. "Founding Marketer." FAIL: "[item] is a title, not a capability — cut it."
 - **More than 3 skill groups, or cross-group duplication.** FAIL if the section has more than 3 categorized groups, or if the same item (or a clear paraphrase of it) appears in more than one group. Quote both groups and the overlapping item(s): "[group A] and [group B] both claim [overlapping concept] — merge or cut one."
 
----
+### Gate 6 — Role Tailoring (hard fail)
 
+Cross-referenced from `writer-craft/cv.md` §5c. **Does not branch by CV Type.** Input: `CV_TITLES_PATH` (`$PIPE/cv-titles.md`; if the spawn did not pass it, look for `cv-titles.md` beside the CV file) and the employer list in `02-professional-background.md`'s role record. Read the role record for employers, recorded titles, and dates — mechanically, never from memory of the CV. **`CV_TITLES_PATH=skip` (the Edit pipeline's Step E0.7 baseline check of a pre-existing CV) → skip this gate entirely and say so in the output.**
+
+**When a plan is present (the file carries plan lines, not `PLAN: none`):**
+- **Conformance.** Every `Retitle`/`Descriptor`/`Keep` line's title appears on that employer's entry exactly as the plan (or, where present, the user's `CV Title Preferences` block) states it. FAIL: "[Employer] title is '[found]' — the plan says '[planned]'." Every `Fold` employer has no entry and is named in the aggregation line. FAIL if a folded employer has a full entry, or a planned entry is missing.
+- **The plan's titles are exempt from every honesty judgment in this gate.** The coach's plan passed the Coach Output Check before it was written, and the user has had it in her tracker since — her edits and her `CV Title Preferences` are her own statement about her own titles. Never FAIL a CV for executing the plan, and never issue a fix direction that asks the writer to change a planned title. A violation against a planned title is itself the error. **This is deliberate, including for a title the user edited in above her recorded level:** the limits bind the coach (Coach Output Check item 15, before the write) and the writer (the no-plan branch below), never the user's own statement about her own career.
+
+**When no plan is present (writer-derived):** check the writer's titles against §5c's fixed limits instead. FAIL a title whose seniority sits above the recorded title for that employer (quote both). FAIL a retitle naming a function the role facts for that employer do not document at all — fix direction: `Descriptor` or `Fold`, never "restore the recorded title" as the only option.
+
+**Always, plan or no plan:**
+- **Employer names and dates unchanged.** Each entry's employer and date range match the role record. FAIL on any difference, quoting both.
+- **Nothing hidden.** Every employer in the role record appears as an entry or by name in the aggregation line. FAIL: "[Employer] appears nowhere in the CV — fold it into the aggregation line by name." An entry her career-data flags as mandatory must still appear (Gate 2).
+- **Title and bullets agree.** A `Retitle` or `Descriptor` entry carries at least one bullet in the target function. FAIL: "[Employer] is titled '[title]' but no bullet shows that function."
+- **Level.** When the plan's `Level:` line (or, absent a plan, the writer's stated derivation) puts the role below her recorded seniority, FAIL leadership-scope claims in the Summary that answer no named JD requirement — team size, budget ownership, board exposure, function-building. Advisory only for the same content inside bullets.
+- **Never FAIL a CV for omitting or shortening a role the plan folds, for a title that differs from the recorded one, or for being "less complete" than her full history.** That is the feature.
+
+---

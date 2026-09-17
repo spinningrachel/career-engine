@@ -23,7 +23,8 @@
         "Hiring manager's role",
         "No incumbents in this function",
         "JD Body",
-        "CV Type"
+        "CV Type",
+        "CV Titles"
       ],
       "locations": [
         {
@@ -69,7 +70,9 @@
         "No incumbents in this function",
         "JD Body",
         "Why I Want This Role",
-        "CV Type"
+        "CV Type",
+        "CV Titles",
+        "CV Title Preferences"
       ],
       "locations": [
         {
@@ -298,6 +301,25 @@
         "skills/career-coach/coach-analysis.md"
       ],
       "_comment": "2026-09-15: JD Fetch Status's Manual-entry value must stay defined in both coach-side files (added 2026-08-13, once already missed from one of the two). Deliberately NOT required in agents/role-prioritizer.md — that agent's three-value list (Fetched/LinkedIn-blocked/Unfetchable) is correct as-is; Prioritization has no interactive path to produce Manual-entry. See career-coach.md's parity note."
+    },
+    {
+      "id": "term-role-tailoring-plan",
+      "_comment": "2026-09-17, per the user's direct instruction: each CV is tailored to one role — titles aligned (Retitle default / Descriptor / Keep / Fold), unrelated employers folded by name into the aggregation line, the whole CV written at the target role's level, inside four fixed honesty limits. The coach writes the plan (CV Titles) at intake; the user's own CV Title Preferences field is never written by any agent; both pipelines resolve it once (Step 0.titles / E0.titles) into $PIPE/cv-titles.md; cv-writer executes verbatim; Gate 6 and coach-gates item 15 enforce. Every file below must keep naming the plan.",
+      "term": "role-tailoring plan",
+      "files": [
+        "skills/writer-craft/cv.md",
+        "skills/career-coach/coach-analysis.md",
+        "skills/career-coach/coach-output.md",
+        "agents/career-coach.md",
+        "agents/cv-writer.md",
+        "agents/gatekeeper.md",
+        "agents/recruiter-reviewer.md",
+        "skills/gatekeeper-checks/coach-gates.md",
+        "skills/career-engine-intake/SKILL.md",
+        "skills/career-engine-new-application/SKILL.md",
+        "skills/career-engine-edit/SKILL.md",
+        "skills/database/SKILL.md"
+      ]
     }
   ],
   "context_sets": [
@@ -321,7 +343,7 @@
     },
     {
       "id": "gk-cv-spawn-params",
-      "_comment": "Every gatekeeper option=cv spawn paragraph must carry CAREER_DATA and the resolved CV Type (single-resolution-point contract).",
+      "_comment": "Every gatekeeper option=cv spawn paragraph must carry CAREER_DATA and the resolved CV Type (single-resolution-point contract). 2026-09-17: also the role-tailoring plan path (CV_TITLES_PATH) — Gate 6 checks the CV against it.",
       "trigger": "option=cv`",
       "files": [
         "skills/career-engine-new-application/SKILL.md",
@@ -330,7 +352,8 @@
       "require": [
         "CAREER_DATA=${CAREER_DATA}",
         "CV Type",
-        "gap_handling_mode"
+        "gap_handling_mode",
+        "CV_TITLES_PATH"
       ],
       "alternates": [
         "same parameters as"
