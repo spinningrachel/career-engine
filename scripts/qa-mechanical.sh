@@ -387,8 +387,9 @@ expect_ge "21t" "hooks/hooks.json" '"type": "prompt"' 1
 expect_ge "21t" "hooks/hooks.json" "last_assistant_message" 1
 expect_ge "21t" "hooks/hooks.json" 'ok\\": false' 1
 expect_ge "21t" "hooks/hooks.json" '"PreToolUse"' 1
-expect_ge "21t" "hooks/hooks.json" 'AskUserQuestion' 2
-expect_ge "21t" "hooks/hooks.json" 'decision\\": \\"deny' 1
+expect_ge "21t" "hooks/hooks.json" 'AskUserQuestion' 1
+expect_ge "21t" "hooks/hooks.json" 'gate-ask-user-question.sh' 1
+expect_ge "21t" "scripts/gate-ask-user-question.sh" '"permissionDecision": "deny"' 1
 
 # ================================================================
 # Check 21u — CV footer injection is optional via cv_footer.inject (2026-07-12 addition)
