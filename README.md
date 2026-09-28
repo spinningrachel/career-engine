@@ -85,6 +85,11 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-09-28 — Bug fix: AskUserQuestion hook false positive
+
+**Bug fixes**
+- **The `AskUserQuestion` gate no longer blocks questions outside a pipeline run.** The gate was a prompt hook, a model guessing from the conversation whether a pipeline run was executing. It denied a career-data review session's fact-check questions (years of experience, canonical titles) as a "live pipeline run." It is now a deterministic command hook, `scripts/gate-ask-user-question.sh`, which denies only when this session's own transcript holds an assistant pipeline subagent spawn or a write into a run directory, and the question asks about scope, cost, volume, or continuing. The mid-run scope-check protection is unchanged. An 11-case battery (`scripts/test-ask-question-gate.sh`) covers the reported false positive and keeps genuine blocker questions allowed mid-run.
+
 ### 2026-09-17 — Role-tailored CVs: aligned titles, folded roles, matched level
 
 **New features**
