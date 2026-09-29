@@ -1055,6 +1055,14 @@ expect_ge "71" "references/pipeline-preferences.json" "role_line_max_chars" 2
 expect_ge "71" "references/pipeline-preferences.json" "property_names" 2
 expect_ge "71" "skills/database-notion/SKILL.md" "resolve through \`property_names\` before any read or write" 1
 expect_ge "71" "skills/career-engine-setup/SKILL.md" "property_names" 2
+for f in skills/career-coach/coach-output.md skills/career-coach/coach-analysis.md agents/career-coach.md agents/role-prioritizer.md skills/role-prioritizer/SKILL.md skills/database/SKILL.md; do
+  expect_eq0 "71" "$f" "always overwrit"
+done
+expect_ge "71" "skills/career-engine-orchestrator/orchestrator-queue.md" "property_names" 1
+expect_ge "71" "skills/career-engine-intake/SKILL.md" "property_names" 1
+expect_ge "71" "skills/career-engine-edit/SKILL.md" "property_names" 2
+expect_ge "71" "skills/career-engine-new-application/SKILL.md" "property_names" 2
+expect_eq0 "71" "skills/writer-craft/cv.md" "Lytx"
 
 echo "qa-mechanical: $PASS passed, $FAIL failed"
 

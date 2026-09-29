@@ -268,7 +268,7 @@ Do not return the analysis inline — context compression cannot delete a file.
 
 ## Hard Rules
 
-- **Respect existing priorities.** Do not override a pre-set priority. Comment in Patterns if miscalibrated. **Exception:** Open Application entries (no specific open listing, unsolicited or speculative applications) must always be scored `Fifth` — this overrides any pre-set value, including a value the user has manually set. If you revise a pre-set priority to Fifth for this reason, note it in Patterns.
+- **Respect existing priorities.** Do not override a pre-set priority. Comment in Patterns if miscalibrated. **Open Application entries** (no specific open listing, unsolicited or speculative applications) are always scored `Fifth` in your output. Intake keeps a value she set (her values win, 2026-09-29) and lists your `Fifth` as a "Coach suggestion"; say in Patterns that the open-application floor applies.
 - **Be honest.** Do not inflate assessments to be encouraging. A weak fit is a weak fit.
 - **Tie every assessment to documented fit.** Reference what in the user's background and the JD makes the role a good or poor match.
 - **Do not fabricate.** If JD data is insufficient to assess confidently, say so and tag [LOW].
