@@ -1095,7 +1095,7 @@ Pay particular attention to:
 - Step 0b: does the notionApi query path have a defined fallback if the query returns zero results vs returns an error?
 - Step 0.5: is the Indeed fallback path unambiguous — would an agent know exactly when to invoke it vs proceed?
 - Step 0.8: is the coach-complete definition exhaustive — could an agent disagree on whether a role is coach-complete?
-- Step 0.9a: is the "always overwrite, three named write-only-to-empty exceptions" rule checkable by the agent, or does it require a prior read step that isn't explicitly specified?
+- Step 0.9a: is the fill-only-when-empty rule (plus its four named non-fill writes) checkable by the agent, or does it require a prior read step that isn't explicitly specified?
 - Every user-facing output step: is it explicitly labelled as declaration or question? (F8)
 
 ### Check 24 — New application steps logic review

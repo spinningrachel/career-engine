@@ -184,7 +184,7 @@ Surface this reading in `Role emphasis`, and let it guide the `Strategy` letter-
 | `Landscape` | A structured market + company + product brief: snapshot (location, size, founders), product (what it is, how it works), buyers/personas, GTM motion, funding/stage, org context, competitive frame. |
 | `Keywords` | A prioritized requirements map from the JD — Critical / Important / Nice-to-have, hard-capped. For ATS targeting, proof-point selection, and go/no-go on a missing "Critical". |
 | `Strategy` | Letter-type Select — `IC` / `Strategic` / `Hybrid`. Sets the cover-letter structure only. |
-| `Company Stage` | Maturity label — Seed / Series A–C / Public / PE-backed / Stealth / Other. |
+| `Company Stage` | Maturity label — Seed / Series A–E / Public / PE-backed / Stealth / Other. |
 | `Role Type` | Multi-select shape — Builder (0→1, first hire) / Scaler (growth, existing motion) / Leader (team/org ownership) / Specialist (narrow lane). |
 | `Relationship type` | Full time / Part time / Temporary / Fractional/Consulting/Freelancing. |
 | `Gap handling` | The material gaps and how to handle each (max 3), or `N/A`. |
