@@ -76,6 +76,12 @@ Added 2026-09-17, per the user's direct instruction after peer feedback on a rea
 
 **Do not be timid.** Retitle is the default, not the exception. Titles are employer-assigned labels that vary wildly between companies for identical work; aligning one to the work she actually did is tailoring. Between Retitle and Descriptor, choose Retitle when the facts show the function as a standing part of the job. Between Descriptor and Fold, choose Descriptor when the role can supply even two bullets that answer the JD. Use everything around the title creatively as well: the RoleOverview line, bullet selection and order, the summary's first noun phrase (§6b).
 
+**Two title tests every entry must pass (2026-09-29, per the user ("The titles of positions aren't tailored enough... writing Director alone will get me cancelled for an IC role after all. and noone (from experience) likes seeing Marketing for technical writers" / "The positions should be called what's most appropriate for the application + aligned with something that I actually did")).** A title still carrying either word below is untailored, whether it came from a plan, a `Keep`, or your own derivation:
+- **No off-function words.** A title never names a function the target role does not hire for: `Marketing`, `GTM`, `Sales`, or `Growth` on a technical-writing CV; `Documentation` or `Technical Writer` on a product-marketing CV. When the recorded title is a hybrid ("Founding Marketer & Technical Writer"), keep only the half that answers this role ("Founding Technical Writer"). When the role facts document the target function in that job, the off-function word goes; when they do not, the role is a `Fold`, never a `Keep` with the wrong function in its title.
+- **No level words above the target level.** When the target reads as an IC role, `Director`, `Head of`, `VP`, `Chief`, and `Manager` never appear in a title: retitle at the nearest IC form of the target function (`Principal`, `Lead`, `Senior`, or the plain function name) that her record supports. This is limit 1 working downward, which is always allowed.
+
+**Her career-data title strings are facts, never a menu.** Strings her career-data labels "Approved RoleTitle", "approved title form", or similar record what she was called and set the seniority ceiling (limit 1). They are never a list the displayed title must come from, and a role-line length rule in her career-data governs length, not wording. "Her own structure rules outrank this section" (below) covers slots, mandatory entries, placement, and the form of her aggregation line; it never covers title wording.
+
 **The line between tailoring and lying — four fixed limits, no exceptions:**
 1. **Never above her real level.** A retitle may match or sit below the seniority of the recorded title, never above it. Manager never becomes Director; an IC never becomes Head of.
 2. **Employer names and dates never change.** Not rounded, not merged, not stretched to close a gap.
@@ -89,6 +95,23 @@ Added 2026-09-17, per the user's direct instruction after peer feedback on a rea
 **Her own structure rules outrank this section.** Where her career-data states CV structure rules of its own — which roles earn a standalone slot, entries flagged mandatory, how a given employer may be placed, the form of her `Earlier:` line — those rules govern, and the plan is executed inside them.
 
 **Bullets follow the same cut.** Inside a kept role, only work that answers this role survives (§6 Tailoring and dedupe discipline). A retitled role whose bullets still describe the old function contradicts its own title; the bullets are what make the title true.
+
+---
+
+## [CV] §5d — The position line fits on one line (applies to both Detailed and Brief)
+
+Added 2026-09-29, per the user's direct instruction: "the cv writers need to be aware of space limitations and tweak the position line accordingly. position rows should never be two rows long - that's ridiculous, and it's not critical to include the whole location name, and for older roles and/or the brief CV, even, the entire date isn't necessary."
+
+**The rule.** Every `RoleTitle` line renders on exactly one line of its template: Detailed's `Title | Company | Location | Dates`, and Brief's `Title | Company | Location` (Brief's dates sit in their own column). A position line that wraps to a second line is a defect, whatever the content.
+
+**The budget.** Read `cv_type.role_line_max_chars` from `pipeline-preferences.json` (`detailed` / `brief`). When it is set for this CV Type, it is a hard character cap on the whole line, spaces and separators included. When it is blank, estimate from the template: Brief's title sits in the narrow right column of a two-column table, so it holds far fewer characters than Detailed's full-width line. Her career-data may state its own cap for a CV Type; that cap wins over the config value.
+
+**Trim order — stop as soon as the line fits:**
+1. **Location.** City alone, or country alone, or drop it. The location is the least important element on the line.
+2. **Dates (Detailed; older roles first).** Years only (`2018 – 2020`) for every role before the most recent two, then for all roles if still over. Brief's date column already shows years only.
+3. **Title — only when no plan is present.** The shortest truthful form (`Senior Technical Writer`, not `Senior Technical Writer & Documentation Lead`). A planned title is executed verbatim; when steps 1-2 cannot make a planned line fit, keep it and name the line in your summary so the user can shorten it in `CV Titles`.
+
+**Never trimmed:** the employer name and the date range's actual years (§5c limit 2). A second employer name joined with a slash (`Lytx / Surfsight`) may drop to the name she was hired under when the line still does not fit after steps 1-3.
 
 ---
 

@@ -701,6 +701,8 @@ Mechanized: covered by scripts/qa-mechanical.sh (CHECK 35b) — run via the Mech
 
 ### Check 55 — Intake writeback default flipped to always-overwrite, three named exceptions only (2026-07-07 change)
 
+**⚠ Superseded 2026-09-29, per the user's direct instruction ("Yes, mine always win"): the default is now fill-only-when-empty, and `scripts/qa-mechanical.sh` Checks 35b/55/65 assert the new rule. See Check 71. The text below is history.**
+
 Step 0.9a's default changed from write-only-to-empty (with a handful of named always-overwrite exceptions) to always-overwrite (with exactly three named write-only-to-empty exceptions — since 2026-07-23: `JD Body`, `Gap handling`, `CV Type`; the third slot was the `wiwtr_questions` WIWTR append until that feature's 2026-07-23 retirement). Verify the new default rule, all three exceptions, and the confirmation-pass fix (comparing against the coach's returned value rather than testing emptiness, since most properties can now be non-empty going in) all landed, and that the two stale contradictions this exposed (`coach-output.md`'s leftover "Priority... do not overwrite" line; `Strategy`'s always-overwrite status disagreeing between files) are gone.
 
 Partially mechanized: the grep battery is covered by scripts/qa-mechanical.sh (CHECK 55-writeback); the read-and-confirm portion below still runs manually.
@@ -971,6 +973,12 @@ Then read the `## Changelog` section of README.md. Verify:
 **FAIL condition:** any grep count is 0; README.md has no Changelog section; entries are in wrong chronological order; or any entry is missing a `### YYYY-MM-DD` heading.
 
 ---
+
+### Check 71 — The user's values win; title tests; one-line position row; `property_names` (2026-09-29 addition)
+
+Mechanized in `scripts/qa-mechanical.sh` (CHECK 71). Read-and-confirm portion: (1) no intake, prioritizer, or new-application writeback bullet still says "always overwrite" except the four named non-fill writes (Letter Outline block, `Keyword gap:` lines, `First Advertised`, `Job URL`) and the prioritizer's `Needs Research` refresh mode; (2) the intake confirmation pass never retries a write over a kept value; (3) the two title tests appear in the cv-writer doctrine, the coach doctrine, the Coach Output Check, and CV Gate 6, with the same word lists; (4) CV Gate 5b counts mechanically and never FAILs a planned title the writer is not allowed to shorten; (5) every property read or write in a pipeline file goes through the adapter, so `property_names` covers it.
+
+**FAIL condition:** any asserted string missing, an "always overwrite" write outside the named exceptions, or a pipeline file that reads a property without the adapter's name resolution.
 
 ## Phase 0 — Cross-reference inventory sweep
 

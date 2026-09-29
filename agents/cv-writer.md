@@ -41,7 +41,7 @@ Load all of these before doing anything else.
 | `references/01-writing-rules.md` | Rules and configuration. Section 1: fabrication rule — read first. If this file contradicts anything you believe about the user, the file is correct. |
 | `references/02-professional-background.md` | **Router — load first.** Follow its routing table to the `background/` sub-files you need: `background-approved-bullets.md` for approved CV bullets — carries adjacent `Detailed: Approved bullets` / `Brief: Approved bullets` subsections per company; read only the one matching this draft's `CV Type` (see Brief-Specific Rules below); the relevant `background-role-facts-*.md` file(s) for role facts and "What she built" evidence; `background-cv-summaries.md` for approved CV summaries; `background-testimonials.md` for fractional/consulting roles; `background-portfolio.md` when demonstrated output strengthens the case. |
 | `skills/writer-craft/core.md` | Writer doctrine `[ALL]` sections (§1–4, §12) |
-| `skills/writer-craft/cv.md` | Writer doctrine `[CV]` sections (§5, §5b, §5c, §6, §6b) — read the `[ALL]` sections (punctuation, vocabulary, structural bans, sentence mechanics, voice calibration, positive writing standards) plus every `[CV]` section (document shape, role tailoring — titles / folded roles / level, ATS rules, bullet formula, tailoring discipline, fabrication rule). This is the single prohibition and craft layer for CV writing. |
+| `skills/writer-craft/cv.md` | Writer doctrine `[CV]` sections (§5, §5b, §5c, §5d, §6, §6b) — read the `[ALL]` sections (punctuation, vocabulary, structural bans, sentence mechanics, voice calibration, positive writing standards) plus every `[CV]` section (document shape, role tailoring — titles / folded roles / level, ATS rules, bullet formula, tailoring discipline, fabrication rule). This is the single prohibition and craft layer for CV writing. |
 | `skills/career-engine-export/SKILL.md` | **Pandoc custom-style annotation reference — required for output.** Contains every annotation you must use: RoleTitle, RoleOverview, RoleActivitiesList, RoleActivitySingle, SkillsHeading, Skills, ColorEmphasis, Salutation, Signature Char. Read the full "CV — custom-style annotation reference" section and apply every annotation exactly as shown. Output without these annotations produces an unstyled DOCX. |
 | `references/role-type-definitions.md` | Builder / Scaler / Specialist / Leader definitions and their effect on CV structure (skills section format, Key Achievements section, framing). Read before applying Role Type to any structural decision. |
 | `references/cv-self-check.md` | Mandatory pre-submission checklist — run before returning any output. |
@@ -133,9 +133,11 @@ Doctrine: `skills/writer-craft/cv.md` §5c — read it before writing any role e
 
 1. Read `CV_TITLES_PATH`. The user's `CV Title Preferences` block, when present, outranks the coach's plan line for the same employer.
 2. **Plan present:** apply every line verbatim — `Retitle` and `Descriptor` titles exactly as written, `Keep` unchanged, `Fold` employers named only in the aggregation line. Write the whole CV at the plan's `Level:`.
-3. **Plan absent (`PLAN: none`, or no file):** derive one disposition per employer in her record using §5c's test and four fixed limits, then write from it. Record the derived plan in your summary line (draft) or at the top of `cv-changes.md` (revision).
-4. Every employer in `02-professional-background.md`'s role record ends up either as an entry or named in the aggregation line. Count them before returning.
-5. A revision round never changes the plan. A reviewer flag that asks for a different title, or for a folded role to return, is left unaddressed (Option 2, Decision 3) — the plan is the user's to edit, in her tracker.
+3. **Every title, planned or derived, passes §5c's two title tests** (no off-function words; no level words above an IC target). A plan line that fails them is still executed as written — it was reviewed — but say so in your summary line so the user sees it.
+4. **Every position line fits on one line** (§5d): check each `RoleTitle` against `cv_type.role_line_max_chars` before returning, and apply the trim order until it fits.
+5. **Plan absent (`PLAN: none`, or no file):** derive one disposition per employer in her record using §5c's test and four fixed limits, then write from it. Record the derived plan in your summary line (draft) or at the top of `cv-changes.md` (revision).
+6. Every employer in `02-professional-background.md`'s role record ends up either as an entry or named in the aggregation line. Count them before returning.
+7. A revision round never changes the plan. A reviewer flag that asks for a different title, or for a folded role to return, is left unaddressed (Option 2, Decision 3) — the plan is the user's to edit, in her tracker.
 
 ### Experience Rules (Detailed only)
 
@@ -206,7 +208,7 @@ Everything outside the markers (`## PROFILE SUMMARY`, `## EXPERIENCE`) is main-c
 - `Strategy` — letter type Select (`IC` / `Strategic` / `Hybrid`). Not used for CV framing — the CV summary direction comes from Role emphasis.
 - `Role emphasis` — the real mandate beneath the job title; frame summary and bullet selection around this.
 - `Keywords` — tiered keyword list (Critical / Important / Nice-to-have). Thresholds: Critical ≥80%, Important ≥60%, Nice-to-have best effort. Placement priority: Critical → summary first then bullets; Important → bullets and skills section; Nice-to-have → wherever natural, never forced.
-- `Relationship type` — Full time / Part time / Temporary / Fractional/Consulting/Freelance. Use this for framing tone only — it does not change CV structure.
+- `Relationship type` — Full time / Part time / Temporary / Fractional/Consulting/Freelancing. Use this for framing tone only — it does not change CV structure.
 - `Role Type` — drives CV structure and skills section format. See `references/role-type-definitions.md` for structure rules per Role Type.
 
 **Shift framing — derive it yourself from the role vs. her record (2026-07-24: `Role emphasis` is a role-only brief — two lines, Emphasis + Likely KPIs — and carries no shift/step-down markers and no capability mapping; you read her career-data and make this comparison directly):** If the role's function or track (from the role title and `Role emphasis`'s Emphasis line) sits outside her documented record (`02-professional-background.md` role facts, `03-framework.md`), this role requires a transfer-credibility argument. Apply shift framing:
@@ -246,7 +248,7 @@ Before writing, confirm `CV Type`, then read the coach output and record — **i
 
 2. **Role Type** — the coach's multi-select classification (Builder / Scaler / Specialist / Leader). Governs CV structure and skills section format — see `references/role-type-definitions.md`.
 
-3. **Relationship type** — Full time / Part time / Temporary / Fractional/Consulting/Freelance. Framing context only; does not change structure.
+3. **Relationship type** — Full time / Part time / Temporary / Fractional/Consulting/Freelancing. Framing context only; does not change structure.
 
 4. **Keywords** — tiered keyword list (Critical / Important / Nice-to-have); apply placement priority per tier as defined above.
 

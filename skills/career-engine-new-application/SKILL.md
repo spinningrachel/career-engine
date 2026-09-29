@@ -494,9 +494,9 @@ where `$OUTPUT_DIR` is the run directory resolved by the orchestrator (e.g. `{{O
 
 Write the following properties using `notion-update-page`. All values are already in memory.
 
-**Confirm every property name against the schema before writing.** The database-notion adapter's §1 schema read (the SQLite `CREATE TABLE` block — the authoritative list of property names and select-option values) was already done upstream and is in context; do not re-fetch it. Before the `notion-update-page` call, check each property name below against that schema. Per the adapter's writeback rule (`skills/database-notion/SKILL.md` §3), a property that is missing, renamed, or whose type doesn't match the schema must **not** be silently dropped and must **never** spawn a numbered variant ("Strategy 1") — omit only that property from the call and surface a named note in the final chat delivery: "Notion property `<name>` not found in the database schema for [Company] — renamed or removed; its value was not written. Update the property name or your `database_property` mapping." Write the properties that do match; one renamed property never blocks the others.
+**Confirm every property name against the schema before writing.** The database-notion adapter's §1 schema read (the SQLite `CREATE TABLE` block — the authoritative list of property names and select-option values) was already done upstream and is in context; do not re-fetch it. Before the `notion-update-page` call, check each property name below against that schema. Per the adapter's writeback rule (`skills/database-notion/SKILL.md` §4), a property that is missing, renamed, or whose type doesn't match the schema must **not** be silently dropped and must **never** spawn a numbered variant ("Strategy 1") — omit only that property from the call and surface a named note in the final chat delivery: "Notion property `<name>` not found in the database schema for [Company] — renamed or removed; its value was not written. Rename the tracker property to `<name>` (Notion keeps its values and views) or add it." Write the properties that do match; one renamed property never blocks the others.
 
-**Coach-owned properties** — write verbatim from the coach's output in Step 0.8. Do not rewrite or reinterpret.
+**Coach-owned properties** — write verbatim from the coach's output in Step 0.8. Do not rewrite or reinterpret. **Fill only when the property was empty in this role's Step 0.data snapshot** (in practice the `--now` case, where the coach ran inside this pipeline) — a filled value is the user's and is never rewritten here (2026-09-29, per the user's direct instruction: "Yes, mine always win").
 
 | Property | Source |
 |---|---|
@@ -517,7 +517,7 @@ Write the following properties using `notion-update-page`. All values are alread
 
 | Property | What to write |
 |---|---|
-| `Hiring Manager's Name` | Hiring manager name and title from the coach's research. Write "Not identified" if none found. |
+| `Hiring Manager's Name` | Hiring manager name and title from the coach's research, **only when the property is empty**. Write "Not identified" if none found. Skip when the tracker has no text property of this name (e.g. the hiring manager is a relation to a contacts database). |
 | `Last Pipeline Run` | Today's date in ISO format (YYYY-MM-DD). |
 | `Status` | `CV Ready for Review` — set once DOCX export and writeback are confirmed complete. |
 | `Draft Directory` | `$DRAFT_DIR_URL` (constructed in Step 7a). **Omit this property from the `notion-update-page` call entirely if `$DRAFT_DIR_URL` is empty** — do not write an empty string to the property. If `$DRAFT_DIR_URL` is empty, include a named note in the final chat delivery: "Draft Directory not written for [Company] — `draft_dir_url_base` not configured or empty. Run `/career-engine:setup --phase 5` to configure it." |

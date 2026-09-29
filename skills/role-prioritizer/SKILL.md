@@ -1,18 +1,18 @@
 ---
 name: role-prioritizer
-description: "Doctrine for the role-prioritizer agent. Prioritization has no scoring or writing rubric of its own by design — this file states that constraint explicitly so a future edit doesn't quietly duplicate the career coach's Priority Framework or Role Summary rule into a second, drifting copy."
+description: "Doctrine for the role-prioritizer agent. Prioritization has no scoring or writing rubric of its own by design — this file states that constraint explicitly so a future edit doesn't quietly duplicate the career coach's Priority Framework or Role summary rule into a second, drifting copy."
 ---
 
 # Role Prioritizer — Doctrine
 
 ## Why this pipeline has no rubric of its own
 
-Prioritization exists to be cheap and fast, not to be a second brain. Every judgment call it makes — what counts as a good Priority score, what a Role Summary should contain, how to fetch a JD — already has a single authoritative source elsewhere in the plugin. Prioritization's entire discipline is: **use those sources exactly as written, never approximate them, never maintain a lighter parallel version.**
+Prioritization exists to be cheap and fast, not to be a second brain. Every judgment call it makes — what counts as a good Priority score, what a Role summary should contain, how to fetch a JD — already has a single authoritative source elsewhere in the plugin. Prioritization's entire discipline is: **use those sources exactly as written, never approximate them, never maintain a lighter parallel version.**
 
 This is a deliberate, load-bearing design choice, not an oversight:
 
 - **Scoring doctrine drift** is exactly the failure mode the plugin's cross-file-contracts table exists to prevent. Two scoring rubrics — even two nearly-identical ones — will diverge the first time either one is edited without the other in mind, and a role could get a different Priority depending on which pipeline touched it last.
-- **A second Role Summary content rule** risks a Prioritization-written summary looking or reading differently from a coach-written one, which would be a visible seam to the user between "cheap triage" and "full research" output on the same property.
+- **A second Role summary content rule** risks a Prioritization-written summary looking or reading differently from a coach-written one, which would be a visible seam to the user between "cheap triage" and "full research" output on the same property.
 
 ## What Prioritization borrows, and from where
 
@@ -20,7 +20,7 @@ This is a deliberate, load-bearing design choice, not an oversight:
 |---|---|---|
 | How to score `Priority` | `01-writing-rules.md` §1 — Priority Framework | Apply the base criteria exactly, JD-only (no company/culture/landscape research — that's what full intake adds later). §1's requirements-coverage subsection is intake-only (2026-07-29) — it needs the full background read this pipeline deliberately skips; the coach re-scores with it and always overwrites |
 | How to fetch a JD | `career-engine-intake/SKILL.md` Step 0.5 fetch ladder | Reuse exactly — same fallback order, same fetch markers |
-| What a `Role Summary` looks like | `career-coach/coach-output.md` → Output Format, the `Role summary` line | Same ≤400-char, JD-vocabulary-only content rule |
+| What a `Role summary` looks like | `career-coach/coach-output.md` → Output Format, the `Role summary` line | Same ≤400-char, JD-vocabulary-only content rule |
 | What counts as coach-complete | `career-engine-intake/SKILL.md` Step 0.8 | Prioritization never writes enough fields to satisfy this list (it writes 5 of 13–14 required fields) — a role that only went through Prioritization must always still reach the coach |
 
 ## What Prioritization explicitly does not do
@@ -36,4 +36,4 @@ The agent's declared database tools are bound to specific MCP server instances t
 
 ## Overwrite semantics — the reason this pipeline exists
 
-Prioritization's five written values (`Role Summary`, `Location`, `Priority`, `JD Fetch Status`, `JD Body`) are provisional by design. When a role reaches full intake, the career coach **always overwrites** `Role Summary`, `Location`, and `Priority` from scratch using full research — it never treats Prioritization's values as a draft to confirm or correct (see the cross-file-contract row in `CLAUDE.md` and `career-engine-intake/SKILL.md` Step 0.9a). Prioritization's job is narrower than it might look: help the user (and the next intake run's 5-role selection) triage a large `New` queue cheaply — not produce a value that has to be "good enough" to survive unedited.
+Prioritization's five written values (`Role summary`, `Location`, `Priority`, `JD Fetch Status`, `JD Body`) are provisional by design. **Since 2026-09-29 (per the user's direct instruction: "Keep them, flag disagreements"), full intake keeps these values** — every filled field counts as hers, and when the coach's full-research value differs, intake lists it as a "Coach suggestion" for her to accept or ignore. Clearing a field before intake is how she asks the coach to fill it fresh (see the cross-file-contract row in `CLAUDE.md` and `career-engine-intake/SKILL.md` Step 0.9a). Prioritization's job is narrower than it might look: help the user (and the next intake run's 5-role selection) triage a large `New` queue cheaply — not produce a value that has to be "good enough" to survive unedited.

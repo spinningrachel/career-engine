@@ -535,10 +535,11 @@ expect_ge "35" "skills/database/SKILL.md" "| \`Needs Research\` |" 1
 # ================================================================
 # Check 35b — Prioritization → intake always-overwrite fix present
 # ================================================================
-c35b=$(grep -ci "\*\*always overwrite" "$TARGET/skills/career-engine-intake/SKILL.md" 2>/dev/null || true); c35b=${c35b:-0}
+c35b=$(grep -ci "\*\*fill only when empty" "$TARGET/skills/career-engine-intake/SKILL.md" 2>/dev/null || true); c35b=${c35b:-0}
 # 2026-07-23: threshold 14->13 — the location-compatibility always-overwrite bullet was retired with the property
 # 2026-07-29: threshold 13->12 — First Advertised moved from always-overwrite to the earliest-wins merge, per the user
-if [ "$c35b" -ge 12 ]; then report "35b" 1 ""; else report "35b" 0 "'**always overwrite' (case-insensitive) count is $c35b, need >= 12"; fi
+# 2026-09-29: the default flipped to fill-only-when-empty (the user's values win) — the count now tracks that phrase
+if [ "$c35b" -ge 12 ]; then report "35b" 1 ""; else report "35b" 0 "'**fill only when empty' (case-insensitive) count is $c35b, need >= 12"; fi
 expect_ge "35b" "skills/career-engine-intake/SKILL.md" "earliest-wins" 2
 expect_ge "35b" "CLAUDE.md" "Prioritization" 1
 
@@ -548,13 +549,14 @@ expect_ge "35b" "CLAUDE.md" "Prioritization" 1
 # tracing every match to the JD Body bullet, which is a judgment call; not
 # transcribed as a strict ==0 assertion. See notes file.)
 # ================================================================
-expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "Rule: always overwrite" 1
-expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "Exceptions — these three remain write-only-to-empty" 1
+expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "Rule: the user's values win — fill empty fields only" 1
+expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "Four writes are not fills" 1
+expect_eq0 "55-writeback" "skills/career-engine-intake/SKILL.md" "Rule: always overwrite"
 # 2026-07-28: bullet reworded — write-only-to-empty now scoped to gap-handling content (Keyword gap line is replace-own-line)
-expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "Gap handling\` — \*\*write-only-to-empty exception for gap-handling content\*\*" 1
-expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "so \"is it empty?\" is the wrong test" 1
+expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "Gap handling\` — \*\*fill only when empty for gap-handling content\*\*" 1
+expect_ge "55-writeback" "skills/career-engine-intake/SKILL.md" "Coach suggestions (your value kept)" 2
 expect_eq0 "55-writeback" "skills/career-coach/coach-output.md" "do not overwrite\. The user decides"
-expect_ge "55-writeback" "skills/career-coach/coach-output.md" "always overwrite; call out big swings" 1
+expect_ge "55-writeback" "skills/career-coach/coach-output.md" "return your fresh score and call out big swings" 1
 
 # ================================================================
 # Check 56 — Coach context block terseness
@@ -929,7 +931,7 @@ expect_ge "65" "references/pipeline-preferences.json" "market_norms" 1
 # 2026-07-23: CV Type moved out of Role emphasis into its own returned property (write-only-to-empty).
 expect_eq0 "65" "skills/career-coach/coach-output.md" "Recommended CV Type"
 expect_ge "65" "skills/career-coach/coach-output.md" "CV Type:" 1
-expect_ge "65" "skills/career-engine-intake/SKILL.md" "\`CV Type\` — \*\*write-only-to-empty" 1
+expect_ge "65" "skills/career-engine-intake/SKILL.md" "\`CV Type\` — \*\*fill only when empty" 1
 expect_ge "65" "skills/gatekeeper-checks/coach-gates.md" "CV Type" 1
 expect_ge "65" "agents/cv-writer.md" "CV Type=Detailed|Brief" 1
 expect_ge "65" "agents/cv-writer.md" "Brief-Specific Rules" 1
@@ -1034,6 +1036,25 @@ expect_ge "70" "skills/database/SKILL.md" "No agent ever writes it" 1
 expect_ge "70" "skills/career-engine-setup/SKILL.md" "CV Title Preferences" 3
 expect_ge "70" "references/job-applications-template.csv" "CV Titles,CV Title Preferences" 1
 expect_ge "70" "references/cv-self-check.md" "Role tailoring" 1
+
+# ================================================================
+# Check 71 — 2026-09-29: the user's values win at intake; title tests; one-line position row; property_names
+# ================================================================
+expect_ge "71" "skills/career-engine-intake/SKILL.md" "Coach suggestions (your value kept)" 2
+expect_ge "71" "agents/role-prioritizer.md" "the user's values win" 1
+expect_ge "71" "skills/career-engine-new-application/SKILL.md" "Fill only when the property was empty in this role's Step 0.data snapshot" 1
+expect_ge "71" "skills/writer-craft/cv.md" "Two title tests every entry must pass" 1
+expect_ge "71" "skills/writer-craft/cv.md" "Her career-data title strings are facts, never a menu" 1
+expect_ge "71" "skills/career-coach/coach-analysis.md" "Two title tests every Retitle, Descriptor, and Keep line must pass" 1
+expect_ge "71" "skills/gatekeeper-checks/coach-gates.md" "Two title tests (2026-09-29" 1
+expect_ge "71" "skills/gatekeeper-checks/cv-gates.md" "two title tests" 1
+expect_ge "71" "skills/writer-craft/cv.md" "§5d — The position line fits on one line" 1
+expect_ge "71" "skills/gatekeeper-checks/cv-gates.md" "Gate 5b — Position line on one line" 1
+expect_ge "71" "agents/cv-writer.md" "Every position line fits on one line" 1
+expect_ge "71" "references/pipeline-preferences.json" "role_line_max_chars" 2
+expect_ge "71" "references/pipeline-preferences.json" "property_names" 2
+expect_ge "71" "skills/database-notion/SKILL.md" "resolve through \`property_names\` before any read or write" 1
+expect_ge "71" "skills/career-engine-setup/SKILL.md" "property_names" 2
 
 echo "qa-mechanical: $PASS passed, $FAIL failed"
 

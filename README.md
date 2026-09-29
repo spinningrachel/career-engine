@@ -85,6 +85,20 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-09-29 — CV titles, your values win, one-line position rows
+
+**Bug fixes**
+- **Your own values now win at intake.** Before, the coach replaced values you had set yourself, including a `CV Type` you chose in advance. Now every pipeline writes a property only when it's empty. Where the coach disagrees with a value you set, the intake briefing lists its suggestion under "Coach suggestions (your value kept)." Clear a field to get a fresh value. Per your instruction: "Yes, mine always win" / "Keep them, flag disagreements."
+- **Titles are tailored to the role.** An IC-level CV no longer shows `Director`, `Head of`, `VP`, `Chief`, or `Manager`, and a title never names a function the role doesn't hire for (for example, `Marketing` on a technical-writing CV). The coach's plan, the CV writer, and both gates enforce this. Your career-data's approved title strings now count as facts and a seniority ceiling, not a fixed list to choose from.
+- **The title plan runs again.** Your tracker had no `CV Titles` property, so the coach's plan was never saved. `CV Titles` and `CV Title Preferences` were added to your tracker and to the shared template.
+- **Position rows fit on one line.** The CV writer shortens the location first, then uses years-only dates, then (only when no plan exists) a shorter title. A new gate check counts each row against the optional `cv_type.role_line_max_chars` setting.
+
+**New features**
+- **Renamed tracker columns work.** The new `property_names` setting maps a documented column name to your own name for it. Before this, a renamed column went unseen: your `Target language/s` column meant the Hebrew step never ran.
+
+**Improvements**
+- **Setup option lists match the tracker.** Company Stage, Role Type, and Relationship type options now match the template. Setup also records renamed columns instead of forbidding them.
+
 ### 2026-09-28 — Bug fix: AskUserQuestion hook false positive
 
 **Bug fixes**

@@ -186,7 +186,7 @@ Surface this reading in `Role emphasis`, and let it guide the `Strategy` letter-
 | `Strategy` | Letter-type Select — `IC` / `Strategic` / `Hybrid`. Sets the cover-letter structure only. |
 | `Company Stage` | Maturity label — Seed / Series A–C / Public / PE-backed / Stealth / Other. |
 | `Role Type` | Multi-select shape — Builder (0→1, first hire) / Scaler (growth, existing motion) / Leader (team/org ownership) / Specialist (narrow lane). |
-| `Relationship type` | Full time / Part time / Temporary / Fractional. |
+| `Relationship type` | Full time / Part time / Temporary / Fractional/Consulting/Freelancing. |
 | `Gap handling` | The material gaps and how to handle each (max 3), or `N/A`. |
 | `Culture` | A concise, sourced hypothesis about working style and operating environment. |
 | `Hiring Manager's Name` | Best-inferred HM name (confirmed from JD/LinkedIn/site, or marked inferred/uncertain). |
@@ -273,6 +273,8 @@ One line per employer in her role record (`02-professional-background.md` and it
 
 **Do not be timid.** Titles are employer-assigned labels that differ between companies for identical work; aligning one to the work she actually did is tailoring, and the user has explicitly asked not to be protected from it ("I don't want the coach to be overly careful either"). Between Retitle and Descriptor, choose Retitle whenever the facts show the function as a standing part of the job. Between Descriptor and Fold, choose Descriptor whenever the role can supply even two bullets that answer this JD. A `Keep` with no reason, or a plan that is mostly `Keep`, is the over-caution defect.
 
+**Two title tests every Retitle, Descriptor, and Keep line must pass (2026-09-29, per the user ("The titles of positions aren't tailored enough... writing Director alone will get me cancelled for an IC role after all. and noone (from experience) likes seeing Marketing for technical writers" / "The positions should be called what's most appropriate for the application + aligned with something that I actually did")):** no off-function words (a technical-writing plan never keeps `Marketing`, `GTM`, `Sales`, or `Growth` in a title; a hybrid recorded title keeps only the half that answers the role), and, when `Level:` reads as IC, no `Director`, `Head of`, `VP`, `Chief`, or `Manager` — retitle at the nearest IC form her record supports. A `Keep` that leaves either word in place is the over-caution defect. **Her career-data "Approved RoleTitle" strings are facts and the seniority ceiling, never a menu to pick from.**
+
 **The fixed limits — where tailoring would become lying or hiding:**
 1. **Never above her recorded level.** A retitle matches or sits below the recorded title's seniority. When the target role is junior to her record, retitles drop to the target level — state that level on the `Level:` line and write every retitle at it. The user's instruction: "if the role is more junior than I am, then dumb down the CV as much as possible."
 2. **Employer names and dates are never touched** — they are not part of this property at all.
@@ -336,7 +338,7 @@ When scoring priority across multiple roles, weight: Company culture and stage f
 
 ---
 
-**`Relationship type`** — Select one: `Full time`, `Part time`, `Temporary`, `Fractional/Consulting/Freelance`.
+**`Relationship type`** — Select one: `Full time`, `Part time`, `Temporary`, `Fractional/Consulting/Freelancing`.
 
 ---
 

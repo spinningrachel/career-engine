@@ -19,9 +19,15 @@
   "cv_type": {
     "mode": "Detailed",
     "brief_has_photo": "",
-    "description": "Which CV format to produce. 'Detailed' (default) = the existing full CV. 'Brief' = the one-page two-column condensed CV. 'Variant' = read the per-role 'CV Type' field from your configured database backend instead (values 'Detailed'/'Brief') — defaults to Detailed if that field is empty for a role; under Variant the career coach recommends a value at intake and fills the field only when empty (your own value always wins). The 'CV Type' database field is a fixed name — setup instructs you to add it directly. brief_has_photo ('yes'/'no', optional) tells cv-writer whether your Brief template has a photo — leave blank to assume no photo. market_norms (optional free text) = YOUR OWN CV-format norms per market, e.g. 'Israeli tech: Brief unless C-suite; US roles: Detailed' — when present, it is the authoritative first source for the coach's CV Type recommendation.",
+    "role_line_max_chars": {
+      "detailed": "",
+      "brief": ""
+    },
+    "description": "Which CV format to produce. 'Detailed' (default) = the existing full CV. 'Brief' = the one-page two-column condensed CV. 'Variant' = read the per-role 'CV Type' field from your configured database backend instead (values 'Detailed'/'Brief') — defaults to Detailed if that field is empty for a role; under Variant the career coach recommends a value at intake and fills the field only when empty (your own value always wins). The 'CV Type' database field is a fixed name — setup instructs you to add it directly. brief_has_photo ('yes'/'no', optional) tells cv-writer whether your Brief template has a photo — leave blank to assume no photo. market_norms (optional free text) = YOUR OWN CV-format norms per market, e.g. 'Israeli tech: Brief unless C-suite; US roles: Detailed' — when present, it is the authoritative first source for the coach's CV Type recommendation. role_line_max_chars (optional, per CV Type) = how many characters the position line (title | company | location | dates) fits on ONE line of your own template; when set, it is a hard cap the gatekeeper counts mechanically, when blank the cv-writer estimates from the template. Measure it once from a real exported CV of yours.",
     "market_norms": ""
   },
+  "property_names": {},
+  "_property_names_note": "Optional. Maps a documented tracker column name (references/job-applications-template.csv) to YOUR tracker's own name for that column, when you renamed it. Example: {\"Languages\": \"Target language/s\", \"Note\": \"My Notes\"}. Leave {} when your columns use the documented names.",
   "cv_footer": {
     "inject": true,
     "description": "Whether the user wants to inject their Education and Languages as part of the workflow. If not, the user needs to inject themselves after the workflow ends."

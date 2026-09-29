@@ -36,6 +36,8 @@ Every CV claim must be grounded in this file. No inference, no extrapolation, no
 
 **Approved RoleTitle:** `{{ROLE_TITLE}} | {{COMPANY_NAME}} | {{LOCATION}} | {{DATE_RANGE}}`
 
+*What to put here: your recorded title for this job, as the company called it. The CV tailors the displayed title to each application (`skills/writer-craft/cv.md` §5c): it may rename the title to the target function or lower its level, never raise it. Treat this line as the fact and the seniority ceiling, not a fixed label.*
+
 **Approved RoleOverview:** `{{COMPANY_DESCRIPTION_ONE_LINE}}`
 
 *One sentence describing the company: what it does, its scale, and any context that makes the role meaningful.*

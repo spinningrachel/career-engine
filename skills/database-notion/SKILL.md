@@ -42,6 +42,8 @@ Extract the SQLite `CREATE TABLE` block: this is the **schema reference** for th
 
 **Use it for every write.** When writing a select field, look up the valid options in the SQLite comment for that column (e.g. `-- one of ["Yes", "Remote-maybe", "No"]`) and write the exact string from the schema. Never hardcode select-option values. If an agent returns a value that doesn't match a schema option, map it to the closest option using the schema as the authority. Pass the SQLite block to any spawned agent that writes select values (e.g. the career coach) as a "Notion schema reference" section.
 
+**Property names — resolve through `property_names` before any read or write (2026-09-29).** Pipeline doctrine names every property by its documented name (the column names in `references/job-applications-template.csv`). A user's tracker may call the same column something else — a real tracker used `Target language/s` for `Languages` and a personal name for `Note`, so the Hebrew step never saw its languages. Read `property_names` from `pipeline-preferences.json`: an object mapping a documented name to the tracker's own column name (e.g. `{"Languages": "Target language/s"}`). For every property a pipeline reads or writes, use the mapped name when one exists, the documented name otherwise, and check the resolved name against this schema. A mapping whose target is not in the schema is reported by name at run start and treated as unmapped. Never guess a mapping from a similar-looking name: an unmapped, missing property follows §4's missing-property rule.
+
 This same `notion-fetch` response also carries the `<data-sources>` and `<views>` blocks used in §2/§3.
 
 ---

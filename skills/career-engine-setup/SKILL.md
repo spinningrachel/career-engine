@@ -532,9 +532,9 @@ Ask: "How do you want to track your job applications? Options: **Notion** (recom
    
    (The `database_*` names are backend-neutral. Older configs may carry legacy `notion_database_id`/`notion_needs_editing_view_url` names — the pipeline reads both, but always write the `database_*` names on a fresh setup.) Do NOT substitute `{{NOTION_DATABASE_ID}}` into plugin files — every skill resolves it from the config at runtime (R-38).
 
-6. Say: "**Important:** Do not rename the columns in your Notion database. The pipeline writes to them by exact name — renaming breaks the integration silently."
+6. Say: "**Important:** Keep the column names as they are. The pipeline reads and writes them by exact name. If you already renamed some (or want to), tell me the old and new names and I'll record them in your config under `property_names`, which is how the pipeline finds a renamed column."
 
-7. **CV Type property — only relevant if Variant mode is chosen later in this phase.** The duplicated template likely does not include this property yet, since it's new. Once the CV Type question below (under "Document templates") is answered, if the answer was `Variant`, come back here and say: "Since you chose to let each role decide its CV format, add a **Select** property to your Notion database named exactly `CV Type`, with two options: `Detailed` and `Brief`. You set this per role yourself — the pipeline reads it, never writes to it." Skip this step entirely if `Detailed` or `Brief` was chosen instead — there's nothing to add.
+7. **CV Type property — only relevant if Variant mode is chosen later in this phase.** The duplicated template likely does not include this property yet, since it's new. Once the CV Type question below (under "Document templates") is answered, if the answer was `Variant`, come back here and say: "Since you chose to let each role decide its CV format, add a **Select** property to your Notion database named exactly `CV Type`, with two options: `Detailed` and `Brief`. You set this per role yourself. When you leave it empty, the career coach fills it at intake; a value you set is never changed." Skip this step entirely if `Detailed` or `Brief` was chosen instead — there's nothing to add.
 8. **Role-tailoring properties — always.** The duplicated template may predate these two. Say: "Add two **Text** properties to your database, named exactly `CV Titles` and `CV Title Preferences`. `CV Titles` is where the career coach writes its plan for how each of your past job titles should read on the CV for that specific role, and which unrelated roles fold into one line — you can review and edit it before any CV is written. `CV Title Preferences` is yours alone: anything you want to say about your titles for that role. Nothing ever writes to it." A tracker without them still works — the CV writer then makes those calls itself.
 
 ---
@@ -565,9 +565,9 @@ Set up data validation (dropdown lists) on the following columns in my Google Sh
 - Column "Status": allow only these exact values: New, Needs Research, Interested, CV Ready for Review, Applied, Researched, Needs Editing
 - Column "Priority": allow only these exact values: 1, 2, 3, 4, 5, 6 (the pipeline writes the number, never a word label)
 - Column "JD Fetch Status": allow only these exact values: Fetched, LinkedIn-blocked, Unfetchable, Manual-entry
-- Column "Company Stage": allow only these exact values: Seed, Series A, Series B, Series C, Public, PE-backed, N/A
-- Column "Role Type": allow multiple selections from: Builder, Scaler, Specialist, Leader
-- Column "Relationship type": allow only these exact values: Full time, Part time, Temporary, Fractional/Consulting/Freelance
+- Column "Company Stage": allow only these exact values: Seed, Series A, Series B, Series C, Series D, Series E, Public, PE-backed, Stealth, Other, N/A
+- Column "Role Type": allow multiple selections from: Builder, Scaler, Specialist, Leader, N/A
+- Column "Relationship type": allow only these exact values: Full time, Part time, Temporary, Fractional/Consulting/Freelancing
 - Column "Manager role confirmed": allow only these exact values: Yes, No; this is only a hypothesis
 - Column "Languages": allow multiple selections from: {{USER_DEFAULT_LANGUAGE}}, {{USER_SECOND_LANGUAGE}}
   (If single-language, allow only: {{USER_DEFAULT_LANGUAGE}})
@@ -600,9 +600,9 @@ Select column values (must match exactly):
 - Status: New | Needs Research | Interested | CV Ready for Review | Applied | Researched | Needs Editing
 - Priority: 1 | 2 | 3 | 4 | 5 | 6 (the pipeline writes the number, never a word label)
 - JD Fetch Status: Fetched | LinkedIn-blocked | Unfetchable | Manual-entry
-- Company Stage: Seed | Series A | Series B | Series C | Public | PE-backed | N/A
-- Role Type (multi-select): Builder | Scaler | Specialist | Leader
-- Relationship type: Full time | Part time | Temporary | Fractional/Consulting/Freelance
+- Company Stage: Seed | Series A | Series B | Series C | Series D | Series E | Public | PE-backed | Stealth | Other | N/A
+- Role Type (multi-select): Builder | Scaler | Specialist | Leader | N/A
+- Relationship type: Full time | Part time | Temporary | Fractional/Consulting/Freelancing
 - Manager role confirmed: Yes | No; this is only a hypothesis
 - Languages (multi-select): {{USER_DEFAULT_LANGUAGE}} | {{USER_SECOND_LANGUAGE}}
   (If single-language, only: {{USER_DEFAULT_LANGUAGE}})
@@ -738,8 +738,10 @@ Write the answers into `target_titles` (array, priority order), `remote_preferen
     },
     "cv_type": {
       "mode": "<Detailed | Brief | Variant>",
-      "brief_has_photo": "<yes / no, or empty>"
+      "brief_has_photo": "<yes / no, or empty>",
+      "role_line_max_chars": { "detailed": "<number, or empty>", "brief": "<number, or empty>" }
     },
+    "property_names": {},
     "favorite_brands": [],
     "preferred_job_sites": [],
     "local_job_sites": [],
