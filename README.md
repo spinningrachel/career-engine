@@ -85,6 +85,11 @@ Everything beyond this quick start lives in the **[Wiki](https://github.com/spin
 
 ## Changelog
 
+### 2026-10-03 — New job source
+
+**New features**
+- **ChoppingBlock added to Tier 1 sourcing** — `source-open-roles` now searches choppingblock.ai (AI/ML-company jobs, all functions) on every run via its `/jobs?q=` keyword search.
+
 ### 2026-09-28 — Bug fix: AskUserQuestion hook false positive
 
 **Bug fixes**

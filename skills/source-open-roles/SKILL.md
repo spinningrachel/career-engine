@@ -65,6 +65,7 @@ Source selection is layered, not mode-based. Every run starts with the full Tier
 | Indeed | Core board |
 | Glassdoor | Core board |
 | BuiltIn | Core board |
+| ChoppingBlock (AI jobs) | Core board — AI/ML-company roles, all functions |
 | Crunchbase | Company intelligence |
 | PitchBook | Company intelligence |
 | Tracxn | Company intelligence |
@@ -183,6 +184,7 @@ All fetched via `WebSearch` using the pattern: `site:<domain> "[title]" [time si
 | Site | Fetch method |
 |---|---|
 | startup.jobs | Prefer `mcp__startup-jobs__search_jobs` (keyword/role/country/remote/employment-type filters) + `mcp__startup-jobs__get_job` for full listing detail, if Gate 2's connection check found it connected (per `${CLAUDE_PLUGIN_ROOT}/references/job-sourcing-mcp-registry.md` — structured, no scraping; both tools are granted in this agent's own frontmatter). **Gate:** if not connected, fall back to `WebFetch("https://startup.jobs/?q=[title-urlencoded]&remote=true")` — the run header already noted the unconnected server at Gate 2, no need to repeat it here. |
+| ChoppingBlock (Tier 1 — every run) | `WebFetch("https://www.choppingblock.ai/jobs?q=[title-urlencoded]")` — server-rendered, keyword search works (verified 2026-10-03, returns PMM listings). Optional filters: `&remote=`, `&country=`, `&seniority=`. Fallback `WebSearch("site:choppingblock.ai [title]")`. AI-native companies only. |
 | MoaiJobs | `WebFetch("https://www.moaijobs.com/")` + `WebSearch("site:moaijobs.com [title]")` |
 | CareerVault | `WebFetch("https://careervault.io/")` + `WebSearch("site:careervault.io [title]")` |
 
@@ -225,6 +227,7 @@ Use these to surface roles posted directly on company career pages via their ATS
 |---|---|
 | MoaiJobs | See Startup section |
 | CareerVault | See Startup section |
+| ChoppingBlock | See Startup section |
 | PitchMeAI | See Remote section |
 | TheirStack | Requires `mcp__theirstack__*` tools. Gate: if not connected, skip and note. |
 
