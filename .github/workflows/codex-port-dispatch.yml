@@ -1,0 +1,23 @@
+# Install as .github/workflows/codex-port-dispatch.yml in career-engine-claude.
+# CODEX_PORT_DISPATCH_TOKEN is stored only in that repository's Actions secrets.
+name: Notify Codex port of an upstream change
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch the Codex sync workflow
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_PORT_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo 'CODEX_PORT_DISPATCH_TOKEN is missing; the Codex repo hourly schedule remains the fallback.' >&2
+            exit 1
+          fi
+          gh api --method POST repos/spinningrachel/career-engine-codex/dispatches \
+            -f event_type=career-engine-updated
